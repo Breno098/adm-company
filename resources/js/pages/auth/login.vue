@@ -1,97 +1,107 @@
 <template>
-  <div class="row">
-    <div class="col-lg-8 m-auto">
-      <card :title="$t('login')">
-        <form @submit.prevent="login" @keydown="form.onKeydown($event)">
-          <!-- Email -->
-          <div class="form-group row">
-            <label class="col-md-3 col-form-label text-md-right">{{ $t('email') }}</label>
-            <div class="col-md-7">
-              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email">
-              <has-error :form="form" field="email" />
-            </div>
-          </div>
+     <v-container fluid fill-height style="background: #7986CB; background: linear-gradient(to bottom, #2196F3, #90CAF9, #E3F2FD);">
+        <v-layout flex align-center justify-center>
+            <v-flex xs12 sm8 elevation-6>
+                <v-card elevation="24" color="blue">
+                    <v-row>
+                        <v-col cols="4" class="py-0 mx-0 px-0">
+                            <v-container
+                                align-center
+                                justify-space-around
+                                fill-height
+                                flex-column
+                            >
+                                <div>
+                                    <v-icon dark class="text-h1">mdi-bulletin-board</v-icon>
+                                </div>
 
-          <!-- Password -->
-          <div class="form-group row">
-            <label class="col-md-3 col-form-label text-md-right">{{ $t('password') }}</label>
-            <div class="col-md-7">
-              <input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
-              <has-error :form="form" field="password" />
-            </div>
-          </div>
+                                <div class="white--text text-h5">
+                                    {{ appName }}
+                                </div>
+                            </v-container>
+                        </v-col>
 
-          <!-- Remember Me -->
-          <div class="form-group row">
-            <div class="col-md-3" />
-            <div class="col-md-7 d-flex">
-              <checkbox v-model="remember" name="remember">
-                {{ $t('remember_me') }}
-              </checkbox>
+                        <v-col cols="8" class="py-0 mx-0 px-0">
+                            <v-card class="py-12 px-10">
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            v-model="form.email"
+                                            label="Email"
+                                            color="blue"
+                                            required
+                                            v-on:keyup.enter="login"
+                                            outlined
+                                            dense
+                                            prepend-inner-icon="mdi-email"
+                                        ></v-text-field>
+                                    </v-col>
 
-              <router-link :to="{ name: 'password.request' }" class="small ml-auto my-auto">
-                {{ $t('forgot_password') }}
-              </router-link>
-            </div>
-          </div>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            v-model="form.password"
+                                            label="Password"
+                                            color="blue"
+                                            required
+                                            type="password"
+                                            v-on:keyup.enter="login"
+                                            outlined
+                                            dense
+                                            prepend-inner-icon="mdi-lock-open"
+                                        ></v-text-field>
+                                    </v-col>
 
-          <div class="form-group row">
-            <div class="col-md-7 offset-md-3 d-flex">
-              <!-- Submit Button -->
-              <v-button :loading="form.busy">
-                {{ $t('login') }}
-              </v-button>
-
-              <!-- GitHub Login Button -->
-              <login-with-github />
-            </div>
-          </div>
-        </form>
-      </card>
-    </div>
-  </div>
+                                    <v-col cols="12">
+                                        <v-btn color="blue white--text" v-on:click="login" large>
+                                            Entrar
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-card>
+            </v-flex>
+        </v-layout>
+    </v-container>
 </template>
 
 <script>
-import Form from 'vform'
 import Cookies from 'js-cookie'
-import LoginWithGithub from '~/components/LoginWithGithub'
+import axios from 'axios'
 
 export default {
-  components: {
-    LoginWithGithub
-  },
+  layout: 'auth',
 
   middleware: 'guest',
 
   metaInfo () {
-    return { title: this.$t('login') }
+    return { title: 'Entrar' }
   },
 
   data: () => ({
-    form: new Form({
+    form: {
       email: '',
       password: ''
-    }),
-    remember: false
+    },
+    remember: true,
+    appName: window.config.appName,
   }),
 
   methods: {
     async login () {
-      // Submit the form.
-      const { data } = await this.form.post('/api/login')
 
-      // Save the token.
-      this.$store.dispatch('auth/saveToken', {
-        token: data.token,
-        remember: this.remember
+      await axios.post('api/login', this.form)
+      .then(async (response) => {
+        this.$store.dispatch('auth/saveToken', {
+          token: response.data.token,
+          remember: this.remember
+        })
+
+        await this.$store.dispatch('auth/fetchUser');
+
+        this.redirect();
       })
-
-      // Fetch the user.
-      await this.$store.dispatch('auth/fetchUser')
-
-      // Redirect home.
-      this.redirect()
     },
 
     redirect () {

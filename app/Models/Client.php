@@ -20,7 +20,7 @@ class Client extends Model
     ];
 
     protected $casts = [
-        'birth_date' => 'datetime: Y-m-d',
+        'birth_date' => 'datetime:Y-m-d',
         'active' => 'boolean'
     ];
 

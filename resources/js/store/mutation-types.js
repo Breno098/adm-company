@@ -8,3 +8,6 @@ export const UPDATE_USER = 'UPDATE_USER'
 
 // lang.js
 export const SET_LOCALE = 'SET_LOCALE'
+
+export const SHOW_MODAL_SYSTEM = 'SHOW_MODAL_SYSTEM'
+export const HIDE_MODAL_SYSTEM = 'HIDE_MODAL_SYSTEM'

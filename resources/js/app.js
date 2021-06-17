@@ -7,10 +7,14 @@ import App from '~/components/App'
 import '~/plugins'
 import '~/components'
 
+import vuetify from './plugins/vuetify'
+
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
+  vuetify,
   i18n,
   store,
   router,

@@ -31,7 +31,7 @@ class ClientController extends BaseControllerApi
 
         $validator = Validator::make($input, [
             'name' => 'required',
-            'type' => 'required|in:PF, PJ'
+            'type' => 'required|in:PF,PJ'
         ]);
 
         if($validator->fails()){
@@ -67,21 +67,26 @@ class ClientController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Client $client)
+    public function update(Request $request, Int $id)
     {
+        $client = Client::find($id);
+
+        if (is_null($client)) {
+            return $this->sendError('Client not found.');
+        }
+
         $input = $request->all();
 
         $validator = Validator::make($input, [
             'name' => 'required',
-            'type' => 'required|in:PF, PJ'
+            'type' => 'required|in:PF,PJ'
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $client->name = $input['name'];
-        $client->save();
+        $client->update($input);
 
         return $this->sendResponse($client, 'Client updated successfully.');
     }
@@ -92,8 +97,14 @@ class ClientController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Client $client)
+    public function destroy(Int $id)
     {
+        $client = Client::find($id);
+
+        if (is_null($client)) {
+            return $this->sendError('Client not found.');
+        }
+
         $client->active = false;
         $client->save();
 

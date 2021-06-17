@@ -5,6 +5,8 @@ import Button from './Button'
 import Checkbox from './Checkbox'
 import { HasError, AlertError, AlertSuccess } from 'vform'
 
+import Modal from './Modal'
+
 // Components that are registered globaly.
 [
   Card,
@@ -13,7 +15,8 @@ import { HasError, AlertError, AlertSuccess } from 'vform'
   Checkbox,
   HasError,
   AlertError,
-  AlertSuccess
+  AlertSuccess,
+  Modal
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })
