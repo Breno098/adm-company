@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Client;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class ClientController extends BaseControllerApi
+class CategoryController extends BaseControllerApi
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +15,8 @@ class ClientController extends BaseControllerApi
      */
     public function index()
     {
-        $clients = Client::where('active', true)->orderby('name')->get();
-        return $this->sendResponse($clients, 'Clients retrieved successfully.');
+        $categories = Category::where('active', true)->orderby('name')->get();
+        return $this->sendResponse($categories, 'Category retrieved successfully.');
     }
 
     /**
@@ -32,16 +31,15 @@ class ClientController extends BaseControllerApi
 
         $validator = Validator::make($input, [
             'name' => 'required',
-            'type' => 'required|in:PF,PJ'
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $client = Client::create($input);
+        $client = Category::create($input);
 
-        return $this->sendResponse($client, 'Client created successfully.');
+        return $this->sendResponse($client, 'Category created successfully.');
     }
 
     /**
@@ -52,15 +50,13 @@ class ClientController extends BaseControllerApi
      */
     public function show($id)
     {
-        $client = Client::find($id);
+        $category = Category::find($id);
 
-        if (is_null($client)) {
-            return $this->sendError('Client not found.');
+        if (is_null($category)) {
+            return $this->sendError('Category not found.');
         }
 
-        $client->load('addresses', 'contacts');
-
-        return $this->sendResponse($client, 'Client retrieved successfully.');
+        return $this->sendResponse($category, 'Category retrieved successfully.');
     }
 
     /**
@@ -72,28 +68,25 @@ class ClientController extends BaseControllerApi
      */
     public function update(Request $request, Int $id)
     {
-        $client = Client::find($id);
+        $category = Category::find($id);
 
-        if (is_null($client)) {
-            return $this->sendError('Client not found.');
+        if (is_null($category)) {
+            return $this->sendError('Category not found.');
         }
 
         $input = $request->all();
 
-        Log::info($input);
-
         $validator = Validator::make($input, [
             'name' => 'required',
-            'type' => 'required|in:PF,PJ'
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $client->update($input);
+        $category->update($input);
 
-        return $this->sendResponse($client, 'Client updated successfully.');
+        return $this->sendResponse($category, 'Category updated successfully.');
     }
 
     /**
@@ -104,14 +97,14 @@ class ClientController extends BaseControllerApi
      */
     public function destroy(Int $id)
     {
-        $client = Client::find($id);
+        $category = Category::find($id);
 
-        if (is_null($client)) {
-            return $this->sendError('Client not found.');
+        if (is_null($category)) {
+            return $this->sendError('Category not found.');
         }
 
-        $client->active = false;
-        $client->save();
+        $category->active = false;
+        $category->save();
 
         return $this->sendResponse([], 'Client deleted successfully.');
     }

@@ -1,7 +1,7 @@
 <template>
   <v-app>
       <bars v-if="user"/>
-      <v-main>
+      <v-main class="mx-5 my-5">
           <child />
       </v-main>
   </v-app>

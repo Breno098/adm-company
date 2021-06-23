@@ -4,17 +4,10 @@ function page (path) {
 
 export default [
   { path: '/client', name: 'client.index', component: page('app/client/list.vue') },
-  { path: '/save/:id?', name: 'client.form', component: page('app/client/form.vue') },
+  { path: '/client/:id?', name: 'client.form', component: page('app/client/form.vue') },
 
-  // {
-  //   path: '/clientes',
-  //   component: page('clientes/index.vue'),
-  //   children: [
-  //     { path: '', redirect: { name: 'clientes.list' } },
-  //     { path: 'list', name: 'clientes.list', component: page('clientes/list.vue') },
-  //     { path: 'form', name: 'clientes.form', component: page('clientes/form.vue') }
-  //   ]
-  // },
+  { path: '/category', name: 'category.index', component: page('app/category/list.vue') },
+  { path: '/category/:id?', name: 'category.form', component: page('app/category/form.vue') },
 
   { path: '/', name: 'welcome', component: page('welcome.vue') },
 

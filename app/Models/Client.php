@@ -29,9 +29,9 @@ class Client extends Model
         return $this->belongsToMany(Address::class, 'client_address', 'client_id', 'address_id');
     }
 
-    public function contact()
+    public function contacts()
     {
-        return $this->hasOne(Contact::class);
+        return $this->hasMany(Contact::class);
     }
 
     public function appointment()

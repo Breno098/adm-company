@@ -13,7 +13,8 @@ class Contact extends Model
         'description',
         'contact',
         'active',
-        'main'
+        'main',
+        'type'
     ];
 
     protected $casts = [
@@ -21,17 +22,8 @@ class Contact extends Model
         'main' => 'boolean',
     ];
 
-    protected $with = [
-        'type'
-    ];
-
     public function client()
     {
         return $this->belongsTo(Client::class);
-    }
-
-    public function type()
-    {
-        return $this->hasOne(ContactType::class, 'type_id');
     }
 }

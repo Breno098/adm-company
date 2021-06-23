@@ -9,7 +9,7 @@
       <v-col cols="12">
         <v-data-table
             :headers="table.headers"
-            :items="table.clients"
+            :items="table.categories"
             :search="search"
             :loading="table.loading"
         >
@@ -27,10 +27,11 @@
             </template>
             <template v-slot:item="row">
                 <tr>
+                    <td>
+                        <v-icon color="blue">{{row.item.icon}}</v-icon>
+                    </td>
                     <td>{{row.item.name}}</td>
-                    <td>{{row.item.fantasy_name}}</td>
-                    <td>{{row.item.type}}</td>
-                    <td>{{row.item.document}}</td>
+                    <td>{{row.item.description}}</td>
                     <td>
                         <v-menu transition="slide-y-transition" bottom>
                             <template v-slot:activator="{ on, attrs }">
@@ -100,20 +101,14 @@ export default {
     deleted: {},
     search: '',
     table: {
-      clients: [],
+      categories: [],
       loading: false,
-      headers: [{
+      headers: [{}, {
           text: 'NOME',
           value: 'name'
       }, {
-          text: 'NOME FANTASIA',
-          value: 'fantasy_name'
-      }, {
-          text: 'TIPO',
-          value: 'type'
-      }, {
-          text: 'DOCUMENTO',
-          value: 'document'
+          text: 'DESCRIÇÃO',
+          value: 'description'
       }, {} ],
     }
   }),
@@ -123,17 +118,17 @@ export default {
   methods: {
     async _load(){
       this.table.loading = true;
-      await axios.get('api/client').then(response => {
+      await axios.get('api/category').then(response => {
 
         if(response.data.success){
-            this.table.clients = response.data.data;
+            this.table.categories = response.data.data;
             this.table.loading = false;
         }
       });
     },
     async _delete(){
       this.table.loading = true;
-      await axios.delete(`api/client/${this.deleted.id}`).then(response => {
+      await axios.delete(`api/category/${this.deleted.id}`).then(response => {
         if(response.data.success){
           this.dialog = false;
           this._load();
@@ -149,12 +144,12 @@ export default {
     },
     _edit(id){
       this.$router.push({
-          name: 'client.form',
+          name: 'category.form',
           params: { id }
       })
     },
      _add(){
-      this.$router.push({ name: 'client.form' })
+      this.$router.push({ name: 'category.form' })
     }
   }
 }

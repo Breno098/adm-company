@@ -19,7 +19,7 @@ class CreateContactsTable extends Migration
             $table->text('description')->nullable();
             $table->boolean('active')->default(true);
             $table->boolean('main')->nullable();
-            $table->foreignId('type_id')->nullable()->constrained('contact_types');
+            $table->string('type')->nullable();
             $table->foreignId('client_id')->nullable()->constrained();
             $table->timestamps();
         });

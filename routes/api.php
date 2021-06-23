@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\OAuthController;
@@ -39,9 +40,20 @@ Route::group(['middleware' => 'guest:api'], function () {
 
 
 Route::middleware('auth:api')->group( function () {
-    Route::get('client', [ClientController::class, 'index']);
-    Route::get('client/{id}', [ClientController::class, 'show']);
-    Route::post('client', [ClientController::class, 'store']);
-    Route::put('client/{id}', [ClientController::class, 'update']);
-    Route::delete('client/{id}', [ClientController::class, 'destroy']);
+
+    Route::prefix('client')->group( function () {
+        Route::get('/', [ClientController::class, 'index']);
+        Route::get('/{id}', [ClientController::class, 'show']);
+        Route::post('/', [ClientController::class, 'store']);
+        Route::put('/{id}', [ClientController::class, 'update']);
+        Route::delete('/{id}', [ClientController::class, 'destroy']);
+    });
+
+    Route::prefix('category')->group( function () {
+        Route::get('/', [CategoryController::class, 'index']);
+        Route::get('/{id}', [CategoryController::class, 'show']);
+        Route::post('/', [CategoryController::class, 'store']);
+        Route::put('/{id}', [CategoryController::class, 'update']);
+        Route::delete('/{id}', [CategoryController::class, 'destroy']);
+    });
 });

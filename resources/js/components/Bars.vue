@@ -33,7 +33,7 @@
         </v-menu>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" fixed app width="200" color="grey lighten-2">
+    <v-navigation-drawer v-model="drawer" fixed app width="200" color="white">
 
       <v-list dense>
         <v-list-item link class="py-4">
@@ -87,7 +87,7 @@ export default {
                 },
                 {
                     title: 'Categoria',
-                    route: 'client.index'
+                    route: 'category.index'
                 },
             ],
         },
