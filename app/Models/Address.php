@@ -31,6 +31,6 @@ class Address extends Model
 
     public function clients()
     {
-        return $this->belongsToMany(Client::class, 'client_address', 'client_id', 'address_id');
+        return $this->belongsTo(Client::class);
     }
 }

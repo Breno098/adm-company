@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar app color="blue" height="75" >
+    <v-app-bar app color="blue" height="50" flat class="elevation-0">
       <v-app-bar-nav-icon @click="drawer = !drawer"/>
       <v-spacer/>
       <v-menu transition="slide-y-transition">
@@ -33,12 +33,12 @@
         </v-menu>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" fixed app width="200" color="white">
+    <v-navigation-drawer v-model="drawer" fixed app width="200" color="blue" class="elevation-0">
 
       <v-list dense>
         <v-list-item link class="py-4">
           <router-link :to="{ name: 'home' }" style="text-decoration: none">
-            <v-list-item-content class="text-h5 text-center">
+            <v-list-item-content class="text-h5 text-center white--text">
                 {{ appName }}
             </v-list-item-content>
           </router-link>
@@ -49,6 +49,7 @@
             :key="item.title"
             :prepend-icon="item.action"
             no-action
+            color="white"
         >
             <template v-slot:activator>
             <v-list-item-content>
@@ -58,7 +59,7 @@
 
             <v-list-item v-for="child in item.items" :key="child.title">
                 <router-link :to="{ name: child.route }" style="text-decoration: none">
-                    <v-list-item-content>
+                    <v-list-item-content class="white--text">
                         <v-list-item-title v-text="child.title"></v-list-item-title>
                     </v-list-item-content>
                 </router-link>
@@ -84,6 +85,10 @@ export default {
                 {
                     title: 'Cliente' ,
                     route: 'client.index'
+                },
+                {
+                    title: 'Produtos/Serviços',
+                    route: 'item.index'
                 },
                 {
                     title: 'Categoria',

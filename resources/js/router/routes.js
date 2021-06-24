@@ -9,6 +9,9 @@ export default [
   { path: '/category', name: 'category.index', component: page('app/category/list.vue') },
   { path: '/category/:id?', name: 'category.form', component: page('app/category/form.vue') },
 
+  { path: '/item', name: 'item.index', component: page('app/item/list.vue') },
+  { path: '/item/:id?', name: 'item.form', component: page('app/item/form.vue') },
+
   { path: '/', name: 'welcome', component: page('welcome.vue') },
 
   { path: '/login', name: 'login', component: page('auth/login.vue') },

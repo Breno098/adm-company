@@ -15,7 +15,10 @@ class CategoryController extends BaseControllerApi
      */
     public function index()
     {
-        $categories = Category::where('active', true)->orderby('name')->get();
+        $categories = Category::where('active', true)
+                            ->orderby('name')
+                            ->get();
+
         return $this->sendResponse($categories, 'Category retrieved successfully.');
     }
 
@@ -50,7 +53,9 @@ class CategoryController extends BaseControllerApi
      */
     public function show($id)
     {
-        $category = Category::find($id);
+        $category = Category::where('active', true)
+                            ->where('id', $id)
+                            ->first();
 
         if (is_null($category)) {
             return $this->sendError('Category not found.');

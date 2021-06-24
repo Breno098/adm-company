@@ -25,6 +25,7 @@
     "moment": "^2.29.1",
     "popper.js": "^1.16.1",
     "sweetalert2": "^10.16.9",
+    "text-mask-addons": "^3.8.0",
     "v-mask": "^2.2.4",
     "vform": "^1.0.1",
     "vue": "^2.6.12",

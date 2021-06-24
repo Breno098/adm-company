@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-tabs v-model="tab">
+    <v-tabs v-model="tab" >
       <v-tabs-slider color="blue"></v-tabs-slider>
-      <v-tab>Informações</v-tab>
-      <v-tab>Contatos</v-tab>
-      <v-tab>Endereço</v-tab>
+      <v-tab>Informações <v-icon class="ml-2">mdi-information</v-icon></v-tab>
+      <v-tab>Contatos    <v-icon class="ml-2">mdi-phone</v-icon></v-tab>
+      <v-tab>Endereço    <v-icon class="ml-2">mdi-city</v-icon></v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
@@ -20,7 +20,7 @@
               v-model="client.name"
               :loading="loading"
               :rules="[rules.required]"
-              :error="errors.name"
+              :error="errors.name && !client.name"
             ></v-text-field>
           </v-col>
 
@@ -107,7 +107,7 @@
               dense
               :loading="loading"
               :rules="[rules.required]"
-              :error="errors.type"
+              :error="errors.type && !client.type"
             ></v-select>
           </v-col>
         </v-row>
@@ -132,6 +132,18 @@
                   dense
                   v-model="contact.contact"
                   :loading="loading"
+                  v-mask="'(##) #####-####'"
+                  v-if="contact.type === 'Celular' || contact.type === 'Telefone' || contact.type === 'WhatsApp'"
+                ></v-text-field>
+
+                <v-text-field
+                  label="CONTATO"
+                  color="blue"
+                  outlined
+                  dense
+                  v-model="contact.contact"
+                  :loading="loading"
+                  v-else
                 ></v-text-field>
               </v-col>
 
@@ -340,12 +352,13 @@ export default {
       notes: null,
       status_id: null,
       type: null,
-      addresses: [],
-      contacts: []
+      addresses: [{}],
+      contacts: [{}]
     },
     contact_types: [
       'Celular',
       'Email',
+      'Telefone',
       'WhatsApp',
       'Outros'
     ]
@@ -373,7 +386,6 @@ export default {
 
       await axios.get(`api/client/${id}`).then(response => {
         if(response.data.success){
-          console.log(response.data.data);
           return this.client = response.data.data;
         }
 
@@ -385,6 +397,8 @@ export default {
 
     },
     async _store(){
+      this.tab = 0;
+
       if(!this.client.name){
         return this.errors.name = true;
       }

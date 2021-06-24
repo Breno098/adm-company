@@ -15,14 +15,15 @@
       </v-col>
 
       <v-col cols="12">
-        <v-text-field
+        <v-textarea
           label="DESCRIÇÃO"
           color="blue"
           outlined
           dense
           v-model="category.description"
           :loading="loading"
-        ></v-text-field>
+          hint="Detalhes da categoria"
+        ></v-textarea>
       </v-col>
 
       <v-col cols="12">
@@ -99,7 +100,9 @@ export default {
       'mdi-cards',
       'mdi-car-hatchback',
       'mdi-run',
-      'mdi-lock-reset'
+      'mdi-lock-reset',
+      'mdi-developer-board',
+      'mdi-alert'
     ],
     category: {
       description: null,

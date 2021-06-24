@@ -26,7 +26,7 @@ class Client extends Model
 
     public function addresses()
     {
-        return $this->belongsToMany(Address::class, 'client_address', 'client_id', 'address_id');
+        return $this->hasMany(Address::class);
     }
 
     public function contacts()

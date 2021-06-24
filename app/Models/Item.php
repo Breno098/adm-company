@@ -16,7 +16,7 @@ class Item extends Model
         'default_value',
         'type',
         'unit_measure',
-        'brad',
+        'brand',
         'cost',
         'bar_code',
         'warranty_days',
@@ -46,6 +46,6 @@ class Item extends Model
 
     public function status()
     {
-        return $this->hasOne(Status::class);
+        return $this->belongsTo(Status::class);
     }
 }

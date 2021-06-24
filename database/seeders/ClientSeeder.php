@@ -16,7 +16,7 @@ class ClientSeeder extends Seeder
      */
     public function run()
     {
-        Client::factory(1500)
+        Client::factory(2)
             ->has(Address::factory()->count(2))
             ->has(Contact::factory()->count(2))
             ->create();

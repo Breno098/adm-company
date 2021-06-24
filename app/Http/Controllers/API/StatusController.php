@@ -98,4 +98,13 @@ class StatusController extends BaseControllerApi
 
         return $this->sendResponse([], 'Status deleted successfully.');
     }
+
+    public function type_item()
+    {
+        $statuses = Status::where('active', true)
+                        ->where('type', 'item')
+                        ->get();
+
+        return $this->sendResponse($statuses, 'Statuses retrieved successfully.');
+    }
 }
