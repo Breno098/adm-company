@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Client;
+use App\Models\Item;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends BaseControllerApi
@@ -29,15 +34,45 @@ class OrderController extends BaseControllerApi
     {
         $input = $request->all();
 
-        $validator = Validator::make($input, [
-            'name' => 'required',
-        ]);
+        $order = Order::create($input);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
+        foreach ($input['products'] as $product) {
+            $item = Item::find($product['item']['id']);
+
+            if($item && $product['quantity']){
+                $order_item = OrderItem::create([
+                    'quantity' => $product['quantity'],
+                    'value' => $product['value']
+                ]);
+
+                $order_item->order()->associate($order);
+                $order_item->item()->associate($item);
+            }
         }
 
-        $order = Order::create($input);
+        // foreach ($input['services'] as $product) {
+        //     $item = Item::find($product['item']['id']);
+
+        //     if($item && $product['quantity']){
+        //         $order_item = $order->items()->create([
+        //             'quantity' => $product['quantity'],
+        //             'value' => $product['value'] ? $product['value'] : $item->default_value
+        //         ]);
+        //         $order_item->item()->associate($item);
+        //     }
+        // }
+
+        if($client_id = $input['client_id']){
+            $client = Client::find($client_id);
+            $order->client()->associate($client);
+            $order->save();
+        }
+
+        if($status_id = $input['status_id']){
+            $status = Status::find($status_id);
+            $order->status()->associate($status);
+            $order->save();
+        }
 
         return $this->sendResponse($order, 'Order created successfully.');
     }

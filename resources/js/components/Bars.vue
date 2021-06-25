@@ -58,7 +58,7 @@
             </template>
 
             <v-list-item v-for="child in item.items" :key="child.title">
-                <router-link :to="{ name: child.route }" style="text-decoration: none">
+                <router-link :to="{ name: child.route, params: child.params }" style="text-decoration: none">
                     <v-list-item-content class="white--text">
                         <v-list-item-title v-text="child.title"></v-list-item-title>
                     </v-list-item-content>
@@ -91,7 +91,9 @@ export default {
         title: 'Pedidos',
         icon: 'mdi-format-list-checks',
         items: [
-          { title: 'Order de Serviço' , route: 'order.order' },
+          { title: 'Orçamento' , route: 'order.order', params: { type: 'budget' } },
+          { title: 'Order de Serviço' , route: 'order.order', params: { type: 'service' } },
+          { title: 'Venda' , route: 'order.order', params: { type: 'sale' } },
         ],
       },
     ],

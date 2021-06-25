@@ -34,12 +34,17 @@ class Order extends Model
 
     public function status()
     {
-        return $this->hasOne(Status::class);
+        return $this->belongsTo(Status::class);
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
     }
 
     public function items()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->belongsToMany(OrderItem::class);
     }
 
     public function appointment()

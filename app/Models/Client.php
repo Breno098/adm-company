@@ -34,6 +34,11 @@ class Client extends Model
         return $this->hasMany(Contact::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function appointment()
     {
         return $this->belongsTo(Appointment::class);

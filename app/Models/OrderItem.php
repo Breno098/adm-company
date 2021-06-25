@@ -9,6 +9,8 @@ class OrderItem extends Model
 {
     use HasFactory;
 
+    public $table = 'order_item';
+
     protected $fillable = [
         'description',
         'active',
@@ -33,6 +35,6 @@ class OrderItem extends Model
 
     public function item()
     {
-        return $this->hasOne(Item::class);
+        return $this->belongsTo(Item::class);
     }
 }

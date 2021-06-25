@@ -1,6 +1,13 @@
 <template>
   <div>
-     <v-tabs v-model="tab">
+    <v-row>
+      <v-col cols="12">
+        <div class="text-h6 blue--text">{{ typeOrder }}</div>
+        <v-divider color="grey"/>
+      </v-col>
+    </v-row>
+
+    <v-tabs v-model="tab">
       <v-tabs-slider color="blue"></v-tabs-slider>
       <v-tab>Informações <v-icon class="ml-2">mdi-information</v-icon></v-tab>
       <v-tab>Produtos e Serviços    <v-icon class="ml-2">mdi-wrench</v-icon></v-tab>
@@ -18,7 +25,7 @@
               item-text="name"
               item-value="id"
               label="CLIENTE"
-              :loading="loading"
+              :loading="loadingClients"
               outlined
               dense
             ></v-autocomplete>
@@ -34,7 +41,7 @@
               label="STATUS"
               outlined
               dense
-              :loading="loading"
+              :loading="loadingStatuses"
             ></v-select>
           </v-col>
 
@@ -128,7 +135,7 @@
                   label="PRODUTO"
                   outlined
                   dense
-                  :loading="loading"
+                  :loading="loadingProducts"
                 >
                   <template v-slot:selection="{ item }">
                     <span>{{ item.name }}</span>
@@ -159,7 +166,7 @@
                   outlined
                   dense
                   v-model="product.value"
-                  :loading="loading"
+                  :loading="loadingServices"
                 ></v-text-field>
               </v-col>
 
@@ -298,7 +305,7 @@
       </v-tab-item>
     </v-tabs-items>
 
-    <!-- <v-row>
+    <v-row>
       <v-col cols="12">
           <v-btn color="green darken-1" @click="_store" :loading="loading">
               Salvar &nbsp; <v-icon dark>mdi-content-save</v-icon>
@@ -319,7 +326,7 @@
             </v-icon>
           </v-card-text>
       </v-card>
-    </v-dialog> -->
+    </v-dialog>
   </div>
 </template>
 
@@ -333,6 +340,10 @@ export default {
   data: () => ({
     tab: null,
     loading: false,
+    loadingClients: false,
+    loadingStatuses: false,
+    loadingProducts: false,
+    loadingServices: false,
     dialog: {
       show: false,
       message: '',
@@ -346,7 +357,7 @@ export default {
       required: value => !!value || 'Campo obrigatório.',
     },
     order: {
-      type : 'budget',
+      type : null,
       description : null,
       total_value : null,
       execution_date : null,
@@ -366,6 +377,11 @@ export default {
     services: [],
   }),
   computed: {
+    typeOrder(){
+      return this.$route.params.type === 'service' ? 'Ordem de Serviço' :
+             this.$route.params.type === 'budget' ? 'Orçamento' :
+             this.$route.params.type === 'sale' ? 'Venda' : '';
+    },
     valueTotal(){
       let valueTotal = 0;
       this.order.products.forEach(product => valueTotal += product.quantity && product.value ? product.value * product.quantity : 0);
@@ -396,65 +412,69 @@ export default {
       this.dialog.show = true;
     },
     async _loadClients(){
-      this.loading = true;
+      this.loadingClients = true;
       await axios.get(`api/client`).then(response => {
         if(response.data.success){
           return this.clients = response.data.data;
         }
         this._modal('Error ao carregar clientes', 'error');
       });
-      this.loading = false;
+      this.loadingClients = false;
     },
     async _loadStatuses(){
-      this.loading = true;
+      this.loadingStatuses = true;
       await axios.get(`api/status/type/order`).then(response => {
         if(response.data.success){
           return this.statuses = response.data.data;
         }
         this._modal('Error ao carregar status', 'error');
       });
-      this.loading = false;
+      this.loadingStatuses = false;
     },
     async _loadProducts(){
-      this.loading = true;
+      this.loadingProducts = true;
       await axios.get(`api/item/type/product`).then(response => {
         if(response.data.success){
           return this.products = response.data.data;
         }
         this._modal('Error ao carregar produtos', 'error');
       });
-      this.loading = false;
+      this.loadingProducts = false;
     },
     async _loadServices(){
-      this.loading = true;
+      this.loadingServices = true;
       await axios.get(`api/item/type/service`).then(response => {
         if(response.data.success){
           return this.services = response.data.data;
         }
         this._modal('Error ao carregar serviços', 'error');
       });
-      this.loading = false;
+      this.loadingServices = false;
     },
     async _store(){
       let id = this.$route.params.id;
 
-      this.loading = true;
-      this.dialog.show = true;
-      this.dialog.message = id ? 'Atualizando...' : 'Salvando...';
+      // this.loading = true;
+      // this.dialog.show = true;
+      // this.dialog.message = id ? 'Atualizando...' : 'Salvando...';
+
+      this.order.type = this.$route.params.type;
+
+      this.order.total_value = this.valueTotalWithDiscont;
 
       let response = null;
 
       if(!id){
-        response = await axios.post('api/item', this.item)
+        response = await axios.post('api/order', this.order)
       } else {
-        response = await axios.put(`api/item/${id}`, this.item)
+        response = await axios.put(`api/order/${id}`, this.order)
       }
 
       this.loading = false;
 
       if(response.data.success){
-        this._modal('Orçamento salvo com sucesso.', 'success');
-        return setTimeout(() => this.$router.push({ name: 'home' }), 1500);
+        this._modal('Pedido salvo com sucesso.', 'success');
+        // return setTimeout(() => this.$router.push({ name: 'home' }), 1500);
       }
 
       this._modal('Error ao salvar orçamento. ' , 'error');

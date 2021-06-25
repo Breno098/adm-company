@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ClientController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ItemController;
+use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\StatusController;
 
 Route::group(['middleware' => 'auth:api'], function () {
@@ -69,5 +70,9 @@ Route::middleware('auth:api')->group( function () {
 
     Route::prefix('status')->group( function () {
         Route::get('/type/{type}', [StatusController::class, 'type']);
+    });
+
+    Route::prefix('order')->group( function () {
+        Route::post('/', [OrderController::class, 'store']);
     });
 });

@@ -3,7 +3,7 @@ function page (path) {
 }
 
 export default [
-  { path: '/order', name: 'order.order', component: page('app/order/order.vue') },
+  { path: '/order/:type', name: 'order.order', component: page('app/order/order.vue') },
 
   { path: '/client', name: 'client.index', component: page('app/client/list.vue') },
   { path: '/client/:id?', name: 'client.form', component: page('app/client/form.vue') },
