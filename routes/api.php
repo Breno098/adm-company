@@ -63,9 +63,11 @@ Route::middleware('auth:api')->group( function () {
         Route::post('/', [ItemController::class, 'store']);
         Route::put('/{id}', [ItemController::class, 'update']);
         Route::delete('/{id}', [ItemController::class, 'destroy']);
+
+        Route::get('/type/{type}', [ItemController::class, 'type']);
     });
 
     Route::prefix('status')->group( function () {
-        Route::get('/type_item', [StatusController::class, 'type_item']);
+        Route::get('/type/{type}', [StatusController::class, 'type']);
     });
 });

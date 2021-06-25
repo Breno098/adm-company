@@ -30,7 +30,7 @@ class StatusSeeder extends Seeder
                 'description' => '',
                 'type' => 'order',
                 'color' => '#2de319'
-            ],  [
+            ], [
                 'name' => 'Cancelado',
                 'description' => 'Compromisso cancelado',
                 'type' => 'appointment',

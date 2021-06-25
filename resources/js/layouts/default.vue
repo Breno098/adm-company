@@ -30,3 +30,19 @@ export default {
   }),
 }
 </script>
+
+<style scoped>
+  .v-application ::-webkit-scrollbar {
+    height: 8px;
+    width: 13px;
+  }
+
+  .v-application ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  .v-application ::-webkit-scrollbar-thumb {
+    background: #2196F3;
+    border-radius: 8px;
+  }
+</style>

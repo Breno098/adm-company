@@ -139,4 +139,13 @@ class ItemController extends BaseControllerApi
 
         return $this->sendResponse([], 'Item deleted successfully.');
     }
+
+    public function type(string $type)
+    {
+        $items = Item::where('active', true)
+                    ->where('type', $type)
+                    ->get();
+
+        return $this->sendResponse($items, 'Items retrieved successfully.');
+    }
 }

@@ -94,6 +94,7 @@
 
       <v-col cols="12" md="4">
         <v-text-field
+          type="number"
           prefix="R$"
           label="VALOR"
           outlined
@@ -300,7 +301,7 @@ export default {
     },
     async _loadStatuses(){
       this.loading = true;
-      await axios.get(`api/status/type_item`).then(response => {
+      await axios.get(`api/status/type/item`).then(response => {
         if(response.data.success){
           return this.statuses = response.data.data;
         }

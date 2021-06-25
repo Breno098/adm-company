@@ -1,20 +1,19 @@
 <template>
   <div>
-    <v-tabs v-model="tab" >
+    <v-tabs v-model="tab">
       <v-tabs-slider color="blue"></v-tabs-slider>
       <v-tab>Informações <v-icon class="ml-2">mdi-information</v-icon></v-tab>
       <v-tab>Contatos    <v-icon class="ml-2">mdi-phone</v-icon></v-tab>
       <v-tab>Endereço    <v-icon class="ml-2">mdi-city</v-icon></v-tab>
     </v-tabs>
 
-    <v-tabs-items v-model="tab">
+    <v-tabs-items v-model="tab" class="pt-5">
       <!-- Informações -->
       <v-tab-item>
-        <v-row class="mt-5">
+        <v-row>
           <v-col cols="12">
             <v-text-field
               label="NOME"
-              color="blue"
               outlined
               dense
               v-model="client.name"
@@ -27,7 +26,6 @@
           <v-col cols="12" md="6">
             <v-text-field
               label="NOME FANTASIA"
-              color="blue"
               outlined
               dense
               v-model="client.fantasy_name"
@@ -38,7 +36,6 @@
           <v-col cols="12" md="6">
             <v-text-field
               label="DOCUMENTO"
-              color="blue"
               v-mask="'##.###.###/####-##'"
               outlined
               dense
@@ -47,9 +44,8 @@
               v-if="client.type === 'PJ'"
             ></v-text-field>
 
-              <v-text-field
+            <v-text-field
               label="DOCUMENTO"
-              color="blue"
               v-mask="'###.###.###-##' "
               outlined
               dense
@@ -67,7 +63,6 @@
               max-width="290"
               transition="scale-transition"
               offset-y
-              color="blue"
               outlined
               dense
             >
@@ -79,7 +74,6 @@
                   label="DATA DE NASCIMENTO"
                   readonly
                   v-bind="attrs"
-                  color="blue"
                   v-on="on"
                   @click:clear="client.birth_date = null"
                   outlined
@@ -91,7 +85,6 @@
                 @change="menuBirthDate = false"
                 no-title
                 crollable
-                color="blue"
               ></v-date-picker>
             </v-menu>
           </v-col>
@@ -102,7 +95,6 @@
               vali
               :items="['PF', 'PJ']"
               label="TIPO"
-              color="blue"
               outlined
               dense
               :loading="loading"
@@ -115,7 +107,7 @@
 
       <!-- Contatos -->
       <v-tab-item>
-        <v-row class="mt-5">
+        <v-row>
           <v-col cols="12" v-for="(contact, index) in client.contacts" :key="contact.id">
             <v-row>
               <v-col cols="12" class="d-flex flex-row justify-end">
@@ -127,7 +119,6 @@
               <v-col cols="12" md="6">
                 <v-text-field
                   label="CONTATO"
-                  color="blue"
                   outlined
                   dense
                   v-model="contact.contact"
@@ -138,7 +129,6 @@
 
                 <v-text-field
                   label="CONTATO"
-                  color="blue"
                   outlined
                   dense
                   v-model="contact.contact"
@@ -150,10 +140,8 @@
               <v-col cols="12" md="6">
                 <v-select
                   v-model="contact.type"
-                  vali
                   :items="contact_types"
                   label="TIPO"
-                  color="blue"
                   outlined
                   dense
                   :loading="loading"
@@ -174,7 +162,7 @@
 
       <!-- Endereço -->
       <v-tab-item>
-        <v-row class="mt-5">
+        <v-row>
           <v-col cols="12" v-for="(address, index) in client.addresses" :key="address.id">
             <v-row>
               <v-col cols="12" class="d-flex flex-row justify-end">
@@ -186,7 +174,6 @@
               <v-col cols="12" md="6">
                 <v-text-field
                   label="RUA"
-                  color="blue"
                   outlined
                   dense
                   v-model="address.street"
@@ -197,7 +184,6 @@
               <v-col cols="12" md="3">
                 <v-text-field
                   label="CEP"
-                  color="blue"
                   outlined
                   dense
                   v-model="address.cep"
@@ -208,7 +194,6 @@
               <v-col cols="12" md="3">
                 <v-text-field
                   label="NÚMERO"
-                  color="blue"
                   outlined
                   dense
                   v-model="address.number"
@@ -219,7 +204,6 @@
               <v-col cols="12" md="6">
                 <v-text-field
                   label="BAIRRO"
-                  color="blue"
                   outlined
                   dense
                   v-model="address.district"
@@ -230,7 +214,6 @@
               <v-col cols="12" md="6">
                 <v-text-field
                   label="CIDADE"
-                  color="blue"
                   outlined
                   dense
                   v-model="address.city"
@@ -241,7 +224,6 @@
               <v-col cols="12" md="3">
                 <v-text-field
                   label="ESTADO"
-                  color="blue"
                   outlined
                   dense
                   v-model="address.state"
@@ -252,7 +234,6 @@
               <v-col cols="6" md="3">
                 <v-text-field
                   label="APARTAMENTO"
-                  color="blue"
                   outlined
                   dense
                   v-model="address.apartment"
@@ -263,7 +244,6 @@
               <v-col cols="6" md="3">
                 <v-text-field
                   label="ANDAR"
-                  color="blue"
                   outlined
                   dense
                   v-model="address.floor"
@@ -274,7 +254,6 @@
               <v-col cols="12">
                 <v-text-field
                   label="COMPLEMENTO"
-                  color="blue"
                   outlined
                   dense
                   v-model="address.complement"

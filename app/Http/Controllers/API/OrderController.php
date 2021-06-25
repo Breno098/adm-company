@@ -31,7 +31,6 @@ class OrderController extends BaseControllerApi
 
         $validator = Validator::make($input, [
             'name' => 'required',
-            'type' => 'required|in:budget, sale, service, expense'
         ]);
 
         if($validator->fails()){

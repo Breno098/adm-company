@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-app-bar app color="blue" height="50" flat class="elevation-0">
-      <v-app-bar-nav-icon @click="drawer = !drawer"/>
+      <v-app-bar-nav-icon @click="drawer = !drawer" color="white"/>
       <v-spacer/>
       <v-menu transition="slide-y-transition">
           <template v-slot:activator="{ on, attrs }">
@@ -47,7 +47,7 @@
         <v-list-group
             v-for="item in items"
             :key="item.title"
-            :prepend-icon="item.action"
+            :prepend-icon="item.icon"
             no-action
             color="white"
         >
@@ -78,24 +78,22 @@ export default {
     appName: window.config.appName,
     drawer: true,
     items: [
-        {
-            title: 'Cadastros',
-            action: 'mdi-pencil',
-            items: [
-                {
-                    title: 'Cliente' ,
-                    route: 'client.index'
-                },
-                {
-                    title: 'Produtos/Serviços',
-                    route: 'item.index'
-                },
-                {
-                    title: 'Categoria',
-                    route: 'category.index'
-                },
-            ],
-        },
+      {
+        title: 'Cadastros',
+        icon: 'mdi-pencil',
+        items: [
+          { title: 'Cliente' , route: 'client.index' },
+          { title: 'Produtos/Serviços', route: 'item.index' },
+          { title: 'Categoria', route: 'category.index' },
+        ],
+      },
+      {
+        title: 'Pedidos',
+        icon: 'mdi-format-list-checks',
+        items: [
+          { title: 'Order de Serviço' , route: 'order.order' },
+        ],
+      },
     ],
   }),
   computed: mapGetters({
