@@ -17,17 +17,25 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->text('description')->nullable();
             $table->boolean('active')->default(true);
-            $table->enum('type', ['budget', 'sale', 'service', 'expense']);
             $table->dateTime('execution_date')->nullable();
-            $table->float('total_value')->nullable();
+
+            $table->float('amount')->nullable();
+            $table->float('amount_paid')->nullable();
+
+            $table->integer('installments')->nullable();
+
             $table->float('discount_amount')->nullable();
             $table->float('discount_percentage')->nullable();
+            
             $table->integer('warranty_days')->nullable();
             $table->text('warranty_conditions')->nullable();
 
-            $table->foreignId('previous_step_id')->nullable()->constrained('orders');
+            $table->enum('type', ['budget', 'expense'])->nullable();
+
             $table->foreignId('client_id')->nullable()->constrained();
             $table->foreignId('status_id')->nullable()->constrained();
+            $table->foreignId('address_id')->nullable()->constrained();
+
             $table->timestamps();
         });
     }

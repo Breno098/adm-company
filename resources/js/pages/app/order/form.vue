@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col cols="12">
-        <div class="text-h6 blue--text">{{ typeOrder }}</div>
+        <div class="text-h6 blue--text"> Order de Serviço </div>
         <v-divider color="grey"/>
       </v-col>
     </v-row>
@@ -10,7 +10,7 @@
     <v-tabs v-model="tab">
       <v-tabs-slider color="blue"></v-tabs-slider>
       <v-tab>Informações <v-icon class="ml-2">mdi-information</v-icon></v-tab>
-      <v-tab>Produtos e Serviços    <v-icon class="ml-2">mdi-wrench</v-icon></v-tab>
+      <v-tab>Produtos e Serviços <v-icon class="ml-2">mdi-wrench</v-icon></v-tab>
       <v-tab>Garantias    <v-icon class="ml-2">mdi-format-align-center</v-icon></v-tab>
     </v-tabs>
 
@@ -25,6 +25,7 @@
               item-text="name"
               item-value="id"
               label="CLIENTE"
+              v-on:change="_loadAddresses"
               :loading="loadingClients"
               outlined
               dense
@@ -43,6 +44,25 @@
               dense
               :loading="loadingStatuses"
             ></v-select>
+          </v-col>
+
+          <v-col cols="12">
+            <v-autocomplete
+              v-model="order.address_id"
+              :items="addresses"
+              item-value="id"
+              label="ENDEREÇO"
+              :loading="loadingAddresses"
+              outlined
+              dense
+            >
+              <template slot="selection" slot-scope="data">
+                {{ data.item.street }} {{ data.item.number ? `n° ${data.item.number}` : '' }}, {{ data.item.district }} - {{ data.item.city }}
+              </template>
+              <template slot="item" slot-scope="data">
+                 {{ data.item.street }} {{ data.item.number ? `n° ${data.item.number}` : '' }}, {{ data.item.district }} - {{ data.item.city }}
+              </template>
+            </v-autocomplete>
           </v-col>
 
           <v-col cols="12">
@@ -138,7 +158,7 @@
                   :loading="loadingProducts"
                 >
                   <template v-slot:selection="{ item }">
-                    <span>{{ item.name }}</span>
+                    <span>{{ item.name }} {{item.default_value ? `(R$ ${item.default_value.toFixed(2)})` : null}} </span>
                   </template>
                   <template v-slot:item="{ item }">
                     <span>{{ item.name }} {{item.default_value ? `(R$ ${item.default_value.toFixed(2)})` : null}} </span>
@@ -219,7 +239,7 @@
                   :loading="loading"
                 >
                   <template v-slot:selection="{ item }">
-                    <span>{{ item.name }}</span>
+                    <span>{{ item.name }} {{item.default_value ? `(R$ ${item.default_value.toFixed(2)})` : null}} </span>
                   </template>
                   <template v-slot:item="{ item }">
                     <span>{{ item.name }} {{item.default_value ? `(R$ ${item.default_value.toFixed(2)})` : null}} </span>
@@ -335,7 +355,7 @@ import axios from 'axios';
 
 export default {
   metaInfo () {
-    return { title: 'Orçamento' }
+    return { title: 'Order de Serviço' }
   },
   data: () => ({
     tab: null,
@@ -344,6 +364,7 @@ export default {
     loadingStatuses: false,
     loadingProducts: false,
     loadingServices: false,
+    loadingAddresses: false,
     dialog: {
       show: false,
       message: '',
@@ -359,29 +380,28 @@ export default {
     order: {
       type : null,
       description : null,
-      total_value : null,
+      amount : null,
+      amount_paid: null,
       execution_date : null,
       discount_amount : null,
       warranty_days : null,
       warranty_conditions : null,
+      installments: null,
 
       products: [{}],
       services: [{}],
 
       client_id: null,
-      status_id: null
+      status_id: null,
+      address_id: null
     },
     clients: [],
     statuses: [],
     products: [],
     services: [],
+    addresses: [],
   }),
   computed: {
-    typeOrder(){
-      return this.$route.params.type === 'service' ? 'Ordem de Serviço' :
-             this.$route.params.type === 'budget' ? 'Orçamento' :
-             this.$route.params.type === 'sale' ? 'Venda' : '';
-    },
     valueTotal(){
       let valueTotal = 0;
       this.order.products.forEach(product => valueTotal += product.quantity && product.value ? product.value * product.quantity : 0);
@@ -401,6 +421,10 @@ export default {
   },
   methods: {
     async _start(){
+       if(this.$route.params.id){
+        await this._load();
+      }
+
       await this._loadClients();
       await this._loadStatuses();
       await this._loadProducts();
@@ -411,6 +435,23 @@ export default {
       this.dialog.status = status;
       this.dialog.show = true;
     },
+    async _load(){
+      let id = this.$route.params.id;
+
+      this.loading = true;
+      await axios.get(`api/order/${id}`).then(response => {
+        if(response.data.success){
+          console.log(response.data.data);
+          
+          return this.order = response.data.data;
+        }
+
+        this._modal('Error ao carregar order de serviço', 'error');
+        setTimeout(() => this.$router.push({ name: 'order.index' }), 1500);
+      });
+
+      this.loading = false;
+    },
     async _loadClients(){
       this.loadingClients = true;
       await axios.get(`api/client`).then(response => {
@@ -420,6 +461,20 @@ export default {
         this._modal('Error ao carregar clientes', 'error');
       });
       this.loadingClients = false;
+    },
+    async _loadAddresses(){
+      this.loadingAddresses = true;
+      let client_id = await this.order.client_id;
+
+      await axios.get(`api/address/client/${client_id}`).then(response => {
+        console.log(response.data);
+
+        if(response.data.success){
+          return this.addresses = response.data.data;
+        }
+        this._modal('Error ao carregar endereços', 'error');
+      });
+      this.loadingAddresses = false;
     },
     async _loadStatuses(){
       this.loadingStatuses = true;
@@ -454,13 +509,11 @@ export default {
     async _store(){
       let id = this.$route.params.id;
 
-      // this.loading = true;
-      // this.dialog.show = true;
-      // this.dialog.message = id ? 'Atualizando...' : 'Salvando...';
+      this.loading = true;
+      this.dialog.show = true;
+      this.dialog.message = id ? 'Atualizando...' : 'Salvando...';
 
-      this.order.type = this.$route.params.type;
-
-      this.order.total_value = this.valueTotalWithDiscont;
+      this.order.amount = this.valueTotalWithDiscont;
 
       let response = null;
 
@@ -474,6 +527,7 @@ export default {
 
       if(response.data.success){
         this._modal('Pedido salvo com sucesso.', 'success');
+        return;
         // return setTimeout(() => this.$router.push({ name: 'home' }), 1500);
       }
 

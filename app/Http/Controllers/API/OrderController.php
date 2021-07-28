@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Address;
 use App\Models\Client;
 use App\Models\Item;
 use App\Models\Order;
@@ -20,7 +21,11 @@ class OrderController extends BaseControllerApi
      */
     public function index()
     {
-        $orders = Order::all();
+        $orders = Order::with([
+            'client',
+            'address',
+        ])->paginate(1);
+
         return $this->sendResponse($orders, 'Orders retrieved successfully.');
     }
 
@@ -34,45 +39,60 @@ class OrderController extends BaseControllerApi
     {
         $input = $request->all();
 
-        $order = Order::create($input);
+        $validator = Validator::make($input, [
+            'client_id' => 'required',
+        ]);
 
-        foreach ($input['products'] as $product) {
-            $item = Item::find($product['item']['id']);
-
-            if($item && $product['quantity']){
-                $order_item = OrderItem::create([
-                    'quantity' => $product['quantity'],
-                    'value' => $product['value']
-                ]);
-
-                $order_item->order()->associate($order);
-                $order_item->item()->associate($item);
-            }
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        // foreach ($input['services'] as $product) {
-        //     $item = Item::find($product['item']['id']);
+        $order = Order::create($input);
 
-        //     if($item && $product['quantity']){
-        //         $order_item = $order->items()->create([
-        //             'quantity' => $product['quantity'],
-        //             'value' => $product['value'] ? $product['value'] : $item->default_value
-        //         ]);
-        //         $order_item->item()->associate($item);
-        //     }
-        // }
+        $products = [];
+        foreach ($input['products'] as $product) {
+            if(!$product['value']){
+                $itemTypeProduct = Item::ofType('product')->find($product['item']['id']);
+            }
+
+            $products[] = [
+                'item_id'   => $product['item']['id'],
+                'quantity'  => $product['quantity'] ? $product['quantity'] : 1,
+                'value'     => $product['value'] ? $product['value'] : $itemTypeProduct->default_value
+            ];
+        }
+        $order->items()->sync($products);
+
+        $services = [];
+        foreach ($input['services'] as $service) {
+            if(!$service['value']){
+                $itemTypeService = Item::ofType('service')->find($product['item']['id']);
+            }
+
+            $services[] = [
+                'item_id'   => $service['item']['id'],
+                'quantity'  => $service['quantity'] ? $service['quantity'] : 1,
+                'value'     => $service['value'] ? $service['value'] : $itemTypeService->default_value
+            ];
+        }
+        $order->items()->sync($services);
 
         if($client_id = $input['client_id']){
             $client = Client::find($client_id);
             $order->client()->associate($client);
-            $order->save();
         }
 
         if($status_id = $input['status_id']){
             $status = Status::find($status_id);
             $order->status()->associate($status);
-            $order->save();
         }
+
+        if($address_id = $input['address_id']){
+            $address = Address::find($address_id);
+            $order->address()->associate($address);
+        }
+
+        $order->save();
 
         return $this->sendResponse($order, 'Order created successfully.');
     }
@@ -91,6 +111,13 @@ class OrderController extends BaseControllerApi
             return $this->sendError('Order not found.');
         }
 
+        $order->load([
+            'client',
+            'address',
+            'products',
+            'services'
+        ]);
+
         return $this->sendResponse($order, 'Order retrieved successfully.');
     }
 
@@ -106,15 +133,59 @@ class OrderController extends BaseControllerApi
         $input = $request->all();
 
         $validator = Validator::make($input, [
-            'name' => 'required',
-            'type' => 'required|in:budget, sale, service, expense'
+            'client_id' => 'required',
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $order->name = $input['name'];
+        $order->products()->sync([]);
+        $order->services()->sync([]);
+
+        $products = [];
+        foreach ($input['products'] as $product) {
+            if(!$product['value']){
+                $itemTypeProduct = Item::ofType('product')->find($product['item']['id']);
+            }
+
+            $products[] = [
+                'item_id'   => $product['item']['id'],
+                'quantity'  => $product['quantity'] ? $product['quantity'] : 1,
+                'value'     => $product['value'] ? $product['value'] : $itemTypeProduct->default_value
+            ];
+        }
+        $order->products()->sync($products);
+
+        $services = [];
+        foreach ($input['services'] as $service) {
+            if(!$service['value']){
+                $itemTypeService = Item::ofType('service')->find($product['item']['id']);
+            }
+
+            $services[] = [
+                'item_id'   => $service['item']['id'],
+                'quantity'  => $service['quantity'] ? $service['quantity'] : 1,
+                'value'     => $service['value'] ? $service['value'] : $itemTypeService->default_value
+            ];
+        }
+        $order->services()->sync($services);
+
+        if($client_id = $input['client_id']){
+            $client = Client::find($client_id);
+            $order->client()->associate($client);
+        }
+
+        if($status_id = $input['status_id']){
+            $status = Status::find($status_id);
+            $order->status()->associate($status);
+        }
+
+        if($address_id = $input['address_id']){
+            $address = Address::find($address_id);
+            $order->address()->associate($address);
+        }
+
         $order->save();
 
         return $this->sendResponse($order, 'Order updated successfully.');

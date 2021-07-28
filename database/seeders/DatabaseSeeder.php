@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             StatusSeeder::class,
             ClientSeeder::class,
-            CategorySeeder::class
+            CategorySeeder::class,
+            ProductSeeder::class,
+            ServiceSeeder::class
         ]);
     }
 }

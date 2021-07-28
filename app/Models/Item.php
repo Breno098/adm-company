@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,6 +29,18 @@ class Item extends Model
         'default_value' => 'float',
         'cost' => 'float',
     ];
+    
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope('service', function (Builder $builder) {
+    //         $builder->where('type', 'product');
+    //     });
+    // }
+
+    public function scopeOfType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
 
     public function order()
     {

@@ -91,9 +91,7 @@ export default {
         title: 'Pedidos',
         icon: 'mdi-format-list-checks',
         items: [
-          { title: 'Orçamento' , route: 'order.order', params: { type: 'budget' } },
-          { title: 'Order de Serviço' , route: 'order.order', params: { type: 'service' } },
-          { title: 'Venda' , route: 'order.order', params: { type: 'sale' } },
+          { title: 'Order de Serviço' , route: 'order.index' },
         ],
       },
     ],

@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\OAuthController;
@@ -15,6 +16,8 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ItemController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\StatusController;
+use App\Http\Controllers\API\AddressController;
+use App\Http\Controllers\API\PaymentController;
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [LoginController::class, 'logout']);
@@ -72,7 +75,21 @@ Route::middleware('auth:api')->group( function () {
         Route::get('/type/{type}', [StatusController::class, 'type']);
     });
 
+    Route::prefix('address')->group( function () {
+        Route::get('/client/{id}', [AddressController::class, 'byClient']);
+    });
+    
+    Route::prefix('payment')->group( function () {
+        Route::get('/', [PaymentController::class, 'index']);
+    });
+
     Route::prefix('order')->group( function () {
+        Route::get('/', [OrderController::class, 'index']);
+        Route::get('/{id}', [OrderController::class, 'show']);
         Route::post('/', [OrderController::class, 'store']);
+        Route::put('/{id}', [OrderController::class, 'update']);
+        Route::delete('/{id}', [OrderController::class, 'destroy']);
+
+        Route::get('/type/{type}', [OrderController::class, 'type']);
     });
 });
