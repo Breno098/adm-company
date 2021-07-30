@@ -21,7 +21,8 @@ class Order extends Model
         'active',
         'warranty_days',
         'warranty_conditions',
-        'installments'
+        'installments',
+        'comments'
     ];
 
     protected $casts = [
@@ -61,7 +62,7 @@ class Order extends Model
         return $this->items()
                 ->ofType('product')
                 ->select([
-                    'item_order.id',
+                    'items.id',
                     'item_order.quantity',
                     'item_order.value'
                 ]);
@@ -72,7 +73,7 @@ class Order extends Model
         return $this->items()
             ->ofType('service')
             ->select([
-                'item_order.id',
+                'items.id',
                 'item_order.quantity',
                 'item_order.value'
             ]);
@@ -81,5 +82,10 @@ class Order extends Model
     public function appointment()
     {
         return $this->belongsTo(Appointment::class);
+    }
+
+    public function payments()
+    {
+        return $this->belongsTo(Payment::class);
     }
 }

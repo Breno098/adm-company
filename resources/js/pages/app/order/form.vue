@@ -11,7 +11,8 @@
       <v-tabs-slider color="blue"></v-tabs-slider>
       <v-tab>Informações <v-icon class="ml-2">mdi-information</v-icon></v-tab>
       <v-tab>Produtos e Serviços <v-icon class="ml-2">mdi-wrench</v-icon></v-tab>
-      <v-tab>Garantias    <v-icon class="ml-2">mdi-format-align-center</v-icon></v-tab>
+      <v-tab>Garantias <v-icon class="ml-2">mdi-format-align-center</v-icon></v-tab>
+      <v-tab>Pagamento <v-icon class="ml-2">mdi-cash</v-icon></v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab" class="pt-5">
@@ -29,6 +30,8 @@
               :loading="loadingClients"
               outlined
               dense
+              :rules="[rules.required]"
+              :error="errors.client"
             ></v-autocomplete>
           </v-col>
 
@@ -72,7 +75,20 @@
               dense
               v-model="order.description"
               :loading="loading"
-              hint="Detalhes do orçamento"
+              hint="Descrição da order de serviço, orçamento ou nota fiscal."
+              placeholder="Descrição e observações formais (visível ao cliente)."
+            ></v-textarea>
+          </v-col>
+
+          <v-col cols="12">
+            <v-textarea
+              label="COMENTARIOS INTERNOS"
+              outlined
+              dense
+              v-model="order.comments"
+              :loading="loading"
+              placeholder="Comentários e observaçõs internas (não visível ao cliente)."
+              hint="Comentários e observações internas (não visível ao cliente)."
             ></v-textarea>
           </v-col>
 
@@ -134,7 +150,9 @@
               color="black"
             ></v-text-field>
           </v-col>
-
+        </v-row>
+        
+        <v-row>
           <v-col cols="12">
             <div class="text-h6 blue--text"> Produtos </div>
             <v-divider color="grey"/>
@@ -150,12 +168,13 @@
 
               <v-col cols="12" md="6">
                 <v-select
-                  v-model="product.item"
+                  v-model="product.id"
                   :items="products"
                   label="PRODUTO"
                   outlined
                   dense
                   :loading="loadingProducts"
+                  item-value="id"
                 >
                   <template v-slot:selection="{ item }">
                     <span>{{ item.name }} {{item.default_value ? `(R$ ${item.default_value.toFixed(2)})` : null}} </span>
@@ -171,7 +190,6 @@
                   label="QUANTIDADE"
                   outlined
                   type="number"
-                  value="1"
                   dense
                   v-model="product.quantity"
                   :loading="loading"
@@ -186,7 +204,9 @@
                   outlined
                   dense
                   v-model="product.value"
-                  :loading="loadingServices"
+                  :loading="loading"
+                  :rules="[rules.required]"
+                  :error="errors.products[index]"
                 ></v-text-field>
               </v-col>
 
@@ -215,12 +235,12 @@
           </v-col>
         </v-row>
 
-        <v-col cols="12">
-          <div class="text-h6 blue--text"> Serviços </div>
-          <v-divider color="black"/>
-        </v-col>
-
         <v-row>
+          <v-col cols="12">
+            <div class="text-h6 blue--text"> Serviços </div>
+            <v-divider color="grey"/>
+          </v-col>
+
           <v-col cols="12" v-for="(service, index) in order.services" :key="service.id">
             <v-row>
               <v-col cols="12" class="d-flex flex-row justify-end">
@@ -231,12 +251,13 @@
 
               <v-col cols="12" md="6">
                 <v-select
-                  v-model="service.item"
+                  v-model="service.id"
                   :items="services"
-                  label="SERVIÇO"
+                  label="PRODUTO"
                   outlined
                   dense
-                  :loading="loading"
+                  :loading="loadingServices"
+                  item-value="id"
                 >
                   <template v-slot:selection="{ item }">
                     <span>{{ item.name }} {{item.default_value ? `(R$ ${item.default_value.toFixed(2)})` : null}} </span>
@@ -252,7 +273,6 @@
                   label="QUANTIDADE"
                   outlined
                   type="number"
-                  value="1"
                   dense
                   v-model="service.quantity"
                   :loading="loading"
@@ -268,6 +288,8 @@
                   dense
                   v-model="service.value"
                   :loading="loading"
+                  :rules="[rules.required]"
+                  :error="errors.services[index]"
                 ></v-text-field>
               </v-col>
 
@@ -291,10 +313,11 @@
 
           <v-col cols="12" class="d-flex flex-row justify-end">
             <v-btn color="green" @click="order.services.push({})" :loading="loading" small>
-              Adicionar serviço <v-icon>mdi-plus</v-icon>
+              Adicionar produto <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-col>
         </v-row>
+
       </v-tab-item>
 
       <!-- Garantia -->
@@ -371,8 +394,9 @@ export default {
       status: null
     },
     errors: {
-      name: false,
-      type: false
+      client: false,
+      products: [],
+      services: []
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
@@ -380,6 +404,7 @@ export default {
     order: {
       type : null,
       description : null,
+      comments: null,
       amount : null,
       amount_paid: null,
       execution_date : null,
@@ -421,7 +446,7 @@ export default {
   },
   methods: {
     async _start(){
-       if(this.$route.params.id){
+      if(this.$route.params.id){
         await this._load();
       }
 
@@ -440,9 +465,8 @@ export default {
 
       this.loading = true;
       await axios.get(`api/order/${id}`).then(response => {
+        console.log(response.data);
         if(response.data.success){
-          console.log(response.data.data);
-          
           return this.order = response.data.data;
         }
 
@@ -456,7 +480,12 @@ export default {
       this.loadingClients = true;
       await axios.get(`api/client`).then(response => {
         if(response.data.success){
-          return this.clients = response.data.data;
+          this.clients = response.data.data;
+          
+          if(this.$route.params.id){
+            this._loadAddresses();
+          }
+          return;
         }
         this._modal('Error ao carregar clientes', 'error');
       });
@@ -507,6 +536,34 @@ export default {
       this.loadingServices = false;
     },
     async _store(){
+      this.tab = null;
+
+      /* Validations */
+      if(!this.order.client_id){
+        return this.errors.client = true;
+      }
+      
+      for (const key in this.order.products) {
+        const product = this.order.products[key];
+
+        if(product.id && !product.value){
+          return this.errors.products[key] = true;
+        }
+
+        this.errors.products[key] = false;
+      }
+
+      for (const key in this.order.services) {
+        const service = this.order.services[key];
+
+        if(service.id && !service.value){
+          return this.errors.services[key] = true;
+        }
+
+        this.errors.services[key] = false;
+      }
+      /* End Validations */
+
       let id = this.$route.params.id;
 
       this.loading = true;
@@ -527,8 +584,7 @@ export default {
 
       if(response.data.success){
         this._modal('Pedido salvo com sucesso.', 'success');
-        return;
-        // return setTimeout(() => this.$router.push({ name: 'home' }), 1500);
+        return setTimeout(() => this.$router.push({ name: 'order.index' }), 1500);
       }
 
       this._modal('Error ao salvar orçamento. ' , 'error');

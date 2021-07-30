@@ -24,7 +24,7 @@ class OrderController extends BaseControllerApi
         $orders = Order::with([
             'client',
             'address',
-        ])->paginate(1);
+        ])->paginate(10);
 
         return $this->sendResponse($orders, 'Orders retrieved successfully.');
     }
@@ -49,33 +49,35 @@ class OrderController extends BaseControllerApi
 
         $order = Order::create($input);
 
-        $products = [];
         foreach ($input['products'] as $product) {
-            if(!$product['value']){
-                $itemTypeProduct = Item::ofType('product')->find($product['item']['id']);
+            if(!isset($product['id'])){
+                continue;
             }
 
-            $products[] = [
-                'item_id'   => $product['item']['id'],
-                'quantity'  => $product['quantity'] ? $product['quantity'] : 1,
-                'value'     => $product['value'] ? $product['value'] : $itemTypeProduct->default_value
-            ];
-        }
-        $order->items()->sync($products);
+            if(!isset($product['value'])){
+                $itemTypeProduct = Item::ofType('product')->find($product['id']);
+            }
 
-        $services = [];
+            $order->products()->attach($product['id'], [
+                'quantity'  => isset($product['quantity']) ? $product['quantity'] : 1,
+                'value'     => isset($product['value']) ? $product['value'] : $itemTypeProduct->default_value
+            ]);
+        }
+
         foreach ($input['services'] as $service) {
-            if(!$service['value']){
-                $itemTypeService = Item::ofType('service')->find($product['item']['id']);
+            if(!isset($service['id'])){
+                continue;
             }
 
-            $services[] = [
-                'item_id'   => $service['item']['id'],
-                'quantity'  => $service['quantity'] ? $service['quantity'] : 1,
-                'value'     => $service['value'] ? $service['value'] : $itemTypeService->default_value
-            ];
+            if(!isset($service['value'])){
+                $itemTypeService = Item::ofType('service')->find($service['id']);
+            }
+
+            $order->services()->attach($service['id'], [
+                'quantity'  => isset($service['quantity']) ? $service['quantity'] : 1,
+                'value'     => isset($service['value']) ? $service['value'] : $itemTypeService->default_value
+            ]);
         }
-        $order->items()->sync($services);
 
         if($client_id = $input['client_id']){
             $client = Client::find($client_id);
@@ -128,8 +130,14 @@ class OrderController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, Int $id)
     {
+        $order = Order::find($id);
+
+        if (is_null($order)) {
+            return $this->sendError('Order not found.');
+        }
+
         $input = $request->all();
 
         $validator = Validator::make($input, [
@@ -143,33 +151,35 @@ class OrderController extends BaseControllerApi
         $order->products()->sync([]);
         $order->services()->sync([]);
 
-        $products = [];
         foreach ($input['products'] as $product) {
-            if(!$product['value']){
-                $itemTypeProduct = Item::ofType('product')->find($product['item']['id']);
+            if(!isset($product['id'])){
+                continue;
             }
 
-            $products[] = [
-                'item_id'   => $product['item']['id'],
-                'quantity'  => $product['quantity'] ? $product['quantity'] : 1,
-                'value'     => $product['value'] ? $product['value'] : $itemTypeProduct->default_value
-            ];
-        }
-        $order->products()->sync($products);
+            if(!isset($product['value'])){
+                $itemTypeProduct = Item::ofType('product')->find($product['id']);
+            }
 
-        $services = [];
+            $order->products()->attach($product['id'], [
+                'quantity'  => isset($product['quantity']) ? $product['quantity'] : 1,
+                'value'     => isset($product['value']) ? $product['value'] : $itemTypeProduct->default_value
+            ]);
+        }
+
         foreach ($input['services'] as $service) {
-            if(!$service['value']){
-                $itemTypeService = Item::ofType('service')->find($product['item']['id']);
+            if(!isset($service['id'])){
+                continue;
             }
 
-            $services[] = [
-                'item_id'   => $service['item']['id'],
-                'quantity'  => $service['quantity'] ? $service['quantity'] : 1,
-                'value'     => $service['value'] ? $service['value'] : $itemTypeService->default_value
-            ];
+            if(!isset($service['value'])){
+                $itemTypeService = Item::ofType('service')->find($service['id']);
+            }
+
+            $order->services()->attach($service['id'], [
+                'quantity'  => isset($service['quantity']) ? $service['quantity'] : 1,
+                'value'     => isset($service['value']) ? $service['value'] : $itemTypeService->default_value
+            ]);
         }
-        $order->services()->sync($services);
 
         if($client_id = $input['client_id']){
             $client = Client::find($client_id);
@@ -197,9 +207,16 @@ class OrderController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Order $order)
+    public function destroy(Int $id)
     {
-        $order->delete();
+        $order = Order::find($id);
+
+        if (is_null($order)) {
+            return $this->sendError('Order not found.');
+        }
+
+        $order->active = false;
+        $order->save();
 
         return $this->sendResponse([], 'Order deleted successfully.');
     }

@@ -76,6 +76,7 @@ Route::middleware('auth:api')->group( function () {
     });
 
     Route::prefix('address')->group( function () {
+        Route::get('/', [AddressController::class, 'index']);
         Route::get('/client/{id}', [AddressController::class, 'byClient']);
     });
     

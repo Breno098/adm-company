@@ -21,7 +21,7 @@ class CreatePaymentsTable extends Migration
             $table->boolean('active')->default(true);
             $table->float('value')->nullable();
             $table->foreignId('order_id')->nullable()->constrained();
-            $table->foreignId('type_id')->nullable()->constrained('payment_types');
+            $table->foreignId('payment_type_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

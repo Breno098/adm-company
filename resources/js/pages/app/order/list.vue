@@ -6,7 +6,41 @@
             Adicionar <v-icon dark>mdi-plus</v-icon>
         </v-btn>
       </v-col>
-      <v-col cols="12">
+
+      <v-col cols="12" v-if="table.items.length === 0">
+        <v-row>
+          <v-col cols="12" md="6" v-for="index in [0, 1, 2, 3]" :key="index">
+            <v-skeleton-loader
+              type="image"
+            ></v-skeleton-loader>
+          </v-col>
+        </v-row>
+      </v-col>
+      
+      <v-col cols="12" md="6" v-for="order in table.items" :key="order.id" v-else>
+        <v-card v-on:click="_edit(order.id)">
+          <v-list-item three-line>
+            <v-list-item-content>
+              <div class="text-overline mb-4 d-flex justify-space-between">
+                {{ order.client.name }}
+                <v-chip v-if="order.status" :color="order.status.color" class="py-2" label>{{ order.status.name }}</v-chip>
+              </div>
+              <v-list-item-subtitle>
+                {{ order.address.street }} {{ order.address.number ? `n° ${order.address.number}` : '' }}, {{ order.address.district }} - {{ order.address.city }}
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn text color="blue" v-on:click="_edit(order.id)">
+              Ver informações
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+
+      <!-- <v-col cols="12">
         <v-data-table
             :headers="table.headers"
             :items="table.items"
@@ -62,7 +96,7 @@
             circle
           ></v-pagination>
         </div>
-      </v-col>
+      </v-col> -->
   </v-row>
 
   <v-dialog v-model="dialog" max-width="350">

@@ -36,6 +36,6 @@ class Payment extends Model
 
     public function type()
     {
-        return $this->hasOne(PaymentType::class, 'type_id');
+        return $this->hasOne(PaymentType::class);
     }
 }
