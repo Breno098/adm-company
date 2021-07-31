@@ -79,6 +79,17 @@ class OrderController extends BaseControllerApi
             ]);
         }
 
+        foreach ($input['payments'] as $payment) {
+            if(!isset($payment['value'])){
+                continue;
+            }
+
+            $order->payments()->attach($payment['payment_type_id'], [
+                'value'     => isset($payment['value']) ? $payment['value'] : 0
+            ]);
+        }
+
+
         if($client_id = $input['client_id']){
             $client = Client::find($client_id);
             $order->client()->associate($client);

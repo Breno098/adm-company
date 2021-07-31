@@ -21,6 +21,6 @@ class PaymentType extends Model
 
     public function payments()
     {
-        return $this->belongsToMany(Item::class, 'item_category', 'item_id', 'category_id');
+        return $this->belongsToMany(Payment::class);
     }
 }

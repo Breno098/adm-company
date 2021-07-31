@@ -253,7 +253,7 @@
                 <v-select
                   v-model="service.id"
                   :items="services"
-                  label="PRODUTO"
+                  label="SERVIÇO"
                   outlined
                   dense
                   :loading="loadingServices"
@@ -346,6 +346,61 @@
           </v-col>
         </v-row>
       </v-tab-item>
+
+      <!-- PAGAMENTO  -->
+      <v-tab-item>
+        <v-row>
+          <v-col cols="12" md="6" offset-md="6">
+            <v-text-field
+              outlined
+              prefix="R$"
+              type="number"
+              :value="valueTotalWithDiscont"
+              dense
+              label="VALOR TOTAL"
+              :loading="loading"
+              readonly
+              color="black"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row v-for="index in [0, 1, 2]" :key="index">
+          <v-col cols="12" md="6">
+            <v-select
+              :items="payment_types"
+              label="Pagamento"
+              outlined
+              dense
+              :loading="loadingPaymentTypes"
+              item-value="id"
+              item-text="name"
+              v-model="order.payments[index].payment_type_id"
+            >
+            </v-select>
+          </v-col>
+          <v-col cols="12" md="5">
+            <v-text-field
+              prefix="R$"
+              type="number"
+              label="VALOR"
+              outlined
+              dense
+              :loading="loadingPaymentTypes"
+              v-model="order.payments[index].value"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="1">
+            <v-checkbox
+              label="Total"
+              color="blue"
+              class="my-auto"
+              v-model="order.payments[index].all"
+              v-on:change="_totalValue(index)"
+            ></v-checkbox>
+          </v-col>
+        </v-row>
+      </v-tab-item>
     </v-tabs-items>
 
     <v-row>
@@ -388,6 +443,7 @@ export default {
     loadingProducts: false,
     loadingServices: false,
     loadingAddresses: false,
+    loadingPaymentTypes: false,
     dialog: {
       show: false,
       message: '',
@@ -413,8 +469,21 @@ export default {
       warranty_conditions : null,
       installments: null,
 
-      products: [{}],
-      services: [{}],
+      products: [],
+      services: [],
+      payments: [{
+        payment_type_id: null,
+        value: 0,
+        all: false
+      }, {
+        payment_type_id: null,
+        value: 0,
+        all: false
+      }, {
+        payment_type_id: null,
+        value: 0,
+        all: false
+      }],
 
       client_id: null,
       status_id: null,
@@ -425,6 +494,7 @@ export default {
     products: [],
     services: [],
     addresses: [],
+    payment_types: []
   }),
   computed: {
     valueTotal(){
@@ -451,9 +521,10 @@ export default {
       }
 
       await this._loadClients();
-      await this._loadStatuses();
       await this._loadProducts();
       await this._loadServices();
+      await this._loadStatuses();
+      await this._loadPaymentsTypes();
     },
     _modal(message, status){
       this.dialog.message = message;
@@ -499,6 +570,7 @@ export default {
         console.log(response.data);
 
         if(response.data.success){
+          this.order.address_id =  response.data.data[0].id ?? null;
           return this.addresses = response.data.data;
         }
         this._modal('Error ao carregar endereços', 'error');
@@ -535,7 +607,27 @@ export default {
       });
       this.loadingServices = false;
     },
+    async _loadPaymentsTypes(){
+      this.loadingPaymentTypes = true;
+      await axios.get(`api/payment_type`).then(response => {
+        if(response.data.success){
+          return this.payment_types = response.data.data;
+        }
+        this._modal('Error ao carregar pagamentos', 'error');
+      });
+      this.loadingPaymentTypes = false;
+    },
+    _totalValue(index){
+      if(this.order.payments[index].all){
+        this.order.payments[index].value = this.valueTotalWithDiscont;
+      } else {
+        this.order.payments[index].value = 0;
+      }
+    },
     async _store(){
+      console.log(this.order);
+      return;
+      
       this.tab = null;
 
       /* Validations */
