@@ -7,7 +7,7 @@
         </v-btn>
       </v-col>
 
-      <v-col cols="12" v-if="table.items.length === 0">
+      <v-col cols="12" v-if="loading">
         <v-row>
           <v-col cols="12" md="6" v-for="index in [0, 1, 2, 3]" :key="index">
             <v-skeleton-loader
@@ -17,7 +17,7 @@
         </v-row>
       </v-col>
       
-      <v-col cols="12" md="6" v-for="order in table.items" :key="order.id" v-else>
+      <v-col cols="12" md="6" v-for="order in items" :key="order.id" v-else>
         <v-card v-on:click="_edit(order.id)">
           <v-list-item three-line>
             <v-list-item-content>
@@ -133,44 +133,29 @@ export default {
     dialog: false,
     deleted: {},
     search: '',
-    table: {
-      page: 1,
-      pageCount: 0,
-      items: [],
-      loading: false,
-      headers: [{
-          text: 'Cliente',
-          value: 'client.name'
-      }, {
-          text: 'Endereço',
-          value: 'addrees.street'
-      }, {
-          text: 'VALOR TOTAL',
-          value: 'amount'
-      }, {
-          text: 'STATUS',
-          value: 'status.name'
-      }, {} ],
-    }
+    page: 1,
+    pageCount: 0,
+    items: [],
+    loading: false,
   }),
   mounted() {
     this._load();
   },
   methods: {
     async _load(){
-      this.table.loading = true;
-      await axios.get(`api/order?page=${this.table.page}`).then(response => {
+      this.loading = true;
+      await axios.get(`api/order?page=${this.page}`).then(response => {
         console.log(response.data.data);
 
         if(response.data.success){
-            this.table.items = response.data.data.data;
-            this.table.pageCount = response.data.data.last_page;
-            this.table.loading = false;
+            this.items = response.data.data.data;
+            this.pageCount = response.data.data.last_page;
+            this.loading = false;
         }
       });
     },
     async _delete(){
-      this.table.loading = true;
+      this.loading = true;
       await axios.delete(`api/order/${this.deleted.id}`).then(response => {
         if(response.data.success){
           this.dialog = false;

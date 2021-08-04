@@ -85,10 +85,6 @@ Route::middleware('auth:api')->group( function () {
         Route::get('/', [PaymentController::class, 'index']);
     });
 
-    Route::prefix('payment_type')->group( function () {
-        Route::get('/', [PaymentTypeController::class, 'index']);
-    });
-
     Route::prefix('order')->group( function () {
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/{id}', [OrderController::class, 'show']);

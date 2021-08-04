@@ -86,6 +86,10 @@ class Order extends Model
 
     public function payments()
     {
-        return $this->belongsToMany(Payment::class);
+        return $this->belongsToMany(Payment::class)
+                    ->select([
+                        'payments.id',
+                        'order_payment.value',
+                    ]);
     }
 }

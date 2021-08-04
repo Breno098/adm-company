@@ -1,9 +1,15 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="8">
         <div class="text-h6 blue--text"> Order de Serviço </div>
         <v-divider color="grey"/>
+      </v-col>
+
+      <v-col cols="4">
+        <v-btn color="grey" @click="_store" :loading="loading" small>
+          Orçamento <v-icon class="ml-2">mdi-table</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -136,22 +142,6 @@
 
       <!-- Produtos/Serviços -->
       <v-tab-item>
-        <v-row>
-          <v-col cols="12" md="6" offset-md="6">
-            <v-text-field
-              outlined
-              prefix="R$"
-              type="number"
-              :value="valueTotal"
-              dense
-              label="VALOR TOTAL"
-              :loading="loading"
-              readonly
-              color="black"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        
         <v-row>
           <v-col cols="12">
             <div class="text-h6 blue--text"> Produtos </div>
@@ -318,6 +308,22 @@
           </v-col>
         </v-row>
 
+        <v-row>
+          <v-col cols="12" md="6" offset-md="6">
+            <v-text-field
+              outlined
+              prefix="R$"
+              type="number"
+              :value="valueTotal"
+              dense
+              label="VALOR TOTAL"
+              :loading="loading"
+              readonly
+              color="black"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
       </v-tab-item>
 
       <!-- Garantia -->
@@ -347,23 +353,9 @@
         </v-row>
       </v-tab-item>
 
-      <!-- PAGAMENTO  -->
+      <!-- Pagamentos  -->
       <v-tab-item>
         <v-row>
-          <v-col cols="12" md="6" offset-md="6">
-            <v-text-field
-              outlined
-              prefix="R$"
-              type="number"
-              :value="valueTotalWithDiscont"
-              dense
-              label="VALOR TOTAL"
-              :loading="loading"
-              readonly
-              color="black"
-            ></v-text-field>
-          </v-col>
-
           <v-col cols="12" v-for="(payment, index) in order.payments" :key="index">
             <v-row>
               <v-col cols="12" class="d-flex flex-row justify-end">
@@ -374,14 +366,14 @@
 
               <v-col cols="12" md="6">
                 <v-select
-                  :items="payment_types"
+                  :items="payments"
                   label="Pagamento"
                   outlined
                   dense
                   :loading="loadingPaymentTypes"
                   item-value="id"
                   item-text="name"
-                  v-model="payment.payment_type_id"
+                  v-model="payment.id"
                 >
                 </v-select>
               </v-col>
@@ -412,6 +404,20 @@
             <v-btn color="green" @click="order.payments.push({})" :loading="loading" small>
               Adicionar pagamento <v-icon>mdi-plus</v-icon>
             </v-btn>
+          </v-col>
+
+          <v-col cols="12" md="6" offset-md="6">
+            <v-text-field
+              outlined
+              prefix="R$"
+              type="number"
+              :value="valueTotalWithDiscont"
+              dense
+              label="VALOR TOTAL"
+              :loading="loading"
+              readonly
+              color="black"
+            ></v-text-field>
           </v-col>
         </v-row>
       </v-tab-item>
@@ -496,7 +502,7 @@ export default {
     products: [],
     services: [],
     addresses: [],
-    payment_types: []
+    payments: []
   }),
   computed: {
     valueTotal(){
@@ -526,7 +532,7 @@ export default {
       await this._loadProducts();
       await this._loadServices();
       await this._loadStatuses();
-      await this._loadPaymentsTypes();
+      await this._loadPayments();
     },
     _modal(message, status){
       this.dialog.message = message;
@@ -609,11 +615,11 @@ export default {
       });
       this.loadingServices = false;
     },
-    async _loadPaymentsTypes(){
+    async _loadPayments(){
       this.loadingPaymentTypes = true;
-      await axios.get(`api/payment_type`).then(response => {
+      await axios.get(`api/payment`).then(response => {
         if(response.data.success){
-          return this.payment_types = response.data.data;
+          return this.payments = response.data.data;
         }
         this._modal('Error ao carregar pagamentos', 'error');
       });
@@ -622,8 +628,6 @@ export default {
     _totalValue(index){
       if(this.order.payments[index].all){
         this.order.payments[index].value = this.valueTotalWithDiscont;
-      } else {
-        this.order.payments[index].value = 0;
       }
     },
     async _store(){

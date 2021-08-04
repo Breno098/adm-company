@@ -19,17 +19,8 @@ class Payment extends Model
         'active' => 'boolean',
     ];
 
-    protected $with = [
-        'type'
-    ];
-
     public function order()
     {
         return $this->belongsTo(Order::class);
-    }
-
-    public function type()
-    {
-        return $this->hasOne(PaymentType::class);
     }
 }

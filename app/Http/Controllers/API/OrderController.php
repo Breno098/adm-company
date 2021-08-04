@@ -84,7 +84,7 @@ class OrderController extends BaseControllerApi
                 continue;
             }
 
-            $order->payments()->attach($payment['payment_type_id'], [
+            $order->payments()->attach($payment['id'], [
                 'value'     => isset($payment['value']) ? $payment['value'] : 0
             ]);
         }
@@ -128,7 +128,8 @@ class OrderController extends BaseControllerApi
             'client',
             'address',
             'products',
-            'services'
+            'services',
+            'payments'
         ]);
 
         return $this->sendResponse($order, 'Order retrieved successfully.');
@@ -161,6 +162,7 @@ class OrderController extends BaseControllerApi
 
         $order->products()->sync([]);
         $order->services()->sync([]);
+        $order->payments()->sync([]);
 
         foreach ($input['products'] as $product) {
             if(!isset($product['id'])){
@@ -189,6 +191,16 @@ class OrderController extends BaseControllerApi
             $order->services()->attach($service['id'], [
                 'quantity'  => isset($service['quantity']) ? $service['quantity'] : 1,
                 'value'     => isset($service['value']) ? $service['value'] : $itemTypeService->default_value
+            ]);
+        }
+
+        foreach ($input['payments'] as $payment) {
+            if(!isset($payment['value'])){
+                continue;
+            }
+
+            $order->payments()->attach($payment['id'], [
+                'value'     => isset($payment['value']) ? $payment['value'] : 0
             ]);
         }
 
