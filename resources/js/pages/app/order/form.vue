@@ -363,41 +363,55 @@
               color="black"
             ></v-text-field>
           </v-col>
-        </v-row>
 
-        <v-row v-for="index in [0, 1, 2]" :key="index">
-          <v-col cols="12" md="6">
-            <v-select
-              :items="payment_types"
-              label="Pagamento"
-              outlined
-              dense
-              :loading="loadingPaymentTypes"
-              item-value="id"
-              item-text="name"
-              v-model="order.payments[index].payment_type_id"
-            >
-            </v-select>
+          <v-col cols="12" v-for="(payment, index) in order.payments" :key="index">
+            <v-row>
+              <v-col cols="12" class="d-flex flex-row justify-end">
+                <v-btn color="red" @click="order.payments.splice(index, 1);" :loading="loading" small>
+                  <v-icon color="red darken-4">mdi-delete</v-icon>
+                </v-btn>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-select
+                  :items="payment_types"
+                  label="Pagamento"
+                  outlined
+                  dense
+                  :loading="loadingPaymentTypes"
+                  item-value="id"
+                  item-text="name"
+                  v-model="payment.payment_type_id"
+                >
+                </v-select>
+              </v-col>
+              <v-col cols="12" md="5">
+                <v-text-field
+                  prefix="R$"
+                  type="number"
+                  label="VALOR"
+                  outlined
+                  dense
+                  :loading="loadingPaymentTypes"
+                  v-model="payment.value"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="1">
+                <v-checkbox
+                  label="Total"
+                  color="blue"
+                  class="my-auto"
+                  v-model="payment.all"
+                  v-on:change="_totalValue(index)"
+                ></v-checkbox>
+              </v-col>
+            </v-row>
           </v-col>
-          <v-col cols="12" md="5">
-            <v-text-field
-              prefix="R$"
-              type="number"
-              label="VALOR"
-              outlined
-              dense
-              :loading="loadingPaymentTypes"
-              v-model="order.payments[index].value"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="1">
-            <v-checkbox
-              label="Total"
-              color="blue"
-              class="my-auto"
-              v-model="order.payments[index].all"
-              v-on:change="_totalValue(index)"
-            ></v-checkbox>
+
+          <v-col cols="12" class="d-flex flex-row justify-end">
+            <v-btn color="green" @click="order.payments.push({})" :loading="loading" small>
+              Adicionar pagamento <v-icon>mdi-plus</v-icon>
+            </v-btn>
           </v-col>
         </v-row>
       </v-tab-item>
@@ -471,19 +485,7 @@ export default {
 
       products: [],
       services: [],
-      payments: [{
-        payment_type_id: null,
-        value: 0,
-        all: false
-      }, {
-        payment_type_id: null,
-        value: 0,
-        all: false
-      }, {
-        payment_type_id: null,
-        value: 0,
-        all: false
-      }],
+      payments: [],
 
       client_id: null,
       status_id: null,
@@ -625,9 +627,6 @@ export default {
       }
     },
     async _store(){
-      console.log(this.order);
-      return;
-      
       this.tab = null;
 
       /* Validations */

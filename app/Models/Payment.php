@@ -13,16 +13,10 @@ class Payment extends Model
         'name',
         'description',
         'active',
-        'value',
-        'date',
-        'validity'
     ];
 
     protected $casts = [
         'active' => 'boolean',
-        'date' => 'datetime:Y-m-d H:i:s',
-        'validity' => 'datetime:Y-m-d',
-        'value' => 'float',
     ];
 
     protected $with = [
