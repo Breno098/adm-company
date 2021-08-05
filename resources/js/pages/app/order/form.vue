@@ -7,7 +7,7 @@
       </v-col>
 
       <v-col cols="4">
-        <v-btn color="grey" @click="_store" :loading="loading" small>
+        <v-btn color="grey" @click="_generateBudget" :loading="loading" small>
           Orçamento <v-icon class="ml-2">mdi-table</v-icon>
         </v-btn>
       </v-col>
@@ -450,6 +450,8 @@
 
 <script>
 import axios from 'axios';
+import jsPDF from "jspdf";
+import 'jspdf-autotable';
 
 export default {
   metaInfo () {
@@ -684,6 +686,60 @@ export default {
 
       this._modal('Error ao salvar orçamento. ' , 'error');
     },
+    _generateBudget(){
+      let atualAddress = this.addresses.filter(address => {
+        return address.id === this.order.address_id;
+      });
+
+       let atualClient =  this.clients.filter(client => {
+        return client.id === this.order.client_id;
+      });
+
+      var doc = new jsPDF()
+
+      let headerOne = [{ 
+        content: `ORÇAMENTO 10000-2021 | Desentupimento`, 
+        styles: { 
+          lineColor: [200, 200, 200], 
+          fontSize: 15,
+          cellPadding: 10
+        } 
+      }];
+
+      let clientName =  [{ 
+        content: `Cliente: ${this.order.client.name}`, 
+        styles: { 
+          fontStyle: 'bold'
+        } 
+      }];
+
+      let streetAndDistrict = `${atualAddress[0].street} ${atualAddress[0].number}, ${atualAddress[0].district}`
+
+      streetAndDistrict = [{ 
+        content: streetAndDistrict, 
+        styles: { 
+        } 
+      }]
+
+      let cityAndCep = `${atualAddress[0].city} ${atualAddress[0].state} | CEP ${atualAddress[0].cep}`
+
+      cityAndCep = [{ 
+        content: cityAndCep, 
+        styles: { 
+        } 
+      }]
+
+      doc.autoTable({
+        body: [
+          headerOne, 
+          clientName, 
+          streetAndDistrict,
+          cityAndCep
+        ],
+      });
+
+      doc.save('table.pdf')
+    }
   }
 
 }

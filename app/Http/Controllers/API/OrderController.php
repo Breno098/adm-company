@@ -125,7 +125,7 @@ class OrderController extends BaseControllerApi
         }
 
         $order->load([
-            'client',
+            'client.contacts',
             'address',
             'products',
             'services',
