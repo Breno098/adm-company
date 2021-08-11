@@ -74,6 +74,70 @@
             </v-autocomplete>
           </v-col>
 
+          <v-col cols="12" md="6">
+              <v-menu
+                  v-model="menu_technical_visit_date"
+                  :close-on-content-click="false"
+                  max-width="290"
+                  transition="scale-transition"
+                  offset-y
+              >
+              <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                      append-icon="mdi-calendar"
+                      :value="technicalVisitDateFormat"
+                      clearable
+                      label="Data Visita Técnica"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      @click:clear="order.technical_visit_date = null"
+                      outlined
+                      dense
+                  ></v-text-field>
+              </template>
+              <v-date-picker
+                  v-model="order.technical_visit_date"
+                  @change="menu_technical_visit_date = false"
+                  no-title
+                  crollable
+              ></v-date-picker>
+              </v-menu>
+          </v-col>
+
+          <v-col cols="12" md="6">
+              <v-menu
+                  ref="menu_time"
+                  v-model="menu_time"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  :return-value.sync="order.technical_visit_hour"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+              >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                        v-model="order.technical_visit_hour"
+                        label="Horário Visita Técnica"
+                        prepend-icon="mdi-clock-time-four-outline"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        dense
+                        outlined
+                    ></v-text-field>
+                  </template>
+                  <v-time-picker
+                      v-if="menu_time"
+                      v-model="order.technical_visit_hour"
+                      @click:minute="$refs.menu_time.save(order.technical_visit_hour)"
+                      format="24hr"
+                  ></v-time-picker>
+              </v-menu>
+          </v-col>
+
           <v-col cols="12">
             <v-textarea
               label="DESCRIÇÃO"
@@ -450,7 +514,8 @@
 
 <script>
 import axios from 'axios';
-import jsPDF from "jspdf";
+import moment from 'moment';
+import { format, parseISO } from 'date-fns'
 import 'jspdf-autotable';
 
 export default {
@@ -466,6 +531,8 @@ export default {
     loadingServices: false,
     loadingAddresses: false,
     loadingPaymentTypes: false,
+    menu_technical_visit_date: false,
+    menu_time: false,
     dialog: {
       show: false,
       message: '',
@@ -485,7 +552,10 @@ export default {
       comments: null,
       amount : null,
       amount_paid: null,
-      execution_date : null,
+     
+      technical_visit_date : format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
+      technical_visit_hour : '',
+
       discount_amount : null,
       warranty_days : null,
       warranty_conditions : null,
@@ -519,7 +589,13 @@ export default {
       this.order.services.forEach(service => valueTotal += service.quantity && service.value ? service.value * service.quantity : 0);
       valueTotal -= this.order.discount_amount;
       return valueTotal.toFixed(2);
-    }
+    },
+    nowFormat () {
+      return moment().format('DD/MM/YYYY')
+    },
+    technicalVisitDateFormat () {
+        return this.order.technical_visit_date ? moment(this.order.technical_visit_date).format('DD/MM/YYYY') : ''
+    },
   },
   mounted(){
     this._start();
@@ -577,8 +653,6 @@ export default {
       let client_id = await this.order.client_id;
 
       await axios.get(`api/address/client/${client_id}`).then(response => {
-        console.log(response.data);
-
         if(response.data.success){
           this.order.address_id =  response.data.data[0].id ?? null;
           return this.addresses = response.data.data;
@@ -686,60 +760,13 @@ export default {
 
       this._modal('Error ao salvar orçamento. ' , 'error');
     },
+    _formatMoney(value){
+      return value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+    },
     _generateBudget(){
-      let atualAddress = this.addresses.filter(address => {
-        return address.id === this.order.address_id;
-      });
-
-       let atualClient =  this.clients.filter(client => {
-        return client.id === this.order.client_id;
-      });
-
-      var doc = new jsPDF()
-
-      let headerOne = [{ 
-        content: `ORÇAMENTO 10000-2021 | Desentupimento`, 
-        styles: { 
-          lineColor: [200, 200, 200], 
-          fontSize: 15,
-          cellPadding: 10
-        } 
-      }];
-
-      let clientName =  [{ 
-        content: `Cliente: ${this.order.client.name}`, 
-        styles: { 
-          fontStyle: 'bold'
-        } 
-      }];
-
-      let streetAndDistrict = `${atualAddress[0].street} ${atualAddress[0].number}, ${atualAddress[0].district}`
-
-      streetAndDistrict = [{ 
-        content: streetAndDistrict, 
-        styles: { 
-        } 
-      }]
-
-      let cityAndCep = `${atualAddress[0].city} ${atualAddress[0].state} | CEP ${atualAddress[0].cep}`
-
-      cityAndCep = [{ 
-        content: cityAndCep, 
-        styles: { 
-        } 
-      }]
-
-      doc.autoTable({
-        body: [
-          headerOne, 
-          clientName, 
-          streetAndDistrict,
-          cityAndCep
-        ],
-      });
-
-      doc.save('table.pdf')
-    }
+      let routeData = this.$router.resolve({name: 'budget', params: { budget: JSON.stringify(this.order) } });
+      window.open(routeData.href, '_blank');
+    },
   }
 
 }

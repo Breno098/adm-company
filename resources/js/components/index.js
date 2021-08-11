@@ -6,6 +6,7 @@ import Checkbox from './Checkbox'
 import { HasError, AlertError, AlertSuccess } from 'vform'
 
 import Modal from './Modal'
+import Budget from './Budget'
 
 // Components that are registered globaly.
 [
@@ -16,7 +17,7 @@ import Modal from './Modal'
   HasError,
   AlertError,
   AlertSuccess,
-  Modal
+  Budget
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })

@@ -16,6 +16,7 @@ class Order extends Model
         'amount',
         'amount_paid',
         'execution_date',
+        'technical_visit',
         'discount_amount',
         'discount_percentage',
         'active',
@@ -26,6 +27,7 @@ class Order extends Model
     ];
 
     protected $casts = [
+        'technical_visit' => 'datetime:Y-m-d H:i',
         'active' => 'boolean',
         'amount' => 'float',
         'amount_paid' => 'float',
@@ -64,7 +66,8 @@ class Order extends Model
                 ->select([
                     'items.id',
                     'item_order.quantity',
-                    'item_order.value'
+                    'item_order.value',
+                    'items.name'
                 ]);
     }
 
@@ -75,7 +78,8 @@ class Order extends Model
             ->select([
                 'items.id',
                 'item_order.quantity',
-                'item_order.value'
+                'item_order.value',
+                'items.name'
             ]);
     }
 
@@ -89,7 +93,18 @@ class Order extends Model
         return $this->belongsToMany(Payment::class)
                     ->select([
                         'payments.id',
+                        'payments.name',
                         'order_payment.value',
                     ]);
+    }
+
+    public function getTechnicalVisitDateAttribute()
+    {
+        return $this->technical_visit->format('Y-m-d');
+    }
+
+    public function getTechnicalVisitHourAttribute()
+    {
+        return $this->technical_visit->format('H:m');
     }
 }

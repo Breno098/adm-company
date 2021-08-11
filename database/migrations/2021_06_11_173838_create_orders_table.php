@@ -21,6 +21,7 @@ class CreateOrdersTable extends Migration
             
             $table->boolean('active')->default(true);
             $table->dateTime('execution_date')->nullable();
+            $table->dateTime('technical_visit')->nullable();
 
             $table->float('amount')->nullable();
             $table->float('amount_paid')->nullable();

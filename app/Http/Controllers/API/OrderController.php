@@ -47,6 +47,8 @@ class OrderController extends BaseControllerApi
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
+        $input['technical_visit'] = $input['technical_visit_date'] . ' ' . $input['technical_visit_hour'];
+
         $order = Order::create($input);
 
         foreach ($input['products'] as $product) {
@@ -130,6 +132,9 @@ class OrderController extends BaseControllerApi
             'products',
             'services',
             'payments'
+        ])->append([
+            'technical_visit_date',
+            'technical_visit_hour'
         ]);
 
         return $this->sendResponse($order, 'Order retrieved successfully.');
@@ -159,6 +164,10 @@ class OrderController extends BaseControllerApi
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
+
+        $input['technical_visit'] = $input['technical_visit_date'] . ' ' . $input['technical_visit_hour'];
+
+        $order->update($input);
 
         $order->products()->sync([]);
         $order->services()->sync([]);

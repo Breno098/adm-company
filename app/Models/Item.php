@@ -30,13 +30,6 @@ class Item extends Model
         'cost' => 'float',
     ];
     
-    // protected static function booted()
-    // {
-    //     static::addGlobalScope('service', function (Builder $builder) {
-    //         $builder->where('type', 'product');
-    //     });
-    // }
-
     public function scopeOfType($query, $type)
     {
         return $query->where('type', $type);

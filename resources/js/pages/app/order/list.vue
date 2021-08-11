@@ -145,8 +145,6 @@ export default {
     async _load(){
       this.loading = true;
       await axios.get(`api/order?page=${this.page}`).then(response => {
-        console.log(response.data.data);
-
         if(response.data.success){
             this.items = response.data.data.data;
             this.pageCount = response.data.data.last_page;
