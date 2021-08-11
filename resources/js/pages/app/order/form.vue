@@ -1,15 +1,31 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="8">
-        <div class="text-h6 blue--text"> Order de Serviço </div>
-        <v-divider color="grey"/>
+      <v-col cols="3" md="1">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="green darken-1" @click="_store(true)" :loading="loading" small v-bind="attrs" v-on="on">
+              <v-icon class="ml-2" dark>mdi-content-save</v-icon>
+            </v-btn>
+          </template>
+          <span>Salvar</span>
+        </v-tooltip>
       </v-col>
-
-      <v-col cols="4">
-        <v-btn color="grey" @click="_generateBudget" :loading="loading" small>
-          Orçamento <v-icon class="ml-2">mdi-table</v-icon>
-        </v-btn>
+      <v-col cols="3" md="1">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="grey lighten-2" @click="_generateBudget" :loading="loading" small  v-bind="attrs" v-on="on">
+              <v-icon class="ml-2">mdi-table</v-icon>
+            </v-btn>
+          </template>
+          <span>Gerar Orçamento</span>
+        </v-tooltip>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <div class="text-h6 blue--text"> Order de Serviço {{ order ? order.id : '' }} </div>
+        <v-divider color="grey"/>
       </v-col>
     </v-row>
 
@@ -434,7 +450,7 @@
                   label="Pagamento"
                   outlined
                   dense
-                  :loading="loadingPaymentTypes"
+                  :loading="loadingPayment"
                   item-value="id"
                   item-text="name"
                   v-model="payment.id"
@@ -448,7 +464,7 @@
                   label="VALOR"
                   outlined
                   dense
-                  :loading="loadingPaymentTypes"
+                  :loading="loadingPayment"
                   v-model="payment.value"
                 ></v-text-field>
               </v-col>
@@ -489,7 +505,7 @@
 
     <v-row>
       <v-col cols="12">
-          <v-btn color="green darken-1" @click="_store" :loading="loading">
+          <v-btn color="green darken-1" @click="_store(true)" :loading="loading">
               Salvar &nbsp; <v-icon dark>mdi-content-save</v-icon>
           </v-btn>
       </v-col>
@@ -503,8 +519,8 @@
 
           <v-card-text class="text-center py-5" >
             <v-progress-circular v-if="loading" :width="7" color="blue" :size="70" indeterminate></v-progress-circular>
-            <v-icon v-else :size="70" :color="dialog.status === 'success' ? 'green' : 'red' ">
-              {{ dialog.status === 'success' ? 'mdi-check' : 'mdi-alert' }}
+            <v-icon v-else :size="70" :color="dialog.status === 'error' ? 'red' : 'green' ">
+              {{ dialog.status === 'error' ? 'mdi-alert' : 'mdi-check' }}
             </v-icon>
           </v-card-text>
       </v-card>
@@ -530,7 +546,7 @@ export default {
     loadingProducts: false,
     loadingServices: false,
     loadingAddresses: false,
-    loadingPaymentTypes: false,
+    loadingPayment: false,
     menu_technical_visit_date: false,
     menu_time: false,
     dialog: {
@@ -547,7 +563,7 @@ export default {
       required: value => !!value || 'Campo obrigatório.',
     },
     order: {
-      type : null,
+      id: null,
       description : null,
       comments: null,
       amount : null,
@@ -566,7 +582,7 @@ export default {
       payments: [],
 
       client_id: null,
-      status_id: null,
+      status_id: 2,
       address_id: null
     },
     clients: [],
@@ -612,13 +628,27 @@ export default {
       await this._loadStatuses();
       await this._loadPayments();
     },
-    _modal(message, status){
+    _modal(message, status, show = true){
       this.dialog.message = message;
       this.dialog.status = status;
-      this.dialog.show = true;
+      this.dialog.show = show;
+    },
+    async _lastId(){
+      this.loading = true;
+
+      await axios.get(`api/order/last-id`).then(response => {
+        console.log(response.data)
+        if(response.data.success){
+          return this.order.id = response.data.data;
+        }
+
+        this._modal('Error ao carregar ID', 'error');
+      });
+
+      this.loading = false;
     },
     async _load(){
-      let id = this.$route.params.id;
+      let id = this.$route.params.id ? this.$route.params.id : this.order.id ? this.order.id : null;
 
       this.loading = true;
       await axios.get(`api/order/${id}`).then(response => {
@@ -692,21 +722,21 @@ export default {
       this.loadingServices = false;
     },
     async _loadPayments(){
-      this.loadingPaymentTypes = true;
+      this.loadingPayment = true;
       await axios.get(`api/payment`).then(response => {
         if(response.data.success){
           return this.payments = response.data.data;
         }
         this._modal('Error ao carregar pagamentos', 'error');
       });
-      this.loadingPaymentTypes = false;
+      this.loadingPayment = false;
     },
     _totalValue(index){
       if(this.order.payments[index].all){
         this.order.payments[index].value = this.valueTotalWithDiscont;
       }
     },
-    async _store(){
+    async _store(backRoute = false){
       this.tab = null;
 
       /* Validations */
@@ -735,7 +765,7 @@ export default {
       }
       /* End Validations */
 
-      let id = this.$route.params.id;
+      let id = this.order.id;
 
       this.loading = true;
       this.dialog.show = true;
@@ -754,8 +784,15 @@ export default {
       this.loading = false;
 
       if(response.data.success){
+        this.order = response.data.data;
         this._modal('Pedido salvo com sucesso.', 'success');
+        
+      }
+
+      if(backRoute){
         return setTimeout(() => this.$router.push({ name: 'order.index' }), 1500);
+      } else {
+        return setTimeout(() => this._modal('', '', false), 1500);
       }
 
       this._modal('Error ao salvar orçamento. ' , 'error');
@@ -763,7 +800,9 @@ export default {
     _formatMoney(value){
       return value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
     },
-    _generateBudget(){
+    async _generateBudget(){
+      await this._store();
+
       let routeData = this.$router.resolve({name: 'budget', params: { budget: JSON.stringify(this.order) } });
       window.open(routeData.href, '_blank');
     },

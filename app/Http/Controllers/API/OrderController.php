@@ -91,7 +91,6 @@ class OrderController extends BaseControllerApi
             ]);
         }
 
-
         if($client_id = $input['client_id']){
             $client = Client::find($client_id);
             $order->client()->associate($client);
@@ -108,6 +107,17 @@ class OrderController extends BaseControllerApi
         }
 
         $order->save();
+
+        $order->load([
+            'client.contacts',
+            'address',
+            'products',
+            'services',
+            'payments'
+        ])->append([
+            'technical_visit_date',
+            'technical_visit_hour'
+        ]);
 
         return $this->sendResponse($order, 'Order created successfully.');
     }
@@ -230,6 +240,17 @@ class OrderController extends BaseControllerApi
 
         $order->save();
 
+        $order->load([
+            'client.contacts',
+            'address',
+            'products',
+            'services',
+            'payments'
+        ])->append([
+            'technical_visit_date',
+            'technical_visit_hour'
+        ]);
+
         return $this->sendResponse($order, 'Order updated successfully.');
     }
 
@@ -251,5 +272,18 @@ class OrderController extends BaseControllerApi
         $order->save();
 
         return $this->sendResponse([], 'Order deleted successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function lastId()
+    {
+        $lastId = Order::latest()->first()->id + 1;
+
+        return $this->sendResponse($lastId, 'Last ID Order');
     }
 }

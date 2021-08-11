@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class AddressController extends BaseControllerApi
-{
+{ 
     /**
      * Display a listing of the resource.
      *

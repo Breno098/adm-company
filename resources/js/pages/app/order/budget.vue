@@ -5,7 +5,7 @@
         <td rowspan="8"> <img src="storage/logo.png" style="height: 130px; width: 220px"/> </td>
       </tr>
       <tr>
-        <td colspan="3"> <v-icon size="14" class="mr-2" color="#ff7403">mdi-google-maps</v-icon>  Rua Leonor Pennachiotti Gallo, 350, Pq. Flamboyans </td>
+        <td colspan="3"> <v-icon size="14" class="mr-2" color="#ff7403">mdi-google-maps</v-icon> Rua Leonor Pennachiotti Gallo, 350, Pq. Flamboyans </td>
       </tr>  
       <tr>
         <td colspan="3"> <v-icon size="14" class="mr-2" color="#ff7403">mdi-google-maps</v-icon> Ribeirão Preto - SP | CEP 14093-651 </td>
@@ -29,7 +29,7 @@
         <td colspan="4" style="padding: 20px 5px; font-size: 16px; text-align: center"> Água é vida, cuidar desse patrimônio é nosso compromisso. </td>
       </tr>
       <tr style="background: #eee;">
-        <td colspan="4" style="padding: 10px 5px; font-size: 23px; text-align: center; font-weight: bold"> ORÇAMENTO 10000-2021 </td>
+        <td colspan="4" style="padding: 10px 5px; font-size: 23px; text-align: center; font-weight: bold"> ORÇAMENTO {{ budget.id }} </td>
       </tr>
       <tr v-if="budget.client">
         <td colspan="4" style="padding: 0px 5px"> {{ `Cliente: ${budget.client.name}` }} </td>
@@ -53,11 +53,11 @@
       <tr v-if="budget.description" style="padding: 20px 0px;">
         <td colspan="4" style="padding: 0px 5px"> {{ `Observações: ${budget.description}` }} </td>
       </tr>
-      <tr v-if="budget.services" style="background: #eee;">
+      <tr v-if="budget.services.length > 0" style="background: #eee;">
         <td colspan="4" style="padding: 8px 5px; font-size: 18px"> SERVIÇOS </td>
       </tr>
       
-      <tr v-if="budget.services">
+      <tr v-if="budget.services.length > 0">
         <td style="padding: 5px 5px 10px; font-weight: bold"> Descrição </td>
         <td style="padding: 5px 0; font-weight: bold"> Valor </td>
         <td style="padding: 5px 0; font-weight: bold"> Quantidade </td>
@@ -69,10 +69,10 @@
         <td> {{ service.quantity }} </td>
         <td style="text-align: right"> {{ _formatMoney(service.value * service.quantity) }} </td>
       </tr>
-      <tr v-if="budget.products" style="background: #eee;">
+      <tr v-if="budget.products.length > 0" style="background: #eee;">
         <td colspan="4" style="padding: 8px 5px; font-size: 18px"> PRODUTOS </td>
       </tr>
-      <tr v-if="budget.products">
+      <tr v-if="budget.products.length > 0">
         <td style="padding: 5px 5px 10px; font-weight: bold"> Descrição </td>
         <td style="padding: 5px 0; font-weight: bold"> Valor </td>
         <td style="padding: 5px 0; font-weight: bold"> Quantidade </td>
@@ -150,7 +150,7 @@ export default {
     _start(){
       this.budget = JSON.parse(this.$route.params.budget);
 
-      // setTimeout(() => window.print(), 200)
+      setTimeout(() => window.print(), 200)
     },
     nowFormat () {
       return moment().format('DD/MM/YYYY')

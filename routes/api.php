@@ -86,12 +86,14 @@ Route::middleware('auth:api')->group( function () {
     });
 
     Route::prefix('order')->group( function () {
+        Route::get('/last-id', [OrderController::class, 'lastId']);
+
+        Route::get('/type/{type}', [OrderController::class, 'type']);
+
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/{id}', [OrderController::class, 'show']);
         Route::post('/', [OrderController::class, 'store']);
         Route::put('/{id}', [OrderController::class, 'update']);
         Route::delete('/{id}', [OrderController::class, 'destroy']);
-
-        Route::get('/type/{type}', [OrderController::class, 'type']);
     });
 });
