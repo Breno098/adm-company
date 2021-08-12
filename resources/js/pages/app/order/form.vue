@@ -126,7 +126,7 @@
                       append-icon="mdi-calendar"
                       :value="technicalVisitDateFormat"
                       clearable
-                      label="Data Visita Técnica"
+                      label="DATA VISITA TÉCNICA"
                       readonly
                       v-bind="attrs"
                       v-on="on"
@@ -159,7 +159,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                         v-model="order.technical_visit_hour"
-                        label="Horário Visita Técnica"
+                        label="HORÁRIO VISITA TÉCNICA"
                         prepend-icon="mdi-clock-time-four-outline"
                         readonly
                         v-bind="attrs"

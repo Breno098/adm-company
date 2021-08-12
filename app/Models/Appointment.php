@@ -17,7 +17,7 @@ class Appointment extends Model
 
     protected $casts = [
         'active' => 'boolean',
-        'date' => 'datetime:Y-m-d H:i:s',
+        'date' => 'datetime:Y-m-d H:i',
     ];
 
     public function client()
@@ -27,11 +27,21 @@ class Appointment extends Model
 
     public function order()
     {
-        return $this->hasOne(Order::class);
+        return $this->belongsTo(Order::class);
     }
 
     public function status()
     {
         return $this->hasOne(Status::class);
+    }
+
+    public function getDateFormatAttribute()
+    {
+        return $this->date->format('Y-m-d');
+    }
+
+    public function getHourFormatAttribute()
+    {
+        return $this->date->format('H:m');
     }
 }

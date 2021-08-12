@@ -1,8 +1,109 @@
 <template>
   <div>
     <v-row>
+     <v-col cols="12" md="6">
+      <v-menu
+          v-model="menu_date_appointment"
+          :close-on-content-click="false"
+          max-width="290"
+          transition="scale-transition"
+          offset-y
+      >
+      <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+              append-icon="mdi-calendar"
+              :value="AppointmentDateFormat"
+              clearable
+              label="Data"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+              @click:clear="appointment.date = null"
+              outlined
+              dense
+          ></v-text-field>
+      </template>
+      <v-date-picker
+          v-model="appointment.date"
+          @change="menu_date_appointment = false"
+          no-title
+          crollable
+      ></v-date-picker>
+      </v-menu>
+    </v-col>
+    <v-col cols="12" md="6">
+        <v-menu
+            ref="menu_time_appointment"
+            v-model="menu_time_appointment"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            :return-value.sync="appointment.hour"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+                v-model="appointment.hour"
+                label="HORA"
+                prepend-icon="mdi-clock-time-four-outline"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                dense
+                outlined
+            ></v-text-field>
+          </template>
+          <v-time-picker
+              v-if="menu_time_appointment"
+              v-model="appointment.hour"
+              @click:minute="$refs.menu_time_appointment.save(appointment.hour)"
+              format="24hr"
+          ></v-time-picker>
+        </v-menu>
+      </v-col>
+
+      <v-col cols="4">
+        <v-text-field
+          :value="order.client.name"
+          outlined
+          dense
+          label="CLIENTE"
+          readonly
+          color="black"
+        ></v-text-field>
+      </v-col>
+
+      <v-col cols="8">
+        <v-text-field
+          :value="AddressFormat"
+          outlined
+          dense
+          label="ENDEREÇO"
+          readonly
+          color="black"
+        ></v-text-field>
+      </v-col>
+
+       <v-col cols="12">
+        <v-textarea
+          label="DESCRIÇÃO"
+          outlined
+          dense
+          v-model="appointment.description"
+        ></v-textarea>
+      </v-col>
+
       <v-col cols="12">
-       
+        <v-text-field
+          :value="order.id"
+          outlined
+          dense
+          label="Nº ORDEM"
+          readonly
+          color="black"
+        ></v-text-field>
       </v-col>
     </v-row>
 
@@ -32,15 +133,25 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import axios from 'axios';
 import moment from 'moment';
+import { format, parseISO } from 'date-fns'
 
 export default {
   metaInfo () {
     return { title: 'Compromisso' }
   },
   data: () => ({
-    tab: null,
+    menu_date_appointment: false,
+    menu_time_appointment: false,
+    appointment: {
+      date : format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
+      hour : moment().format('HH:mm'),
+      description: '',
+      order_id: null,
+      client_id: null
+    },
     loading: false,
     dialog: {
       show: false,
@@ -51,11 +162,17 @@ export default {
       name: false,
       type: false
     },
-    rules: {
-      required: value => !!value || 'Campo obrigatório.',
-    },
   }),
   computed: {
+     AppointmentDateFormat () {
+        return this.appointment.date ? moment(this.appointment.date).format('DD/MM/YYYY') : ''
+    },
+    AddressFormat() {
+      return this.order.address.street + ' n° ' + this.order.address.number + ', ' + this.order.address.district + ' - ' +  this.order.address.city;
+    },
+    ...mapGetters({
+      order: 'order/order'
+    })
   },
   mounted(){
     if(this.$route.params.id){
@@ -68,56 +185,35 @@ export default {
       this.dialog.status = status;
       this.dialog.show = true;
     },
-    async _load(){
-      let id = this.$route.params.id;
-
-      this.loading = true;
-
-      await axios.get(`api/client/${id}`).then(response => {
-        if(response.data.success){
-          return this.client = response.data.data;
-        }
-
-        this._modal('Error ao carregar dados cliente', 'error');
-        setTimeout(() => this.$router.push({ name: 'client.index' }), 1500);
-      });
-
-      this.loading = false;
-
-    },
     async _store(){
-      this.tab = 0;
-
-      if(!this.client.name){
-        return this.errors.name = true;
-      }
-
-      if(!this.client.type){
-        return this.errors.type = true;
-      }
-
       let id = this.$route.params.id;
 
       this.loading = true;
       this.dialog.show = true;
       this.dialog.message = id ? 'Atualizando...' : 'Salvando...';
 
+      if(this.order){
+        this.appointment.order_id = this.order.id;
+      }
+
       let response = null;
 
       if(!id){
-        response = await axios.post('api/client', this.client)
+        response = await axios.post('api/appointment', this.appointment)
       } else {
-        response = await axios.put(`api/client/${id}`, this.client)
+        response = await axios.put(`api/appointment/${id}`, this.appointment)
       }
+
+      console.log( response );
 
       this.loading = false;
 
       if(response.data.success){
         this._modal('Cliente salvo com sucesso', 'success');
-        return setTimeout(() => this.$router.push({ name: 'client.index' }), 1500);
+        return setTimeout(() => this.$router.go(-1), 1500);
       }
 
-      this._modal('Error aos salvar cliente', 'error');
+      this._modal('Error ao salvar compromisso', 'error');
     },
   }
 

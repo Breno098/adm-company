@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Appointment;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,13 +32,23 @@ class AppointmentController extends BaseControllerApi
 
         $validator = Validator::make($input, [
             'date' => 'required|date',
+            'description' => 'required'
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
+        $input['date'] = $input['date'] . ' ' . $input['hour'];
+
         $appointment = Appointment::create($input);
+
+        if($order_id = $input['order_id']){
+            $order = Order::find($order_id);
+            $appointment->order()->associate($order);
+        }
+
+        $appointment->save();
 
         return $this->sendResponse($appointment, 'Appointment created successfully.');
     }
@@ -55,6 +66,11 @@ class AppointmentController extends BaseControllerApi
         if (is_null($appointment)) {
             return $this->sendError('Appointment not found.');
         }
+
+        $appointment->append([
+            'date_format',
+            'hour_format'
+        ]);
 
         return $this->sendResponse($appointment, 'Appointment retrieved successfully.');
     }

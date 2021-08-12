@@ -51,6 +51,7 @@ class OrderController extends BaseControllerApi
 
         $input['technical_visit'] = $input['technical_visit_date'] . ' ' . $input['technical_visit_hour'];
 
+        
         $order = Order::create($input);
 
         foreach ($input['products'] as $product) {

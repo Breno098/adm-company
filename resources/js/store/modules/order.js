@@ -20,6 +20,6 @@ export const mutations = {
 // actions
 export const actions = {
   setData ({ commit }, { order }) {
-    commit(types.SET_ORDER, order)
+    commit(types.SET_ORDER, { order })
   },
 }

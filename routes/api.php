@@ -19,6 +19,7 @@ use App\Http\Controllers\API\StatusController;
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\PaymentTypeController;
+use App\Http\Controllers\API\AppointmentController;
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [LoginController::class, 'logout']);
@@ -83,6 +84,10 @@ Route::middleware('auth:api')->group( function () {
     
     Route::prefix('payment')->group( function () {
         Route::get('/', [PaymentController::class, 'index']);
+    });
+
+    Route::prefix('appointment')->group( function () {
+        Route::post('/', [AppointmentController::class, 'store']);
     });
 
     Route::prefix('order')->group( function () {
