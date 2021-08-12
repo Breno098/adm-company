@@ -86,8 +86,6 @@ Route::middleware('auth:api')->group( function () {
     });
 
     Route::prefix('order')->group( function () {
-        Route::get('/last-id', [OrderController::class, 'lastId']);
-
         Route::get('/type/{type}', [OrderController::class, 'type']);
 
         Route::get('/', [OrderController::class, 'index']);

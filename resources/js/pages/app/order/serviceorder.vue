@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="12" class="d-flex flex-row justify-center">
-    <table id="order-budget">
+    <table id="order-service-order">
       <tr>
         <td rowspan="8"> <img src="storage/logo.png" style="height: 130px; width: 220px"/> </td>
       </tr>
@@ -30,7 +30,7 @@
         <td colspan="4" style="padding: 20px 5px; font-size: 16px; text-align: center"> Água é vida, cuidar desse patrimônio é nosso compromisso. </td>
       </tr>
       <tr style="background: #eee;">
-        <td colspan="4" style="padding: 10px 5px; font-size: 23px; text-align: center; font-weight: bold"> ORÇAMENTO {{ order.id }} </td>
+        <td colspan="4" style="padding: 10px 5px; font-size: 23px; text-align: center; font-weight: bold"> Ordem de Serviço - {{ order.id }} </td>
       </tr>
       <tr v-if="order.client">
         <td colspan="4" style="padding: 0px 5px"> {{ `Cliente: ${order.client.name}` }} </td>
@@ -60,38 +60,22 @@
       
       <tr v-if="order.services.length > 0">
         <td style="padding: 5px 5px 10px; font-weight: bold"> Descrição </td>
-        <td style="padding: 5px 0; font-weight: bold"> Valor </td>
         <td style="padding: 5px 0; font-weight: bold"> Quantidade </td>
-        <td style="padding: 5px 0; font-weight: bold"> Total </td>
       </tr>
       <tr v-for="(service, index) in order.services" :key="index">
         <td style="padding: 0px 5px"> - {{ service.name }} </td>
-        <td> {{ _formatMoney(service.value) }} </td>
         <td> {{ service.quantity }} </td>
-        <td style="text-align: right"> {{ _formatMoney(service.value * service.quantity) }} </td>
       </tr>
       <tr v-if="order.products.length > 0" style="background: #eee;">
         <td colspan="4" style="padding: 8px 5px; font-size: 18px"> PRODUTOS </td>
       </tr>
       <tr v-if="order.products.length > 0">
         <td style="padding: 5px 5px 10px; font-weight: bold"> Descrição </td>
-        <td style="padding: 5px 0; font-weight: bold"> Valor </td>
         <td style="padding: 5px 0; font-weight: bold"> Quantidade </td>
-        <td style="padding: 5px 0; font-weight: bold"> Total </td>
       </tr>
       <tr v-for="(product, index) in order.products" :key="index">
         <td style="padding: 0px 5px"> - {{ product.name }} </td>
-        <td> {{ _formatMoney(product.value) }} </td>
         <td> {{ product.quantity }} </td>
-        <td style="text-align: right"> {{ _formatMoney(product.value * product.quantity) }} </td>
-      </tr>
-      <tr v-if="order.discount_amount">
-        <td colspan="3" style="padding: 5px 0 5px 15px; font-size: 10px; font-weight: bold"> DESCONTO: </td>
-        <td colspan="1" style="padding: 5px 5px; font-size: 10px; text-align: right; font-weight: bold"> - {{ _formatMoney(order.discount_amount) }} </td>
-      </tr>
-      <tr style="background: #eee;">
-        <td colspan="3" style="padding: 5px 0 5px 15px; font-size: 20px; font-weight: bold"> VALOR TOTAL: </td>
-        <td colspan="1" style="padding: 5px 5px; font-size: 20px; text-align: right; font-weight: bold"> {{ _formatMoney(order.amount) }} </td>
       </tr>
       <tr>
         <td colspan="4" style="padding: 10px 5px 0px"> Formas de Pagamento </td>
@@ -132,7 +116,7 @@ import moment from 'moment';
 export default {
   layout: 'order',
   metaInfo () {
-    return { title: 'Orçamento' }
+    return { title: 'Ordem de Serviço' }
   },
   data: () => ({
     order: {}
@@ -157,7 +141,7 @@ export default {
       setTimeout(() => window.print(), 200)
     },
     _formatMoney(value){
-      return value ? value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '';
+      return value ? value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }) : '';
     },
   }
 

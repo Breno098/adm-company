@@ -19,12 +19,14 @@ class OrderController extends BaseControllerApi
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with([
-            'client',
-            'address',
-        ])->paginate(10);
+        $filters = $request->except(['page']);
+
+        $orders = Order::with(['client','address'])
+                        ->orderBy('created_at', 'desc')
+                        ->where($filters)
+                        ->paginate(10);
 
         return $this->sendResponse($orders, 'Orders retrieved successfully.');
     }

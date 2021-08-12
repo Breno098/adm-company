@@ -1,24 +1,48 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="3" md="1">
+      <v-col cols="12" md="6">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="green darken-1" @click="_store(true)" :loading="loading" small v-bind="attrs" v-on="on">
-              <v-icon class="ml-2" dark>mdi-content-save</v-icon>
+            <v-btn color="blue" @click="$router.go(-1)" v-bind="attrs" v-on="on" class="mx-3">
+              Voltar <v-icon dark>mdi-arrow-left-bold</v-icon>
+            </v-btn>
+          </template>
+          <span>Voltar</span>
+        </v-tooltip>
+      </v-col>
+      <v-col cols="12" md="6" class="d-flex flex-row justify-end">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="green darken-1" @click="_store(true)" :loading="loading" v-bind="attrs" v-on="on" class="mx-3">
+              <v-icon dark>mdi-content-save</v-icon>
             </v-btn>
           </template>
           <span>Salvar</span>
         </v-tooltip>
-      </v-col>
-      <v-col cols="3" md="1">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="grey lighten-2" @click="_generateBudget" :loading="loading" small  v-bind="attrs" v-on="on">
-              <v-icon class="ml-2">mdi-table</v-icon>
+            <v-btn color="grey lighten-2" @click="_generateDoc('budget')" :loading="loading" v-bind="attrs" v-on="on" class="mx-3">
+              <v-icon>mdi-file-document</v-icon>
             </v-btn>
           </template>
           <span>Gerar Orçamento</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="grey lighten-2" @click="_generateDoc('serviceorder')" :loading="loading" v-bind="attrs" v-on="on" class="mx-3">
+              <v-icon>mdi-file-export</v-icon>
+            </v-btn>
+          </template>
+          <span>Gerar Ordem de Serviço</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="orange" @click="_generateAppointment" :loading="loading" v-bind="attrs" v-on="on" class="mx-3">
+              <v-icon dark>mdi-calendar-today</v-icon>
+            </v-btn>
+          </template>
+          <span>Agendar Compromisso</span>
         </v-tooltip>
       </v-col>
     </v-row>
@@ -60,7 +84,6 @@
           <v-col cols="12" md="6">
             <v-select
               v-model="order.status_id"
-              vali
               :items="statuses"
               item-text="name"
               item-value="id"
@@ -506,7 +529,13 @@
     <v-row>
       <v-col cols="12">
           <v-btn color="green darken-1" @click="_store(true)" :loading="loading">
-              Salvar &nbsp; <v-icon dark>mdi-content-save</v-icon>
+              Salvar <v-icon dark>mdi-content-save</v-icon>
+          </v-btn>
+          <v-btn color="grey lighten-2" @click="_generateDoc('budget')" :loading="loading">
+              Orçamento <v-icon dark>mdi-file-document</v-icon>
+          </v-btn>
+          <v-btn color="grey lighten-2" @click="_generateDoc('serviceorder')" :loading="loading">
+              Ordem de Serviço <v-icon dark>mdi-file-export</v-icon>
           </v-btn>
       </v-col>
     </v-row>
@@ -568,19 +597,15 @@ export default {
       comments: null,
       amount : null,
       amount_paid: null,
-     
       technical_visit_date : format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
       technical_visit_hour : '',
-
       discount_amount : null,
       warranty_days : null,
       warranty_conditions : null,
       installments: null,
-
       products: [],
       services: [],
       payments: [],
-
       client_id: null,
       status_id: 2,
       address_id: null
@@ -621,7 +646,6 @@ export default {
       if(this.$route.params.id){
         await this._load();
       }
-
       await this._loadClients();
       await this._loadProducts();
       await this._loadServices();
@@ -632,20 +656,6 @@ export default {
       this.dialog.message = message;
       this.dialog.status = status;
       this.dialog.show = show;
-    },
-    async _lastId(){
-      this.loading = true;
-
-      await axios.get(`api/order/last-id`).then(response => {
-        console.log(response.data)
-        if(response.data.success){
-          return this.order.id = response.data.data;
-        }
-
-        this._modal('Error ao carregar ID', 'error');
-      });
-
-      this.loading = false;
     },
     async _load(){
       let id = this.$route.params.id ? this.$route.params.id : this.order.id ? this.order.id : null;
@@ -768,43 +778,39 @@ export default {
       let id = this.order.id;
 
       this.loading = true;
-      this.dialog.show = true;
-      this.dialog.message = id ? 'Atualizando...' : 'Salvando...';
+
+      this._modal(id ? 'Atualizando...' : 'Salvando...');
 
       this.order.amount = this.valueTotalWithDiscont;
 
-      let response = null;
-
-      if(!id){
-        response = await axios.post('api/order', this.order)
-      } else {
-        response = await axios.put(`api/order/${id}`, this.order)
-      }
+      let response = !id ? await axios.post('api/order', this.order) : await axios.put(`api/order/${id}`, this.order);
 
       this.loading = false;
 
       if(response.data.success){
         this.order = response.data.data;
         this._modal('Pedido salvo com sucesso.', 'success');
-        
+        setTimeout(() => this._modal('', '', false), 1500);
+      } else {
+        this._modal('Error ao salvar orçamento. ' , 'error');
       }
 
       if(backRoute){
         return setTimeout(() => this.$router.push({ name: 'order.index' }), 1500);
-      } else {
-        return setTimeout(() => this._modal('', '', false), 1500);
-      }
-
-      this._modal('Error ao salvar orçamento. ' , 'error');
+      } 
     },
     _formatMoney(value){
       return value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
     },
-    async _generateBudget(){
+    async _generateDoc(nameRoute){
       await this._store();
-
-      let routeData = this.$router.resolve({name: 'budget', params: { budget: JSON.stringify(this.order) } });
+      let routeData = this.$router.resolve({ name: nameRoute, params: { order: JSON.stringify(this.order) } });
       window.open(routeData.href, '_blank');
+    },
+    async _generateAppointment(){
+      await this._store();
+      await this.$store.dispatch('order/setData', { order: this.order })
+      this.$router.push({ name: 'appointment.form' })
     },
   }
 

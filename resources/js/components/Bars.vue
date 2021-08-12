@@ -88,10 +88,17 @@ export default {
         ],
       },
       {
-        title: 'Pedidos',
+        title: 'Ordens',
         icon: 'mdi-format-list-checks',
         items: [
-          { title: 'Order de Serviço' , route: 'order.index' },
+          { title: 'Ordens' , route: 'order.index' },
+        ],
+      },
+      {
+        title: 'Compromissos',
+        icon: 'mdi-calendar-today',
+        items: [
+          { title: 'Agenda' , route: 'appointment.index' },
         ],
       },
     ],

@@ -2,24 +2,24 @@ import * as types from '../mutation-types'
 
 // state
 export const state = {
-  budget: null,
+  order: null,
 }
 
 // getters
 export const getters = {
-  budget: state => state.budget,
+  order: state => state.order,
 }
 
 // mutations
 export const mutations = {
-  [types.SET_BUDGET] (state, budget) {
-    state.budget = budget
+  [types.SET_ORDER] (state, { order }) {
+    state.order = order
   },
 }
 
 // actions
 export const actions = {
-  setBudget ({ commit }, budget) {
-    commit(types.SET_BUDGET, budget)
+  setData ({ commit }, { order }) {
+    commit(types.SET_ORDER, order)
   },
 }

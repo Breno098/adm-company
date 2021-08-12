@@ -12,4 +12,4 @@ export const SET_LOCALE = 'SET_LOCALE'
 export const SHOW_MODAL_SYSTEM = 'SHOW_MODAL_SYSTEM'
 export const HIDE_MODAL_SYSTEM = 'HIDE_MODAL_SYSTEM'
 
-export const SET_BUDGET = 'SET_BUDGET'
+export const SET_ORDER = 'SET_ORDER'

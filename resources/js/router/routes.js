@@ -6,8 +6,12 @@ export default [
   { path: '/order', name: 'order.index', component: page('app/order/list.vue') },
   { path: '/order/:id?', name: 'order.form', component: page('app/order/form.vue') },
 
-  { path: '/budget/:budget', name: 'budget', component: page('app/order/budget.vue') },
-
+  { path: '/appointment', name: 'appointment.index', component: page('app/appointment/list.vue') },
+  { path: '/appointment/:id?', name: 'appointment.form', component: page('app/appointment/form.vue') },
+  
+  { path: '/budget/:order', name: 'budget', component: page('app/order/budget.vue') },
+  { path: '/serviceorder/:order', name: 'serviceorder', component: page('app/order/serviceorder.vue') },
+  
   { path: '/client', name: 'client.index', component: page('app/client/list.vue') },
   { path: '/client/:id?', name: 'client.form', component: page('app/client/form.vue') },
 
