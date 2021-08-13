@@ -24,13 +24,14 @@ class AppointmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'date' => 'required|date',
+            'date_start' => 'required|date',
+            'date_end' => 'nullable|date',
             'description' => 'required|string',
             'active' => 'nullable|boolean',
             
             /** Relations */
-            'order' => 'nullable|int',
-            'status' => 'nullable|int',
+            'order' => 'nullable',
+            'status' => 'nullable',
         ];
     }
 }

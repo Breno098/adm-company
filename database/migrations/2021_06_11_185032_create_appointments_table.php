@@ -15,8 +15,10 @@ class CreateAppointmentsTable extends Migration
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
+            $table->string('title')->nullable();
             $table->text('description')->nullable();
-            $table->dateTime('date')->nullable();
+            $table->dateTime('date_start')->nullable();
+            $table->dateTime('date_end')->nullable();
             $table->boolean('active')->default(true);
             $table->foreignId('client_id')->nullable()->constrained();
             $table->foreignId('order_id')->nullable()->constrained();

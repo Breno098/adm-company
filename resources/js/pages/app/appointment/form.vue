@@ -1,7 +1,17 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="12">
+       <v-col cols="12" md="6">
+        <v-text-field
+          v-model="appointment.title"
+          outlined
+          dense
+          label="TITULO"
+          :loading="loading"
+        ></v-text-field>
+      </v-col>
+
+      <v-col cols="12" md="6">
         <v-select
           v-model="appointment.status"
           :items="statuses"
@@ -16,7 +26,7 @@
 
      <v-col cols="12" md="6">
       <v-menu
-          v-model="menu_date_appointment"
+          v-model="menu_date_start"
           :close-on-content-click="false"
           max-width="290"
           transition="scale-transition"
@@ -25,33 +35,34 @@
       <template v-slot:activator="{ on, attrs }">
           <v-text-field
               append-icon="mdi-calendar"
-              :value="AppointmentDateFormat"
+              :value="DateStartFormat"
               clearable
               label="Data"
               readonly
               v-bind="attrs"
               v-on="on"
-              @click:clear="appointment.date = null"
+              @click:clear="appointment.date_start = null"
               outlined
               dense
               :loading="loading"
           ></v-text-field>
       </template>
       <v-date-picker
-          v-model="appointment.date"
-          @change="menu_date_appointment = false"
+          v-model="appointment.date_start"
+          @change="menu_date_start = false"
           no-title
           crollable
       ></v-date-picker>
       </v-menu>
     </v-col>
+
     <v-col cols="12" md="6">
         <v-menu
-            ref="menu_time_appointment"
-            v-model="menu_time_appointment"
+            ref="menu_time_start"
+            v-model="menu_time_start"
             :close-on-content-click="false"
             :nudge-right="40"
-            :return-value.sync="appointment.hour"
+            :return-value.sync="appointment.hour_start"
             transition="scale-transition"
             offset-y
             max-width="290px"
@@ -59,7 +70,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
-                v-model="appointment.hour"
+                v-model="appointment.hour_start"
                 label="HORA"
                 prepend-icon="mdi-clock-time-four-outline"
                 readonly
@@ -71,9 +82,75 @@
             ></v-text-field>
           </template>
           <v-time-picker
-              v-if="menu_time_appointment"
-              v-model="appointment.hour"
-              @click:minute="$refs.menu_time_appointment.save(appointment.hour)"
+              v-if="menu_time_start"
+              v-model="appointment.hour_start"
+              @click:minute="$refs.menu_time_start.save(appointment.hour_start)"
+              format="24hr"
+          ></v-time-picker>
+        </v-menu>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-menu
+            v-model="menu_date_end"
+            :close-on-content-click="false"
+            max-width="290"
+            transition="scale-transition"
+            offset-y
+        >
+        <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+                append-icon="mdi-calendar"
+                :value="DateEndFormat"
+                clearable
+                label="Data"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                @click:clear="appointment.date_end = null"
+                outlined
+                dense
+                :loading="loading"
+            ></v-text-field>
+        </template>
+        <v-date-picker
+            v-model="appointment.date_end"
+            @change="menu_date_end = false"
+            no-title
+            crollable
+        ></v-date-picker>
+        </v-menu>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-menu
+            ref="menu_time_end"
+            v-model="menu_time_end"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            :return-value.sync="appointment.hour_end"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+                v-model="appointment.hour_end"
+                label="HORA"
+                prepend-icon="mdi-clock-time-four-outline"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                dense
+                outlined
+                :loading="loading"
+            ></v-text-field>
+          </template>
+          <v-time-picker
+              v-if="menu_time_end"
+              v-model="appointment.hour_end"
+              @click:minute="$refs.menu_time_end.save(appointment.hour_end)"
               format="24hr"
           ></v-time-picker>
         </v-menu>
@@ -162,11 +239,16 @@ export default {
     return { title: 'Compromisso' }
   },
   data: () => ({
-    menu_date_appointment: false,
-    menu_time_appointment: false,
+    menu_date_start: false,
+    menu_time_start: false,
+    menu_date_end: false,
+    menu_time_end: false,
     appointment: {
-      date : format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
-      hour : '',
+      title: '',
+      date_start : format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
+      hour_start : '',
+      date_end: format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
+      hour_end : '',
       description: '',
       order: null,
       status: null
@@ -184,8 +266,11 @@ export default {
     },
   }),
   computed: {
-     AppointmentDateFormat () {
-        return this.appointment.date ? moment(this.appointment.date).format('DD/MM/YYYY') : ''
+    DateStartFormat () {
+        return this.appointment.date_start ? moment(this.appointment.date_start).format('DD/MM/YYYY') : ''
+    },
+    DateEndFormat () {
+        return this.appointment.date_end ? moment(this.appointment.date_end).format('DD/MM/YYYY') : ''
     },
     AddressFormat() {
       return this.order.address.street + ' n° ' + this.order.address.number + ', ' + this.order.address.district + ' - ' +  this.order.address.city;
@@ -247,6 +332,7 @@ export default {
       this.dialog.message = id ? 'Atualizando...' : 'Salvando...';
 
       this.appointment.order = this.order.id;
+      this.appointment.date = moment(this.appointment.date).format('YYYY-MM-DD') + ' ' + this.appointment.hour;
       
       let response = null;
 

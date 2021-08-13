@@ -19,9 +19,9 @@ class IndexActiveService
     static public function run(array $filters = [], array $relations = [], bool $pagination = false, int $itemsPerPage = 20)
     {
         return Appointment::with($relations)
-            ->filterByDate(Arr::get($filters, 'date'))
+            // ->filterByBetweenDate(Arr::get($filters, 'date_start'),Arr::get($filters, 'date_end'))
             ->filterByStatusId(Arr::get($filters, 'status_id'))
-            ->orderby('date', 'desc')
+            ->orderby('date_start', 'desc')
             // ->append(['date_format',  'hour_format'])
             ->when(
                 $pagination,

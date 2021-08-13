@@ -1,10 +1,6 @@
 <template>
   <div>
-    
-    <!-- <v-app-bar app color="blue" height="50" flat class="elevation-0">
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon v-html="miniVariant ? 'mdi-chevron-right' : 'mdi-chevron-left'"></v-icon>
-      </v-btn>
+    <v-app-bar app color="blue" height="50" flat class="elevation-0">
       <v-app-bar-nav-icon @click="drawer = !drawer" color="white"/>
       <v-spacer/>
       <v-menu transition="slide-y-transition">
@@ -35,11 +31,10 @@
             </v-list-item>
           </v-list>
         </v-menu>
-    </v-app-bar> -->
+    </v-app-bar>
 
-      
+    <v-navigation-drawer v-model="drawer" fixed app width="200" color="blue" class="elevation-0">
 
-    <v-navigation-drawer v-model="drawer" fixed app width="200" class="elevation-0" :mini-variant="miniVariant" color="grey darken-3">
       <v-list dense>
         <v-list-item link class="py-4">
           <router-link :to="{ name: 'home' }" style="text-decoration: none">
@@ -49,33 +44,29 @@
           </router-link>
         </v-list-item>
 
-        <v-list-item-group v-model="selectedItem" color="primary">
-          <v-list-item v-for="(item, i) in menuItems" :key="i">
-            <v-list-item-icon>
-              <v-icon v-text="item.icon"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-    </v-navigation-drawer>
-
-     <v-fab-transition>
-        <v-btn
-          :key="activeFab.icon"
-          :color="activeFab.color"
-          @click.stop="miniVariant = !miniVariant"
-          fab
-          large
-          dark
-          top
-          left
-          class="v-btn--example"
+        <v-list-group
+            v-for="item in items"
+            :key="item.title"
+            :prepend-icon="item.icon"
+            no-action
+            color="white"
         >
-          <v-icon>{{ activeFab.icon }}</v-icon>
-        </v-btn>
-      </v-fab-transition>
+            <template v-slot:activator>
+            <v-list-item-content>
+                <v-list-item-title v-text="item.title"></v-list-item-title>
+            </v-list-item-content>
+            </template>
+
+            <v-list-item v-for="child in item.items" :key="child.title">
+                <router-link :to="{ name: child.route, params: child.params }" style="text-decoration: none">
+                    <v-list-item-content class="white--text">
+                        <v-list-item-title v-text="child.title"></v-list-item-title>
+                    </v-list-item-content>
+                </router-link>
+            </v-list-item>
+        </v-list-group>
+      </v-list>
+    </v-navigation-drawer>
   </div>
 </template>
 
@@ -86,11 +77,6 @@ export default {
   data: () => ({
     appName: window.config.appName,
     drawer: true,
-    selectedItem: 1,
-    miniVariant: false,
-    menuItems: [
-      { title: 'Cliente' , route: 'client.index',  icon: 'mdi-pencil' },
-    ],
     items: [
       {
         title: 'Cadastros',
@@ -117,18 +103,9 @@ export default {
       },
     ],
   }),
-  computed: { 
-    activeFab () {
-      if (this.miniVariant) {
-        return { color: 'success', icon: 'mdi-share-variant' }
-      } else {
-         return { color: 'red', icon: 'mdi-pencil' }
-      }
-    },
-    ... mapGetters({
-      user: 'auth/user'
-    }),
-  },
+  computed: mapGetters({
+    user: 'auth/user'
+  }),
   methods: {
     async logout () {
       await this.$store.dispatch('auth/logout')

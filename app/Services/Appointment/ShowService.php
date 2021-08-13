@@ -20,8 +20,10 @@ class ShowService
 
         if($appointment){
             $appointment->append([
-                'date_format',
-                'hour_format'
+                'date_start_format',
+                'hour_start_format',
+                'date_end_format',
+                'hour_end_format'
             ])->load($relations);
         }
         

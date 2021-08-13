@@ -11,14 +11,17 @@ class Appointment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'title',
         'description',
-        'date',
+        'date_start',
+        'date_end',
         'active',
     ];
 
     protected $casts = [
         'active' => 'boolean',
-        'date' => 'datetime:Y-m-d H:i',
+        'date_start' => 'datetime:Y-m-d H:i',
+        'date_end' => 'datetime:Y-m-d H:i',
     ];
 
     protected $with = [
@@ -32,11 +35,17 @@ class Appointment extends Model
         });
     }
 
-    public function scopeFilterByDate(Builder $builder, $date)
+    public function scopeFilterByBetweenDate(Builder $builder, $dateStart, $dataEnd = null)
     {
-        return $builder->when($date, function (Builder $builder, $date) {
-            return $builder->where('date', $date);
+        $builder->when($dateStart, function (Builder $builder, $dateStart) {
+            return $builder->where('date_start', '>=', "{$dateStart} 00:00:00");
         });
+
+        $builder->when($dataEnd, function (Builder $builder, $dataEnd) {
+            return $builder->where('date_end', '<=', "{$dataEnd} 23:59:59");
+        });
+
+        return $builder;
     }
 
      public function scopeFilterByStatusId(Builder $builder, $statusId)
@@ -61,13 +70,22 @@ class Appointment extends Model
         return $this->belongsTo(Status::class);
     }
 
-    public function getDateFormatAttribute()
+    public function getDateStartFormatAttribute()
     {
-        return $this->date->format('Y-m-d');
+        return $this->date_start->format('Y-m-d');
     }
 
-    public function getHourFormatAttribute()
+    public function getHourStartFormatAttribute()
     {
-        return $this->date->format('H:i');
+        return $this->date_start->format('H:i');
+    }
+    public function getDateEndFormatAttribute()
+    {
+        return $this->date_end ? $this->date_end->format('Y-m-d') : null;
+    }
+
+    public function getHourEndFormatAttribute()
+    {
+        return $this->date_end ? $this->date_end->format('H:i') : null;
     }
 }

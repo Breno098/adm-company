@@ -11,6 +11,7 @@ use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\ClientController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ItemController;
@@ -46,6 +47,10 @@ Route::group(['middleware' => 'guest:api'], function () {
 
 
 Route::middleware('auth:api')->group( function () {
+
+    Route::prefix('home')->group( function () {
+        Route::get('/appointment', [HomeController::class, 'appointment']);
+    });
 
     Route::prefix('client')->group( function () {
         Route::get('/', [ClientController::class, 'index']);

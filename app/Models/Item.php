@@ -30,10 +30,10 @@ class Item extends Model
         'cost' => 'float',
     ];
 
-     protected static function booted()
+    protected static function booted()
     {
         static::addGlobalScope('active-item', function (Builder $builder) {
-            $builder->where('active', true);
+            $builder->where('items.active', true);
         });
     }
     
