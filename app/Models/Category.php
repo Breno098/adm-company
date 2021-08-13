@@ -20,6 +20,13 @@ class Category extends Model
         'active' => 'boolean',
     ];
 
+     protected static function booted()
+    {
+        static::addGlobalScope('active-category', function (Builder $builder) {
+            $builder->where('active', true);
+        });
+    }
+
     public function items()
     {
         return $this->belongsToMany(Item::class, 'item_category', 'item_id', 'category_id');

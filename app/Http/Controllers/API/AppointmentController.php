@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Requests\AppointmentRequest;
 use App\Models\Appointment;
-use App\Models\Order;
+use App\Services\Appointment\DestroyService;
+use App\Services\Appointment\IndexActiveService;
+use App\Services\Appointment\ShowService;
+use App\Services\Appointment\StoreService;
+use App\Services\Appointment\UpdateService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,9 +19,12 @@ class AppointmentController extends BaseControllerApi
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $appointments = Appointment::all();
+        $appointments = IndexActiveService::run($request->all(), [
+            'order.client', 'order.address'
+        ], true);
+
         return $this->sendResponse($appointments, 'Appointments retrieved successfully.');
     }
 
@@ -26,29 +34,11 @@ class AppointmentController extends BaseControllerApi
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AppointmentRequest $request)
     {
-        $input = $request->all();
+        $data = $request->validated();
 
-        $validator = Validator::make($input, [
-            'date' => 'required|date',
-            'description' => 'required'
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        $input['date'] = $input['date'] . ' ' . $input['hour'];
-
-        $appointment = Appointment::create($input);
-
-        if($order_id = $input['order_id']){
-            $order = Order::find($order_id);
-            $appointment->order()->associate($order);
-        }
-
-        $appointment->save();
+        $appointment = StoreService::run($data);
 
         return $this->sendResponse($appointment, 'Appointment created successfully.');
     }
@@ -61,16 +51,7 @@ class AppointmentController extends BaseControllerApi
      */
     public function show($id)
     {
-        $appointment = Appointment::find($id);
-
-        if (is_null($appointment)) {
-            return $this->sendError('Appointment not found.');
-        }
-
-        $appointment->append([
-            'date_format',
-            'hour_format'
-        ]);
+        $appointment = ShowService::run($id);
 
         return $this->sendResponse($appointment, 'Appointment retrieved successfully.');
     }
@@ -82,20 +63,11 @@ class AppointmentController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Appointment $appointment)
+    public function update(AppointmentRequest $request, Int $id)
     {
-        $input = $request->all();
+        $data = $request->validated();
 
-        $validator = Validator::make($input, [
-            'date' => 'required|date',
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        $appointment->name = $input['name'];
-        $appointment->save();
+        $appointment = UpdateService::run($id, $data);
 
         return $this->sendResponse($appointment, 'Appointment updated successfully.');
     }
@@ -106,9 +78,9 @@ class AppointmentController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Appointment $appointment)
+    public function destroy(Int $id)
     {
-        $appointment->delete();
+        DestroyService::run($id);
 
         return $this->sendResponse([], 'Appointment deleted successfully.');
     }

@@ -74,6 +74,7 @@ Route::middleware('auth:api')->group( function () {
     });
 
     Route::prefix('status')->group( function () {
+        Route::get('/', [StatusController::class, 'index']);
         Route::get('/type/{type}', [StatusController::class, 'type']);
     });
 
@@ -87,12 +88,14 @@ Route::middleware('auth:api')->group( function () {
     });
 
     Route::prefix('appointment')->group( function () {
+        Route::get('/', [AppointmentController::class, 'index']);
+        Route::get('/{id}', [AppointmentController::class, 'show']);
         Route::post('/', [AppointmentController::class, 'store']);
+        Route::put('/{id}', [AppointmentController::class, 'update']);
+        Route::delete('/{id}', [AppointmentController::class, 'destroy']);
     });
 
     Route::prefix('order')->group( function () {
-        Route::get('/type/{type}', [OrderController::class, 'type']);
-
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/{id}', [OrderController::class, 'show']);
         Route::post('/', [OrderController::class, 'store']);

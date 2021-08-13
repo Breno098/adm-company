@@ -702,8 +702,10 @@ export default {
       this.loadingAddresses = false;
     },
     async _loadStatuses(){
+      let params = { type: 'order' };
+      
       this.loadingStatuses = true;
-      await axios.get(`api/status/type/order`).then(response => {
+      await axios.get(`api/status`, { params }).then(response => {
         if(response.data.success){
           return this.statuses = response.data.data;
         }

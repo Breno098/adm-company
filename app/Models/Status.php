@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,6 +21,20 @@ class Status extends Model
     protected $casts = [
         'active' => 'boolean',
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope('active-status', function (Builder $builder) {
+            $builder->where('active', true);
+        });
+    }
+
+    public function scopeFilterByType(Builder $builder, $type)
+    {
+        return $builder->when($type, function (Builder $builder, $type) {
+            return $builder->where('type', $type);
+        });
+    }
 
     public function orders()
     {

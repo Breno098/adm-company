@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,6 +21,31 @@ class Appointment extends Model
         'date' => 'datetime:Y-m-d H:i',
     ];
 
+    protected $with = [
+        'status',
+    ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope('active-appointment', function (Builder $builder) {
+            $builder->where('active', true);
+        });
+    }
+
+    public function scopeFilterByDate(Builder $builder, $date)
+    {
+        return $builder->when($date, function (Builder $builder, $date) {
+            return $builder->where('date', $date);
+        });
+    }
+
+     public function scopeFilterByStatusId(Builder $builder, $statusId)
+    {
+        return $builder->when($statusId, function (Builder $builder, $statusId) {
+            return $builder->where('status_id', $statusId);
+        });
+    }
+
     public function client()
     {
         return $this->hasOne(Client::class);
@@ -32,7 +58,7 @@ class Appointment extends Model
 
     public function status()
     {
-        return $this->hasOne(Status::class);
+        return $this->belongsTo(Status::class);
     }
 
     public function getDateFormatAttribute()
@@ -42,6 +68,6 @@ class Appointment extends Model
 
     public function getHourFormatAttribute()
     {
-        return $this->date->format('H:m');
+        return $this->date->format('H:i');
     }
 }

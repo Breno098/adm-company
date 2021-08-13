@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Status\IndexActiveStatusService;
 
 class StatusController extends BaseControllerApi
 {
@@ -13,9 +14,10 @@ class StatusController extends BaseControllerApi
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $statuses = Status::all();
+        $statuses = IndexActiveStatusService::run($request->all());
+
         return $this->sendResponse($statuses, 'Statuses retrieved successfully.');
     }
 

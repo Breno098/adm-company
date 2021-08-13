@@ -22,6 +22,13 @@ class Contact extends Model
         'main' => 'boolean',
     ];
 
+     protected static function booted()
+    {
+        static::addGlobalScope('active-contact', function (Builder $builder) {
+            $builder->where('active', true);
+        });
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);

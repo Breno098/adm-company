@@ -7,18 +7,18 @@
         </v-btn>
       </v-col>
       <v-col cols="12" md="3" >
-        <v-btn block @click="_load({})">
+        <v-btn block @click="_load">
           Todas
         </v-btn>
       </v-col>
     </v-row>
 
     <v-row>
-      <v-col cols="12">
+      <!-- <v-col cols="12">
         <v-btn text color="blue" @click="_add">
             Adicionar <v-icon dark>mdi-plus</v-icon>
         </v-btn>
-      </v-col>
+      </v-col> -->
 
       <v-col cols="12" v-if="loading">
         <v-row>
@@ -28,23 +28,26 @@
         </v-row>
       </v-col>
       
-      <v-col cols="12" md="6" v-for="order in items" :key="order.id" v-else>
-        <v-card v-on:click="_edit(order.id)">
+      <v-col cols="12" md="6" v-for="appointment in appointments" :key="appointment.id" v-else>
+        <v-card v-on:click="_edit(appointment)">
           <v-list-item three-line>
             <v-list-item-content>
               <div class="text-overline mb-4 d-flex justify-space-between">
-                {{ order.client.name }}
-                <v-chip v-if="order.status" :color="order.status.color" class="py-2" label>{{ order.status.name }}</v-chip>
+                {{ appointment.order.client.name }} 
+                <v-chip v-if="appointment.status" :color="appointment.status.color" class="py-2" label>{{ appointment.status.name }}</v-chip>
               </div>
               <v-list-item-subtitle>
-                {{ order.address.street }} {{ order.address.number ? `n° ${order.address.number}` : '' }}, {{ order.address.district }} - {{ order.address.city }}
+                {{ appointment.date }}
+              </v-list-item-subtitle>
+              <v-list-item-subtitle>
+                {{ appointment.order.address.street }} {{ appointment.order.address.number ? `n° ${appointment.order.address.number}` : '' }}, {{ appointment.order.address.district }} - {{ appointment.order.address.city }}
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
           <v-card-actions>
             <v-spacer/>
-            <v-btn text color="blue" v-on:click="_edit(order.id)">
+            <v-btn text color="blue" v-on:click="_edit(appointment)">
               Ver informações
             </v-btn>
           </v-card-actions>
@@ -63,27 +66,6 @@
         </div>
       </v-col>
   </v-row>
-
-  <v-dialog v-model="dialog" max-width="350">
-    <v-card>
-        <v-card-title>
-            Confirmar exclusão do cliente?
-        </v-card-title>
-        <v-card-text>
-            {{ deleted.name }}
-        </v-card-text>
-
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green" text @click="dialog = false">
-                Fechar
-            </v-btn>
-            <v-btn color="red" text @click="_delete">
-                Excluir
-            </v-btn>
-        </v-card-actions>
-    </v-card>
-  </v-dialog>
 </div>
 </template>
 
@@ -92,7 +74,7 @@ import axios from 'axios';
 
 export default {
   metaInfo () {
-    return { title: 'Ordens de Serviços' }
+    return { title: 'Compromissos' }
   },
   data: () => ({
     dialog: false,
@@ -100,7 +82,7 @@ export default {
     search: '',
     page: 1,
     pageCount: 0,
-    items: [],
+    appointments: [],
     loading: false,
     statuses: []
   }),
@@ -112,8 +94,10 @@ export default {
       await this._loadStatuses();
     },
     async _loadStatuses(){
+       let params = { type: 'appointment' };
+
       this.loading = true;
-      await axios.get(`api/status/type/order`).then(response => {
+      await axios.get(`api/status`, { params }).then(response => {
         if(response.data.success){
           return this.statuses = response.data.data;
         }
@@ -124,40 +108,25 @@ export default {
       let params = { page: this.page, ...filters }
 
       this.loading = true;
-      await axios.get(`api/order`, { params }).then(response => {
-        if(response.data.data.data.length === 0){
+      await axios.get(`api/appointment`, { params }).then(response => {
+        if(response.data.data.data.length === 0 && this.page != 1){
           this.page = 1;
           this._load(filters)
         }
 
         if(response.data.success){
-            this.items = response.data.data.data;
+            this.appointments = response.data.data.data;
             this.pageCount = response.data.data.last_page;
             this.loading = false;
         }
       });
     },
-    async _delete(){
-      this.loading = true;
-      await axios.delete(`api/order/${this.deleted.id}`).then(response => {
-        if(response.data.success){
-          this.dialog = false;
-          this._load();
-        }
-      });
-    },
-    filterOnlyCapsText (value, search, item) {
-        return value != null && search != null && typeof value === 'string' && value.toString().indexOf(search) !== -1
-    },
-    confirmDelete(deleted){
-        this.deleted = deleted;
-        this.dialog = true;
-    },
-    _edit(id){
-      this.$router.push({ name: 'order.form', params: { id } })
+    async _edit(appointment){
+      await this.$store.dispatch('order/setData', { order: appointment.order })
+      this.$router.push({ name: 'appointment.form', params: { id: appointment.id } })
     },
      _add(){
-      this.$router.push({ name: 'order.form' })
+      this.$router.push({ name: 'appointment.form' })
     }
   }
 }

@@ -29,6 +29,13 @@ class Address extends Model
         'main' => 'boolean'
     ];
 
+    protected static function booted()
+    {
+        static::addGlobalScope('active-address', function (Builder $builder) {
+            $builder->where('active', true);
+        });
+    }
+
     public function clients()
     {
         return $this->belongsTo(Client::class);

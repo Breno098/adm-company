@@ -29,6 +29,13 @@ class Item extends Model
         'default_value' => 'float',
         'cost' => 'float',
     ];
+
+     protected static function booted()
+    {
+        static::addGlobalScope('active-item', function (Builder $builder) {
+            $builder->where('active', true);
+        });
+    }
     
     public function scopeOfType($query, $type)
     {

@@ -105,6 +105,6 @@ class Order extends Model
 
     public function getTechnicalVisitHourAttribute()
     {
-        return $this->technical_visit->format('H:m');
+        return $this->technical_visit->format('H:i');
     }
 }

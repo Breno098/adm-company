@@ -112,8 +112,10 @@ export default {
       await this._loadStatuses();
     },
     async _loadStatuses(){
+      let params = { type: 'order' }
+
       this.loading = true;
-      await axios.get(`api/status/type/order`).then(response => {
+      await axios.get(`api/status`, { params }).then(response => {
         if(response.data.success){
           return this.statuses = response.data.data;
         }
@@ -125,7 +127,7 @@ export default {
 
       this.loading = true;
       await axios.get(`api/order`, { params }).then(response => {
-        if(response.data.data.data.length === 0){
+        if(response.data.data.data.length === 0 && this.page != 1){
           this.page = 1;
           this._load(filters)
         }

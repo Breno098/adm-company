@@ -1,6 +1,19 @@
 <template>
   <div>
     <v-row>
+      <v-col cols="12">
+        <v-select
+          v-model="appointment.status"
+          :items="statuses"
+          item-text="name"
+          item-value="id"
+          label="STATUS"
+          outlined
+          dense
+          :loading="loading"
+        ></v-select>
+      </v-col>
+
      <v-col cols="12" md="6">
       <v-menu
           v-model="menu_date_appointment"
@@ -21,6 +34,7 @@
               @click:clear="appointment.date = null"
               outlined
               dense
+              :loading="loading"
           ></v-text-field>
       </template>
       <v-date-picker
@@ -53,6 +67,7 @@
                 v-on="on"
                 dense
                 outlined
+                :loading="loading"
             ></v-text-field>
           </template>
           <v-time-picker
@@ -66,12 +81,13 @@
 
       <v-col cols="4">
         <v-text-field
-          :value="order.client.name"
+          :value="ClientNameOrder"
           outlined
           dense
           label="CLIENTE"
           readonly
           color="black"
+          :loading="loading"
         ></v-text-field>
       </v-col>
 
@@ -83,6 +99,7 @@
           label="ENDEREÇO"
           readonly
           color="black"
+          :loading="loading"
         ></v-text-field>
       </v-col>
 
@@ -92,6 +109,7 @@
           outlined
           dense
           v-model="appointment.description"
+          :loading="loading"
         ></v-textarea>
       </v-col>
 
@@ -103,6 +121,7 @@
           label="Nº ORDEM"
           readonly
           color="black"
+          :loading="loading"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -147,11 +166,12 @@ export default {
     menu_time_appointment: false,
     appointment: {
       date : format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
-      hour : moment().format('HH:mm'),
+      hour : '',
       description: '',
-      order_id: null,
-      client_id: null
+      order: null,
+      status: null
     },
+    statuses: [],
     loading: false,
     dialog: {
       show: false,
@@ -170,20 +190,54 @@ export default {
     AddressFormat() {
       return this.order.address.street + ' n° ' + this.order.address.number + ', ' + this.order.address.district + ' - ' +  this.order.address.city;
     },
+    ClientNameOrder(){
+      return this.order ? this.order.client.name : '';
+    },
     ...mapGetters({
       order: 'order/order'
     })
   },
   mounted(){
-    if(this.$route.params.id){
-      // this._load();
-    }
+    this._start();
   },
   methods: {
+    async _start(){
+      if(this.$route.params.id){
+        await this._load();
+      }
+      await this._loadStatuses();
+    },
     _modal(message, status){
       this.dialog.message = message;
       this.dialog.status = status;
       this.dialog.show = true;
+    },
+    async _load(){
+      let id = this.$route.params.id ? this.$route.params.id : null;
+
+      this.loading = true;
+      await axios.get(`api/appointment/${id}`).then(response => {
+        if(response.data.success){
+          return this.appointment = response.data.data;
+        }
+
+        this._modal('Error ao carregar compromisso', 'error');
+        setTimeout(() => this.$router.push({ name: 'appointment.index' }), 1500);
+      });
+
+      this.loading = false;
+    },
+    async _loadStatuses(){
+       let params = { type: 'appointment' };
+
+      this.loadingStatuses = true;
+      await axios.get(`api/status`, { params }).then(response => {
+        if(response.data.success){
+          return this.statuses = response.data.data;
+        }
+        this._modal('Error ao carregar status', 'error');
+      });
+      this.loadingStatuses = false;
     },
     async _store(){
       let id = this.$route.params.id;
@@ -192,10 +246,8 @@ export default {
       this.dialog.show = true;
       this.dialog.message = id ? 'Atualizando...' : 'Salvando...';
 
-      if(this.order){
-        this.appointment.order_id = this.order.id;
-      }
-
+      this.appointment.order = this.order.id;
+      
       let response = null;
 
       if(!id){
@@ -204,12 +256,10 @@ export default {
         response = await axios.put(`api/appointment/${id}`, this.appointment)
       }
 
-      console.log( response );
-
       this.loading = false;
 
       if(response.data.success){
-        this._modal('Cliente salvo com sucesso', 'success');
+        this._modal('Compromisso salvo com sucesso', 'success');
         return setTimeout(() => this.$router.go(-1), 1500);
       }
 
