@@ -13,15 +13,15 @@ class Appointment extends Model
     protected $fillable = [
         'title',
         'description',
-        'date_start',
-        'date_end',
+        'execution_date_start',
+        'execution_date_end',
         'active',
     ];
 
     protected $casts = [
         'active' => 'boolean',
-        'date_start' => 'datetime:Y-m-d H:i',
-        'date_end' => 'datetime:Y-m-d H:i',
+        'execution_date_start' => 'datetime:Y-m-d H:i',
+        'execution_date_end' => 'datetime:Y-m-d H:i',
     ];
 
     protected $with = [
@@ -38,11 +38,11 @@ class Appointment extends Model
     public function scopeFilterByBetweenDate(Builder $builder, $dateStart, $dataEnd = null)
     {
         $builder->when($dateStart, function (Builder $builder, $dateStart) {
-            return $builder->where('date_start', '>=', "{$dateStart} 00:00:00");
+            return $builder->where('execution_date_start', '>=', "{$dateStart} 00:00:00");
         });
 
         $builder->when($dataEnd, function (Builder $builder, $dataEnd) {
-            return $builder->where('date_end', '<=', "{$dataEnd} 23:59:59");
+            return $builder->where('execution_date_end', '<=', "{$dataEnd} 23:59:59");
         });
 
         return $builder;
@@ -70,22 +70,22 @@ class Appointment extends Model
         return $this->belongsTo(Status::class);
     }
 
-    public function getDateStartFormatAttribute()
+    public function getDateStartAttribute()
     {
-        return $this->date_start->format('Y-m-d');
+        return $this->execution_date_start->format('Y-m-d');
     }
 
-    public function getHourStartFormatAttribute()
+    public function getHourStartAttribute()
     {
-        return $this->date_start->format('H:i');
+        return $this->execution_date_start->format('H:i');
     }
-    public function getDateEndFormatAttribute()
+    public function getDateEndAttribute()
     {
-        return $this->date_end ? $this->date_end->format('Y-m-d') : null;
+        return $this->execution_date_end ? $this->execution_date_end->format('Y-m-d') : null;
     }
 
-    public function getHourEndFormatAttribute()
+    public function getHourEndAttribute()
     {
-        return $this->date_end ? $this->date_end->format('H:i') : null;
+        return $this->execution_date_end ? $this->execution_date_end->format('H:i') : null;
     }
 }

@@ -21,9 +21,12 @@ class UpdateService
             return $appointment;
         }
 
+        $data['execution_date_start'] = Arr::get($data, 'date_start') . ' ' . Arr::get($data, 'hour_start');
+        $data['execution_date_end'] = Arr::get($data, 'date_end') . ' ' . Arr::get($data, 'hour_end');
+
         $appointment->update($data);
 
-        $appointment->status()->associate(Arr::get($data, 'status'));
+        $appointment->status()->associate(Arr::get($data, 'status_id'));
 
         $appointment->save();
         

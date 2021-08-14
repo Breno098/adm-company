@@ -1,28 +1,21 @@
 <template>
   <v-app>
-      <v-navigation-drawer v-model="drawer" fixed app class="elevation-0" :mini-variant="miniVariant" color="grey darken-3">
+      <v-navigation-drawer v-model="drawer" fixed app class="elevation-0" :mini-variant="miniVariant" color="grey lighten-2">
         <v-list dense>
-          <v-list-item link class="py-4">
-            <router-link :to="{ name: 'home' }" style="text-decoration: none">
-              <v-list-item-content class="text-center white--text">
-                  {{ !miniVariant ? appName : '' }}
-                  <v-icon v-show="miniVariant" color="white">mdi-home</v-icon>
+          <v-list-item link class="py-4" @click="_homeRoute">
+              <v-list-item-content class="black--text font-weight-bold">
+                  {{ !miniVariant ? appName : variantAppName }}
               </v-list-item-content>
-            </router-link>
           </v-list-item>
 
-          <v-list-item-group v-model="selectedItem" dark>
+          <v-list-item-group v-model="selectedItem" >
             <router-link :to="{ name: item.route }" style="text-decoration: none" v-for="(item, index) in menuItems" :key="index">
-              <v-list-item :color="selectedItem == index ? item.color : ''">
+              <v-list-item :color="selectedItem == index ? 'blue' : ''">
                 <v-list-item-icon>
                   <v-icon v-text="item.icon"></v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title >
-                    <v-chip :color="selectedItem == index ? item.color : ''">
-                      {{ item.title }}
-                    </v-chip>
-                  </v-list-item-title>
+                  <v-list-item-title> {{ item.title }} </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </router-link>
@@ -60,7 +53,7 @@
           </v-btn>
         </v-fab-transition>
          
-        <child class="my-5 mx-5"/>
+        <child class="my-8 mx-5"/>
       </v-content>
   </v-app>
 </template>
@@ -74,21 +67,26 @@ export default {
     appName: window.config.appName,
     drawer: true,
     userMenu: false,
-    selectedItem: 1,
+    selectedItem: 0,
     miniVariant: false,
     menuItems: [
+      { title: 'Inicio' , route: 'home', icon: 'mdi-home', color: 'blue' },
+      { title: 'Ordens' , route: 'order.index', icon: 'mdi-format-list-checks', color: 'purple' },
+      { title: 'Agenda' , route: 'appointment.index', icon: 'mdi-calendar-today', color: 'green' },
       { title: 'Cliente' , route: 'client.index', icon: 'mdi-account-convert', color: 'green' },
       { title: 'Produtos', route: 'item.index', icon: 'mdi-barcode', color: 'orange' },
       { title: 'Serviços', route: 'item.index', icon: 'mdi-wrench', color: 'indigo' },
       { title: 'Categoria', route: 'category.index', icon: 'mdi-format-list-bulleted-type', color: 'blue'},
-      { title: 'Ordens' , route: 'order.index', icon: 'mdi-format-list-checks', color: 'purple' },
-      { title: 'Agenda' , route: 'appointment.index', icon: 'mdi-calendar-today', color: 'green' },
     ]
   }),
   methods: {
     async logout () {
       await this.$store.dispatch('auth/logout')
       this.$router.push({ name: 'login' })
+    },
+    _homeRoute(){
+      this.selectedItem = 0;
+      this.$router.push({ name: 'home' });
     },
     _configs(){
       this.selectedItem = null;
@@ -97,6 +95,13 @@ export default {
     }
   },
   computed: { 
+    variantAppName(){
+      let splitName = this.appName.split(' ');
+      if(splitName.length > 1){
+        return splitName[0].substr(0, 1) + splitName[1].substr(0, 1);
+      }
+      return splitName[0].substr(0, 2);
+    },
     fabMiniVariant () {
       if (this.miniVariant) {
         return { color: 'blue', icon: 'mdi-chevron-right' }

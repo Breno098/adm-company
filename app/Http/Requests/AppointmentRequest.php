@@ -26,12 +26,16 @@ class AppointmentRequest extends FormRequest
         return [
             'date_start' => 'required|date',
             'date_end' => 'nullable|date',
-            'description' => 'required|string',
+            'hour_start' => 'nullable',
+            'date_end' => 'nullable',
+            'hour_end' => 'nullable',
+            'title' => 'required|string',
+            'description' => 'nullable|string',
             'active' => 'nullable|boolean',
             
             /** Relations */
-            'order' => 'nullable',
-            'status' => 'nullable',
+            'order_id' => 'nullable',
+            'status_id' => 'nullable',
         ];
     }
 }

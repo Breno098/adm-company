@@ -64,3 +64,25 @@ export default {
   }
 }
 </script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+
+  * {
+    font-family: 'Ubuntu Mono', monospace;
+  }
+
+  .v-application ::-webkit-scrollbar {
+    height: 8px;
+    width: 13px;
+  }
+
+  .v-application ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  .v-application ::-webkit-scrollbar-thumb {
+    background: #2196F3;
+    border-radius: 8px;
+  }
+</style>

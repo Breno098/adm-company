@@ -1,6 +1,23 @@
 <template>
   <div>
     <v-row>
+      <v-col cols="12" class="d-flex flex-row justify-space-between">
+        <span class="text-h5 font-weight-bold">Dashboard</span>
+
+        <span>{{ hour }}</span>
+      </v-col>
+
+      <v-col cols="6">
+        <v-card color="blue" dark>
+          <v-card-title>
+            <v-icon large left> mdi-format-list-checks </v-icon>
+            <span class="text-h6 font-weight-light">Order de serviço/orçamento.</span>
+          </v-card-title>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row>
       <v-col cols="1">
         <v-btn icon class="ma-2" @click="$refs.calendar.prev()">
           <v-icon>mdi-chevron-left</v-icon>
@@ -16,7 +33,7 @@
             outlined
             hide-details
             class="ma-2"
-            label="type"
+            label="TIPO CALENDÁRIO"
           ></v-select>
       </v-col>
       <v-col cols="1">
@@ -65,6 +82,7 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
   metaInfo () {
@@ -80,14 +98,18 @@ export default {
     ],
     value: '',
     events: [],
-    colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    hour: moment().format('DD/MM/YYYY HH:mm:ss')
   }),
   mounted() {
+    this.setHour();
   },
   methods: {
+    setHour(){
+      setInterval(() => this.hour = moment().add(1, 'seconds').format('DD/MM/YYYY HH:mm:ss'), 1000)
+    },
     async getEvents ({ start, end }) {
       this.events = [];
       this.loading = true;
@@ -102,8 +124,8 @@ export default {
             response.data.data.map(event => {
               this.events.push({
                 name: event.description,
-                start: event.date_start,
-                end:  event.date_end ?? event.date_start,
+                start: event.execution_date_start,
+                end:  event.execution_date_end ?? event.execution_date_start,
                 color: event.status.color,
               })
             })
@@ -129,9 +151,6 @@ export default {
 
       nativeEvent.stopPropagation()
 
-    },
-    rnd (a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a
     },
     getEventColor (event) {
       return event.color

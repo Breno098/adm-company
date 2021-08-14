@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\AppointmentRequest;
-use App\Models\Appointment;
 use App\Services\Appointment\DestroyService;
 use App\Services\Appointment\IndexActiveService;
 use App\Services\Appointment\ShowService;
 use App\Services\Appointment\StoreService;
 use App\Services\Appointment\UpdateService;
+use App\Http\Requests\AppointmentRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class AppointmentController extends BaseControllerApi
 {
@@ -31,7 +29,7 @@ class AppointmentController extends BaseControllerApi
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\AppointmentRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(AppointmentRequest $request)
@@ -59,7 +57,7 @@ class AppointmentController extends BaseControllerApi
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\AppointmentRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */

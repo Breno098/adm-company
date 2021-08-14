@@ -13,7 +13,7 @@
 
       <v-col cols="12" md="6">
         <v-select
-          v-model="appointment.status"
+          v-model="appointment.status_id"
           :items="statuses"
           item-text="name"
           item-value="id"
@@ -250,8 +250,8 @@ export default {
       date_end: format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
       hour_end : '',
       description: '',
-      order: null,
-      status: null
+      order_id: null,
+      status_id: null
     },
     statuses: [],
     loading: false,
@@ -267,10 +267,10 @@ export default {
   }),
   computed: {
     DateStartFormat () {
-        return this.appointment.date_start ? moment(this.appointment.date_start).format('DD/MM/YYYY') : ''
+      return this.appointment.date_start ? moment(this.appointment.date_start).format('DD/MM/YYYY') : ''
     },
     DateEndFormat () {
-        return this.appointment.date_end ? moment(this.appointment.date_end).format('DD/MM/YYYY') : ''
+      return this.appointment.date_end ? moment(this.appointment.date_end).format('DD/MM/YYYY') : ''
     },
     AddressFormat() {
       return this.order.address.street + ' n° ' + this.order.address.number + ', ' + this.order.address.district + ' - ' +  this.order.address.city;
@@ -303,7 +303,9 @@ export default {
       this.loading = true;
       await axios.get(`api/appointment/${id}`).then(response => {
         if(response.data.success){
-          return this.appointment = response.data.data;
+          this.appointment = response.data.data;
+          this.appointment.date_end = format( parseISO(this.appointment.date_end), 'yyyy-MM-dd');
+          return this.appointment.date_start = format( parseISO(this.appointment.date_start), 'yyyy-MM-dd');
         }
 
         this._modal('Error ao carregar compromisso', 'error');
@@ -331,9 +333,8 @@ export default {
       this.dialog.show = true;
       this.dialog.message = id ? 'Atualizando...' : 'Salvando...';
 
-      this.appointment.order = this.order.id;
-      this.appointment.date = moment(this.appointment.date).format('YYYY-MM-DD') + ' ' + this.appointment.hour;
-      
+      this.appointment.order_id = this.order.id;
+
       let response = null;
 
       if(!id){
