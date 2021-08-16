@@ -48,7 +48,7 @@ class Appointment extends Model
         return $builder;
     }
 
-     public function scopeFilterByStatusId(Builder $builder, $statusId)
+    public function scopeFilterByStatusId(Builder $builder, $statusId)
     {
         return $builder->when($statusId, function (Builder $builder, $statusId) {
             return $builder->where('status_id', $statusId);

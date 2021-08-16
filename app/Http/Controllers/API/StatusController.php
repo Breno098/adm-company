@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Status;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Services\Status\IndexActiveStatusService;
+use App\Http\Requests\StatusRequest;
+use App\Services\Status\IndexActiveService;
+use App\Services\Status\ShowService;
+use App\Services\Status\StoreService;
+use App\Services\Status\UpdateService;
+use App\Services\Status\DestroyService;
 
 class StatusController extends BaseControllerApi
 {
@@ -16,7 +19,12 @@ class StatusController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $statuses = IndexActiveStatusService::run($request->all());
+        $statuses = IndexActiveService::run(
+            $request->query(), 
+            $request->get('relations', []),
+            $request->get('pagination', false),
+            $request->get('itemsPerPage', 20),
+        );
 
         return $this->sendResponse($statuses, 'Statuses retrieved successfully.');
     }
@@ -27,20 +35,11 @@ class StatusController extends BaseControllerApi
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StatusRequest $request)
     {
-        $input = $request->all();
+        $data = $request->validated();
 
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'type' => 'required|in:order, client, appointment, item'
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        $status = Status::create($input);
+        $status = StoreService::run($data);
 
         return $this->sendResponse($status, 'Status created successfully.');
     }
@@ -53,11 +52,7 @@ class StatusController extends BaseControllerApi
      */
     public function show($id)
     {
-        $status = Status::find($id);
-
-        if (is_null($status)) {
-            return $this->sendError('Status not found.');
-        }
+        $status = ShowService::run($id);
 
         return $this->sendResponse($status, 'Status retrieved successfully.');
     }
@@ -69,21 +64,11 @@ class StatusController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Status $status)
+    public function update(StatusRequest $request, Int $id)
     {
-        $input = $request->all();
+        $data = $request->validated();
 
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'type' => 'required|in:order, client, appointment, item'
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        $status->name = $input['name'];
-        $status->save();
+        $status = UpdateService::run($id, $data);
 
         return $this->sendResponse($status, 'Status updated successfully.');
     }
@@ -94,19 +79,10 @@ class StatusController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Status $status)
+    public function destroy(Int $id)
     {
-        $status->delete();
+        DestroyService::run($id);
 
         return $this->sendResponse([], 'Status deleted successfully.');
-    }
-
-    public function type(string $type)
-    {
-        $statuses = Status::where('active', true)
-                        ->where('type', $type)
-                        ->get();
-
-        return $this->sendResponse($statuses, 'Statuses retrieved successfully.');
     }
 }

@@ -80,7 +80,7 @@ Route::middleware('auth:api')->group( function () {
 
     Route::prefix('status')->group( function () {
         Route::get('/', [StatusController::class, 'index']);
-        Route::get('/type/{type}', [StatusController::class, 'type']);
+        Route::get('/{id}', [StatusController::class, 'show']);
     });
 
     Route::prefix('address')->group( function () {

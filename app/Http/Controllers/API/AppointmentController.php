@@ -19,9 +19,12 @@ class AppointmentController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $appointments = IndexActiveService::run($request->all(), [
-            'order.client', 'order.address'
-        ], true);
+        $appointments = IndexActiveService::run(
+            $request->query(), 
+            $request->get('relations', ['order.client', 'order.address']),
+            $request->get('pagination', true),
+            $request->get('itemsPerPage', 20),
+        );
 
         return $this->sendResponse($appointments, 'Appointments retrieved successfully.');
     }

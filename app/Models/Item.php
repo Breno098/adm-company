@@ -37,9 +37,18 @@ class Item extends Model
         });
     }
     
-    public function scopeOfType($query, $type)
+    public function scopeOfType(Builder $builder, $type)
     {
-        return $query->where('type', $type);
+        return $builder->when($type, function (Builder $builder, $type) {
+            return $builder->where('type', $type);
+        });
+    }
+
+    public function scopeFilterByName(Builder $builder, $name)
+    {
+        return $builder->when($name, function (Builder $builder, $name) {
+            return $builder->where('name', 'like', "%{$name}%");
+        });
     }
 
     public function order()

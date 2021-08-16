@@ -7,12 +7,16 @@ use App\Models\Client;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\Status;
+use App\Services\Order\DestroyService;
+use App\Services\Order\IndexActiveService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends BaseControllerApi
 {
+    /** 290 lines */
+
     /**
      * Display a listing of the resource.
      *
@@ -20,12 +24,12 @@ class OrderController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $filters = $request->except(['page']);
-
-        $orders = Order::with(['client','address'])
-                        ->orderBy('created_at', 'desc')
-                        ->where($filters)
-                        ->paginate(10);
+        $orders = IndexActiveService::run(
+            $request->query(), 
+            $request->get('relations', ['client','address']),
+            $request->get('pagination', true),
+            $request->get('itemsPerPage', 10),
+        );
 
         return $this->sendResponse($orders, 'Orders retrieved successfully.');
     }
@@ -264,28 +268,8 @@ class OrderController extends BaseControllerApi
      */
     public function destroy(Int $id)
     {
-        $order = Order::find($id);
-
-        if (is_null($order)) {
-            return $this->sendError('Order not found.');
-        }
-
-        $order->active = false;
-        $order->save();
-
+        DestroyService::run($id);
+        
         return $this->sendResponse([], 'Order deleted successfully.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function lastId()
-    {
-        $lastId = Order::latest()->first()->id + 1;
-
-        return $this->sendResponse($lastId, 'Last ID Order');
     }
 }

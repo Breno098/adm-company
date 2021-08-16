@@ -39,6 +39,20 @@ class Order extends Model
         'status',
     ];
 
+    protected static function booted()
+    {
+        static::addGlobalScope('active-order', function (Builder $builder) {
+            $builder->where('active', true);
+        });
+    }
+
+    public function scopeFilterByStatusId(Builder $builder, $statusId)
+    {
+        return $builder->when($statusId, function (Builder $builder, $statusId) {
+            return $builder->where('status_id', $statusId);
+        });
+    }
+
     public function status()
     {
         return $this->belongsTo(Status::class);

@@ -6,7 +6,7 @@ use App\Models\Status;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
-class IndexActiveStatusService
+class IndexActiveService
 {
     /**
      * @param  array  $filters
