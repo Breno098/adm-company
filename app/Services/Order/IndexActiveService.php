@@ -10,9 +10,9 @@ class IndexActiveService
 {
     /**
      * @param  array  $filters
+     * @param  array  $relations
      * @param  bool  $pagination
      * @param  int  $itemsPerPage
-     * @param  array  $relations
      *
      * @return mixed
      */

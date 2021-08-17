@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Address;
-use App\Models\Client;
-use App\Models\Item;
 use App\Models\Order;
-use App\Models\Status;
+use Illuminate\Http\Request;
+use App\Http\Requests\OrderRequest;
 use App\Services\Order\DestroyService;
 use App\Services\Order\IndexActiveService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-
+use App\Services\Order\ShowService;
+use App\Services\Order\StoreService;
+use App\Services\Order\UpdateService;
 class OrderController extends BaseControllerApi
 {
     /** 290 lines */
@@ -40,89 +37,18 @@ class OrderController extends BaseControllerApi
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
-        $input = $request->all();
+        $data = $request->validated();
 
-        $validator = Validator::make($input, [
-            'client_id' => 'required',
-        ]);
+        $order = StoreService::run($data);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        $input['technical_visit'] = $input['technical_visit_date'] . ' ' . $input['technical_visit_hour'];
-
-        
-        $order = Order::create($input);
-
-        foreach ($input['products'] as $product) {
-            if(!isset($product['id'])){
-                continue;
-            }
-
-            if(!isset($product['value'])){
-                $itemTypeProduct = Item::ofType('product')->find($product['id']);
-            }
-
-            $order->products()->attach($product['id'], [
-                'quantity'  => isset($product['quantity']) ? $product['quantity'] : 1,
-                'value'     => isset($product['value']) ? $product['value'] : $itemTypeProduct->default_value
-            ]);
-        }
-
-        foreach ($input['services'] as $service) {
-            if(!isset($service['id'])){
-                continue;
-            }
-
-            if(!isset($service['value'])){
-                $itemTypeService = Item::ofType('service')->find($service['id']);
-            }
-
-            $order->services()->attach($service['id'], [
-                'quantity'  => isset($service['quantity']) ? $service['quantity'] : 1,
-                'value'     => isset($service['value']) ? $service['value'] : $itemTypeService->default_value
-            ]);
-        }
-
-        foreach ($input['payments'] as $payment) {
-            if(!isset($payment['value'])){
-                continue;
-            }
-
-            $order->payments()->attach($payment['id'], [
-                'value'     => isset($payment['value']) ? $payment['value'] : 0
-            ]);
-        }
-
-        if($client_id = $input['client_id']){
-            $client = Client::find($client_id);
-            $order->client()->associate($client);
-        }
-
-        if($status_id = $input['status_id']){
-            $status = Status::find($status_id);
-            $order->status()->associate($status);
-        }
-
-        if($address_id = $input['address_id']){
-            $address = Address::find($address_id);
-            $order->address()->associate($address);
-        }
-
-        $order->save();
-
-        $order->load([
+        $order = ShowService::run($order, [
             'client.contacts',
             'address',
             'products',
             'services',
             'payments'
-        ])->append([
-            'technical_visit_date',
-            'technical_visit_hour'
         ]);
 
         return $this->sendResponse($order, 'Order created successfully.');
@@ -134,23 +60,14 @@ class OrderController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Order $order)
     {
-        $order = Order::find($id);
-
-        if (is_null($order)) {
-            return $this->sendError('Order not found.');
-        }
-
-        $order->load([
+        $order = ShowService::run($order, [
             'client.contacts',
             'address',
             'products',
             'services',
             'payments'
-        ])->append([
-            'technical_visit_date',
-            'technical_visit_hour'
         ]);
 
         return $this->sendResponse($order, 'Order retrieved successfully.');
@@ -163,98 +80,18 @@ class OrderController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Int $id)
+    public function update(OrderRequest $request, Order $order)
     {
-        $order = Order::find($id);
+        $data = $request->validated();
 
-        if (is_null($order)) {
-            return $this->sendError('Order not found.');
-        }
+        $order = UpdateService::run($order, $data);
 
-        $input = $request->all();
-
-        $validator = Validator::make($input, [
-            'client_id' => 'required',
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        $input['technical_visit'] = $input['technical_visit_date'] . ' ' . $input['technical_visit_hour'];
-
-        $order->update($input);
-
-        $order->products()->sync([]);
-        $order->services()->sync([]);
-        $order->payments()->sync([]);
-
-        foreach ($input['products'] as $product) {
-            if(!isset($product['id'])){
-                continue;
-            }
-
-            if(!isset($product['value'])){
-                $itemTypeProduct = Item::ofType('product')->find($product['id']);
-            }
-
-            $order->products()->attach($product['id'], [
-                'quantity'  => isset($product['quantity']) ? $product['quantity'] : 1,
-                'value'     => isset($product['value']) ? $product['value'] : $itemTypeProduct->default_value
-            ]);
-        }
-
-        foreach ($input['services'] as $service) {
-            if(!isset($service['id'])){
-                continue;
-            }
-
-            if(!isset($service['value'])){
-                $itemTypeService = Item::ofType('service')->find($service['id']);
-            }
-
-            $order->services()->attach($service['id'], [
-                'quantity'  => isset($service['quantity']) ? $service['quantity'] : 1,
-                'value'     => isset($service['value']) ? $service['value'] : $itemTypeService->default_value
-            ]);
-        }
-
-        foreach ($input['payments'] as $payment) {
-            if(!isset($payment['value'])){
-                continue;
-            }
-
-            $order->payments()->attach($payment['id'], [
-                'value'     => isset($payment['value']) ? $payment['value'] : 0
-            ]);
-        }
-
-        if($client_id = $input['client_id']){
-            $client = Client::find($client_id);
-            $order->client()->associate($client);
-        }
-
-        if($status_id = $input['status_id']){
-            $status = Status::find($status_id);
-            $order->status()->associate($status);
-        }
-
-        if($address_id = $input['address_id']){
-            $address = Address::find($address_id);
-            $order->address()->associate($address);
-        }
-
-        $order->save();
-
-        $order->load([
+        $order = ShowService::run($order, [
             'client.contacts',
             'address',
             'products',
             'services',
             'payments'
-        ])->append([
-            'technical_visit_date',
-            'technical_visit_hour'
         ]);
 
         return $this->sendResponse($order, 'Order updated successfully.');

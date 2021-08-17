@@ -55,6 +55,7 @@ Route::middleware('auth:api')->group( function () {
     Route::apiResource('client', ClientController::class);
     Route::apiResource('category', CategoryController::class);
     Route::apiResource('status', StatusController::class);
+    Route::apiResource('order', OrderController::class);
 
     Route::prefix('item')->group( function () {
         Route::get('/', [ItemController::class, 'index']);
@@ -74,13 +75,5 @@ Route::middleware('auth:api')->group( function () {
         Route::post('/', [AppointmentController::class, 'store']);
         Route::put('/{id}', [AppointmentController::class, 'update']);
         Route::delete('/{id}', [AppointmentController::class, 'destroy']);
-    });
-
-    Route::prefix('order')->group( function () {
-        Route::get('/', [OrderController::class, 'index']);
-        Route::get('/{id}', [OrderController::class, 'show']);
-        Route::post('/', [OrderController::class, 'store']);
-        Route::put('/{id}', [OrderController::class, 'update']);
-        Route::delete('/{id}', [OrderController::class, 'destroy']);
     });
 });

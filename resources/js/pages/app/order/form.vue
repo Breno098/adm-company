@@ -664,7 +664,6 @@ export default {
 
       this.loading = true;
       await axios.get(`api/order/${id}`).then(response => {
-        console.log(response.data);
         if(response.data.success){
           return this.order = response.data.data;
         }

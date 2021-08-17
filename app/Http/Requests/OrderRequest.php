@@ -35,7 +35,19 @@ class OrderRequest extends FormRequest
             'warranty_days' => 'nullable|integer',
             'warranty_conditions' => 'nullable|string',
             'installments' => 'nullable',
-            'comments' => 'nullable|string'
+            'comments' => 'nullable|string',
+
+            'technical_visit_date' => 'nullable',
+            'technical_visit_hour' => 'nullable',
+
+            /** Relations */
+            'client_id' => 'required',
+            'order_id' => 'nullable',
+            'status_id' => 'nullable',
+            'address_id' => 'nullable',
+            'products' => 'nullable|array',
+            'services' => 'nullable|array',
+            'payments' => 'nullable|array'
         ];
     }
 }

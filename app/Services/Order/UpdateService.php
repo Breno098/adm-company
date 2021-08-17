@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services\Item;
+namespace App\Services\Order;
 
 use App\Models\Item;
+use App\Models\Order;
 use Illuminate\Support\Arr;
 
 class UpdateService
@@ -13,22 +14,62 @@ class UpdateService
      *
      * @return mixed
      */
-    static public function run($id, array $data = [])
+    static public function run(Order $order, array $data = [])
     {
-        $item = Item::find($id);
+        $data['technical_visit'] = Arr::get($data, 'technical_visit_date') . ' ' . Arr::get($data, 'technical_visit_hour');
 
-        if(!$item){
-            return $item;
+        $order->update($data);
+
+        $order->client()->associate(Arr::get($data, 'client_id'));
+        $order->status()->associate(Arr::get($data, 'status_id'));
+        $order->address()->associate(Arr::get($data, 'address_id'));
+
+        $order->products()->sync([]);
+        $order->services()->sync([]);
+        $order->payments()->sync([]);
+
+        foreach ($data['products'] as $product) {
+            if(!isset($product['id'])){
+                continue;
+            }
+
+            if(!isset($product['value'])){
+                $itemTypeProduct = Item::find($product['id']);
+            }
+
+            $order->products()->attach($product['id'], [
+                'quantity'  => isset($product['quantity']) ? $product['quantity'] : 1,
+                'value'     => isset($product['value']) ? $product['value'] : $itemTypeProduct->default_value
+            ]);
         }
 
-        $item->update($data);
+        foreach ($data['services'] as $service) {
+            if(!isset($service['id'])){
+                continue;
+            }
 
-        $item->categories()->sync(Arr::get($data, 'categories'));
+            if(!isset($service['value'])){
+                $itemTypeService = Item::find($service['id']);
+            }
 
-        $item->status()->associate(Arr::get($data, 'status_id'));
+            $order->services()->attach($service['id'], [
+                'quantity'  => isset($service['quantity']) ? $service['quantity'] : 1,
+                'value'     => isset($service['value']) ? $service['value'] : $itemTypeService->default_value
+            ]);
+        }
 
-        $item->save();
+        foreach ($data['payments'] as $payment) {
+            if(!isset($payment['value'])){
+                continue;
+            }
 
-        return $item;
+            $order->payments()->attach($payment['id'], [
+                'value'     => isset($payment['value']) ? $payment['value'] : 0
+            ]);
+        }
+
+        $order->save();
+
+        return $order;
     }
 }

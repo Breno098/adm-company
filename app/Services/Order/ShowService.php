@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Services\Item;
+namespace App\Services\Order;
 
-use App\Models\Item;
-
+use App\Models\Order;
 class ShowService
 {
     /**
@@ -12,16 +11,13 @@ class ShowService
      *
      * @return mixed
      */
-    static public function run($id, array $relations = [])
+    static public function run(Order $order, array $relations = [])
     {
-       $item = Item::find($id);
+        $order->load($relations)->append([
+            'technical_visit_date',
+            'technical_visit_hour'
+        ]);
 
-       if (is_null($item)) {
-            return [];
-        }
-
-        $item->load($relations);
-        
-        return $item;
+        return $order;
     }
 }

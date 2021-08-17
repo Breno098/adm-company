@@ -112,10 +112,8 @@ export default {
       await this._loadStatuses();
     },
     async _loadStatuses(){
-      let params = { type: 'order' }
-
       this.loading = true;
-      await axios.get(`api/status`, { params }).then(response => {
+      await axios.get(`api/status?type=order`).then(response => {
         if(response.data.success){
           return this.statuses = response.data.data;
         }
