@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Requests\CategoryRequest;
+use App\Models\Category;
+use App\Services\Category\DestroyService;
+use App\Services\Category\IndexActiveService;
+use App\Services\Category\ShowService;
+use App\Services\Category\UpdateService;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends BaseControllerApi
@@ -13,11 +18,14 @@ class CategoryController extends BaseControllerApi
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::where('active', true)
-                            ->orderby('name')
-                            ->get();
+        $categories = IndexActiveService::run(
+            $request->query(), 
+            $request->get('relations', []),
+            $request->get('pagination', false),
+            $request->get('itemsPerPage', 20),
+        );
 
         return $this->sendResponse($categories, 'Category retrieved successfully.');
     }
@@ -28,19 +36,11 @@ class CategoryController extends BaseControllerApi
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $input = $request->all();
+        $data = $request->validated();
 
-        $validator = Validator::make($input, [
-            'name' => 'required',
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        $client = Category::create($input);
+        $client = Category::create($data);
 
         return $this->sendResponse($client, 'Category created successfully.');
     }
@@ -51,15 +51,9 @@ class CategoryController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Category $category)
     {
-        $category = Category::where('active', true)
-                            ->where('id', $id)
-                            ->first();
-
-        if (is_null($category)) {
-            return $this->sendError('Category not found.');
-        }
+        $category = ShowService::run($category);
 
         return $this->sendResponse($category, 'Category retrieved successfully.');
     }
@@ -71,25 +65,11 @@ class CategoryController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Int $id)
+    public function update(CategoryRequest $request, Category $category)
     {
-        $category = Category::find($id);
+        $data = $request->validated();
 
-        if (is_null($category)) {
-            return $this->sendError('Category not found.');
-        }
-
-        $input = $request->all();
-
-        $validator = Validator::make($input, [
-            'name' => 'required',
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        $category->update($input);
+        $category = UpdateService::run($category, $data);
 
         return $this->sendResponse($category, 'Category updated successfully.');
     }
@@ -100,16 +80,9 @@ class CategoryController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Int $id)
+    public function destroy(Category $category)
     {
-        $category = Category::find($id);
-
-        if (is_null($category)) {
-            return $this->sendError('Category not found.');
-        }
-
-        $category->active = false;
-        $category->save();
+        DestroyService::run($category);
 
         return $this->sendResponse([], 'Client deleted successfully.');
     }

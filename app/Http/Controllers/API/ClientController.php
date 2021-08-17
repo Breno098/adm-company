@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
+use App\Models\Client;
 use App\Services\Client\DestroyService;
 use App\Services\Client\IndexActiveService;
 use App\Services\Client\StoreService;
@@ -19,9 +20,12 @@ class ClientController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $clients = IndexActiveService::run($request->all(), [
-            'addresses'
-        ]);
+        $clients = IndexActiveService::run(
+            $request->query(), 
+            $request->get('relations', ['addresses']),
+            $request->get('pagination', false),
+            $request->get('itemsPerPage', 20),
+        );
 
         return $this->sendResponse($clients, 'Clients retrieved successfully.');
     }
@@ -47,9 +51,9 @@ class ClientController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Client $client)
     {
-        $client = ShowService::run($id, [ 'addresses', 'contacts' ]);
+        $client = ShowService::run($client, [ 'addresses', 'contacts' ]);
 
         return $this->sendResponse($client, 'Client retrieved successfully.');
     }
@@ -61,11 +65,11 @@ class ClientController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ClientRequest $request, Int $id)
+    public function update(ClientRequest $request, Client $client)
     {
         $data = $request->validated();
 
-        $client = UpdateService::run($id, $data);
+        $client = UpdateService::run($client, $data);
 
         return $this->sendResponse($client, 'Client updated successfully.');
     }
@@ -76,9 +80,9 @@ class ClientController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Int $id)
+    public function destroy(Client $client)
     {
-        DestroyService::run($id);
+        DestroyService::run($client);
 
         return $this->sendResponse([], 'Client deleted successfully.');
     }

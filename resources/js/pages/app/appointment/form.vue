@@ -8,6 +8,8 @@
           dense
           label="TITULO"
           :loading="loading"
+          :rules="[rules.required]"
+          :error="errors.title && !appointment.title"
         ></v-text-field>
       </v-col>
 
@@ -21,6 +23,8 @@
           outlined
           dense
           :loading="loading"
+          :rules="[rules.required]"
+          :error="errors.status_id && !appointment.status_id"
         ></v-select>
       </v-col>
 
@@ -244,12 +248,12 @@ export default {
     menu_date_end: false,
     menu_time_end: false,
     appointment: {
-      title: '',
+      title: null,
       date_start : format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
       hour_start : '',
       date_end: format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
       hour_end : '',
-      description: '',
+      description: null,
       order_id: null,
       status_id: null
     },
@@ -261,8 +265,11 @@ export default {
       status: null
     },
     errors: {
-      name: false,
-      type: false
+      title: false,
+      status_id: false
+    },
+    rules: {
+      required: value => !!value || 'Campo obrigatório.',
     },
   }),
   computed: {
@@ -327,6 +334,14 @@ export default {
       this.loadingStatuses = false;
     },
     async _store(){
+      if(!this.appointment.title){
+        return this.errors.title = true;
+      }
+
+      if(!this.appointment.status_id){
+        return this.errors.status_id = true;
+      }
+
       let id = this.$route.params.id;
 
       this.loading = true;

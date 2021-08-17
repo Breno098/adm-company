@@ -11,14 +11,8 @@ class DestroyService
      *
      * @return mixed
      */
-    static public function run($id)
+    static public function run(Client $client)
     {
-       $client = Client::find($id);
-
-        if (is_null($client)) {
-            return [];
-        }
-
         $client->active = false;
         $client->save();
         

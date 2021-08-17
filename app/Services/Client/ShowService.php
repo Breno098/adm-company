@@ -14,14 +14,8 @@ class ShowService
      *
      * @return mixed
      */
-    static public function run($id, array $relations = [])
+    static public function run(Client $client, array $relations = [])
     {
-       $client = Client::find($id);
-
-       if (is_null($client)) {
-            return [];
-        }
-
         $client->load($relations);
         
         return $client;

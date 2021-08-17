@@ -18,9 +18,11 @@ export default [
   { path: '/category', name: 'category.index', component: page('app/category/list.vue') },
   { path: '/category/:id?', name: 'category.form', component: page('app/category/form.vue') },
 
-  { path: '/item', name: 'item.index', component: page('app/item/list.vue') },
-  { path: '/item/:id?', name: 'item.form', component: page('app/item/form.vue') },
+  { path: '/product', name: 'product.index', component: page('app/product/list.vue')},
+  { path: '/product/:id?', name: 'product.form', component: page('app/product/form.vue') },
 
+  { path: '/service', name: 'service.index', component: page('app/service/list.vue')},
+  { path: '/service/:id?', name: 'service.form', component: page('app/service/form.vue') },
 
   { path: '/login', name: 'login', component: page('auth/login.vue') },
   { path: '/register', name: 'register', component: page('auth/register.vue') },

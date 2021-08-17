@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StatusRequest extends FormRequest
+class CategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,8 @@ class StatusRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'color' => 'required|string',
-            'type' => 'required|in:order, client, appointment, item'
+            'description' => 'nullable|string',
+            'icon' => 'nullable|string',
         ];
     }
 }

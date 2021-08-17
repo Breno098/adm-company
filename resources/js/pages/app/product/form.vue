@@ -29,22 +29,6 @@
 
       <v-col cols="12" md="6">
         <v-select
-          v-model="item.type"
-          vali
-          :items="item_types"
-          item-text="label"
-          item-value="value"
-          label="TIPO"
-          outlined
-          dense
-          :loading="loading"
-          :rules="[rules.required]"
-          :error="errors.type && !item.type"
-        ></v-select>
-      </v-col>
-
-      <v-col cols="12" md="4">
-        <v-select
           v-model="item.categories"
           vali
           :items="categories"
@@ -58,7 +42,7 @@
         ></v-select>
       </v-col>
 
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-text-field
           label="MARCA"
           outlined
@@ -68,7 +52,7 @@
         ></v-text-field>
       </v-col>
 
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-select
           v-model="item.unit_measure"
           :items="unit_measures"
@@ -165,8 +149,8 @@
       </v-col>
 
       <v-col cols="12">
-          <v-btn color="green darken-1" @click="_store" :loading="loading">
-              Salvar &nbsp; <v-icon dark>mdi-content-save</v-icon>
+          <v-btn color="green darken-1" @click="_store" :loading="loading" rounded>
+              Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
           </v-btn>
       </v-col>
     </v-row>
@@ -205,7 +189,6 @@ export default {
     },
     errors: {
       name: false,
-      type: false
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
@@ -226,13 +209,6 @@ export default {
     },
     categories: [],
     statuses: [],
-    item_types: [{
-      label: 'Produto',
-      value: 'product'
-    }, {
-      label: 'Serviço',
-      value: 'service'
-    }],
     unit_measures: [{
       label: 'cm (centimetros)',
       value: 'cm'
@@ -301,7 +277,7 @@ export default {
     },
     async _loadStatuses(){
       this.loading = true;
-      await axios.get(`api/status/type/item`).then(response => {
+      await axios.get(`api/status?type=item`).then(response => {
         if(response.data.success){
           return this.statuses = response.data.data;
         }
@@ -315,11 +291,9 @@ export default {
         return this.errors.name = true;
       }
 
-      if(!this.item.type){
-        return this.errors.type = true;
-      }
-
       let id = this.$route.params.id;
+
+      this.item.type = 'service';
 
       this.loading = true;
       this.dialog.show = true;

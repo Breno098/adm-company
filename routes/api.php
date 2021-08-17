@@ -51,22 +51,10 @@ Route::middleware('auth:api')->group( function () {
     Route::prefix('home')->group( function () {
         Route::get('/appointment', [HomeController::class, 'appointment']);
     });
-
-    Route::prefix('client')->group( function () {
-        Route::get('/', [ClientController::class, 'index']);
-        Route::get('/{id}', [ClientController::class, 'show']);
-        Route::post('/', [ClientController::class, 'store']);
-        Route::put('/{id}', [ClientController::class, 'update']);
-        Route::delete('/{id}', [ClientController::class, 'destroy']);
-    });
-
-    Route::prefix('category')->group( function () {
-        Route::get('/', [CategoryController::class, 'index']);
-        Route::get('/{id}', [CategoryController::class, 'show']);
-        Route::post('/', [CategoryController::class, 'store']);
-        Route::put('/{id}', [CategoryController::class, 'update']);
-        Route::delete('/{id}', [CategoryController::class, 'destroy']);
-    });
+    
+    Route::apiResource('client', ClientController::class);
+    Route::apiResource('category', CategoryController::class);
+    Route::apiResource('status', StatusController::class);
 
     Route::prefix('item')->group( function () {
         Route::get('/', [ItemController::class, 'index']);
@@ -74,20 +62,8 @@ Route::middleware('auth:api')->group( function () {
         Route::post('/', [ItemController::class, 'store']);
         Route::put('/{id}', [ItemController::class, 'update']);
         Route::delete('/{id}', [ItemController::class, 'destroy']);
-
-        Route::get('/type/{type}', [ItemController::class, 'type']);
     });
 
-    Route::prefix('status')->group( function () {
-        Route::get('/', [StatusController::class, 'index']);
-        Route::get('/{id}', [StatusController::class, 'show']);
-    });
-
-    Route::prefix('address')->group( function () {
-        Route::get('/', [AddressController::class, 'index']);
-        Route::get('/client/{id}', [AddressController::class, 'byClient']);
-    });
-    
     Route::prefix('payment')->group( function () {
         Route::get('/', [PaymentController::class, 'index']);
     });

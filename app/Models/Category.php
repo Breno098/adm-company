@@ -28,6 +28,13 @@ class Category extends Model
         });
     }
 
+    public function scopeFilterByName(Builder $builder, $name)
+    {
+        return $builder->when($name, function (Builder $builder, $name) {
+            return $builder->where('name', 'like', "%{$name}%");
+        });
+    }
+
     public function items()
     {
         return $this->belongsToMany(Item::class, 'item_category', 'item_id', 'category_id');

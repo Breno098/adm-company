@@ -37,7 +37,7 @@ class Item extends Model
         });
     }
     
-    public function scopeOfType(Builder $builder, $type)
+    public function scopeFilterByType(Builder $builder, $type)
     {
         return $builder->when($type, function (Builder $builder, $type) {
             return $builder->where('type', $type);

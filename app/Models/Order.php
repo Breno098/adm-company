@@ -76,7 +76,7 @@ class Order extends Model
     public function products()
     {
         return $this->items()
-                ->ofType('product')
+                ->filterByType('product')
                 ->select([
                     'items.id',
                     'item_order.quantity',
@@ -88,7 +88,7 @@ class Order extends Model
     public function services()
     {
         return $this->items()
-            ->ofType('service')
+            ->filterByType('service')
             ->select([
                 'items.id',
                 'item_order.quantity',

@@ -4,7 +4,7 @@
       <v-col cols="12" md="6">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="blue" @click="$router.go(-1)" v-bind="attrs" v-on="on" class="mx-3">
+            <v-btn color="blue" @click="$router.go(-1)" v-bind="attrs" v-on="on" class="mx-3" rounded>
               Voltar <v-icon dark>mdi-arrow-left-bold</v-icon>
             </v-btn>
           </template>
@@ -14,7 +14,7 @@
       <v-col cols="12" md="6" class="d-flex flex-row justify-end">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="green darken-1" @click="_store(true)" :loading="loading" v-bind="attrs" v-on="on" class="mx-3">
+            <v-btn color="green darken-1" @click="_store(true)" :loading="loading" v-bind="attrs" v-on="on" class="mx-3" rounded>
               <v-icon dark>mdi-content-save</v-icon>
             </v-btn>
           </template>
@@ -22,7 +22,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="grey lighten-2" @click="_generateDoc('budget')" :loading="loading" v-bind="attrs" v-on="on" class="mx-3">
+            <v-btn color="grey" @click="_generateDoc('budget')" :loading="loading" v-bind="attrs" v-on="on" class="mx-3" rounded dark>
               <v-icon>mdi-file-document</v-icon>
             </v-btn>
           </template>
@@ -30,7 +30,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="grey lighten-2" @click="_generateDoc('serviceorder')" :loading="loading" v-bind="attrs" v-on="on" class="mx-3">
+            <v-btn color="grey lighten-1" @click="_generateDoc('serviceorder')" :loading="loading" v-bind="attrs" v-on="on" class="mx-3" rounded>
               <v-icon>mdi-file-export</v-icon>
             </v-btn>
           </template>
@@ -38,7 +38,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="orange" @click="_generateAppointment" :loading="loading" v-bind="attrs" v-on="on" class="mx-3">
+            <v-btn color="orange" @click="_generateAppointment" :loading="loading" v-bind="attrs" v-on="on" class="mx-3" rounded>
               <v-icon dark>mdi-calendar-today</v-icon>
             </v-btn>
           </template>
@@ -48,8 +48,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <div class="text-h6 blue--text"> Order de Serviço {{ order ? order.id : '' }} </div>
-        <v-divider color="grey"/>
+        <div class="text-h6 blue--text mb-3"> Order de Serviço {{ order ? '| ' + order.id : '' }} </div>
       </v-col>
     </v-row>
 
@@ -61,7 +60,7 @@
       <v-tab>Pagamento <v-icon class="ml-2">mdi-cash</v-icon></v-tab>
     </v-tabs>
 
-    <v-tabs-items v-model="tab" class="pt-5">
+    <v-tabs-items v-model="tab" class="pt-5 px-3">
       <!-- Informações -->
       <v-tab-item>
         <v-row>
@@ -254,7 +253,7 @@
           <v-col cols="12" v-for="(product, index) in order.products" :key="product.id">
             <v-row>
               <v-col cols="12" class="d-flex flex-row justify-end">
-                <v-btn color="red" @click="order.products.splice(index, 1);" :loading="loading" small>
+                <v-btn color="red" @click="order.products.splice(index, 1);" :loading="loading" small rounded>
                   <v-icon color="red darken-4">mdi-delete</v-icon>
                 </v-btn>
               </v-col>
@@ -322,7 +321,7 @@
           </v-col>
 
           <v-col cols="12" class="d-flex flex-row justify-end">
-            <v-btn color="green" @click="order.products.push({})" :loading="loading" small>
+            <v-btn color="green" @click="order.products.push({})" :loading="loading" small rounded>
               Adicionar produto <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-col>
@@ -337,7 +336,7 @@
           <v-col cols="12" v-for="(service, index) in order.services" :key="service.id">
             <v-row>
               <v-col cols="12" class="d-flex flex-row justify-end">
-                <v-btn color="red" @click="order.services.splice(index, 1);" :loading="loading" small>
+                <v-btn color="red" @click="order.services.splice(index, 1);" :loading="loading" small rounded>
                   <v-icon color="red darken-4">mdi-delete</v-icon>
                 </v-btn>
               </v-col>
@@ -405,7 +404,7 @@
           </v-col>
 
           <v-col cols="12" class="d-flex flex-row justify-end">
-            <v-btn color="green" @click="order.services.push({})" :loading="loading" small>
+            <v-btn color="green" @click="order.services.push({})" :loading="loading" small rounded>
               Adicionar produto <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-col>
@@ -462,7 +461,7 @@
           <v-col cols="12" v-for="(payment, index) in order.payments" :key="index">
             <v-row>
               <v-col cols="12" class="d-flex flex-row justify-end">
-                <v-btn color="red" @click="order.payments.splice(index, 1);" :loading="loading" small>
+                <v-btn color="red" @click="order.payments.splice(index, 1);" :loading="loading" small rounded>
                   <v-icon color="red darken-4">mdi-delete</v-icon>
                 </v-btn>
               </v-col>
@@ -504,7 +503,7 @@
           </v-col>
 
           <v-col cols="12" class="d-flex flex-row justify-end">
-            <v-btn color="green" @click="order.payments.push({})" :loading="loading" small>
+            <v-btn color="green" @click="order.payments.push({})" :loading="loading" small rounded>
               Adicionar pagamento <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-col>
@@ -528,14 +527,17 @@
 
     <v-row>
       <v-col cols="12">
-          <v-btn color="green darken-1" @click="_store(true)" :loading="loading">
+          <v-btn color="green darken-1" @click="_store(true)" :loading="loading" rounded>
               Salvar <v-icon dark>mdi-content-save</v-icon>
           </v-btn>
-          <v-btn color="grey lighten-2" @click="_generateDoc('budget')" :loading="loading">
+          <v-btn color="grey lighten-2" @click="_generateDoc('budget')" :loading="loading" rounded>
               Orçamento <v-icon dark>mdi-file-document</v-icon>
           </v-btn>
-          <v-btn color="grey lighten-2" @click="_generateDoc('serviceorder')" :loading="loading">
+          <v-btn color="grey lighten-2" @click="_generateDoc('serviceorder')" :loading="loading" rounded>
               Ordem de Serviço <v-icon dark>mdi-file-export</v-icon>
+          </v-btn>
+          <v-btn color="orange" @click="_generateAppointment" :loading="loading" rounded>
+              Agendar Compromisso <v-icon dark>mdi-calendar-today</v-icon>
           </v-btn>
       </v-col>
     </v-row>
@@ -689,17 +691,10 @@ export default {
       this.loadingClients = false;
     },
     async _loadAddresses(){
-      this.loadingAddresses = true;
-      let client_id = await this.order.client_id;
+      let test = this.clients.filter(client => client.id === this.order.client_id);
 
-      await axios.get(`api/address/client/${client_id}`).then(response => {
-        if(response.data.success){
-          this.order.address_id =  response.data.data[0].id ?? null;
-          return this.addresses = response.data.data;
-        }
-        this._modal('Error ao carregar endereços', 'error');
-      });
-      this.loadingAddresses = false;
+      this.order.address_id =  test[0].addresses[0].id ?? null;
+      this.addresses = test[0].addresses;
     },
     async _loadStatuses(){
       let params = { type: 'order' };
@@ -715,7 +710,7 @@ export default {
     },
     async _loadProducts(){
       this.loadingProducts = true;
-      await axios.get(`api/item/type/product`).then(response => {
+      await axios.get(`api/item?type=product`).then(response => {
         if(response.data.success){
           return this.products = response.data.data;
         }
@@ -725,7 +720,7 @@ export default {
     },
     async _loadServices(){
       this.loadingServices = true;
-      await axios.get(`api/item/type/service`).then(response => {
+      await axios.get(`api/item?type=service`).then(response => {
         if(response.data.success){
           return this.services = response.data.data;
         }

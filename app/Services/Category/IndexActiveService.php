@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Item;
+namespace App\Services\Category;
 
-use App\Models\Item;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
@@ -18,8 +18,8 @@ class IndexActiveService
      */
     static public function run(array $filters = [], array $relations = [], bool $pagination = false, int $itemsPerPage = 20)
     {
-        return Item::with($relations)
-            ->filterByType(Arr::get($filters, 'type'))
+        return Category::with($relations)
+            ->filterByName(Arr::get($filters, 'name'))
             ->orderby('name')
             ->when(
                 $pagination,

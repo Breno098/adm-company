@@ -12,14 +12,8 @@ class UpdateService
      *
      * @return mixed
      */
-    static public function run($id, array $data = [])
+    static public function run(Client $client, array $data = [])
     {
-        $client = Client::find($id);
-
-        if(!$client){
-            return $client;
-        }
-
         $client->update($data);
 
         $client->contacts()->update(['active' => false]);

@@ -35,8 +35,8 @@
       </v-col>
 
       <v-col cols="12">
-          <v-btn color="green darken-1" @click="_store" :loading="loading">
-              Salvar &nbsp; <v-icon dark>mdi-content-save</v-icon>
+          <v-btn color="green darken-1" @click="_store" :loading="loading" rounded>
+              Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
           </v-btn>
       </v-col>
     </v-row>

@@ -2,28 +2,25 @@
   <div>
     <v-row>
       <v-col cols="12">
-        <v-btn dark color="blue" @click="_add" rounded>
+        <v-btn color="blue" @click="_add" rounded dark>
             Adicionar <v-icon dark>mdi-plus</v-icon>
         </v-btn>
       </v-col>
+
       <v-col cols="12">
         <v-simple-table>
           <template v-slot:default>
             <thead>
               <tr>
                 <th class="text-left">NOME</th>
-                <th class="text-left">NOME FANTASIA</th>
-                <th class="text-left">TIPO</th>
-                <th class="text-left">DOCUMENTO</th>
+                <th class="text-left">VALOR</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="client in table.clients" :key="client.id">
-                <td>{{ client.name }}</td>
-                <td>{{ client.fantasy_name }}</td>
-                <td>{{ client.type }}</td>
-                <td>{{ client.document }}</td>
+              <tr v-for="item in table.items" :key="item.id">
+                <td>{{ item.name }}</td>
+                <td>{{ item.default_value }}</td>
                 <td>
                   <v-menu transition="slide-y-transition" bottom>
                       <template v-slot:activator="{ on, attrs }">
@@ -33,7 +30,7 @@
                       </template>
 
                       <v-list nav dense>
-                          <v-list-item v-on:click="_edit(client.id)">
+                          <v-list-item v-on:click="_edit(item.id)">
                               <v-list-item-icon>
                                   <v-icon outlined color="green">mdi-pencil</v-icon>
                               </v-list-item-icon>
@@ -41,7 +38,7 @@
                                   <v-list-item-title> Editar </v-list-item-title>
                               </v-list-item-content>
                           </v-list-item>
-                          <v-list-item v-on:click="confirmDelete(client)">
+                          <v-list-item v-on:click="confirmDelete(item)">
                               <v-list-item-icon>
                                   <v-icon outlined color="red">mdi-delete</v-icon>
                               </v-list-item-icon>
@@ -99,8 +96,11 @@
 import axios from 'axios';
 
 export default {
+  props: {
+    type: String
+  },
   metaInfo () {
-    return { title: 'Clientes' }
+    return { title: 'Serviços' }
   },
   data: () => ({
     dialog: false,
@@ -110,7 +110,7 @@ export default {
       filters: {},
       page: 1,
       pageCount: 0,
-      clients: [],
+      items: [],
       loading: false,
     }
   }),
@@ -119,22 +119,24 @@ export default {
   },
   methods: {
     async _load(){
+      this.table.filters.type = 'service';
+      
       let params = { 
         page: this.table.page, 
         pagination: true,
         itemsPerPage: 20,
-        ...this.filters 
+        ...this.table.filters 
       }
 
       this.table.loading = true;
-      await axios.get('api/client', { params }).then(response => {
+      await axios.get('api/item', { params }).then(response => {
         if(response.data.data.data.length === 0 && this.table.page != 1){
           this.table.page = 1;
           this._load()
         }
 
         if(response.data.success){
-            this.table.clients = response.data.data.data;
+            this.table.items = response.data.data.data;
             this.table.pageCount = response.data.data.last_page;
             this.table.loading = false;
         }
@@ -142,15 +144,12 @@ export default {
     },
     async _delete(){
       this.table.loading = true;
-      await axios.delete(`api/client/${this.deleted.id}`).then(response => {
+      await axios.delete(`api/item/${this.deleted.id}`).then(response => {
         if(response.data.success){
           this.dialog = false;
           this._load();
         }
       });
-    },
-    filterOnlyCapsText (value, search, item) {
-        return value != null && search != null && typeof value === 'string' && value.toString().indexOf(search) !== -1
     },
     confirmDelete(deleted){
         this.deleted = deleted;
@@ -158,12 +157,12 @@ export default {
     },
     _edit(id){
       this.$router.push({
-          name: 'client.form',
+          name: 'service.form',
           params: { id }
       })
     },
      _add(){
-      this.$router.push({ name: 'client.form' })
+      this.$router.push({ name: 'service.form' })
     }
   }
 }

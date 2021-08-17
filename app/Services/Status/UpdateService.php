@@ -12,14 +12,8 @@ class UpdateService
      *
      * @return mixed
      */
-    static public function run($id, array $data = [])
+    static public function run(Status $status, array $data = [])
     {
-        $status = Status::find($id);
-
-        if(!$status){
-            return $status;
-        }
-
         $status->update($data);
 
         return $status;

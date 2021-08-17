@@ -2,12 +2,12 @@
   <div>
     <v-row>
       <v-col cols="12" md="3" v-for="(status) in statuses" :key="status.id" >
-        <v-btn :color="status.color" block @click="_load({ status_id: status.id })">
+        <v-btn :color="status.color" block @click="_load({ status_id: status.id })" rounded>
             {{ status.name }}
         </v-btn>
       </v-col>
       <v-col cols="12" md="3" >
-        <v-btn block @click="_load({})">
+        <v-btn block @click="_load" rounded color="grey">
           Todas
         </v-btn>
       </v-col>
@@ -15,7 +15,7 @@
 
     <v-row>
       <v-col cols="12">
-        <v-btn text color="blue" @click="_add">
+        <v-btn color="blue" @click="_add" rounded>
             Adicionar <v-icon dark>mdi-plus</v-icon>
         </v-btn>
       </v-col>

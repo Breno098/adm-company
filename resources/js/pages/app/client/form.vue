@@ -7,7 +7,7 @@
       <v-tab>Endereço    <v-icon class="ml-2">mdi-city</v-icon></v-tab>
     </v-tabs>
 
-    <v-tabs-items v-model="tab" class="pt-5">
+    <v-tabs-items v-model="tab" class="pt-5 px-3">
       <!-- Informações -->
       <v-tab-item>
         <v-row>
@@ -111,7 +111,7 @@
           <v-col cols="12" v-for="(contact, index) in client.contacts" :key="contact.id">
             <v-row>
               <v-col cols="12" class="d-flex flex-row justify-end">
-                <v-btn color="red" @click="client.contacts.splice(index, 1);" :loading="loading" small>
+                <v-btn color="red" @click="client.contacts.splice(index, 1);" :loading="loading" small rounded>
                   <v-icon color="red darken-4">mdi-delete</v-icon>
                 </v-btn>
               </v-col>
@@ -153,7 +153,7 @@
           </v-col>
 
           <v-col cols="12" class="d-flex flex-row justify-end">
-            <v-btn color="green" @click="client.contacts.push({})" :loading="loading" small>
+            <v-btn color="green" @click="client.contacts.push({})" :loading="loading" small rounded>
               Adicionar contato <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-col>
@@ -166,7 +166,7 @@
           <v-col cols="12" v-for="(address, index) in client.addresses" :key="address.id">
             <v-row>
               <v-col cols="12" class="d-flex flex-row justify-end">
-                <v-btn color="red" @click="client.addresses.splice(index, 1);" :loading="loading" small>
+                <v-btn color="red" @click="client.addresses.splice(index, 1);" :loading="loading" small rounded>
                   <v-icon color="red darken-4">mdi-delete</v-icon>
                 </v-btn>
               </v-col>
@@ -266,7 +266,7 @@
           </v-col>
 
           <v-col cols="12" class="d-flex flex-row justify-end">
-            <v-btn color="green" @click="client.addresses.push({})" :loading="loading" small>
+            <v-btn color="green" @click="client.addresses.push({})" :loading="loading" small rounded>
               Adicionar endereço <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-col>
@@ -274,10 +274,10 @@
       </v-tab-item>
     </v-tabs-items>
 
-    <v-row>
+    <v-row class="pt-2 px-3">
       <v-col cols="12">
-        <v-btn color="green" @click="_store" :loading="loading">
-          Salvar &nbsp; <v-icon dark>mdi-content-save</v-icon>
+        <v-btn color="green" @click="_store" :loading="loading" rounded>
+          Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -344,7 +344,7 @@ export default {
   }),
   computed: {
     birthDateFormat () {
-        return this.client.birth_date ? moment(this.client.birth_date).format('DD/MM/YYYY') : ''
+      return this.client.birth_date ? moment(this.client.birth_date).format('DD/MM/YYYY') : ''
     },
   },
   mounted(){
@@ -362,7 +362,6 @@ export default {
       let id = this.$route.params.id;
 
       this.loading = true;
-
       await axios.get(`api/client/${id}`).then(response => {
         if(response.data.success){
           return this.client = response.data.data;
@@ -410,10 +409,5 @@ export default {
       this._modal('Error aos salvar cliente', 'error');
     },
   }
-
 }
 </script>
-
-<style>
-
-</style>

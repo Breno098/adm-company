@@ -11,14 +11,8 @@ class DestroyService
      *
      * @return mixed
      */
-    static public function run($id)
+    static public function run(Status $status)
     {
-       $status = Status::find($id);
-
-        if (is_null($status)) {
-            return [];
-        }
-
         $status->active = false;
         $status->save();
         

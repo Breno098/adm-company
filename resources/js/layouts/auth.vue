@@ -1,8 +1,8 @@
 <template>
   <v-app>
-     <v-main>
+     <v-content>
       <child />
-     </v-main>
+     </v-content>
   </v-app>
 </template>
 

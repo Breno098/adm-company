@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\StatusRequest;
+use App\Models\Status;
 use App\Services\Status\IndexActiveService;
 use App\Services\Status\ShowService;
 use App\Services\Status\StoreService;
@@ -50,9 +51,9 @@ class StatusController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Status $status)
     {
-        $status = ShowService::run($id);
+        $status = ShowService::run($status);
 
         return $this->sendResponse($status, 'Status retrieved successfully.');
     }
@@ -64,11 +65,11 @@ class StatusController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StatusRequest $request, Int $id)
+    public function update(StatusRequest $request, Status $status)
     {
         $data = $request->validated();
 
-        $status = UpdateService::run($id, $data);
+        $status = UpdateService::run($status, $data);
 
         return $this->sendResponse($status, 'Status updated successfully.');
     }
@@ -79,9 +80,9 @@ class StatusController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Int $id)
+    public function destroy(Status $status)
     {
-        DestroyService::run($id);
+        DestroyService::run($status);
 
         return $this->sendResponse([], 'Status deleted successfully.');
     }

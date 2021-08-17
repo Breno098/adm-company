@@ -1,6 +1,6 @@
 <template>
   <v-app>
-      <v-navigation-drawer v-model="drawer" fixed app class="elevation-0" :mini-variant="miniVariant" color="grey lighten-2">
+      <v-navigation-drawer v-model="drawer" fixed app class="elevation-0" :mini-variant="miniVariant" color="grey lighten-1">
         <v-list dense>
           <v-list-item link class="py-4" @click="_homeRoute">
               <v-list-item-content class="black--text font-weight-bold">
@@ -10,12 +10,31 @@
 
           <v-list-item-group v-model="selectedItem" >
             <router-link :to="{ name: item.route }" style="text-decoration: none" v-for="(item, index) in menuItems" :key="index">
-              <v-list-item :color="selectedItem == index ? 'blue' : ''">
-                <v-list-item-icon>
+              <v-list-item :color="selectedItem == index ? item.color : ''">
+                <v-list-item-icon v-if="miniVariant">
                   <v-icon v-text="item.icon"></v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title> {{ item.title }} </v-list-item-title>
+                  <v-list-item-title> 
+                    <v-chip class="py-2 px-5" label :color="selectedItem == index ? item.color : 'grey lighten-1'">
+                      <v-icon 
+                        v-text="item.icon" 
+                        v-show="!miniVariant" 
+                        :class="{ 
+                          'white--text' : selectedItem == index, 
+                          'mr-4': true 
+                        }">
+                      </v-icon> 
+                      <span 
+                        :class="{ 
+                          'white--text' : selectedItem == index , 
+                          'font-weight-bold': selectedItem == index,
+                          'font-weight-medium': !(selectedItem == index),
+                        }"> 
+                        {{ item.title }}
+                      </span> 
+                    </v-chip>
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </router-link>
@@ -23,7 +42,7 @@
         </v-list>
       </v-navigation-drawer>
 
-      <v-content class="grey lighten-4">
+      <v-content>
         <v-fab-transition>
           <v-btn :key="fabDrawer.icon" :color="fabDrawer.color" @click="drawer = !drawer" small fab class="ml-2 mt-2 float-lef">
             <v-icon>{{ fabDrawer.icon }}</v-icon>
@@ -72,11 +91,11 @@ export default {
     menuItems: [
       { title: 'Inicio' , route: 'home', icon: 'mdi-home', color: 'blue' },
       { title: 'Ordens' , route: 'order.index', icon: 'mdi-format-list-checks', color: 'purple' },
-      { title: 'Agenda' , route: 'appointment.index', icon: 'mdi-calendar-today', color: 'green' },
-      { title: 'Cliente' , route: 'client.index', icon: 'mdi-account-convert', color: 'green' },
-      { title: 'Produtos', route: 'item.index', icon: 'mdi-barcode', color: 'orange' },
-      { title: 'Serviços', route: 'item.index', icon: 'mdi-wrench', color: 'indigo' },
-      { title: 'Categoria', route: 'category.index', icon: 'mdi-format-list-bulleted-type', color: 'blue'},
+      { title: 'Agenda' , route: 'appointment.index', icon: 'mdi-calendar-today', color: 'red' },
+      { title: 'Clientes' , route: 'client.index', icon: 'mdi-account', color: 'green' },
+      { title: 'Produtos', route: 'product.index', icon: 'mdi-barcode', color: 'orange' },
+      { title: 'Serviços', route: 'service.index', icon: 'mdi-wrench', color: 'indigo' },
+      { title: 'Categorias', route: 'category.index', icon: 'mdi-format-list-bulleted-type', color: 'cyan accent-4'},
     ]
   }),
   methods: {

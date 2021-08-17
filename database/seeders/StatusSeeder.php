@@ -19,42 +19,42 @@ class StatusSeeder extends Seeder
                 'name' => 'Cancelado',
                 'description' => 'Pedido cancelado',
                 'type' => 'order',
-                'color' => '#fccaca'
+                'color' => 'orange accent-3'
             ], [
                 'name' => 'Pendente',
                 'description' => '',
                 'type' => 'order',
-                'color' => '#e38b19'
+                'color' => 'yellow accent-2'
             ], [
                 'name' => 'Concluido',
                 'description' => '',
                 'type' => 'order',
-                'color' => '#2de319'
+                'color' => 'green'
             ], [
                 'name' => 'Cancelado',
                 'description' => 'Compromisso cancelado',
                 'type' => 'appointment',
-                'color' => '#fccaca'
+                'color' => 'orange accent-3'
             ], [
                 'name' => 'Pendente',
                 'description' => '',
                 'type' => 'appointment',
-                'color' => '#e38b19'
+                'color' => 'yellow accent-2'
             ], [
                 'name' => 'Concluido',
                 'description' => '',
                 'type' => 'appointment',
-                'color' => '#2de319'
+                'color' => 'green'
             ], [
                 'name' => 'Em atraso',
                 'description' => '',
                 'type' => 'appointment',
-                'color' => '#ff2200'
+                'color' => 'red'
             ], [
                 'name' => 'Estoque zerado',
                 'description' => 'Quando a quantidade do item é igual a 0',
                 'type' => 'item',
-                'color' => '#cf7230'
+                'color' => 'red'
             ]
         ]);
     }
