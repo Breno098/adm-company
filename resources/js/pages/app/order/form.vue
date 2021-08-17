@@ -449,7 +449,7 @@
               dense
               v-model="order.warranty_conditions"
               :loading="loading"
-              hint="Termos de garantia do orçamento"
+              hint="Termos de garantia"
             ></v-textarea>
           </v-col>
         </v-row>

@@ -14,48 +14,64 @@ class StatusSeeder extends Seeder
      */
     public function run()
     {
-        Status::insert([
-            [
-                'name' => 'Cancelado',
-                'description' => 'Pedido cancelado',
-                'type' => 'order',
-                'color' => 'orange accent-3'
-            ], [
-                'name' => 'Pendente',
-                'description' => '',
-                'type' => 'order',
-                'color' => 'yellow accent-2'
-            ], [
-                'name' => 'Concluido',
-                'description' => '',
-                'type' => 'order',
-                'color' => 'green'
-            ], [
-                'name' => 'Cancelado',
-                'description' => 'Compromisso cancelado',
-                'type' => 'appointment',
-                'color' => 'orange accent-3'
-            ], [
-                'name' => 'Pendente',
-                'description' => '',
-                'type' => 'appointment',
-                'color' => 'yellow accent-2'
-            ], [
-                'name' => 'Concluido',
-                'description' => '',
-                'type' => 'appointment',
-                'color' => 'green'
-            ], [
-                'name' => 'Em atraso',
-                'description' => '',
-                'type' => 'appointment',
-                'color' => 'red'
-            ], [
-                'name' => 'Estoque zerado',
-                'description' => 'Quando a quantidade do item é igual a 0',
-                'type' => 'item',
-                'color' => 'red'
-            ]
+        Status::create([
+            'name' => 'Cancelado',
+            'type' => 'order',
+            'color' => 'orange accent-3'
+        ]);
+
+        Status::create([
+            'name' => 'Aguardando aprovação',
+            'type' => 'order',
+            'color' => 'yellow accent-2'
+        ]);
+
+        Status::create([
+            'name' => 'Em andamento',
+            'type' => 'order',
+            'color' => 'indigo'
+        ]);
+
+        Status::create([
+            'name' => 'Aguardando pagamento',
+            'type' => 'order',
+            'color' => 'cyan darken-1'
+        ]);
+
+        Status::create([
+            'name' => 'Concluido',
+            'type' => 'order',
+            'color' => 'green'
+        ]);
+
+        Status::create( [
+            'name' => 'Cancelado',
+            'type' => 'appointment',
+            'color' => 'orange accent-3'
+        ]);
+
+        Status::create([
+            'name' => 'Pendente',
+            'type' => 'appointment',
+            'color' => 'yellow accent-2'
+        ]);
+
+        Status::create( [
+            'name' => 'Concluido',
+            'type' => 'appointment',
+            'color' => 'green'
+        ]);
+
+        Status::create(  [
+            'name' => 'Concluido',
+            'type' => 'appointment',
+            'color' => 'green'
+        ]);
+
+        Status::create([
+            'name' => 'Em atraso',
+            'type' => 'appointment',
+            'color' => 'red'
         ]);
     }
 }
