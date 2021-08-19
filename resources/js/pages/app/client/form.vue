@@ -20,6 +20,7 @@
               :loading="loading"
               :rules="[rules.required]"
               :error="errors.name && !client.name"
+              @input="client.name = client.name.toUpperCase()"
             ></v-text-field>
           </v-col>
 
@@ -30,6 +31,7 @@
               dense
               v-model="client.fantasy_name"
               :loading="loading"
+              @input="client.fantasy_name = client.fantasy_name.toUpperCase()"
             ></v-text-field>
           </v-col>
 
@@ -117,6 +119,17 @@
               </v-col>
 
               <v-col cols="12" md="6">
+                <v-select
+                  v-model="contact.type"
+                  :items="contact_types"
+                  label="TIPO"
+                  outlined
+                  dense
+                  :loading="loading"
+                ></v-select>
+              </v-col>
+
+              <v-col cols="12" md="6">
                 <v-text-field
                   label="CONTATO"
                   outlined
@@ -135,17 +148,6 @@
                   :loading="loading"
                   v-else
                 ></v-text-field>
-              </v-col>
-
-              <v-col cols="12" md="6">
-                <v-select
-                  v-model="contact.type"
-                  :items="contact_types"
-                  label="TIPO"
-                  outlined
-                  dense
-                  :loading="loading"
-                ></v-select>
               </v-col>
             </v-row>
 
@@ -178,6 +180,7 @@
                   dense
                   v-model="address.street"
                   :loading="loading"
+                  @input="address.street = address.street.toUpperCase()"
                 ></v-text-field>
               </v-col>
 
@@ -188,6 +191,7 @@
                   dense
                   v-model="address.cep"
                   :loading="loading"
+                  v-on:keyup.enter="_searchCep(index)"
                 ></v-text-field>
               </v-col>
 
@@ -208,6 +212,7 @@
                   dense
                   v-model="address.district"
                   :loading="loading"
+                  @input="address.district = address.district.toUpperCase()"
                 ></v-text-field>
               </v-col>
 
@@ -218,6 +223,7 @@
                   dense
                   v-model="address.city"
                   :loading="loading"
+                  @input="address.city = address.city.toUpperCase()"
                 ></v-text-field>
               </v-col>
 
@@ -228,6 +234,7 @@
                   dense
                   v-model="address.state"
                   :loading="loading"
+                  @input="address.state = address.state.toUpperCase()"
                 ></v-text-field>
               </v-col>
 
@@ -238,6 +245,7 @@
                   dense
                   v-model="address.apartment"
                   :loading="loading"
+                  @input="address.apartment = address.apartment.toUpperCase()"
                 ></v-text-field>
               </v-col>
 
@@ -248,6 +256,7 @@
                   dense
                   v-model="address.floor"
                   :loading="loading"
+                  @input="address.floor = address.floor.toUpperCase()"
                 ></v-text-field>
               </v-col>
 
@@ -258,6 +267,7 @@
                   dense
                   v-model="address.complement"
                   :loading="loading"
+                  @input="address.complement = address.complement.toUpperCase()"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -290,8 +300,8 @@
 
           <v-card-text class="text-center py-5" >
             <v-progress-circular v-if="loading" :width="7" color="blue" :size="70" indeterminate></v-progress-circular>
-            <v-icon v-else :size="70" :color="dialog.status === 'success' ? 'green' : 'red' ">
-              {{ dialog.status === 'success' ? 'mdi-check' : 'mdi-alert' }}
+            <v-icon v-else :size="70" :color="dialog.status === 'success' ? 'green' : dialog.status === 'error' ? 'red' : '' ">
+              {{ dialog.status === 'success' ? 'mdi-check' : dialog.status === 'error' ? 'mdi-alert' : '' }}
             </v-icon>
           </v-card-text>
       </v-card>
@@ -314,7 +324,7 @@ export default {
     dialog: {
       show: false,
       message: '',
-      status: null
+      status: null,
     },
     errors: {
       name: false,
@@ -353,60 +363,68 @@ export default {
     }
   },
   methods: {
-    _modal(message, status){
+    _showModal(message, status = ''){
       this.dialog.message = message;
       this.dialog.status = status;
       this.dialog.show = true;
     },
+    _hideModal(){
+      this.dialog.show = false;
+    },
+    async _searchCep(indexAddress){
+      if(this.client.addresses[indexAddress].cep.length != 8){
+        return;
+      }
+
+      let params = { cep : this.client.addresses[indexAddress].cep };
+      await axios.get(`api/address/searchCep`, { params }).then(response => {
+        let { logradouro, bairro, localidade, uf } = response.data.data;
+
+        this.client.addresses[indexAddress].street = logradouro;
+        this.client.addresses[indexAddress].district = bairro;
+        this.client.addresses[indexAddress].city = localidade;
+        this.client.addresses[indexAddress].state = uf;
+      }).catch(error => {
+        console.log('error');
+        console.log(error);
+      })
+    },
     async _load(){
-      let id = this.$route.params.id;
+      const id = this.$route.params.id;
 
       this.loading = true;
       await axios.get(`api/client/${id}`).then(response => {
         if(response.data.success){
           return this.client = response.data.data;
         }
-
-        this._modal('Error ao carregar dados cliente', 'error');
+        this._showModal('Error ao carregar dados cliente', 'error');
         setTimeout(() => this.$router.push({ name: 'client.index' }), 1500);
       });
-
       this.loading = false;
-
     },
     async _store(){
       this.tab = 0;
 
-      if(!this.client.name){
-        return this.errors.name = true;
-      }
-
-      if(!this.client.type){
-        return this.errors.type = true;
+      for (const field in this.errors) {
+        if(!this.client[field])
+          return this.errors[field] = true;
       }
 
       let id = this.$route.params.id;
 
       this.loading = true;
-      this.dialog.show = true;
-      this.dialog.message = id ? 'Atualizando...' : 'Salvando...';
+      this._showModal(id ? 'Atualizando...' : 'Salvando...');
 
-      let response = null;
-
-      if(!id){
-        response = await axios.post('api/client', this.client)
-      } else {
-        response = await axios.put(`api/client/${id}`, this.client)
-      }
+      const response = !id ? await axios.post('api/client', this.client) : await axios.put(`api/client/${id}`, this.client);
 
       this.loading = false;
 
       if(response.data.success){
-        this._modal('Cliente salvo com sucesso', 'success');
+        this._showModal('Cliente salvo com sucesso', 'success');
         return setTimeout(() => this.$router.push({ name: 'client.index' }), 1500);
       }
 
-      this._modal('Error aos salvar cliente', 'error');
+      this._showModal('Error aos salvar cliente', 'error');
     },
   }
 }

@@ -19,7 +19,7 @@ class CreateStatusesTable extends Migration
             $table->boolean('active')->default(true);
             $table->text('description')->nullable();
             $table->string('color')->default('#fff');
-            $table->enum('type', ['order', 'client', 'appointment', 'item'])->nullable();
+            $table->enum('type', ['order', 'client', 'item'])->nullable();
             $table->timestamps();
         });
     }

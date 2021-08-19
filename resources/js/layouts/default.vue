@@ -42,7 +42,7 @@
         </v-list>
       </v-navigation-drawer>
 
-      <v-content>
+      <v-main>
         <v-fab-transition>
           <v-btn :key="fabDrawer.icon" :color="fabDrawer.color" @click="drawer = !drawer" small fab class="ml-2 mt-2 float-lef">
             <v-icon>{{ fabDrawer.icon }}</v-icon>
@@ -73,7 +73,7 @@
         </v-fab-transition>
          
         <child class="my-8 mx-5"/>
-      </v-content>
+      </v-main>
   </v-app>
 </template>
 

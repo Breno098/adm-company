@@ -14,17 +14,14 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        Category::insert([
-            [
-                'name' => 'Serviços',
-                'description' => 'Instalação/troca de peças.',
-                'icon' => 'mdi-wrench'
-            ],
-            [
-                'name' => 'Peças',
-                'description' => null,
-                'icon' => 'mdi-pipe-disconnected'
-            ]
+        Category::create([
+            'name' => 'Periféricos',
+            'icon' => 'mdi-wrench'
+        ]);
+
+        Category::create([
+            'name' => 'Instalações',
+            'icon' => 'mdi-pipe-disconnected'
         ]);
     }
 }

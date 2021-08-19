@@ -43,35 +43,5 @@ class StatusSeeder extends Seeder
             'type' => 'order',
             'color' => 'green'
         ]);
-
-        Status::create( [
-            'name' => 'Cancelado',
-            'type' => 'appointment',
-            'color' => 'orange accent-3'
-        ]);
-
-        Status::create([
-            'name' => 'Pendente',
-            'type' => 'appointment',
-            'color' => 'yellow accent-2'
-        ]);
-
-        Status::create( [
-            'name' => 'Concluido',
-            'type' => 'appointment',
-            'color' => 'green'
-        ]);
-
-        Status::create(  [
-            'name' => 'Concluido',
-            'type' => 'appointment',
-            'color' => 'green'
-        ]);
-
-        Status::create([
-            'name' => 'Em atraso',
-            'type' => 'appointment',
-            'color' => 'red'
-        ]);
     }
 }

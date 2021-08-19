@@ -19,10 +19,10 @@ class CreateAppointmentsTable extends Migration
             $table->text('description')->nullable();
             $table->dateTime('execution_date_start')->nullable();
             $table->dateTime('execution_date_end')->nullable();
-            $table->boolean('active')->default(true);
             $table->foreignId('client_id')->nullable()->constrained();
             $table->foreignId('order_id')->nullable()->constrained();
-            $table->foreignId('status_id')->nullable()->constrained();
+            $table->boolean('active')->default(true);
+            $table->boolean('concluded')->default(false);
             $table->timestamps();
         });
     }
