@@ -22,6 +22,7 @@ class CreateContactsTable extends Migration
             $table->string('type')->nullable();
             $table->foreignId('client_id')->nullable()->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

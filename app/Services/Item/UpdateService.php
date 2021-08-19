@@ -13,14 +13,8 @@ class UpdateService
      *
      * @return mixed
      */
-    static public function run($id, array $data = [])
+    static public function run(Item $item, array $data = [])
     {
-        $item = Item::find($id);
-
-        if(!$item){
-            return $item;
-        }
-
         $item->update($data);
 
         $item->categories()->sync(Arr::get($data, 'categories'));

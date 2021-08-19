@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ApplicationPreferences;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 
@@ -17,6 +18,7 @@ class DatabaseSeeder extends Seeder
         if (App::environment('local')) {
             $this->call([
                 UserSeeder::class,
+                ApplicationPreferncesSeeder::class,
                 StatusSeeder::class,
                 CategorySeeder::class,
                 ProductSeeder::class,
@@ -27,6 +29,7 @@ class DatabaseSeeder extends Seeder
         } else {
             $this->call([
                 UserSeeder::class,
+                ApplicationPreferncesSeeder::class,
                 StatusSeeder::class,
                 PaymentSeeder::class,
             ]);

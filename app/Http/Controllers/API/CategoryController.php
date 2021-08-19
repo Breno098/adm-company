@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Services\Category\DestroyService;
 use App\Services\Category\IndexActiveService;
 use App\Services\Category\ShowService;
+use App\Services\Category\StoreService;
 use App\Services\Category\UpdateService;
 use Illuminate\Support\Facades\Validator;
 
@@ -40,7 +41,7 @@ class CategoryController extends BaseControllerApi
     {
         $data = $request->validated();
 
-        $client = Category::create($data);
+        $client = StoreService::run($data);
 
         return $this->sendResponse($client, 'Category created successfully.');
     }
@@ -53,8 +54,6 @@ class CategoryController extends BaseControllerApi
      */
     public function show(Category $category)
     {
-        $category = ShowService::run($category);
-
         return $this->sendResponse($category, 'Category retrieved successfully.');
     }
 
@@ -82,7 +81,7 @@ class CategoryController extends BaseControllerApi
      */
     public function destroy(Category $category)
     {
-        DestroyService::run($category);
+        $category->delete();
 
         return $this->sendResponse([], 'Client deleted successfully.');
     }

@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'description',
@@ -19,7 +20,6 @@ class Order extends Model
         'technical_visit',
         'discount_amount',
         'discount_percentage',
-        'active',
         'warranty_days',
         'warranty_conditions',
         'installments',
@@ -28,7 +28,6 @@ class Order extends Model
 
     protected $casts = [
         'technical_visit' => 'datetime:Y-m-d H:i',
-        'active' => 'boolean',
         'amount' => 'float',
         'amount_paid' => 'float',
         'discount_amount' => 'float',
@@ -38,13 +37,6 @@ class Order extends Model
     protected $with = [
         'status',
     ];
-
-    protected static function booted()
-    {
-        static::addGlobalScope('active-order', function (Builder $builder) {
-            $builder->where('active', true);
-        });
-    }
 
     public function scopeFilterByStatusId(Builder $builder, $statusId)
     {

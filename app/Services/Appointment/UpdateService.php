@@ -13,14 +13,8 @@ class UpdateService
      *
      * @return mixed
      */
-    static public function run($id, array $data = [])
+    static public function run(Appointment $appointment, array $data = [])
     {
-        $appointment = Appointment::find($id);
-
-        if(!$appointment){
-            return $appointment;
-        }
-
         $data['execution_date_start'] = Arr::get($data, 'date_start') . ' ' . Arr::get($data, 'hour_start');
         $data['execution_date_end'] = Arr::get($data, 'date_end') . ' ' . Arr::get($data, 'hour_end');
 

@@ -43,12 +43,15 @@ class OrderController extends BaseControllerApi
 
         $order = StoreService::run($data);
 
-        $order = ShowService::run($order, [
+        $order->load([
             'client.contacts',
             'address',
             'products',
             'services',
             'payments'
+        ])->append([
+            'technical_visit_date',
+            'technical_visit_hour'
         ]);
 
         return $this->sendResponse($order, 'Order created successfully.');
@@ -62,12 +65,15 @@ class OrderController extends BaseControllerApi
      */
     public function show(Order $order)
     {
-        $order = ShowService::run($order, [
+        $order->load([
             'client.contacts',
             'address',
             'products',
             'services',
             'payments'
+        ])->append([
+            'technical_visit_date',
+            'technical_visit_hour'
         ]);
 
         return $this->sendResponse($order, 'Order retrieved successfully.');
@@ -86,12 +92,15 @@ class OrderController extends BaseControllerApi
 
         $order = UpdateService::run($order, $data);
 
-        $order = ShowService::run($order, [
+        $order->load([
             'client.contacts',
             'address',
             'products',
             'services',
             'payments'
+        ])->append([
+            'technical_visit_date',
+            'technical_visit_hour'
         ]);
 
         return $this->sendResponse($order, 'Order updated successfully.');
@@ -103,9 +112,9 @@ class OrderController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Int $id)
+    public function destroy(Order $order)
     {
-        DestroyService::run($id);
+        $order->delete();
         
         return $this->sendResponse([], 'Order deleted successfully.');
     }

@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -17,20 +18,11 @@ class Client extends Model
         'birth_date',
         'type',
         'notes',
-        'active'
     ];
 
     protected $casts = [
         'birth_date' => 'datetime:Y-m-d',
-        'active' => 'boolean'
     ];
-
-    protected static function booted()
-    {
-        static::addGlobalScope('active-client', function (Builder $builder) {
-            $builder->where('active', true);
-        });
-    }
 
     public function scopeFilterByName(Builder $builder, $name)
     {

@@ -16,11 +16,11 @@ class CreateStatusesTable extends Migration
         Schema::create('statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('active')->default(true);
             $table->text('description')->nullable();
             $table->string('color')->default('#fff');
             $table->enum('type', ['order', 'client', 'item'])->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

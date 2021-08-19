@@ -30,6 +30,7 @@ class CreateAddressesTable extends Migration
 
             $table->foreignId('client_id')->nullable()->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

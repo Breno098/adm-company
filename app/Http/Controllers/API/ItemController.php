@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ItemRequest;
+use App\Models\Item;
 use App\Services\Item\DestroyService;
 use App\Services\Item\IndexActiveService;
 use App\Services\Item\ShowService;
@@ -50,10 +51,8 @@ class ItemController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Item $item)
     {
-        $item = ShowService::run($id);
-
         return $this->sendResponse($item, 'Item retrieved successfully.');
     }
 
@@ -64,11 +63,11 @@ class ItemController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ItemRequest $request, Int $id)
+    public function update(ItemRequest $request, Item $item)
     {
         $data = $request->validated();
 
-        $item = UpdateService::run($data);
+        $item = UpdateService::run($item, $data);
 
         return $this->sendResponse($item, 'Item updated successfully.');
     }
@@ -79,9 +78,9 @@ class ItemController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Int $id)
+    public function destroy(Item $item)
     {
-        DestroyService::run($id);
+        $item->delete();
 
         return $this->sendResponse([], 'Item deleted successfully.');
     }

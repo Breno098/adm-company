@@ -53,7 +53,7 @@ class ClientController extends BaseControllerApi
      */
     public function show(Client $client)
     {
-        $client = ShowService::run($client, [ 'addresses', 'contacts' ]);
+        $client->load([ 'addresses', 'contacts' ]);
 
         return $this->sendResponse($client, 'Client retrieved successfully.');
     }
@@ -82,7 +82,7 @@ class ClientController extends BaseControllerApi
      */
     public function destroy(Client $client)
     {
-        DestroyService::run($client);
+        $client->delete();
 
         return $this->sendResponse([], 'Client deleted successfully.');
     }

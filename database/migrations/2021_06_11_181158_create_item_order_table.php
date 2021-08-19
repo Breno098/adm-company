@@ -16,12 +16,12 @@ class CreateItemOrderTable extends Migration
         Schema::create('item_order', function (Blueprint $table) {
             $table->id();
             $table->text('description')->nullable();
-            $table->boolean('active')->default(true);
             $table->float('quantity')->nullable();
             $table->float('value')->nullable();
             $table->foreignId('order_id')->nullable()->constrained();
             $table->foreignId('item_id')->nullable()->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

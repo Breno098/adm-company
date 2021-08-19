@@ -8,13 +8,14 @@ use App\Services\Appointment\ShowService;
 use App\Services\Appointment\StoreService;
 use App\Services\Appointment\UpdateService;
 use App\Http\Requests\AppointmentRequest;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 
 class AppointmentController extends BaseControllerApi
 {
     /**
      * Display a listing of the resource.
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -50,9 +51,14 @@ class AppointmentController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Appointment $appointment)
     {
-        $appointment = ShowService::run($id);
+        $appointment->append([
+            'date_start',
+            'hour_start',
+            'date_end',
+            'hour_end'
+        ]);
 
         return $this->sendResponse($appointment, 'Appointment retrieved successfully.');
     }
@@ -61,14 +67,14 @@ class AppointmentController extends BaseControllerApi
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\AppointmentRequest  $request
-     * @param  int  $id
+     * @param  Appointment  $appointment
      * @return \Illuminate\Http\Response
      */
-    public function update(AppointmentRequest $request, Int $id)
+    public function update(AppointmentRequest $request, Appointment $appointment)
     {
         $data = $request->validated();
 
-        $appointment = UpdateService::run($id, $data);
+        $appointment = UpdateService::run($appointment, $data);
 
         return $this->sendResponse($appointment, 'Appointment updated successfully.');
     }
@@ -76,13 +82,13 @@ class AppointmentController extends BaseControllerApi
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Appointment  $appointment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Int $id)
+    public function destroy(Appointment $appointment)
     {
-        DestroyService::run($id);
-
+        $appointment->delete();
+        
         return $this->sendResponse([], 'Appointment deleted successfully.');
     }
 }

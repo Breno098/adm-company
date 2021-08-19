@@ -23,11 +23,11 @@ class CreateItemsTable extends Migration
             $table->enum('type', ['service', 'product'])->nullable();
             $table->float('default_value')->nullable();
             $table->float('cost')->nullable();
-            $table->boolean('active')->default(true);
             $table->integer('warranty_days')->nullable();
             $table->text('warranty_conditions')->nullable();
             $table->foreignId('status_id')->nullable()->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

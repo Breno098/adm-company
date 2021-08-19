@@ -21,9 +21,9 @@ class CreateClientsTable extends Migration
             $table->date('birth_date')->nullable();
             $table->enum('type', ['PF','PJ'])->nullable();
             $table->text('notes')->nullable();
-            $table->boolean('active')->default(true);
             $table->foreignId('status_id')->nullable()->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

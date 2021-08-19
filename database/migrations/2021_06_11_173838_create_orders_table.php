@@ -19,7 +19,6 @@ class CreateOrdersTable extends Migration
             $table->text('description')->nullable();
             $table->text('comments')->nullable();
             
-            $table->boolean('active')->default(true);
             $table->dateTime('execution_date')->nullable();
             $table->dateTime('technical_visit')->nullable();
 
@@ -41,6 +40,7 @@ class CreateOrdersTable extends Migration
             $table->foreignId('address_id')->nullable()->constrained();
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

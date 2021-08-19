@@ -53,8 +53,6 @@ class StatusController extends BaseControllerApi
      */
     public function show(Status $status)
     {
-        $status = ShowService::run($status);
-
         return $this->sendResponse($status, 'Status retrieved successfully.');
     }
 
@@ -82,7 +80,7 @@ class StatusController extends BaseControllerApi
      */
     public function destroy(Status $status)
     {
-        DestroyService::run($status);
+        $status->delete();
 
         return $this->sendResponse([], 'Status deleted successfully.');
     }

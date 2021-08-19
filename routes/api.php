@@ -47,7 +47,6 @@ Route::group(['middleware' => 'guest:api'], function () {
 
 
 Route::middleware('auth:api')->group( function () {
-
     Route::prefix('home')->group( function () {
         Route::get('/appointment', [HomeController::class, 'appointment']);
     });
@@ -60,24 +59,10 @@ Route::middleware('auth:api')->group( function () {
     Route::apiResource('category', CategoryController::class);
     Route::apiResource('status', StatusController::class);
     Route::apiResource('order', OrderController::class);
-
-    Route::prefix('item')->group( function () {
-        Route::get('/', [ItemController::class, 'index']);
-        Route::get('/{id}', [ItemController::class, 'show']);
-        Route::post('/', [ItemController::class, 'store']);
-        Route::put('/{id}', [ItemController::class, 'update']);
-        Route::delete('/{id}', [ItemController::class, 'destroy']);
-    });
+    Route::apiResource('item', ItemController::class);
+    Route::apiResource('appointment', AppointmentController::class);
 
     Route::prefix('payment')->group( function () {
         Route::get('/', [PaymentController::class, 'index']);
-    });
-
-    Route::prefix('appointment')->group( function () {
-        Route::get('/', [AppointmentController::class, 'index']);
-        Route::get('/{id}', [AppointmentController::class, 'show']);
-        Route::post('/', [AppointmentController::class, 'store']);
-        Route::put('/{id}', [AppointmentController::class, 'update']);
-        Route::delete('/{id}', [AppointmentController::class, 'destroy']);
     });
 });

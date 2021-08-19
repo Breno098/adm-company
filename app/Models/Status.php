@@ -5,29 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Status extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
         'description',
-        'active',
         'type',
         'color'
     ];
-
-    protected $casts = [
-        'active' => 'boolean',
-    ];
-
-    protected static function booted()
-    {
-        static::addGlobalScope('active-status', function (Builder $builder) {
-            $builder->where('active', true);
-        });
-    }
 
     public function scopeFilterByType(Builder $builder, $type)
     {

@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
         'description',
-        'active',
         'default_value',
         'type',
         'unit_measure',
@@ -25,18 +25,10 @@ class Item extends Model
     ];
 
     protected $casts = [
-        'active' => 'boolean',
         'default_value' => 'float',
         'cost' => 'float',
     ];
-
-    protected static function booted()
-    {
-        static::addGlobalScope('active-item', function (Builder $builder) {
-            $builder->where('items.active', true);
-        });
-    }
-    
+ 
     public function scopeFilterByType(Builder $builder, $type)
     {
         return $builder->when($type, function (Builder $builder, $type) {

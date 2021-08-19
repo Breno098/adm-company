@@ -12,8 +12,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
 {
-    use Notifiable,
-        HasFactory;
+    use Notifiable, HasFactory;
 
     /**
      * The attributes that are mass assignable.
