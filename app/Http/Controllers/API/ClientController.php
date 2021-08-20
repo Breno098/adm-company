@@ -23,8 +23,7 @@ class ClientController extends BaseControllerApi
         $clients = IndexActiveService::run(
             $request->query(), 
             $request->get('relations', ['addresses']),
-            $request->get('pagination', false),
-            $request->get('itemsPerPage', 20),
+            $request->get('itemsPerPage', false),
         );
 
         return $this->sendResponse($clients, 'Clients retrieved successfully.');

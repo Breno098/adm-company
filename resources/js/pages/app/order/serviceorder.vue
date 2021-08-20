@@ -1,105 +1,108 @@
 <template>
   <v-row>
     <v-col cols="12" class="d-flex flex-row justify-center">
-    <table id="order-service-order">
-      <tr>
-        <td rowspan="8"> <img src="storage/logo.png" style="height: 130px; width: 220px"/> </td>
-      </tr>
-      <tr>
-        <td colspan="3"> <v-icon size="14" class="mr-2" color="#ff7403">mdi-google-maps</v-icon> Rua Leonor Pennachiotti Gallo, 350, Pq. Flamboyans </td>
-      </tr>  
-      <tr>
-        <td colspan="3"> <v-icon size="14" class="mr-2" color="#ff7403">mdi-google-maps</v-icon> Ribeirão Preto - SP | CEP 14093-651 </td>
-      </tr>
-      <tr>
-        <td colspan="3"> <v-icon size="14" class="mr-2">mdi-card-account-details</v-icon> CNPJ 17.107.361/0001-34  </td>
-      </tr>
-      <tr>
-        <td colspan="3"> <v-icon size="14" class="mr-2" color="blue">mdi-facebook</v-icon> /@manutencaocrispim </td>
-      </tr>
-       <tr>
-        <td colspan="3"> <v-icon size="14" class="mr-2" color="#ff7403">mdi-instagram</v-icon> /desentupidoracrispim </td>
-      </tr>
-      <tr>
-        <td colspan="3"> <v-icon size="14" class="mr-2">mdi-email</v-icon> desentupidoracrispim@hotmail.com </td>
-      </tr>
-      <tr>
-        <td colspan="3"> <v-icon size="14" class="mr-2" color="#000">mdi-phone</v-icon> (16) 99187-8532 </td>
-      </tr>
-      <tr>
-        <td colspan="4" style="padding: 20px 5px; font-size: 16px; text-align: center"> Água é vida, cuidar desse patrimônio é nosso compromisso. </td>
-      </tr>
-      <tr style="background: #eee;">
-        <td colspan="4" style="padding: 10px 5px; font-size: 23px; text-align: center; font-weight: bold"> Ordem de Serviço - {{ order.id }} </td>
-      </tr>
-      <tr v-if="order.client">
-        <td colspan="4" style="padding: 0px 5px"> {{ `Cliente: ${order.client.name}` }} </td>
-      </tr>
-      <tr v-if="order.address_id">
-        <td colspan="4" style="padding: 0px 5px"> {{ `R. ${order.address.street} nº ${order.address.number}, ${order.address.district}` }} </td>
-      </tr>
-      <tr v-if="order.address_id">
-        <td colspan="4" style="padding: 0px 5px"> {{ `${order.address.city} - ${order.address.state}, CEP ${order.address.cep}` }} </td>
-      </tr>
-      <tr v-for="(contact, index) in order.client.contacts" :key="index">
-        <td colspan="4" style="padding: 0px 5px"> {{ `${contact.type}: ${contact.contact}` }} </td>
-      </tr>
-      <tr>
-        <td colspan="4" style="padding: 0 10px"> <hr style="color: #eee;"/> </td>
-      </tr> 
-      <tr v-if="order.technical_visit" style="padding: 20px 0px;">
-        <td colspan="1" style="padding: 0px 5px"> {{ `Data visita técnica: ${technicalVisitDate}` }} </td>
-        <td colspan="2" style="padding: 0px 5px"> {{ `Hora visita técnica: ${technicalVisitHour}` }} </td>
-      </tr>
-      <tr v-if="order.description" style="padding: 20px 0px;">
-        <td colspan="4" style="padding: 0px 5px"> {{ `Observações: ${order.description}` }} </td>
-      </tr>
-      <tr v-if="order.services.length > 0" style="background: #eee;">
-        <td colspan="4" style="padding: 8px 5px; font-size: 18px"> SERVIÇOS </td>
-      </tr>
-      
-      <tr v-if="order.services.length > 0">
-        <td style="padding: 5px 5px 10px; font-weight: bold"> Descrição </td>
-        <td style="padding: 5px 0; font-weight: bold"> Quantidade </td>
-      </tr>
-      <tr v-for="(service, index) in order.services" :key="index">
-        <td style="padding: 0px 5px"> - {{ service.name }} </td>
-        <td> {{ service.quantity }} </td>
-      </tr>
-      <tr v-if="order.products.length > 0" style="background: #eee;">
-        <td colspan="4" style="padding: 8px 5px; font-size: 18px"> PRODUTOS </td>
-      </tr>
-      <tr v-if="order.products.length > 0">
-        <td style="padding: 5px 5px 10px; font-weight: bold"> Descrição </td>
-        <td style="padding: 5px 0; font-weight: bold"> Quantidade </td>
-      </tr>
-      <tr v-for="(product, index) in order.products" :key="index">
-        <td style="padding: 0px 5px"> - {{ product.name }} </td>
-        <td> {{ product.quantity }} </td>
-      </tr>
-      <tr>
-        <td colspan="4" style="padding: 10px 5px 0px"> Formas de Pagamento </td>
-      </tr>
-      <tr>
-        <td colspan="4"> Cartão de crédito, cartão de débito, dinheiro, cheque, boleto ou transferência bancária </td>
-      </tr>
-      <tr>
-        <td colspan="4"> (Banco Itaú | Agência 1635 | Conta 35942-3) </td>
-      </tr>
-      <tr>
-        <td colspan="4" style="padding: 0 5px"> <hr style="color: #eee;"/> </td>
-      </tr>
-      <tr>
-        <td colspan="4" style="padding: 5px 5px"> Informações adicionais </td>
-      </tr>
-      <tr>
-        <td colspan="4"> Todos atendimentos com retirada de louças sanitárias o cliente fica responsável em caso de quebra. </td>
-      </tr>
-      <tr>
-        <td colspan="4" style="padding: 15px 5px; text-align: center"> {{ nowFormat }} </td>
-      </tr>
-    </table>
-    </v-col>3
+      <table id="order-service-order">
+        <!-- <tr>
+          <td> <img src="storage/logo.png" style="height: 80px; width: 150px"/> </td>
+          <td style="font-size: 16px"> CONDOMINÍOS E RESIDÊNNCIAS, SERVIÇOS DE ENCANAMENTO EM GERAL </td>
+          <td> 16 99187-8532 LEONOR P. GALLO, 350 RIBEIRÃO PRETO - SP </td>
+        </tr> -->
+        <tr>
+          <td colspan="4" style="font-size: 18px; font-weight: bold"> NÚMERO DA ORDEM DE SERVIÇO: {{ order.id }} </td>
+        </tr>
+        <tr v-if="order.client">
+          <td colspan="4"> CLIENTE: {{ order.client.name }} </td>
+        </tr>
+        <tr v-if="order.address_id">
+          <td colspan="4"> ENDEREÇO: {{ `R. ${order.address.street} nº ${order.address.number}` }} </td>
+        </tr>
+        <tr v-if="order.address_id">
+          <td colspan="2"> CIDADE: {{ order.address.city }} </td>
+          <td colspan="2"> BAIRRO: {{ order.address.district }} </td>
+        </tr>
+        <tr>
+          <td colspan="2"> PROGRAMAÇÃO: {{ order.address.city }} </td>
+          <td colspan="2"> TELEFONE: {{ order.address.district }} </td>
+        </tr>
+        <tr>
+          <td colspan="4"> PROBLEMA RECLAMADA:  </td>
+        </tr>
+        <tr>
+          <td colspan="4"> VISTORIA PRÉVIA DO LOCAL </td>
+        </tr>
+        <tr>
+          <td colspan="4"> LOCAL POSSUI AVARIAS OU ALGUMA IRREGULARIDADE? ( ) NÃO  ( ) SIM   QUAIS? DESCREVA ABAIXO: </td>
+        </tr>
+        <tr v-for="line in [0, 1, 2]" :key="line">
+          <td colspan="4"> </td>
+        </tr>
+
+        <tr>
+          <td colspan="4"> LOCALIZAÇÃO E DESCRIÇÃO DO PROBLEMA CONSTATADO E SUA CAUSA </td>
+        </tr>
+        <tr v-for="line in [0, 1, 2, 4]" :key="line">
+          <td colspan="4"> </td>
+        </tr>
+
+        <tr>
+          <td colspan="4"> DESCRIÇÃO DO SERVIÇO EXECUTADO (PARA CONHECIMENTO E AVAL DO RESPONSÁVEL) </td>
+        </tr>
+        <tr v-for="line in [0, 1, 2, 4, 5, 6 , 7]" :key="line">
+          <td colspan="4"> </td>
+        </tr>
+
+        <tr>
+          <td colspan="1"> MÃO DE OBRA </td>
+          <td colspan="1"> R$ </td>
+          <td colspan="2" rowspan="2"> TOTAL R$ </td>
+        </tr>
+
+        <tr>
+          <td colspan="1"> MATERIAIS </td>
+          <td colspan="1"> R$ </td>
+        </tr>
+
+        <tr>
+          <td colspan="4"> 
+            FORMAS DE PAGAMENTO: 
+            <span v-for="payment in ['DINHEIRO', 'DÉBITO', 'CRÉDITO', 'BOLETO', 'CONTRATO', 'TRANSFÊRENCIA', 'PIX']" :key="payment">
+              ( ){{ payment }}
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="4"> FORNECIDO POR: ( ) PRESTADOR  ( ) CLIENTE </td>
+        </tr>
+
+        <tr>
+          <td colspan="4"> OBS.: ORÇAMENTOS NÃO APROVADOS, SERÁ COBRADO O VALOR DA VISITA TÉCNICA R$ 30,00 </td>
+        </tr>
+
+        <tr>
+          <td colspan="4"> 
+            DECLARO QUE ACOMPANHEI E APROVEI A EXECUÇÃO DO SERVIÇO REALIZADO POR PROFISSIONAIS DEVIDADAMENTE UNIFORMIZADOS E 
+            TODOS OS TESTES FORAM EFETUADOS CONSTATANDO QUE O SERVIÇO FOI REALIZADO A CONTENTO E NÃO HÁ NENHUM DANO.
+            DECLARO TAMBÉM QUE FUI ORIENTADO(A) SOBRE A UTILIZAÇÃO DO LOCAL ONDE FOI EFETUADO  O SERVIÇO E QUE RECEBI UMA VIA DESTE DOCUMENTO. 
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2"> NOME PRESTADOR/ASSINATURA </td>
+          <td colspan="2"> LOCAL - DATA - HORA </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" rowspan="2"> </td>
+          <td colspan="2"> NOME DO RESPONSÁVEL: </td>
+        </tr>
+
+        <tr>
+          <td colspan="2"> ASSINATURA </td>
+        </tr>
+
+      </table>
+    </v-col>
   </v-row>
 </template>
 
@@ -107,10 +110,18 @@
   * {
     font-size: 13px
   }
+
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 10px;
+  }
 </style>
 
 <script>
-import { mapGetters } from 'vuex'
 import moment from 'moment';
 
 export default {
@@ -138,7 +149,7 @@ export default {
   methods: {
     _start(){
       this.order = JSON.parse(this.$route.params.order);
-      setTimeout(() => window.print(), 200)
+      // setTimeout(() => window.print(), 200)
     },
     _formatMoney(value){
       return value ? value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }) : '';

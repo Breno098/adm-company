@@ -14,36 +14,37 @@ class Appointment extends Model
     protected $fillable = [
         'title',
         'description',
-        'execution_date_start',
-        'execution_date_end',
+        'date_start',
+        'date_end',
+        'time_start',
+        'time_end',
+        'concluded'
     ];
 
     protected $casts = [
-        'execution_date_start' => 'datetime:Y-m-d H:i',
-        'execution_date_end' => 'datetime:Y-m-d H:i',
+        'date_start' => 'date:Y-m-d',
+        'date_end' => 'date:Y-m-d',
+        'time_start' => 'datetime:H:i',
+        'time_end' => 'datetime:H:i'
     ];
 
-    protected $with = [
-        'status',
-    ];
-
-    public function scopeFilterByBetweenDate(Builder $builder, $dateStart, $dataEnd = null)
+    public function scopeFilterByBetweenDate(Builder $builder, $dateStart, $dateEnd = null)
     {
         $builder->when($dateStart, function (Builder $builder, $dateStart) {
-            return $builder->where('execution_date_start', '>=', "{$dateStart} 00:00:00");
+            return $builder->where('date_start', '>=', $dateStart);
         });
 
-        $builder->when($dataEnd, function (Builder $builder, $dataEnd) {
-            return $builder->where('execution_date_end', '<=', "{$dataEnd} 23:59:59");
+        $builder->when($dateEnd, function (Builder $builder, $dateEnd) {
+            return $builder->where('date_end', '<=', $dateEnd);
         });
 
         return $builder;
     }
 
-    public function scopeFilterByStatusId(Builder $builder, $statusId)
+    public function scopeFilterByConcluded(Builder $builder, $concluded)
     {
-        return $builder->when($statusId, function (Builder $builder, $statusId) {
-            return $builder->where('status_id', $statusId);
+        return $builder->when($concluded, function (Builder $builder, $concluded) {
+            return $builder->where('concluded', $concluded);
         });
     }
 
@@ -60,24 +61,5 @@ class Appointment extends Model
     public function status()
     {
         return $this->belongsTo(Status::class);
-    }
-
-    public function getDateStartAttribute()
-    {
-        return $this->execution_date_start->format('Y-m-d');
-    }
-
-    public function getHourStartAttribute()
-    {
-        return $this->execution_date_start->format('H:i');
-    }
-    public function getDateEndAttribute()
-    {
-        return $this->execution_date_end ? $this->execution_date_end->format('Y-m-d') : null;
-    }
-
-    public function getHourEndAttribute()
-    {
-        return $this->execution_date_end ? $this->execution_date_end->format('H:i') : null;
     }
 }

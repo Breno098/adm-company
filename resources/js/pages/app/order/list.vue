@@ -2,12 +2,12 @@
   <div>
     <v-row>
       <v-col cols="12" md="3" v-for="(status) in statuses" :key="status.id" >
-        <v-btn :color="status.color" block @click="_load({ status_id: status.id })" rounded>
+        <v-btn :color="status.color" block @click="_loadFilterByStatus(status.id)">
             {{ status.name }}
         </v-btn>
       </v-col>
       <v-col cols="12" md="3" >
-        <v-btn block @click="_load" rounded color="grey">
+        <v-btn block @click="_loadAll" color="grey">
           Todas
         </v-btn>
       </v-col>
@@ -96,6 +96,7 @@ export default {
   },
   data: () => ({
     dialog: false,
+    filters: {},
     deleted: {},
     search: '',
     page: 1,
@@ -105,7 +106,7 @@ export default {
     statuses: []
   }),
   mounted() {
-     this._start();
+    this._start();
   },
   methods: {
     async _start(){
@@ -120,14 +121,26 @@ export default {
       });
       this.loading = false;
     },
-    async _load(filters = {}){
-      let params = { page: this.page, ...filters }
+    _loadFilterByStatus(status_id){
+      this.filters.status_id = status_id;
+      this._load();
+    },
+    _loadAll(){
+      this.filters = {};
+      this._load();
+    },
+    async _load(){
+      let params = { 
+        page: this.page, 
+        itemsPerPage: 20,
+        ...this.filters 
+      }
 
       this.loading = true;
       await axios.get(`api/order`, { params }).then(response => {
         if(response.data.data.data.length === 0 && this.page != 1){
           this.page = 1;
-          this._load(filters)
+          this._load()
         }
 
         if(response.data.success){

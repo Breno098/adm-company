@@ -11,20 +11,18 @@ class IndexActiveService
     /**
      * @param  array  $filters
      * @param  array  $relations
-     * @param  bool  $pagination
-     * @param  int  $itemsPerPage
+     * @param  bool|int  $itemsPerPage
      *
      * @return mixed
      */
-    static public function run(array $filters = [], array $relations = [], bool $pagination = false, int $itemsPerPage = 20)
+    static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
     {
         return Appointment::with($relations)
-            // ->filterByBetweenDate(Arr::get($filters, 'date_start'),Arr::get($filters, 'date_end'))
-            ->filterByStatusId(Arr::get($filters, 'status_id'))
-            ->orderby('execution_date_start', 'desc')
-            // ->append(['date_format',  'hour_format'])
+            ->filterByBetweenDate(Arr::get($filters, 'date_start'),Arr::get($filters, 'date_end'))
+            ->filterByConcluded(Arr::get($filters, 'concluded'))
+            ->orderby('date_start', 'desc')
             ->when(
-                $pagination,
+                $itemsPerPage,
                 function (Builder $builder) use ($itemsPerPage) {
                     return $builder->paginate($itemsPerPage)->withQueryString();
                 },

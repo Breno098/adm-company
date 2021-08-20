@@ -15,12 +15,12 @@ class CategorySeeder extends Seeder
     public function run()
     {
         Category::create([
-            'name' => 'Periféricos',
+            'name' => 'PERIFÉRICOS',
             'icon' => 'mdi-wrench'
         ]);
 
         Category::create([
-            'name' => 'Instalações',
+            'name' => 'INSTALAÇÃO',
             'icon' => 'mdi-pipe-disconnected'
         ]);
     }

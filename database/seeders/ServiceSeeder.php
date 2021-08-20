@@ -15,13 +15,13 @@ class ServiceSeeder extends Seeder
     public function run()
     {
         Item::create([
-            'name' => 'Instalação de máquina',
+            'name' => 'INSTALAÇÃO DE MÁQUINA',
             'type' => 'service',
             'default_value' => 100.99
         ]);
 
         Item::create([
-            'name' => 'Formatação de máquina',
+            'name' => 'FORMATAÇÃO DE MÁQUINA',
             'type' => 'service',
             'default_value' => 80.00
         ]);

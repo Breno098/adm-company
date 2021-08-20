@@ -11,18 +11,17 @@ class IndexActiveService
     /**
      * @param  array  $filters
      * @param  array  $relations
-     * @param  bool  $pagination
-     * @param  int  $itemsPerPage
+     * @param  bool|int  $itemsPerPage
      *
      * @return mixed
      */
-    static public function run(array $filters = [], array $relations = [], bool $pagination = false, int $itemsPerPage = 20)
+    static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
     {
         return Order::with($relations)
             ->filterByStatusId(Arr::get($filters, 'status_id'))
             ->orderBy('created_at', 'desc')
             ->when(
-                $pagination,
+                $itemsPerPage,
                 function (Builder $builder) use ($itemsPerPage) {
                     return $builder->paginate($itemsPerPage)->withQueryString();
                 },

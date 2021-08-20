@@ -1,25 +1,19 @@
 <template>
   <div>
-    <v-row>
-      <v-col cols="12" md="3" v-for="(status) in statuses" :key="status.id" >
-        <v-btn :color="status.color" block @click="_load({ status_id: status.id })">
-            {{ status.name }}
+    <v-row class="d-flex flex-row justify-center">
+      <v-col cols="12">
+        <v-btn block @click="_loadNotConcluded" :color="filters.concluded == 'N' ? 'blue' : 'grey'" large>
+          Compromissos Pendentes
         </v-btn>
       </v-col>
-      <v-col cols="12" md="3" >
-        <v-btn block @click="_load">
-          Todas
+      <v-col cols="10">
+        <v-btn block @click="_loadConcluded" :color="filters.concluded == 'S' ? 'green' : 'grey'" small>
+          Histórico
         </v-btn>
       </v-col>
     </v-row>
 
     <v-row>
-      <!-- <v-col cols="12">
-        <v-btn text color="blue" @click="_add">
-            Adicionar <v-icon dark>mdi-plus</v-icon>
-        </v-btn>
-      </v-col> -->
-
       <v-col cols="12" v-if="loading">
         <v-row>
           <v-col cols="12" md="6" v-for="index in [0, 1, 2, 3]" :key="index">
@@ -28,13 +22,13 @@
         </v-row>
       </v-col>
       
-      <v-col cols="12" md="6" v-for="appointment in appointments" :key="appointment.id" v-else>
+      <v-col cols="12" v-for="appointment in appointments" :key="appointment.id" v-else>
         <v-card v-on:click="_edit(appointment)">
           <v-list-item three-line>
             <v-list-item-content>
               <div class="text-overline mb-4 d-flex justify-space-between">
                 {{ appointment.order.client.name }} 
-                <v-chip v-if="appointment.status" :color="appointment.status.color" class="py-2" label>{{ appointment.status.name }}</v-chip>
+                <v-chip :color="appointment.concluded == 'S' ? 'green' : 'blue'" class="py-2" label>{{ appointment.concluded == 'S' ? 'CONCLUÍDO' : 'PENDENTE' }}</v-chip>
               </div>
               <v-list-item-subtitle>
                 {{ appointment.date }}
@@ -84,34 +78,37 @@ export default {
     pageCount: 0,
     appointments: [],
     loading: false,
-    statuses: []
+    statuses: [],
+    filters: {
+      concluded: 'N'
+    }
   }),
   mounted() {
-     this._start();
+    this._start();
   },
   methods: {
-    async _start(){
-      await this._loadStatuses();
+    _start(){
+      this._loadNotConcluded();
     },
-    async _loadStatuses(){
-       let params = { type: 'appointment' };
-
-      this.loading = true;
-      await axios.get(`api/status`, { params }).then(response => {
-        if(response.data.success){
-          return this.statuses = response.data.data;
-        }
-      });
-      this.loading = false;
+    _loadNotConcluded(){
+      this.filters.concluded = 'N';
+      this._load();
     },
-    async _load(filters = {}){
-      let params = { page: this.page, ...filters }
+    _loadConcluded(){
+      this.filters.concluded = 'S';
+      this._load();
+    },
+    async _load(){
+      let params = { 
+        page: this.page, 
+        itemsPerPage: 20,
+        ...this.filters 
+      }
 
       this.loading = true;
       await axios.get(`api/appointment`, { params }).then(response => {
         if(response.data.data.data.length === 0 && this.page != 1){
           this.page = 1;
-          this._load(filters)
         }
 
         if(response.data.success){

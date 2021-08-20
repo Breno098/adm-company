@@ -24,8 +24,7 @@ class CategoryController extends BaseControllerApi
         $categories = IndexActiveService::run(
             $request->query(), 
             $request->get('relations', []),
-            $request->get('pagination', false),
-            $request->get('itemsPerPage', 20),
+            $request->get('itemsPerPage', false),
         );
 
         return $this->sendResponse($categories, 'Category retrieved successfully.');

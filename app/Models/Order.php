@@ -17,7 +17,8 @@ class Order extends Model
         'amount',
         'amount_paid',
         'execution_date',
-        'technical_visit',
+        'technical_visit_date',
+        'technical_visit_time',
         'discount_amount',
         'discount_percentage',
         'warranty_days',
@@ -27,7 +28,8 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'technical_visit' => 'datetime:Y-m-d H:i',
+        'technical_visit_date' => 'date:Y-m-d',
+        'technical_visit_time' => 'datetime:H:i',
         'amount' => 'float',
         'amount_paid' => 'float',
         'discount_amount' => 'float',
@@ -102,15 +104,5 @@ class Order extends Model
                         'payments.name',
                         'order_payment.value',
                     ]);
-    }
-
-    public function getTechnicalVisitDateAttribute()
-    {
-        return $this->technical_visit->format('Y-m-d');
-    }
-
-    public function getTechnicalVisitHourAttribute()
-    {
-        return $this->technical_visit->format('H:i');
     }
 }

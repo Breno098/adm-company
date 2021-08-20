@@ -15,15 +15,11 @@ class CreateOrderPaymentTable extends Migration
     {
         Schema::create('order_payment', function (Blueprint $table) {
             $table->id();
-          
             $table->float('value')->nullable();
-
             $table->dateTime('date')->nullable();
             $table->dateTime('validity')->nullable();
-
             $table->foreignId('order_id')->nullable()->constrained();
             $table->foreignId('payment_id')->nullable()->constrained();
-
             $table->timestamps();
         });
     }

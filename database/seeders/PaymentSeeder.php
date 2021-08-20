@@ -18,43 +18,35 @@ class PaymentSeeder extends Seeder
     public function run()
     {
         Payment::create([
-            'name' => 'Pix',
-            'description' => 'Pagamento PIX',
+            'name' => 'PIX',
         ]);
 
         Payment::create([
-            'name' => 'Dinheiro (à vista)',
-            'description' => 'Pagamento em dinheiro a vista',
+            'name' => 'DINHEIRO (À VISTA)',
         ]);
 
         Payment::create([
-            'name' => 'Cartão de débito',
-            'description' => 'Pagamento à vista no débito',
+            'name' => 'CARTÃO DÉBITO',
         ]);
 
         Payment::create([
-            'name' => 'Cartão de crédito (à vista)',
-            'description' => 'Pagamento à vista no crédito',
+            'name' => 'CARTÃO CRÉDITO (À VISTA)',
         ]);
 
         Payment::create([
-            'name' => 'Cartão de crédito (2x) ',
-            'description' => 'Pagamento em duas vezes no cartão de credito',
+            'name' => 'CARTÃO CRÉDITO (2x) ',
         ]);
 
         Payment::create([
-            'name' => 'Cartão de crédito (3x) ',
-            'description' => 'Pagamento em três vezes no cartão de credito',
+            'name' => 'CARTÃO CRÉDITO (3x) ',
         ]);
 
         Payment::create([
-            'name' => 'Cartão de crédito (4x) ',
-            'description' => 'Pagamento em quatro vezes no cartão de credito',
+            'name' => 'CARTÃO CRÉDITO (4x) ',
         ]);
 
         Payment::create([
-            'name' => 'Cheque',
-            'description' => 'Pagamento em cheque',
+            'name' => 'CHEQUE',
         ]);
     }
 }

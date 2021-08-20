@@ -29,16 +29,14 @@ class OrderRequest extends FormRequest
             'amount' => 'nullable',
             'amount_paid' => 'nullable',
             'execution_date' => 'nullable|date',
-            'technical_visit' => 'nullable|date',
             'discount_amount' => 'nullable',
             'discount_percentage' => 'nullable',
             'warranty_days' => 'nullable|integer',
             'warranty_conditions' => 'nullable|string',
             'installments' => 'nullable',
             'comments' => 'nullable|string',
-
-            'technical_visit_date' => 'nullable',
-            'technical_visit_hour' => 'nullable',
+            'technical_visit_date' => 'nullable|date',
+            'technical_visit_time' => 'nullable',
 
             /** Relations */
             'client_id' => 'required',

@@ -15,13 +15,9 @@ class StoreService
      */
     static public function run(array $data = [])
     {
-        $data['execution_date_start'] = Arr::get($data, 'date_start') . ' ' . Arr::get($data, 'hour_start');
-        $data['execution_date_end'] = Arr::get($data, 'date_end') . ' ' . Arr::get($data, 'hour_end');
-
         $appointment = Appointment::create($data);
 
         $appointment->order()->associate(Arr::get($data, 'order_id'));
-        $appointment->status()->associate(Arr::get($data, 'order_id'));
         
         $appointment->save();
         

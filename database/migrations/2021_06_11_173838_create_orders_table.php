@@ -15,30 +15,22 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-
             $table->text('description')->nullable();
             $table->text('comments')->nullable();
-            
             $table->dateTime('execution_date')->nullable();
-            $table->dateTime('technical_visit')->nullable();
-
+            $table->date('technical_visit_date')->nullable();
+            $table->time('technical_visit_time')->nullable();
             $table->float('amount')->nullable();
             $table->float('amount_paid')->nullable();
-
             $table->integer('installments')->nullable();
-
             $table->float('discount_amount')->nullable();
             $table->float('discount_percentage')->nullable();
-            
             $table->integer('warranty_days')->nullable();
             $table->text('warranty_conditions')->nullable();
-
             $table->enum('type', ['budget', 'expense'])->nullable();
-
             $table->foreignId('client_id')->nullable()->constrained();
             $table->foreignId('status_id')->nullable()->constrained();
             $table->foreignId('address_id')->nullable()->constrained();
-
             $table->timestamps();
             $table->softDeletes();
         });

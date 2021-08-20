@@ -123,7 +123,6 @@ export default {
       
       let params = { 
         page: this.table.page, 
-        pagination: true,
         itemsPerPage: 20,
         ...this.table.filters 
       }

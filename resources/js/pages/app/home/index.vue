@@ -133,18 +133,10 @@ export default {
     }
   },
   methods: {
-    async start(){
-      await this._loadStatuses();
+    start(){
     },
     setHour(){
       setInterval(() => this.hour = moment().add(1, 'seconds').format('DD/MM/YYYY HH:mm:ss'), 1000)
-    },
-    async _loadStatuses(){
-      await axios.get(`api/status?type=appointment`).then(response => {
-        if(response.data.success){
-          return this.statuses = response.data.data;
-        }
-      });
     },
     async getAppointments({ start, end }) {
       this.appointments = [];
@@ -152,19 +144,19 @@ export default {
 
       let params = {
         date_start: start.date,
-        date_end: end.date
+        date_end: end.date,
       };
 
-      await axios.get('api/home/appointment', { params }).then(response => {
+      await axios.get('api/appointment', { params }).then(response => {
         if(response.data.success){
             response.data.data.map(appointment => {
               this.appointments.push({
                 appointment: appointment,
                 name: appointment.title,
                 description: appointment.description,
-                start: appointment.execution_date_start,
-                end:  appointment.execution_date_end ?? appointment.execution_date_start,
-                color: appointment.status.color,
+                start: appointment.date_start,
+                end:  appointment.date_end ?? appointment.date_start,
+                color: appointment.concluded ? 'blue' : 'orange',
               })
             })
         }

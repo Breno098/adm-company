@@ -16,8 +16,6 @@ class UpdateService
      */
     static public function run(Order $order, array $data = [])
     {
-        $data['technical_visit'] = Arr::get($data, 'technical_visit_date') . ' ' . Arr::get($data, 'technical_visit_hour');
-
         $order->update($data);
 
         $order->client()->associate(Arr::get($data, 'client_id'));
@@ -64,7 +62,7 @@ class UpdateService
             }
 
             $order->payments()->attach($payment['id'], [
-                'value'     => isset($payment['value']) ? $payment['value'] : 0
+                'value' => isset($payment['value']) ? $payment['value'] : 0
             ]);
         }
 

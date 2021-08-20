@@ -24,8 +24,7 @@ class OrderController extends BaseControllerApi
         $orders = IndexActiveService::run(
             $request->query(), 
             $request->get('relations', ['client','address']),
-            $request->get('pagination', true),
-            $request->get('itemsPerPage', 10),
+            $request->get('itemsPerPage', false),
         );
 
         return $this->sendResponse($orders, 'Orders retrieved successfully.');
@@ -49,9 +48,6 @@ class OrderController extends BaseControllerApi
             'products',
             'services',
             'payments'
-        ])->append([
-            'technical_visit_date',
-            'technical_visit_hour'
         ]);
 
         return $this->sendResponse($order, 'Order created successfully.');
@@ -71,9 +67,6 @@ class OrderController extends BaseControllerApi
             'products',
             'services',
             'payments'
-        ])->append([
-            'technical_visit_date',
-            'technical_visit_hour'
         ]);
 
         return $this->sendResponse($order, 'Order retrieved successfully.');
@@ -98,9 +91,6 @@ class OrderController extends BaseControllerApi
             'products',
             'services',
             'payments'
-        ])->append([
-            'technical_visit_date',
-            'technical_visit_hour'
         ]);
 
         return $this->sendResponse($order, 'Order updated successfully.');

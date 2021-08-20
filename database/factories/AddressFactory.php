@@ -26,15 +26,15 @@ class AddressFactory extends Factory
 
         return [
             'number' => $this->faker->buildingNumber,
-            'district' => $this->faker->city,
-            'city' => $this->faker->city,
-            'state' => $this->faker->state,
-            'street' => $this->faker->streetName,
+            'district' => strtoupper($this->faker->city),
+            'city' => strtoupper($this->faker->city),
+            'state' => strtoupper($this->faker->state),
+            'street' => strtoupper($this->faker->streetName),
             'cep' => $this->faker->numerify('##.###-###'),
-            'complement' => rand(0, 5) === 1 ? $this->faker->realText(rand(10, 100)) : null,
+            'complement' => rand(0, 5) === 1 ? strtoupper($this->faker->realText(rand(10, 100))) : null,
             'apartment' => $apartament ? $this->faker->numberBetween(10, 100) : null,
             'floor' => $apartament ? $this->faker->numberBetween(10, 5) : null,
-            'description' => rand(0, 5) === 1 ? $this->faker->realText(rand(10, 100)) : null,
+            'description' => rand(0, 5) === 1 ? strtoupper($this->faker->realText(rand(10, 100))) : null,
             'main' => true
         ];
     }

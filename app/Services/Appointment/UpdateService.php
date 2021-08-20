@@ -15,12 +15,9 @@ class UpdateService
      */
     static public function run(Appointment $appointment, array $data = [])
     {
-        $data['execution_date_start'] = Arr::get($data, 'date_start') . ' ' . Arr::get($data, 'hour_start');
-        $data['execution_date_end'] = Arr::get($data, 'date_end') . ' ' . Arr::get($data, 'hour_end');
-
         $appointment->update($data);
 
-        $appointment->status()->associate(Arr::get($data, 'status_id'));
+        $appointment->order()->associate(Arr::get($data, 'order_id'));
 
         $appointment->save();
         

@@ -47,10 +47,6 @@ Route::group(['middleware' => 'guest:api'], function () {
 
 
 Route::middleware('auth:api')->group( function () {
-    Route::prefix('home')->group( function () {
-        Route::get('/appointment', [HomeController::class, 'appointment']);
-    });
-
     Route::prefix('address')->group( function () {
         Route::get('/searchCep', [AddressController::class, 'searchCep']);
     });

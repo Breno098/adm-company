@@ -149,7 +149,7 @@
                   v-model="menu_time"
                   :close-on-content-click="false"
                   :nudge-right="40"
-                  :return-value.sync="order.technical_visit_hour"
+                  :return-value.sync="order.technical_visit_time"
                   transition="scale-transition"
                   offset-y
                   max-width="290px"
@@ -157,7 +157,7 @@
               >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                        v-model="order.technical_visit_hour"
+                        v-model="order.technical_visit_time"
                         label="HORÁRIO VISITA TÉCNICA"
                         prepend-icon="mdi-clock-time-four-outline"
                         readonly
@@ -169,8 +169,8 @@
                   </template>
                   <v-time-picker
                       v-if="menu_time"
-                      v-model="order.technical_visit_hour"
-                      @click:minute="$refs.menu_time.save(order.technical_visit_hour)"
+                      v-model="order.technical_visit_time"
+                      @click:minute="$refs.menu_time.save(order.technical_visit_time)"
                       format="24hr"
                   ></v-time-picker>
               </v-menu>
@@ -562,8 +562,6 @@
 <script>
 import axios from 'axios';
 import moment from 'moment';
-import { format, parseISO } from 'date-fns'
-import 'jspdf-autotable';
 
 export default {
   metaInfo () {
@@ -599,8 +597,8 @@ export default {
       comments: null,
       amount : null,
       amount_paid: null,
-      technical_visit_date : format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
-      technical_visit_hour : '',
+      technical_visit_date : null,
+      technical_visit_time : '',
       discount_amount : null,
       warranty_days : null,
       warranty_conditions : null,

@@ -16,8 +16,6 @@ class StoreService
      */
     static public function run(array $data = [])
     {
-        $data['technical_visit'] = Arr::get($data, 'technical_visit_date') . ' ' . Arr::get($data, 'technical_visit_hour');
-
         $order = Order::create($data);
 
         $order->client()->associate(Arr::get($data, 'client_id'));
@@ -60,7 +58,7 @@ class StoreService
             }
 
             $order->payments()->attach($payment['id'], [
-                'value'     => isset($payment['value']) ? $payment['value'] : 0
+                'value' => isset($payment['value']) ? $payment['value'] : 0
             ]);
         }
 

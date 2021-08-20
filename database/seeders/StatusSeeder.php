@@ -15,31 +15,31 @@ class StatusSeeder extends Seeder
     public function run()
     {
         Status::create([
-            'name' => 'Cancelado',
+            'name' => 'CANCELADO',
             'type' => 'order',
             'color' => 'orange accent-3'
         ]);
 
         Status::create([
-            'name' => 'Aguardando aprovação',
+            'name' => 'AGUARDANDO APROVAÇÃO',
             'type' => 'order',
             'color' => 'yellow accent-2'
         ]);
 
         Status::create([
-            'name' => 'Em andamento',
+            'name' => 'EM ANDAMENTO',
             'type' => 'order',
             'color' => 'indigo'
         ]);
 
         Status::create([
-            'name' => 'Aguardando pagamento',
+            'name' => 'AGUARDANDO PAGAMENTO',
             'type' => 'order',
             'color' => 'cyan darken-1'
         ]);
 
         Status::create([
-            'name' => 'Concluido',
+            'name' => 'CONCLUÍDO',
             'type' => 'order',
             'color' => 'green'
         ]);

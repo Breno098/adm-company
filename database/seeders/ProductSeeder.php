@@ -15,19 +15,19 @@ class ProductSeeder extends Seeder
     public function run()
     {
         Item::create([
-            'name' => 'Mouse',
+            'name' => 'MOUSE',
             'type' => 'product',
             'default_value' => 35.00
         ]);
 
         Item::create([
-            'name' => 'Monitor 20"',
+            'name' => 'MONITOR 20"',
             'type' => 'product',
             'default_value' => 350.99
         ]);
 
         Item::create([
-            'name' => 'Teclado Membrana',
+            'name' => 'TECLADO MEMBRANA',
             'type' => 'product',
             'default_value' => 80.00
         ]);

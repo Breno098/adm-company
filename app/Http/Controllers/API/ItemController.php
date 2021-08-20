@@ -23,8 +23,7 @@ class ItemController extends BaseControllerApi
         $item = IndexActiveService::run(
             $request->query(), 
             $request->get('relations', [ 'status' ]),
-            $request->get('pagination', false),
-            $request->get('itemsPerPage', 20),
+            $request->get('itemsPerPage', false),
         );
 
         return $this->sendResponse($item, 'Items retrieved successfully.');

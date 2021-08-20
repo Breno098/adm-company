@@ -31,11 +31,11 @@ class AppointmentRequest extends FormRequest
             'date_end' => 'nullable',
             'hour_end' => 'nullable',
             'description' => 'nullable|string',
-            'active' => 'nullable|boolean',
+            'concluded' => 'nullable|string|in:S,N',
             
             /** Relations */
             'order_id' => 'nullable',
-            'status_id' => 'required',
+            
         ];
     }
 }
