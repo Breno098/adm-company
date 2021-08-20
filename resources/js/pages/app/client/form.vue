@@ -141,6 +141,7 @@
                 ></v-text-field>
 
                 <v-text-field
+                  @input="contact.contact = contact.contact.toUpperCase()"
                   label="CONTATO"
                   outlined
                   dense
@@ -187,11 +188,13 @@
               <v-col cols="12" md="3">
                 <v-text-field
                   label="CEP"
+                  v-mask="'#####-###'"
                   outlined
                   dense
                   v-model="address.cep"
                   :loading="loading"
                   v-on:keyup.enter="_searchCep(index)"
+                  v-on:keyup.tab="_searchCep(index)"
                 ></v-text-field>
               </v-col>
 
@@ -372,18 +375,19 @@ export default {
       this.dialog.show = false;
     },
     async _searchCep(indexAddress){
-      if(this.client.addresses[indexAddress].cep.length != 8){
-        return;
-      }
+      let cep = this.client.addresses[indexAddress].cep.replace('-', '');
 
-      let params = { cep : this.client.addresses[indexAddress].cep };
+      if(cep.length != 8)
+        return;
+
+      let params = { cep };
       await axios.get(`api/address/searchCep`, { params }).then(response => {
         let { logradouro, bairro, localidade, uf } = response.data.data;
 
-        this.client.addresses[indexAddress].street = logradouro;
-        this.client.addresses[indexAddress].district = bairro;
-        this.client.addresses[indexAddress].city = localidade;
-        this.client.addresses[indexAddress].state = uf;
+        this.client.addresses[indexAddress].street = logradouro.toUpperCase();
+        this.client.addresses[indexAddress].district = bairro.toUpperCase();
+        this.client.addresses[indexAddress].city = localidade.toUpperCase();
+        this.client.addresses[indexAddress].state = uf.toUpperCase();
       }).catch(error => {
         console.log('error');
         console.log(error);

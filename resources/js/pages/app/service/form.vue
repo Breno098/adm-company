@@ -24,6 +24,7 @@
           :loading="loading"
           :rules="[rules.required]"
           :error="errors.name && !item.name"
+          @input="item.name = item.name.toUpperCase()"
         ></v-text-field>
       </v-col>
 
@@ -49,6 +50,7 @@
           dense
           v-model="item.brand"
           :loading="loading"
+          @input="item.brand = item.brand.toUpperCase()"
         ></v-text-field>
       </v-col>
 
@@ -73,6 +75,7 @@
           v-model="item.description"
           :loading="loading"
           hint="Detalhes do produto/item"
+          @input="item.description = item.description.toUpperCase()"
         ></v-textarea>
       </v-col>
 
@@ -116,16 +119,6 @@
         ></v-text-field>
       </v-col>
 
-      <v-col cols="12">
-        <v-text-field
-          label="CÓDIGO DE BARRA"
-          outlined
-          dense
-          v-model="item.bar_code"
-          :loading="loading"
-        ></v-text-field>
-      </v-col>
-
       <v-col cols="12" md="2">
         <v-text-field
           label="DIAS GARANTIA"
@@ -145,6 +138,7 @@
           v-model="item.warranty_conditions"
           :loading="loading"
           hint="Termos de garantia do produto/item"
+          @input="item.warranty_conditions = item.warranty_conditions.toUpperCase()"
         ></v-textarea>
       </v-col>
 
@@ -177,7 +171,7 @@ import axios from 'axios';
 
 export default {
   metaInfo () {
-    return { title: 'Produtos/Serviços' }
+    return { title: 'Serviços' }
   },
   data: () => ({
     loading: false,
@@ -311,7 +305,7 @@ export default {
 
       if(response.data.success){
         this._modal('Item salvo com sucesso', 'success');
-        return setTimeout(() => this.$router.push({ name: 'item.index' }), 1500);
+        return setTimeout(() => this.$router.push({ name: 'service.index' }), 1500);
       }
 
       this._modal('Error ao salvar item. ' , 'error');
