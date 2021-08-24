@@ -48,7 +48,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <div class="text-h6 blue--text mb-3"> Order de Serviço {{ order ? '| ' + order.id : '' }} </div>
+        <div class="text-h6 blue--text mb-3"> {{ order ? 'Nº do pedido: ' + order.id : '' }} </div>
       </v-col>
     </v-row>
 

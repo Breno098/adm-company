@@ -18,6 +18,7 @@ use App\Http\Controllers\API\ItemController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\StatusController;
 use App\Http\Controllers\API\AddressController;
+use App\Http\Controllers\API\ApplicationPreferencesController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\PaymentTypeController;
 use App\Http\Controllers\API\AppointmentController;
@@ -57,8 +58,6 @@ Route::middleware('auth:api')->group( function () {
     Route::apiResource('order', OrderController::class);
     Route::apiResource('item', ItemController::class);
     Route::apiResource('appointment', AppointmentController::class);
-
-    Route::prefix('payment')->group( function () {
-        Route::get('/', [PaymentController::class, 'index']);
-    });
+    Route::apiResource('app-preferences', ApplicationPreferencesController::class);
+    Route::apiResource('payment', PaymentController::class)->only(['index']);
 });

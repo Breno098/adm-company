@@ -6,10 +6,16 @@
         <td rowspan="8"> <img src="storage/logo.png" style="height: 130px; width: 220px"/> </td>
       </tr>
       <tr>
-        <td colspan="3"> <v-icon size="14" class="mr-2" color="#ff7403">mdi-google-maps</v-icon> Rua Leonor Pennachiotti Gallo, 350, Pq. Flamboyans </td>
+        <td colspan="3"> 
+          <v-icon size="14" class="mr-2" color="#ff7403">mdi-google-maps</v-icon> 
+          LEONOR PENNACHIOTTI GALLO, 350 | PQ, FLAMBOYANS
+        </td>
       </tr>  
       <tr>
-        <td colspan="3"> <v-icon size="14" class="mr-2" color="#ff7403">mdi-google-maps</v-icon> Ribeirão Preto - SP | CEP 14093-651 </td>
+        <td colspan="3"> 
+          <v-icon size="14" class="mr-2" color="#ff7403">mdi-google-maps</v-icon> 
+          Ribeirão Preto - SP | CEP 14093-651 
+        </td>
       </tr>
       <tr>
         <td colspan="3"> <v-icon size="14" class="mr-2">mdi-card-account-details</v-icon> CNPJ 17.107.361/0001-34  </td>
@@ -33,7 +39,7 @@
         <td colspan="4" style="padding: 10px 5px; font-size: 23px; text-align: center; font-weight: bold"> ORÇAMENTO {{ order.id }} </td>
       </tr>
       <tr v-if="order.client">
-        <td colspan="4" style="padding: 0px 5px"> {{ `Cliente: ${order.client.name}` }} </td>
+        <td colspan="4" style="padding: 0px 5px"> {{ `CLIENTE: ${order.client.name}` }} </td>
       </tr>
       <tr v-if="order.address_id">
         <td colspan="4" style="padding: 0px 5px"> {{ `R. ${order.address.street} nº ${order.address.number}, ${order.address.district}` }} </td>
@@ -59,10 +65,10 @@
       </tr>
       
       <tr v-if="order.services.length > 0">
-        <td style="padding: 5px 5px 10px; font-weight: bold"> Descrição </td>
-        <td style="padding: 5px 0; font-weight: bold"> Valor </td>
-        <td style="padding: 5px 0; font-weight: bold"> Quantidade </td>
-        <td style="padding: 5px 0; font-weight: bold"> Total </td>
+        <td style="padding: 5px 5px 10px; font-weight: bold"> DESCRIÇÃO </td>
+        <td style="padding: 5px 0; font-weight: bold"> VALOR </td>
+        <td style="padding: 5px 0; font-weight: bold"> QUANTIDADE </td>
+        <td style="padding: 5px 0; font-weight: bold"> TOTAL </td>
       </tr>
       <tr v-for="(service, index) in order.services" :key="index">
         <td style="padding: 0px 5px"> - {{ service.name }} </td>
@@ -74,10 +80,10 @@
         <td colspan="4" style="padding: 8px 5px; font-size: 18px"> PRODUTOS </td>
       </tr>
       <tr v-if="order.products.length > 0">
-        <td style="padding: 5px 5px 10px; font-weight: bold"> Descrição </td>
-        <td style="padding: 5px 0; font-weight: bold"> Valor </td>
-        <td style="padding: 5px 0; font-weight: bold"> Quantidade </td>
-        <td style="padding: 5px 0; font-weight: bold"> Total </td>
+        <td style="padding: 5px 5px 10px; font-weight: bold"> DESCRIÇÃO </td>
+        <td style="padding: 5px 0; font-weight: bold"> VALOR </td>
+        <td style="padding: 5px 0; font-weight: bold"> QUANTIDADE </td>
+        <td style="padding: 5px 0; font-weight: bold"> TOTAL </td>
       </tr>
       <tr v-for="(product, index) in order.products" :key="index">
         <td style="padding: 0px 5px"> - {{ product.name }} </td>
@@ -94,10 +100,10 @@
         <td colspan="1" style="padding: 5px 5px; font-size: 20px; text-align: right; font-weight: bold"> {{ _formatMoney(order.amount) }} </td>
       </tr>
       <tr>
-        <td colspan="4" style="padding: 10px 5px 0px"> Formas de Pagamento </td>
+        <td colspan="4" style="padding: 10px 5px 0px"> FORMAS DE PAGAMENTO </td>
       </tr>
       <tr>
-        <td colspan="4"> Cartão de crédito, cartão de débito, dinheiro, cheque, boleto ou transferência bancária </td>
+        <td colspan="4"> CARTÃO DE CRÉDITO OU DÉBITO, DINHEIRO, CHEQUE, BOLETO OU TRANSFERÊNCIA BANCÁRIA </td>
       </tr>
       <tr>
         <td colspan="4"> (Banco Itaú | Agência 1635 | Conta 35942-3) </td>
@@ -106,16 +112,10 @@
         <td colspan="4" style="padding: 0 5px"> <hr style="color: #eee;"/> </td>
       </tr>
       <tr>
-        <td colspan="4" style="padding: 5px 5px"> Informações adicionais </td>
-      </tr>
-      <tr>
-        <td colspan="4"> Todos atendimentos com retirada de louças sanitárias o cliente fica responsável em caso de quebra. </td>
-      </tr>
-      <tr>
         <td colspan="4" style="padding: 15px 5px; text-align: center"> {{ nowFormat }} </td>
       </tr>
     </table>
-    </v-col>3
+    </v-col>
   </v-row>
 </template>
 

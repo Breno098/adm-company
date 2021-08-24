@@ -24,14 +24,15 @@ class ContactFactory extends Factory
     public function definition()
     {
         $type = Arr::random([
-            'Email',
-            'Celular',
-            'WhatsApp',
-            'Outros'
+            'CELULAR',
+            'EMAIL',
+            'TELEFONE',
+            'WHATSAPP',
+            'OUTROS'
         ]);
 
         return [
-            'contact' => $type === 'Email' ? $this->faker->email : $this->faker->numerify('(##) #####-###'),
+            'contact' => $type === 'EMAIL' ? $this->faker->email : $this->faker->numerify('(##) #####-###'),
             'type' => $type,
             'main' => true,
         ];

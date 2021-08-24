@@ -348,11 +348,11 @@ export default {
       contacts: [{}]
     },
     contact_types: [
-      'Celular',
-      'Email',
-      'Telefone',
-      'WhatsApp',
-      'Outros'
+      'CELULAR',
+      'EMAIL',
+      'TELEFONE',
+      'WHATSAPP',
+      'OUTROS'
     ]
   }),
   computed: {

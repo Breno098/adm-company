@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,17 +12,18 @@ class ApplicationPreferences extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'title',
-        'first_title_option',
-        'second_title_option',
-        'third_title_option',
-        'fourth_title_option',
-        'fifth_title_option',
-        'route_name',
-        'params',
-        'link',
-        'icon',
-        'color',
-        'type'
+        'type',
+        'content',
     ];
+
+    protected $casts = [
+        'content' => 'array',
+    ];
+
+    public function scopeFilterByType(Builder $builder, $type)
+    {
+        return $builder->when($type, function (Builder $builder, $type) {
+            return $builder->where('type', $type);
+        });
+    }
 }
