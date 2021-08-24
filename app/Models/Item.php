@@ -43,19 +43,14 @@ class Item extends Model
         });
     }
 
-    public function order()
-    {
-        return $this->belongsToMany(OrderItem::class);
-    }
-
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'item_category', 'item_id', 'category_id');
+        return $this->belongsToMany(Category::class);
     }
 
     public function images()
     {
-        return $this->belongsToMany(Category::class, 'item_category', 'item_id', 'category_id');
+        return $this->belongsToMany(Image::class);
     }
 
     public function status()

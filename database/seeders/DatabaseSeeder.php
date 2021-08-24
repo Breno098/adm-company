@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\ApplicationPreferences;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 
@@ -25,6 +24,7 @@ class DatabaseSeeder extends Seeder
                 ServiceSeeder::class,
                 PaymentSeeder::class,
                 ClientSeeder::class,
+                ExpenseSeeder::class,
             ]);
         } else {
             $this->call([

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateItemImageTable extends Migration
+class CreateCategoryItemTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateItemImageTable extends Migration
      */
     public function up()
     {
-        Schema::create('item_image', function (Blueprint $table) {
+        Schema::create('category_item', function (Blueprint $table) {
             $table->id();
             $table->foreignId('item_id')->nullable()->constrained();
             $table->foreignId('category_id')->nullable()->constrained();
@@ -28,6 +28,6 @@ class CreateItemImageTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('item_image');
+        Schema::dropIfExists('category_item');
     }
 }

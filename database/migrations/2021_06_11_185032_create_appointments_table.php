@@ -24,8 +24,8 @@ class CreateAppointmentsTable extends Migration
             $table->foreignId('client_id')->nullable()->constrained();
             $table->foreignId('order_id')->nullable()->constrained();
             $table->enum('concluded', ['S', 'N'])->default('N');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

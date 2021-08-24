@@ -52,6 +52,8 @@ class ItemController extends BaseControllerApi
      */
     public function show(Item $item)
     {
+        $item->load(['categories']);
+        
         return $this->sendResponse($item, 'Item retrieved successfully.');
     }
 
