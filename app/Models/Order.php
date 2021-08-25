@@ -103,6 +103,7 @@ class Order extends Model
                         'payments.id',
                         'payments.name',
                         'order_payment.value',
+                        'order_payment.date',
                     ]);
     }
 }

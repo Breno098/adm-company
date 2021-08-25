@@ -1,12 +1,12 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="12" md="3" v-for="(status) in statuses" :key="status.id" >
+      <v-col cols="12" md="4" v-for="(status) in statuses" :key="status.id" >
         <v-btn :color="status.color" block @click="_loadFilterByStatus(status.id)">
             {{ status.name }}
         </v-btn>
       </v-col>
-      <v-col cols="12" md="3" >
+      <v-col cols="12" md="4" >
         <v-btn block @click="_loadAll" color="grey">
           Todas
         </v-btn>
@@ -91,6 +91,7 @@
 import axios from 'axios';
 
 export default {
+  middleware: 'auth',
   metaInfo () {
     return { title: 'Ordens de Serviços' }
   },
@@ -167,10 +168,10 @@ export default {
         this.dialog = true;
     },
     _edit(id){
-      this.$router.push({ name: 'order.form', params: { id } })
+      this.$router.push({ name: 'order.show', params: { id } })
     },
      _add(){
-      this.$router.push({ name: 'order.form' })
+      this.$router.push({ name: 'order.create' })
     }
   }
 }

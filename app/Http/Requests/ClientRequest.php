@@ -25,8 +25,8 @@ class ClientRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'type' => 'required|in:PF,PJ',
-            'document' => 'nullable|string',
+            'cnpj' => 'nullable|string',
+            'cpf' => 'nullable|string',
             'fantasy_name' => 'nullable|string',
             'birth_date' => 'nullable|date',
             'notes' => 'nullable|string',
@@ -35,6 +35,7 @@ class ClientRequest extends FormRequest
             /** Relations */
             'contacts' => 'nullable|array',
             'addresses' => 'nullable|array',
+            'category_id' => 'nullable',
         ];
     }
 }

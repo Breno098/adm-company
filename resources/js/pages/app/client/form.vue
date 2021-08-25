@@ -11,7 +11,7 @@
       <!-- Informações -->
       <v-tab-item>
         <v-row>
-          <v-col cols="12">
+          <v-col cols="12" md="6">
             <v-text-field
               label="NOME"
               outlined
@@ -36,24 +36,37 @@
           </v-col>
 
           <v-col cols="12" md="6">
+            <v-select
+              v-model="client.category_id"
+              :items="categories"
+              item-text="name"
+              item-value="id"
+              label="TIPO DE CLIENTE"
+              outlined
+              dense
+              :loading="loading"
+            ></v-select>
+          </v-col>
+
+          <v-col cols="12" md="6">
             <v-text-field
-              label="DOCUMENTO"
+              label="CNPJ"
               v-mask="'##.###.###/####-##'"
               outlined
               dense
-              v-model="client.document"
+              v-model="client.cnpj"
               :loading="loading"
-              v-if="client.type === 'PJ'"
             ></v-text-field>
+          </v-col>
 
+          <v-col cols="12" md="6">
             <v-text-field
-              label="DOCUMENTO"
-              v-mask="'###.###.###-##' "
+              label="CPF"
+              v-mask="'###.###.###-##'"
               outlined
               dense
-              v-model="client.document"
+              v-model="client.cpf"
               :loading="loading"
-              v-else
             ></v-text-field>
           </v-col>
 
@@ -90,20 +103,6 @@
               ></v-date-picker>
             </v-menu>
           </v-col>
-
-          <v-col cols="12" md="6">
-            <v-select
-              v-model="client.type"
-              vali
-              :items="['PF', 'PJ']"
-              label="TIPO"
-              outlined
-              dense
-              :loading="loading"
-              :rules="[rules.required]"
-              :error="errors.type && !client.type"
-            ></v-select>
-          </v-col>
         </v-row>
       </v-tab-item>
 
@@ -137,7 +136,7 @@
                   v-model="contact.contact"
                   :loading="loading"
                   v-mask="'(##) #####-####'"
-                  v-if="contact.type === 'Celular' || contact.type === 'Telefone' || contact.type === 'WhatsApp'"
+                  v-if="contact.type === 'CELULAR' || contact.type === 'TELEFONE' || contact.type === 'WHATSAPP'"
                 ></v-text-field>
 
                 <v-text-field
@@ -317,6 +316,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 export default {
+  middleware: 'auth',
   metaInfo () {
     return { title: 'Cliente' }
   },
@@ -331,14 +331,15 @@ export default {
     },
     errors: {
       name: false,
-      type: false
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
     },
     client: {
       birth_date: null,
-      document: null,
+      cnpj: null,
+      cpf: null,
+      category_id: null,
       fantasy_name: null,
       name: null,
       notes: null,
@@ -353,7 +354,8 @@ export default {
       'TELEFONE',
       'WHATSAPP',
       'OUTROS'
-    ]
+    ],
+    categories: []
   }),
   computed: {
     birthDateFormat () {
@@ -361,11 +363,16 @@ export default {
     },
   },
   mounted(){
-    if(this.$route.params.id){
-      this._load();
-    }
+    this._start();
   },
   methods: {
+     async _start(){
+      if(this.$route.params.id){
+        await this._load();
+      }
+
+      await this._loadCategories();
+    },
     _showModal(message, status = ''){
       this.dialog.message = message;
       this.dialog.status = status;
@@ -373,6 +380,16 @@ export default {
     },
     _hideModal(){
       this.dialog.show = false;
+    },
+    async _loadCategories(){
+      this.loading = true;
+      await axios.get(`api/category?type=client`).then(response => {
+        if(response.data.success){
+          return this.categories = response.data.data;
+        }
+        this._showModal('Error ao carregar categorias', 'error');
+      });
+      this.loading = false;
     },
     async _searchCep(indexAddress){
       let cep = this.client.addresses[indexAddress].cep.replace('-', '');

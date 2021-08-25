@@ -4,25 +4,35 @@ function page (path) {
 
 export default [
   { path: '/order', name: 'order.index', component: page('app/order/list.vue') },
-  { path: '/order/:id?', name: 'order.form', component: page('app/order/form.vue') },
+  { path: '/order/create', name: 'order.create', component: page('app/order/form.vue') },
+  { path: '/order/:id', name: 'order.show', component: page('app/order/form.vue') },
 
-  { path: '/appointment', name: 'appointment.index', component: page('app/appointment/list.vue') },
-  { path: '/appointment/:id?', name: 'appointment.form', component: page('app/appointment/form.vue') },
-  
   { path: '/budget/:order', name: 'budget', component: page('app/order/budget.vue') },
   { path: '/serviceorder/:order', name: 'serviceorder', component: page('app/order/serviceorder.vue') },
+
+  { path: '/appointment', name: 'appointment.index', component: page('app/appointment/list.vue') },
+  { path: '/appointment/create', name: 'appointment.create', component: page('app/appointment/form.vue') },
+  { path: '/appointment/:id', name: 'appointment.show', component: page('app/appointment/form.vue') },
   
   { path: '/client', name: 'client.index', component: page('app/client/list.vue') },
-  { path: '/client/:id?', name: 'client.form', component: page('app/client/form.vue') },
+  { path: '/client/create', name: 'client.create', component: page('app/client/form.vue') },
+  { path: '/client/:id', name: 'client.show', component: page('app/client/form.vue') },
 
   { path: '/category', name: 'category.index', component: page('app/category/list.vue') },
-  { path: '/category/:id?', name: 'category.form', component: page('app/category/form.vue') },
+  { path: '/category/create', name: 'category.create', component: page('app/category/form.vue') },
+  { path: '/category/:id', name: 'category.show', component: page('app/category/form.vue') },
 
   { path: '/product', name: 'product.index', component: page('app/product/list.vue')},
-  { path: '/product/:id?', name: 'product.form', component: page('app/product/form.vue') },
+  { path: '/product/create', name: 'product.create', component: page('app/product/form.vue') },
+  { path: '/product/:id', name: 'product.show', component: page('app/product/form.vue') },
 
   { path: '/service', name: 'service.index', component: page('app/service/list.vue')},
-  { path: '/service/:id?', name: 'service.form', component: page('app/service/form.vue') },
+  { path: '/service/create', name: 'service.create', component: page('app/service/form.vue') },
+  { path: '/service/:id', name: 'service.show', component: page('app/service/form.vue') },
+
+  { path: '/expense', name: 'expense.index', component: page('app/expense/list.vue')},
+  { path: '/expense/create', name: 'expense.create', component: page('app/expense/form.vue') },
+  { path: '/expense/:id', name: 'expense.show', component: page('app/expense/form.vue') },
 
   { path: '/login', name: 'login', component: page('auth/login.vue') },
   { path: '/register', name: 'register', component: page('auth/register.vue') },

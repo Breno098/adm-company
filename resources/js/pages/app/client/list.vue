@@ -14,7 +14,8 @@
                 <th class="text-left">NOME</th>
                 <th class="text-left">NOME FANTASIA</th>
                 <th class="text-left">TIPO</th>
-                <th class="text-left">DOCUMENTO</th>
+                <th class="text-left">CPF</th>
+                <th class="text-left">CNPJ</th>
                 <th></th>
               </tr>
             </thead>
@@ -22,8 +23,9 @@
               <tr v-for="client in table.clients" :key="client.id">
                 <td>{{ client.name }}</td>
                 <td>{{ client.fantasy_name }}</td>
-                <td>{{ client.type }}</td>
-                <td>{{ client.document }}</td>
+                <td>{{ client.category ? client.category.name : '' }}</td>
+                <td>{{ client.cpf  }}</td>
+                <td>{{ client.cnpj }}</td>
                 <td>
                   <v-menu transition="slide-y-transition" bottom>
                       <template v-slot:activator="{ on, attrs }">
@@ -99,6 +101,7 @@
 import axios from 'axios';
 
 export default {
+  middleware: 'auth',
   metaInfo () {
     return { title: 'Clientes' }
   },
@@ -158,12 +161,12 @@ export default {
     },
     _edit(id){
       this.$router.push({
-          name: 'client.form',
+          name: 'client.show',
           params: { id }
       })
     },
      _add(){
-      this.$router.push({ name: 'client.form' })
+      this.$router.push({ name: 'client.create' })
     }
   }
 }

@@ -183,8 +183,8 @@
               dense
               v-model="order.description"
               :loading="loading"
-              hint="Descrição da order de serviço, orçamento ou nota fiscal."
-              placeholder="Descrição e observações formais (visível ao cliente)."
+              hint="DESCRIÇÃO DO ORÇAMENTO."
+              placeholder="DESCRIÇÃO E OBSERVAÇÕES FORMAR (VISÍVEL AO CLIENTE)."
             ></v-textarea>
           </v-col>
 
@@ -195,8 +195,8 @@
               dense
               v-model="order.comments"
               :loading="loading"
-              placeholder="Comentários e observaçõs internas (não visível ao cliente)."
-              hint="Comentários e observações internas (não visível ao cliente)."
+              placeholder="COMENTÁRIOS E OBSERVAÇÕES INTERNAS (NÃO VISÍVEL AO CLIENTE)."
+              hint="COMENTÁRIOS E OBSERVAÇÕES INTERNAS (NÃO VISÍVEL AO CLIENTE)."
             ></v-textarea>
           </v-col>
 
@@ -466,7 +466,7 @@
                 </v-btn>
               </v-col>
 
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <v-select
                   :items="payments"
                   label="Pagamento"
@@ -479,7 +479,8 @@
                 >
                 </v-select>
               </v-col>
-              <v-col cols="12" md="5">
+
+              <v-col cols="12" md="4">
                 <v-text-field
                   prefix="R$"
                   type="number"
@@ -490,6 +491,38 @@
                   v-model="payment.value"
                 ></v-text-field>
               </v-col>
+
+              <v-col cols="12" md="3">
+                <v-menu
+                    v-model="menu_date_payments[index]"
+                    :close-on-content-click="false"
+                    max-width="290"
+                    transition="scale-transition"
+                    offset-y
+                >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                        append-icon="mdi-calendar"
+                        :value="DateFormatPayment(index)"
+                        clearable
+                        label="DATA VISITA TÉCNICA"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        @click:clear="payment.date = null"
+                        outlined
+                        dense
+                    ></v-text-field>
+                </template>
+                <v-date-picker
+                    v-model="payment.date"
+                    @change="menu_date_payments[index] = false"
+                    no-title
+                    crollable
+                ></v-date-picker>
+                </v-menu>
+              </v-col>
+              
               <v-col cols="1">
                 <v-checkbox
                   label="Total"
@@ -564,6 +597,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 export default {
+  middleware: 'auth',
   metaInfo () {
     return { title: 'Order de Serviço' }
   },
@@ -578,6 +612,7 @@ export default {
     loadingPayment: false,
     menu_technical_visit_date: false,
     menu_time: false,
+    menu_date_payments: [],
     dialog: {
       show: false,
       message: '',
@@ -642,6 +677,9 @@ export default {
     this._start();
   },
   methods: {
+    DateFormatPayment(index) {
+        return this.order.payments[index].date ? moment(this.order.payments[index].date).format('DD/MM/YYYY') : ''
+    },
     async _start(){
       if(this.$route.params.id){
         await this._load();

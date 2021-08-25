@@ -22,15 +22,11 @@ class ClientFactory extends Factory
      */
     public function definition()
     {
-        $types = ['PJ', 'PF'];
-
-        $type = Arr::random($types);
-
         return [
             'name' => strtoupper($this->faker->name),
-            'document' => $type === 'PF' ? $this->faker->numerify('###.###.###-##') : $this->faker->numerify('##.###.###/####-##'),
+            'cnpj' => rand(0, 5) == 5 ? $this->faker->numerify('##.###.###/####-##') : null,
+            'cpf' => rand(0, 5) == 5 ? $this->faker->numerify('###.###.###-##') : null,
             'birth_date' => $this->faker->dateTimeBetween('-80 years', 'now'),
-            'type' => $type,
             'notes' => rand(0, 1) === 1 ? strtoupper($this->faker->realText(rand(10, 100))) : null,
             'fantasy_name' => rand(0, 5) === 1 ? strtoupper($this->faker->name) : null,
         ];

@@ -31,6 +31,10 @@ class StoreService
             }
         }
 
+        $client->category()->associate(Arr::get($data, 'category_id'));
+
+        $client->save();
+
         return $client;
     }
 }

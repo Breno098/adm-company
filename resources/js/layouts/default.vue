@@ -91,7 +91,8 @@ export default {
     menuItems: [
       { title: 'Inicio' , route: 'home', icon: 'mdi-home', color: 'blue' },
       { title: 'Ordens' , route: 'order.index', icon: 'mdi-format-list-checks', color: 'purple' },
-      { title: 'Agenda' , route: 'appointment.index', icon: 'mdi-calendar-today', color: 'red' },
+      { title: 'Agenda' , route: 'appointment.index', icon: 'mdi-calendar-today', color: 'teal accent-4' },
+      { title: 'Custos/Despesas' , route: 'expense.index', icon: 'mdi-database-minus', color: 'red' },
       { title: 'Clientes' , route: 'client.index', icon: 'mdi-account', color: 'green' },
       { title: 'Produtos', route: 'product.index', icon: 'mdi-barcode', color: 'orange' },
       { title: 'Serviços', route: 'service.index', icon: 'mdi-wrench', color: 'indigo' },

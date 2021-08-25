@@ -130,6 +130,7 @@ import { mapGetters } from 'vuex'
 import moment from 'moment';
 
 export default {
+  middleware: 'auth',
   layout: 'order',
   metaInfo () {
     return { title: 'Orçamento' }

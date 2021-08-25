@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Address;
+use App\Models\Category;
 use App\Models\Client;
 use App\Models\Contact;
 use Illuminate\Database\Seeder;
@@ -19,6 +20,10 @@ class ClientSeeder extends Seeder
         Client::factory(15)
             ->has(Address::factory()->count(2))
             ->has(Contact::factory()->count(2))
+            ->sequence(function ($sequence) {
+                $category = Category::where('type', 'client')->get()->random();
+                return ['category_id' => $category->id ];
+            })
             ->create();
     }
 }

@@ -18,6 +18,7 @@ class CreateCategoriesTable extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('icon')->nullable();
+            $table->enum('type', ['service', 'product', 'expense', 'client'])->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

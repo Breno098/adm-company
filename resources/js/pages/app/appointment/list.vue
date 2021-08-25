@@ -67,6 +67,7 @@
 import axios from 'axios';
 
 export default {
+  middleware: 'auth',
   metaInfo () {
     return { title: 'Compromissos' }
   },
@@ -120,10 +121,10 @@ export default {
     },
     async _edit(appointment){
       await this.$store.dispatch('order/setData', { order: appointment.order })
-      this.$router.push({ name: 'appointment.form', params: { id: appointment.id } })
+      this.$router.push({ name: 'appointment.show', params: { id: appointment.id } })
     },
      _add(){
-      this.$router.push({ name: 'appointment.form' })
+      this.$router.push({ name: 'appointment.create' })
     }
   }
 }

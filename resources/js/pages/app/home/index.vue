@@ -104,6 +104,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 export default {
+  middleware: 'auth',
   metaInfo () {
     return { title: 'Home' }
   },

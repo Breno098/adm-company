@@ -17,9 +17,9 @@ class DatabaseSeeder extends Seeder
         if (App::environment('local')) {
             $this->call([
                 UserSeeder::class,
+                CategorySeeder::class,
                 ApplicationPreferncesSeeder::class,
                 StatusSeeder::class,
-                CategorySeeder::class,
                 ProductSeeder::class,
                 ServiceSeeder::class,
                 PaymentSeeder::class,
@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         } else {
             $this->call([
                 UserSeeder::class,
+                CategorySeeder::class,
                 ApplicationPreferncesSeeder::class,
                 StatusSeeder::class,
                 PaymentSeeder::class,

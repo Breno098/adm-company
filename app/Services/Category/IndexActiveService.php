@@ -19,6 +19,7 @@ class IndexActiveService
     {
         return Category::with($relations)
             ->filterByName(Arr::get($filters, 'name'))
+            ->filterByType(Arr::get($filters, 'type'))
             ->orderby('name')
             ->when(
                 $itemsPerPage,

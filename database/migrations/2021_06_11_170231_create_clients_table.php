@@ -16,12 +16,13 @@ class CreateClientsTable extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('document')->nullable();
+            $table->string('cpf')->nullable();
+            $table->string('cnpj')->nullable();
             $table->string('fantasy_name')->nullable();
             $table->date('birth_date')->nullable();
-            $table->enum('type', ['PF','PJ'])->nullable();
             $table->text('notes')->nullable();
             $table->foreignId('status_id')->nullable()->constrained();
+            $table->foreignId('category_id')->nullable()->constrained();
             $table->timestamps();
             $table->softDeletes();
         });

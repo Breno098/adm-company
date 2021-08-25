@@ -22,6 +22,7 @@ class Expense extends Model
     protected $casts = [
         'date' => 'date:Y-m-d',
         'time' => 'datetime:H:i',
+        'value' => 'float',
     ];
 
     public function categories()

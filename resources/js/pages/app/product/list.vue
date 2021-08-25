@@ -96,9 +96,7 @@
 import axios from 'axios';
 
 export default {
-  props: {
-    type: String
-  },
+  middleware: 'auth',
   metaInfo () {
     return { title: 'Produtos' }
   },
@@ -156,12 +154,12 @@ export default {
     },
     _edit(id){
       this.$router.push({
-          name: 'product.form',
+          name: 'product.show',
           params: { id }
       })
     },
      _add(){
-      this.$router.push({ name: 'product.form' })
+      this.$router.push({ name: 'product.create' })
     }
   }
 }

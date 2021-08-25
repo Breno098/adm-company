@@ -240,6 +240,7 @@ import moment from 'moment';
 import { format, parseISO } from 'date-fns'
 
 export default {
+  middleware: 'auth',
   metaInfo () {
     return { title: 'Compromisso' }
   },

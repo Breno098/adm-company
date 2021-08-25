@@ -3,6 +3,7 @@
 namespace App\Services\Client;
 
 use App\Models\Client;
+use Illuminate\Support\Arr;
 
 class UpdateService
 {
@@ -46,6 +47,10 @@ class UpdateService
                 }
             }
         }
+
+        $client->category()->associate(Arr::get($data, 'category_id'));
+
+        $client->save();
 
         return $client;
     }

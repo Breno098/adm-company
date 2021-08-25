@@ -22,6 +22,7 @@ use App\Http\Controllers\API\ApplicationPreferencesController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\PaymentTypeController;
 use App\Http\Controllers\API\AppointmentController;
+use App\Http\Controllers\API\ExpenseController;
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [LoginController::class, 'logout']);
@@ -59,5 +60,6 @@ Route::middleware('auth:api')->group( function () {
     Route::apiResource('item', ItemController::class);
     Route::apiResource('appointment', AppointmentController::class);
     Route::apiResource('app-preferences', ApplicationPreferencesController::class);
+     Route::apiResource('expense', ExpenseController::class);
     Route::apiResource('payment', PaymentController::class)->only(['index']);
 });

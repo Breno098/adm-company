@@ -22,7 +22,7 @@ class ClientController extends BaseControllerApi
     {
         $clients = IndexActiveService::run(
             $request->query(), 
-            $request->get('relations', ['addresses']),
+            $request->get('relations', ['category']),
             $request->get('itemsPerPage', false),
         );
 

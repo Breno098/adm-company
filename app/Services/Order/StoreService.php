@@ -58,7 +58,8 @@ class StoreService
             }
 
             $order->payments()->attach($payment['id'], [
-                'value' => isset($payment['value']) ? $payment['value'] : 0
+                'value' => $payment['value'],
+                'date' => isset($payment['date']) ? $payment['date'] : null
             ]);
         }
 

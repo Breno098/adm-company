@@ -96,9 +96,7 @@
 import axios from 'axios';
 
 export default {
-  props: {
-    type: String
-  },
+  middleware: 'auth',
   metaInfo () {
     return { title: 'Serviços' }
   },
@@ -156,12 +154,12 @@ export default {
     },
     _edit(id){
       this.$router.push({
-          name: 'service.form',
+          name: 'service.show',
           params: { id }
       })
     },
      _add(){
-      this.$router.push({ name: 'service.form' })
+      this.$router.push({ name: 'service.create' })
     }
   }
 }

@@ -170,6 +170,7 @@
 import axios from 'axios';
 
 export default {
+  middleware: 'auth',
   metaInfo () {
     return { title: 'Produtos' }
   },
@@ -260,7 +261,7 @@ export default {
     },
     async _loadCategories(){
       this.loading = true;
-      await axios.get(`api/category`).then(response => {
+      await axios.get(`api/category?type=product`).then(response => {
         if(response.data.success){
           return this.categories = response.data.data;
         }

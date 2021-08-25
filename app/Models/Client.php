@@ -69,4 +69,9 @@ class Client extends Model
     {
         return $this->hasOne(Status::class);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

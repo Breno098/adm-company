@@ -6,22 +6,21 @@
             Adicionar <v-icon dark>mdi-plus</v-icon>
         </v-btn>
       </v-col>
-       <v-col cols="12">
+
+      <v-col cols="12">
         <v-simple-table>
           <template v-slot:default>
             <thead>
               <tr>
-                <th></th>
-                <th class="text-left">NOME</th>
-                <th class="text-left">DESCRIÇÃO</th>
+                <th class="text-left">TITULO</th>
+                <th class="text-left">VALOR</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="category in table.categories" :key="category.id">
-                <td> <v-icon color="blue">{{ category.icon }}</v-icon> </td>
-                <td>{{ category.name }}</td>
-                <td>{{ category.description }}</td>
+              <tr v-for="item in table.items" :key="item.id">
+                <td>{{ item.title }}</td>
+                <td>{{ item.value }}</td>
                 <td>
                   <v-menu transition="slide-y-transition" bottom>
                       <template v-slot:activator="{ on, attrs }">
@@ -31,7 +30,7 @@
                       </template>
 
                       <v-list nav dense>
-                          <v-list-item v-on:click="_edit(category.id)">
+                          <v-list-item v-on:click="_edit(item.id)">
                               <v-list-item-icon>
                                   <v-icon outlined color="green">mdi-pencil</v-icon>
                               </v-list-item-icon>
@@ -39,7 +38,7 @@
                                   <v-list-item-title> Editar </v-list-item-title>
                               </v-list-item-content>
                           </v-list-item>
-                          <v-list-item v-on:click="confirmDelete(category)">
+                          <v-list-item v-on:click="confirmDelete(item)">
                               <v-list-item-icon>
                                   <v-icon outlined color="red">mdi-delete</v-icon>
                               </v-list-item-icon>
@@ -73,7 +72,7 @@
   <v-dialog v-model="dialog" max-width="350">
     <v-card>
         <v-card-title>
-            Confirmar exclusão do cliente?
+            Confirmar exclusão do custo/despesa?
         </v-card-title>
         <v-card-text>
             {{ deleted.name }}
@@ -99,7 +98,7 @@ import axios from 'axios';
 export default {
   middleware: 'auth',
   metaInfo () {
-    return { title: 'Clientes' }
+    return { title: 'Custos/Despesas' }
   },
   data: () => ({
     dialog: false,
@@ -109,7 +108,7 @@ export default {
       filters: {},
       page: 1,
       pageCount: 0,
-      categories: [],
+      items: [],
       loading: false,
     }
   }),
@@ -118,22 +117,21 @@ export default {
   },
   methods: {
     async _load(){
-       let params = { 
-        page: this.table.pagTe, 
-        pagination: true,
+      let params = { 
+        page: this.table.page, 
         itemsPerPage: 20,
-        ...this.filters 
+        ...this.table.filters 
       }
 
       this.table.loading = true;
-      await axios.get('api/category', { params }).then(response => {
+      await axios.get('api/expense', { params }).then(response => {
         if(response.data.data.data.length === 0 && this.table.page != 1){
           this.table.page = 1;
           this._load()
         }
 
         if(response.data.success){
-            this.table.categories = response.data.data.data;
+            this.table.items = response.data.data.data;
             this.table.pageCount = response.data.data.last_page;
             this.table.loading = false;
         }
@@ -141,7 +139,7 @@ export default {
     },
     async _delete(){
       this.table.loading = true;
-      await axios.delete(`api/category/${this.deleted.id}`).then(response => {
+      await axios.delete(`api/expense/${this.deleted.id}`).then(response => {
         if(response.data.success){
           this.dialog = false;
           this._load();
@@ -154,12 +152,12 @@ export default {
     },
     _edit(id){
       this.$router.push({
-          name: 'category.show',
+          name: 'expense.show',
           params: { id }
       })
     },
      _add(){
-      this.$router.push({ name: 'category.create' })
+      this.$router.push({ name: 'expense.create' })
     }
   }
 }

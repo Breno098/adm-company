@@ -14,7 +14,8 @@ class Category extends Model
     protected $fillable = [
         'name',
         'description',
-        'icon'
+        'icon',
+        'type'
     ];
 
     public function scopeFilterByName(Builder $builder, $name)
@@ -24,8 +25,15 @@ class Category extends Model
         });
     }
 
+    public function scopeFilterByType(Builder $builder, $type)
+    {
+        return $builder->when($type, function (Builder $builder, $type) {
+            return $builder->where('type', $type);
+        });
+    }
+
     public function items()
     {
-        return $this->belongsToMany(Item::class, 'item_category', 'item_id', 'category_id');
+        return $this->belongsToMany(Item::class);
     }
 }

@@ -149,6 +149,7 @@
 import moment from 'moment';
 
 export default {
+  middleware: 'auth',
   layout: 'order',
   metaInfo () {
     return { title: 'Ordem de Serviço' }
