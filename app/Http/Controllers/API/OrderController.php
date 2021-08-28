@@ -6,7 +6,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Requests\OrderRequest;
 use App\Services\Order\DestroyService;
-use App\Services\Order\IndexActiveService;
+use App\Services\Order\IndexService;
 use App\Services\Order\ShowService;
 use App\Services\Order\StoreService;
 use App\Services\Order\UpdateService;
@@ -21,7 +21,7 @@ class OrderController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $orders = IndexActiveService::run(
+        $orders = IndexService::run(
             $request->query(), 
             $request->get('relations', ['client','address']),
             $request->get('itemsPerPage', false),

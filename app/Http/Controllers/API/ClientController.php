@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use App\Services\Client\DestroyService;
-use App\Services\Client\IndexActiveService;
+use App\Services\Client\IndexService;
 use App\Services\Client\StoreService;
 use App\Services\Client\ShowService;
 use App\Services\Client\UpdateService;
@@ -20,7 +20,7 @@ class ClientController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $clients = IndexActiveService::run(
+        $clients = IndexService::run(
             $request->query(), 
             $request->get('relations', ['category']),
             $request->get('itemsPerPage', false),

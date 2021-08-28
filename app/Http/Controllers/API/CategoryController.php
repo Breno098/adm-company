@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use App\Services\Category\DestroyService;
-use App\Services\Category\IndexActiveService;
+use App\Services\Category\IndexService;
 use App\Services\Category\ShowService;
 use App\Services\Category\StoreService;
 use App\Services\Category\UpdateService;
@@ -21,7 +21,7 @@ class CategoryController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $categories = IndexActiveService::run(
+        $categories = IndexService::run(
             $request->query(), 
             $request->get('relations', []),
             $request->get('itemsPerPage', false),

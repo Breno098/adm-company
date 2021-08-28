@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\OAuthController;
@@ -7,11 +9,10 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\VerificationController;
+
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
-use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\ClientController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ItemController;
@@ -20,7 +21,6 @@ use App\Http\Controllers\API\StatusController;
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\ApplicationPreferencesController;
 use App\Http\Controllers\API\PaymentController;
-use App\Http\Controllers\API\PaymentTypeController;
 use App\Http\Controllers\API\AppointmentController;
 use App\Http\Controllers\API\ExpenseController;
 
@@ -60,6 +60,7 @@ Route::middleware('auth:api')->group( function () {
     Route::apiResource('item', ItemController::class);
     Route::apiResource('appointment', AppointmentController::class);
     Route::apiResource('app-preferences', ApplicationPreferencesController::class);
-     Route::apiResource('expense', ExpenseController::class);
+    Route::apiResource('expense', ExpenseController::class);
     Route::apiResource('payment', PaymentController::class)->only(['index']);
+    Route::apiResource('address', AddressController::class)->only(['index']);
 });

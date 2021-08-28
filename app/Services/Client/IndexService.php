@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\Expense;
+namespace App\Services\Client;
 
-use App\Models\Expense;
+use App\Models\Client;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
-class IndexActiveService
+class IndexService
 {
     /**
      * @param  array  $filters
@@ -17,7 +17,12 @@ class IndexActiveService
      */
     static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
     {
-        return Expense::with($relations)
+        return Client::with($relations)
+            ->filterByName(Arr::get($filters, 'name'))
+            ->filterByCpf(Arr::get($filters, 'cpf'))
+            ->filterByCnpj(Arr::get($filters, 'cnpj'))
+            ->filterByType(Arr::get($filters, 'type'))
+            ->orderby('name')
             ->when(
                 $itemsPerPage,
                 function (Builder $builder) use ($itemsPerPage) {

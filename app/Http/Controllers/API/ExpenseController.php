@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Expense;
-use App\Services\Expense\IndexActiveService;
+use App\Services\Expense\IndexService;
 use App\Services\Expense\StoreService;
 use App\Services\Expense\UpdateService;
 
@@ -18,7 +18,7 @@ class ExpenseController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $expenses = IndexActiveService::run(
+        $expenses = IndexService::run(
             $request->query(), 
             $request->get('relations', []),
             $request->get('itemsPerPage', false),

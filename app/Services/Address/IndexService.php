@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\Category;
+namespace App\Services\Address;
 
-use App\Models\Category;
+use App\Models\Address;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
-class IndexActiveService
+class IndexService
 {
     /**
      * @param  array  $filters
@@ -17,10 +17,8 @@ class IndexActiveService
      */
     static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
     {
-        return Category::with($relations)
-            ->filterByName(Arr::get($filters, 'name'))
-            ->filterByType(Arr::get($filters, 'type'))
-            ->orderby('name')
+        return Address::with($relations)
+            ->filterClientId(Arr::get($filters, 'client_id'))
             ->when(
                 $itemsPerPage,
                 function (Builder $builder) use ($itemsPerPage) {

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\Client;
+namespace App\Services\Item;
 
-use App\Models\Client;
+use App\Models\Item;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
-class IndexActiveService
+class IndexService
 {
     /**
      * @param  array  $filters
@@ -17,9 +17,7 @@ class IndexActiveService
      */
     static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
     {
-        return Client::with($relations)
-            ->filterByName(Arr::get($filters, 'name'))
-            ->filterByDocument(Arr::get($filters, 'document'))
+        return Item::with($relations)
             ->filterByType(Arr::get($filters, 'type'))
             ->orderby('name')
             ->when(

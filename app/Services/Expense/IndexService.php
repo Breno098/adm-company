@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\Order;
+namespace App\Services\Expense;
 
-use App\Models\Order;
+use App\Models\Expense;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
-class IndexActiveService
+class IndexService
 {
     /**
      * @param  array  $filters
@@ -17,9 +17,7 @@ class IndexActiveService
      */
     static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
     {
-        return Order::with($relations)
-            ->filterByStatusId(Arr::get($filters, 'status_id'))
-            ->orderBy('created_at', 'desc')
+        return Expense::with($relations)
             ->when(
                 $itemsPerPage,
                 function (Builder $builder) use ($itemsPerPage) {

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Services\Appointment\DestroyService;
-use App\Services\Appointment\IndexActiveService;
+use App\Services\Appointment\IndexService;
 use App\Services\Appointment\ShowService;
 use App\Services\Appointment\StoreService;
 use App\Services\Appointment\UpdateService;
@@ -20,7 +20,7 @@ class AppointmentController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $appointments = IndexActiveService::run(
+        $appointments = IndexService::run(
             $request->query(), 
             $request->get('relations', ['order.client', 'order.address']),
             $request->get('itemsPerPage', false),

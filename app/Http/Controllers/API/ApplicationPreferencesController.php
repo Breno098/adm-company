@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Services\ApplicationPreferences\IndexActiveService;
+use App\Services\ApplicationPreferences\IndexService;
 use Illuminate\Http\Request;
 
 class ApplicationPreferencesController extends BaseControllerApi
@@ -14,7 +14,7 @@ class ApplicationPreferencesController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $preferences = IndexActiveService::run(
+        $preferences = IndexService::run(
             $request->query(), 
             $request->get('relations', [])
         );

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\ApplicationPreferences;
+namespace App\Services\Appointment;
 
-use App\Models\ApplicationPreferences;
+use App\Models\Appointment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
-class IndexActiveService
+class IndexService
 {
     /**
      * @param  array  $filters
@@ -17,8 +17,10 @@ class IndexActiveService
      */
     static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
     {
-        return ApplicationPreferences::with($relations)
-            ->filterByType(Arr::get($filters, 'type'))
+        return Appointment::with($relations)
+            ->filterByBetweenDate(Arr::get($filters, 'date_start'),Arr::get($filters, 'date_end'))
+            ->filterByConcluded(Arr::get($filters, 'concluded'))
+            ->orderby('date_start', 'desc')
             ->when(
                 $itemsPerPage,
                 function (Builder $builder) use ($itemsPerPage) {

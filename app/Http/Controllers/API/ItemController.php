@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ItemRequest;
 use App\Models\Item;
 use App\Services\Item\DestroyService;
-use App\Services\Item\IndexActiveService;
+use App\Services\Item\IndexService;
 use App\Services\Item\ShowService;
 use App\Services\Item\StoreService;
 use App\Services\Item\UpdateService;
@@ -20,7 +20,7 @@ class ItemController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $item = IndexActiveService::run(
+        $item = IndexService::run(
             $request->query(), 
             $request->get('relations', [ 'status' ]),
             $request->get('itemsPerPage', false),

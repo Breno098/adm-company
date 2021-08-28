@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\Appointment;
+namespace App\Services\Category;
 
-use App\Models\Appointment;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
-class IndexActiveService
+class IndexService
 {
     /**
      * @param  array  $filters
@@ -17,10 +17,10 @@ class IndexActiveService
      */
     static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
     {
-        return Appointment::with($relations)
-            ->filterByBetweenDate(Arr::get($filters, 'date_start'),Arr::get($filters, 'date_end'))
-            ->filterByConcluded(Arr::get($filters, 'concluded'))
-            ->orderby('date_start', 'desc')
+        return Category::with($relations)
+            ->filterByName(Arr::get($filters, 'name'))
+            ->filterByType(Arr::get($filters, 'type'))
+            ->orderby('name')
             ->when(
                 $itemsPerPage,
                 function (Builder $builder) use ($itemsPerPage) {

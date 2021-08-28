@@ -30,6 +30,13 @@ class Address extends Model
         'main' => 'boolean'
     ];
 
+    public function scopeFilterClientId(Builder $builder, $cliente_id)
+    {
+        return $builder->when($cliente_id, function (Builder $builder, $cliente_id) {
+            return $builder->where('client_id', $cliente_id);
+        });
+    }
+
     public function clients()
     {
         return $this->belongsTo(Client::class);

@@ -729,10 +729,16 @@ export default {
       this.loadingClients = false;
     },
     async _loadAddresses(){
-      let test = this.clients.filter(client => client.id === this.order.client_id);
-
-      this.order.address_id =  test[0].addresses[0].id ?? null;
-      this.addresses = test[0].addresses;
+      let params = { client_id: this.order.client_id };
+      
+      this.loadingAddresses = true;
+      await axios.get(`api/address`, { params }).then(response => {
+        if(response.data.success){
+          return this.addresses = response.data.data;
+        }
+        this._modal('Error ao carregar endereços', 'error');
+      });
+      this.loadingAddresses = false;
     },
     async _loadStatuses(){
       let params = { type: 'order' };

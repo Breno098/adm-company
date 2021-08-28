@@ -13,7 +13,8 @@ class Client extends Model
 
     protected $fillable = [
         'name',
-        'document',
+        'cpf',
+        'cnpj',
         'fantasy_name',
         'birth_date',
         'type',
@@ -31,10 +32,17 @@ class Client extends Model
         });
     }
 
-    public function scopeFilterByDocument(Builder $builder, $document)
+    public function scopeFilterByCpf(Builder $builder, $cpf)
     {
-        return $builder->when($document, function (Builder $builder, $document) {
-            return $builder->where('document', 'like', "%{$document}%");
+        return $builder->when($cpf, function (Builder $builder, $cpf) {
+            return $builder->where('cpf', 'like', "%{$cpf}%");
+        });
+    }
+
+    public function scopeFilterByCnpj(Builder $builder, $cnpj)
+    {
+        return $builder->when($cnpj, function (Builder $builder, $cnpj) {
+            return $builder->where('cnpj', 'like', "%{$cnpj}%");
         });
     }
 

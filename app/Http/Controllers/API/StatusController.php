@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Requests\StatusRequest;
 use App\Models\Status;
-use App\Services\Status\IndexActiveService;
+use App\Services\Status\IndexService;
 use App\Services\Status\ShowService;
 use App\Services\Status\StoreService;
 use App\Services\Status\UpdateService;
@@ -20,7 +20,7 @@ class StatusController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $statuses = IndexActiveService::run(
+        $statuses = IndexService::run(
             $request->query(), 
             $request->get('relations', []),
             $request->get('itemsPerPage', false),
