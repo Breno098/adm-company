@@ -1,80 +1,102 @@
-# Laravel-Vue SPA 
+# ADM Company
 
-<a href="https://github.com/cretueusebiu/laravel-vue-spa/actions"><img src="https://github.com/cretueusebiu/laravel-vue-spa/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/cretueusebiu/laravel-vue-spa"><img src="https://poser.pugx.org/cretueusebiu/laravel-vue-spa/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/cretueusebiu/laravel-vue-spa"><img src="https://poser.pugx.org/cretueusebiu/laravel-vue-spa/v/stable.svg" alt="Latest Stable Version"></a>
-
-> A Laravel-Vue SPA starter kit.
-
-<p align="center">
-<img src="https://i.imgur.com/NHFTsGt.png">
-</p>
-
-## Features
-
-- Laravel 8
-- Vue + VueRouter + Vuex + VueI18n + ESlint
-- Pages with dynamic import and custom layouts
-- Login, register, email verification and password reset
-- Authentication with JWT
-- Socialite integration
-- Bootstrap 4 + Font Awesome 5
-
-## 
-
-[![questionnaire](https://i.imgur.com/8UtUnH2.png)](https://forms.gle/rb2oh24WhNzWiEveA)
+Este aplicativo trata se de um aplicativo para cadastros e organização de clientes, produtos, serviços, compromissos, custos, orçamentos, ordens de serviços e demais atividades financeiras de uma empresa.  
 
 
-## Installation
+## Instalação
 
-- `composer create-project --prefer-dist cretueusebiu/laravel-vue-spa`
-- Edit `.env` and set your database connection details
-- (When installed via git clone or download, run `php artisan key:generate` and `php artisan jwt:secret`)
-- `php artisan migrate`
-- `npm install`
+### Clonando e instalando dependências
 
-## Usage
+Clone o repositório
 
-#### Development
+    git clone https://github.com/Breno098/adm-company.git
 
-```bash
-# Build and watch
-npm run watch
+Navegue até a pasta do projeto:
 
-# Serve with hot reloading (not working)
-npm run hot
-```
+    cd .\adm-company
 
-#### Production
+Faça a instalação das dependencias PHP com o comando:
 
-```bash
-npm run production
-```
+    composer install
 
-## Socialite
+Para as dependencias JavaScript, utilize:
 
-This project comes with GitHub as an example for [Laravel Socialite](https://laravel.com/docs/5.8/socialite).
+    npm install
 
-To enable the provider create a new GitHub application and use `https://example.com/api/oauth/github/callback` as the Authorization callback URL.
+### Comandos para execução e construção
 
-Edit `.env` and set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` with the keys form your GitHub application.
+Copie o arquivo env de exemplo e faça as alterações de configuração necessárias no arquivo .env
 
-For other providers you may need to set the appropriate keys in `config/services.php` and redirect url in `OAuthController.php`.
+    cp .env.example .env
 
-## Email Verification
+Gerar uma nova chave de aplicativo
 
-To enable email verification make sure that your `App\User` model implements the `Illuminate\Contracts\Auth\MustVerifyEmail` contract.
+    php artisan key:generate
 
-## Testing
+Execute as migrações do banco de dados (defina a conexão do banco de dados em .env antes de migrar)
 
-```bash
-# Run unit and feature tests
-vendor/bin/phpunit
+    php artisan migrate
 
-# Run Dusk browser tests
-php artisan dusk
-```
+Inicie o servidor de desenvolvimento local
 
-## Changelog
+    php artisan serve
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+Construa e execute o projeto com o comando
+
+    npm run watch 
+    // or
+    npm run dev
+
+Agora você pode acessar o servidor em http: // localhost:8000
+
+## Populando banco de dados
+
+Crie um banco de dados e adicione as informações no arquivo de variáveis de ambiente (.env).
+
+    DB_DATABASE=NOME_DO_BANCO_DE_DADOS
+    DB_USERNAME=USUARIO
+    DB_PASSWORD=SENHA
+
+Para testes, preencha os dados das tabelas de clients, items, addresses e demais tabelas do aplicativo. Execute o comando:
+
+    php artisan db:seed
+
+## Visão geral do código
+
+### Dependências
+
+- [Vue](https://vuejs.org/)
+- [Vuetify](https://vuetifyjs.com/en/)
+- [Vue Router](https://router.vuejs.org/)
+- [Vuex](https://vuex.vuejs.org/)
+- [Vue-meta](https://vue-meta.nuxtjs.org/)
+- [V-mask](https://www.npmjs.com/package/v-mask)
+- [Moment.js](https://momentjs.com/)
+- [date-fns](https://date-fns.org/)
+
+### Pastas
+
+- `app` - Contém modelos Eloquent
+- `app/Http/Controllers` - Contém controladores
+- `app/Models` - Contém modelos/entidades
+- `app/Services` - Contém serviços e utilitários
+- `config` - Contém todos os arquivos de configuração do projeto
+- `database/factories` - Contém fábrica de modelos para testes
+- `database/migrations` - Contém migrações/criações de tabelas de banco de dados
+- `database/seeds` - Contém o semeador de banco de dados
+- `resources/view` - Contém views (.blade)
+- `resources/js/components` - Contém componentes Vue
+- `resources/js/layouts` - Contém layouts/partes externas ao core construídas Vue
+- `resources/js/middlewares` - Contém middlewares e verificadores
+- `resources/js/pages/auth` - Contém páginas de autenticação construídas Vue
+- `resources/js/pages/settings` - Contém páginas de configuração de usuário construídas Vue
+- `resources/js/pages/app` - Contém páginas do core do apliactivo construídas Vue
+- `resources/js/pages/errors` - Contém páginas de erros construídas Vue
+- `resources/js/plugins` - Contém plugins e extenções
+- `resources/js/routes` - Contém todos as rotas do SPA
+- `routes/js/store` - Contém arquivo de store
+- `routes` - Contém todas as rotas api definidas no arquivo api.php
+
+### Variáveis de ambiente
+
+- `.env` - As variáveis ​​de ambiente podem ser definidas neste arquivo
