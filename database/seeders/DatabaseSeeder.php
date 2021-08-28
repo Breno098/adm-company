@@ -26,15 +26,6 @@ class DatabaseSeeder extends Seeder
                 ClientSeeder::class,
                 ExpenseSeeder::class,
             ]);
-        } else {
-            $this->call([
-                UserSeeder::class,
-                CategorySeeder::class,
-                ApplicationPreferncesSeeder::class,
-                StatusSeeder::class,
-                PaymentSeeder::class,
-            ]);
-        }
-      
+        } 
     }
 }

@@ -22,21 +22,13 @@ class Address extends Model
         'apartment',
         'floor',
         'description',
-        'active',
-        'main'
+        'main',
+        'block'
     ];
 
     protected $casts = [
-        'active' => 'boolean',
         'main' => 'boolean'
     ];
-
-    protected static function booted()
-    {
-        static::addGlobalScope('active-address', function (Builder $builder) {
-            $builder->where('active', true);
-        });
-    }
 
     public function clients()
     {

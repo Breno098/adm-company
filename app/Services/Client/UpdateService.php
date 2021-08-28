@@ -17,15 +17,14 @@ class UpdateService
     {
         $client->update($data);
 
-        $client->contacts()->update(['active' => false]);
-        $client->addresses()->update(['active' => false]);
+        $client->contacts()->delete();
+        $client->addresses()->delete();
 
         foreach ($data['contacts'] as $contact) {
             $id = isset($contact['id']) ? $contact['id'] : false;
 
             if($id){
-                $contact['active'] = true;
-                $client->contacts()->find($id)->update($contact);
+                $client->contacts()->find($id)->restore();
             } else {
                 $verifyContact = isset($contact['contact']);
                 if($verifyContact){
@@ -38,8 +37,7 @@ class UpdateService
             $id = isset($address['id']) ? $address['id'] : false;
 
             if($id){
-                $address['active'] = true;
-                $client->addresses()->find($id)->update($address);
+                $client->addresses()->find($id)->restore();
             } else {
                 $verifyAddress = isset($address['street']) || isset($address['city']) || isset($address['cep']) || isset($address['apartment']);
                 if($verifyAddress){

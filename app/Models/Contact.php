@@ -14,22 +14,13 @@ class Contact extends Model
     protected $fillable = [
         'description',
         'contact',
-        'active',
         'main',
         'type'
     ];
 
     protected $casts = [
-        'active' => 'boolean',
         'main' => 'boolean',
     ];
-
-     protected static function booted()
-    {
-        static::addGlobalScope('active-contact', function (Builder $builder) {
-            $builder->where('active', true);
-        });
-    }
 
     public function client()
     {

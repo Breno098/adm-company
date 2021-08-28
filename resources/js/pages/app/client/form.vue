@@ -136,7 +136,18 @@
                   v-model="contact.contact"
                   :loading="loading"
                   v-mask="'(##) #####-####'"
-                  v-if="contact.type === 'CELULAR' || contact.type === 'TELEFONE' || contact.type === 'WHATSAPP'"
+                  v-if="contact.type === 'CELULAR' || contact.type === 'WHATSAPP'"
+                ></v-text-field>
+
+                <v-text-field
+                  @input="contact.contact = contact.contact.toUpperCase()"
+                  label="CONTATO"
+                  outlined
+                  dense
+                  v-model="contact.contact"
+                  :loading="loading"
+                   v-mask="'(##) ####-####'"
+                  v-else-if="contact.type === 'TELEFONE'"
                 ></v-text-field>
 
                 <v-text-field
@@ -193,7 +204,7 @@
                   v-model="address.cep"
                   :loading="loading"
                   v-on:keyup.enter="_searchCep(index)"
-                  v-on:keyup.tab="_searchCep(index)"
+                  v-on:keyup="_searchCep(index)"
                 ></v-text-field>
               </v-col>
 
@@ -253,6 +264,17 @@
 
               <v-col cols="6" md="3">
                 <v-text-field
+                  label="BLOCO"
+                  outlined
+                  dense
+                  v-model="address.block"
+                  :loading="loading"
+                  @input="address.block = address.block.toUpperCase()"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="6" md="3">
+                <v-text-field
                   label="ANDAR"
                   outlined
                   dense
@@ -278,7 +300,7 @@
           </v-col>
 
           <v-col cols="12" class="d-flex flex-row justify-end">
-            <v-btn color="green" @click="client.addresses.push({})" :loading="loading" small rounded>
+            <v-btn color="green" @click="client.addresses.push({})"  :loading="loading" small rounded>
               Adicionar endereço <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-col>
@@ -366,7 +388,7 @@ export default {
     this._start();
   },
   methods: {
-     async _start(){
+    async _start(){
       if(this.$route.params.id){
         await this._load();
       }
@@ -397,17 +419,28 @@ export default {
       if(cep.length != 8)
         return;
 
+      this.loading = true;
+      this._showModal('Buscando endereço');
+
       let params = { cep };
       await axios.get(`api/address/searchCep`, { params }).then(response => {
+        if(response.data.data.erro){
+          this.loading = false;
+          return this._showModal('Endereço não encontrado', 'error');
+        }
+
         let { logradouro, bairro, localidade, uf } = response.data.data;
 
         this.client.addresses[indexAddress].street = logradouro.toUpperCase();
         this.client.addresses[indexAddress].district = bairro.toUpperCase();
         this.client.addresses[indexAddress].city = localidade.toUpperCase();
         this.client.addresses[indexAddress].state = uf.toUpperCase();
+
+        this._hideModal();
+        this.loading = false;
       }).catch(error => {
-        console.log('error');
-        console.log(error);
+        this.loading = false;
+        this._showModal('Error ao carregar endereço', 'error');
       })
     },
     async _load(){

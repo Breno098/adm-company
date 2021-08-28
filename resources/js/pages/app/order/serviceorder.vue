@@ -13,9 +13,6 @@
             </div>
           </td>
         </tr>
-        <!-- <tr>
-          <td></td> <td></td> <td></td> <td></td>
-        </tr> -->
         <tr>
           <td colspan="4" style="font-size: 18px; font-weight: bold"> NÚMERO DA ORDEM DE SERVIÇO: {{ order.id }} </td>
         </tr>

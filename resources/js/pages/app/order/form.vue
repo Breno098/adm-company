@@ -185,6 +185,7 @@
               :loading="loading"
               hint="DESCRIÇÃO DO ORÇAMENTO."
               placeholder="DESCRIÇÃO E OBSERVAÇÕES FORMAR (VISÍVEL AO CLIENTE)."
+              @input="order.description = order.description.toUpperCase()"
             ></v-textarea>
           </v-col>
 
@@ -197,6 +198,7 @@
               :loading="loading"
               placeholder="COMENTÁRIOS E OBSERVAÇÕES INTERNAS (NÃO VISÍVEL AO CLIENTE)."
               hint="COMENTÁRIOS E OBSERVAÇÕES INTERNAS (NÃO VISÍVEL AO CLIENTE)."
+              @input="order.comments = order.comments.toUpperCase()"
             ></v-textarea>
           </v-col>
 
@@ -449,7 +451,8 @@
               dense
               v-model="order.warranty_conditions"
               :loading="loading"
-              hint="Termos de garantia"
+              hint="TERMOS DE GARANTIA"
+              @input="order.warranty_conditions = order.warranty_conditions.toUpperCase()"
             ></v-textarea>
           </v-col>
         </v-row>
@@ -469,7 +472,7 @@
               <v-col cols="12" md="4">
                 <v-select
                   :items="payments"
-                  label="Pagamento"
+                  label="PAGAMENTO"
                   outlined
                   dense
                   :loading="loadingPayment"
@@ -505,7 +508,7 @@
                         append-icon="mdi-calendar"
                         :value="DateFormatPayment(index)"
                         clearable
-                        label="DATA VISITA TÉCNICA"
+                        label="DATA DO PAGAMENTO"
                         readonly
                         v-bind="attrs"
                         v-on="on"

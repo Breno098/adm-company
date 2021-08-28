@@ -36,7 +36,7 @@
                 {{ order.client.name }}
                 <v-chip v-if="order.status" :color="order.status.color" class="py-2" label>{{ order.status.name }}</v-chip>
               </div>
-              <v-list-item-subtitle>
+              <v-list-item-subtitle v-if="order.address">
                 {{ order.address.street }} {{ order.address.number ? `n° ${order.address.number}` : '' }}, {{ order.address.district }} - {{ order.address.city }}
               </v-list-item-subtitle>
             </v-list-item-content>
