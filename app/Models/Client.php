@@ -19,6 +19,7 @@ class Client extends Model
         'birth_date',
         'type',
         'notes',
+        'category_id'
     ];
 
     protected $casts = [
