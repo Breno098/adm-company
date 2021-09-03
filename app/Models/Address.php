@@ -23,7 +23,9 @@ class Address extends Model
         'floor',
         'description',
         'main',
-        'block'
+        'block',
+        'house',
+        'tower'
     ];
 
     protected $casts = [

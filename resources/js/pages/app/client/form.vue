@@ -184,17 +184,6 @@
                 </v-btn>
               </v-col>
 
-              <v-col cols="12" md="6">
-                <v-text-field
-                  label="RUA"
-                  outlined
-                  dense
-                  v-model="address.street"
-                  :loading="loading"
-                  @input="address.street = address.street.toUpperCase()"
-                ></v-text-field>
-              </v-col>
-
               <v-col cols="12" md="3">
                 <v-text-field
                   label="CEP"
@@ -205,6 +194,17 @@
                   :loading="loading"
                   v-on:keyup.enter="_searchCep(index)"
                   v-on:keyup="_searchCep(index)"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field
+                  label="RUA"
+                  outlined
+                  dense
+                  v-model="address.street"
+                  :loading="loading"
+                  @input="address.street = address.street.toUpperCase()"
                 ></v-text-field>
               </v-col>
 
@@ -229,7 +229,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <v-text-field
                   label="CIDADE"
                   outlined
@@ -240,7 +240,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" md="3">
+              <v-col cols="12" md="2">
                 <v-text-field
                   label="ESTADO"
                   outlined
@@ -251,7 +251,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="6" md="3">
+              <v-col cols="6" md="2">
                 <v-text-field
                   label="APARTAMENTO"
                   outlined
@@ -262,7 +262,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="6" md="3">
+              <v-col cols="6" md="2">
                 <v-text-field
                   label="BLOCO"
                   outlined
@@ -273,7 +273,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="6" md="3">
+              <v-col cols="6" md="2">
                 <v-text-field
                   label="ANDAR"
                   outlined
@@ -281,6 +281,28 @@
                   v-model="address.floor"
                   :loading="loading"
                   @input="address.floor = address.floor.toUpperCase()"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="6" md="2">
+                <v-text-field
+                  label="TORRE"
+                  outlined
+                  dense
+                  v-model="address.tower"
+                  :loading="loading"
+                  @input="address.tower = address.tower.toUpperCase()"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="6" md="2">
+                <v-text-field
+                  label="CASA"
+                  outlined
+                  dense
+                  v-model="address.house"
+                  :loading="loading"
+                  @input="address.house = address.house.toUpperCase()"
                 ></v-text-field>
               </v-col>
 

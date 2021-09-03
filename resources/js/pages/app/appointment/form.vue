@@ -156,31 +156,44 @@
         </v-menu>
       </v-col>
 
-      <v-col cols="4">
-        <v-text-field
-          :value="ClientNameOrder"
-          outlined
-          dense
+      <v-col cols="12" md="6">
+        <v-autocomplete
+          :readonly="CreateByOrder"
+          v-model="appointment.client_id"
+          :items="clients"
+          item-text="name"
+          item-value="id"
           label="CLIENTE"
-          readonly
-          color="black"
-          :loading="loading"
-        ></v-text-field>
-      </v-col>
-
-      <v-col cols="8">
-        <v-text-field
-          :value="AddressFormat"
+          :loading="loadingClients"
+          v-on:change="_loadAddresses"
           outlined
           dense
-          label="ENDEREÇO"
-          readonly
-          color="black"
-          :loading="loading"
-        ></v-text-field>
+          :color="CreateByOrder ? 'black' : 'blue'"
+        ></v-autocomplete>
       </v-col>
 
-       <v-col cols="12">
+      <v-col cols="12">
+        <v-autocomplete
+          :readonly="CreateByOrder"
+          v-model="appointment.address_id"
+          :items="addresses"
+          item-value="id"
+          label="ENDEREÇO"
+          :loading="loadingAddresses"
+          outlined
+          dense
+          :color="CreateByOrder ? 'black' : 'blue'"
+        >
+          <template slot="selection" slot-scope="data">
+            {{ data.item.street }} {{ data.item.number ? `n° ${data.item.number}` : '' }}, {{ data.item.district }} - {{ data.item.city }}
+          </template>
+          <template slot="item" slot-scope="data">
+              {{ data.item.street }} {{ data.item.number ? `n° ${data.item.number}` : '' }}, {{ data.item.district }} - {{ data.item.city }}
+          </template>
+        </v-autocomplete>
+      </v-col>
+
+      <v-col cols="12">
         <v-textarea
           label="DESCRIÇÃO"
           outlined
@@ -190,9 +203,9 @@
         ></v-textarea>
       </v-col>
 
-      <v-col cols="12">
+      <v-col cols="12" v-if="CreateByOrder">
         <v-text-field
-          :value="order.id"
+          v-model="appointment.order_id"
           outlined
           dense
           label="Nº ORDEM"
@@ -234,7 +247,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import axios from 'axios';
 import moment from 'moment';
 import { format, parseISO } from 'date-fns'
@@ -257,9 +269,14 @@ export default {
       time_end : '',
       description: null,
       order_id: null,
-      status_id: null
+      client_id: null,
+      address_id: null,
     },
+    clients: [],
+    addresses: [],
     loading: false,
+    loadingClients: false,
+    loadingAddresses: false,
     dialog: {
       show: false,
       message: '',
@@ -279,15 +296,22 @@ export default {
     DateEndFormat () {
       return this.appointment.date_end ? moment(this.appointment.date_end).format('DD/MM/YYYY') : ''
     },
-    AddressFormat() {
-      return this.order.address.street + ' n° ' + this.order.address.number + ', ' + this.order.address.district + ' - ' +  this.order.address.city;
-    },
-    ClientNameOrder(){
-      return this.order ? this.order.client.name : '';
-    },
-    ...mapGetters({
-      order: 'order/order'
-    })
+    CreateByOrder(){
+      if(this.$route.query.orderId){
+        this.appointment.order_id = this.$route.query.orderId;
+        this.appointment.client_id = this.$route.query.clientId;
+        this.appointment.address_id = this.$route.query.addressId;
+        this._loadAddresses();
+        return true;
+      }
+
+      if(this.appointment.order_id){
+        this._loadAddresses();
+        return true;
+      }
+
+      return false;
+    }
   },
   mounted(){
     this._start();
@@ -297,6 +321,8 @@ export default {
       if(this.$route.params.id){
         await this._load();
       }
+
+      await this._loadClients();
     },
     _showModal(message, status = ''){
       this.dialog.message = message;
@@ -319,6 +345,28 @@ export default {
       });
       this.loading = false;
     },
+    async _loadClients(){
+      this.loadingClients = true;
+      await axios.get(`api/client`).then(response => {
+        if(response.data.success){
+          return this.clients = response.data.data;
+        }
+        this._showModal('Error ao carregar clientes', 'error');
+      });
+      this.loadingClients = false;
+    },
+    async _loadAddresses(){
+      let params = { client_id: this.appointment.client_id };
+      
+      this.loadingAddresses = true;
+      await axios.get(`api/address`, { params }).then(response => {
+        if(response.data.success){
+          return this.addresses = response.data.data;
+        }
+        this._showModal('Error ao carregar endereços', 'error');
+      });
+      this.loadingAddresses = false;
+    },
     _unconclude(){
       this.appointment.concluded = 'N';
       this._store();
@@ -337,8 +385,6 @@ export default {
 
       this.loading = true;
       this._showModal(id ? 'Atualizando...' : 'Salvando...');
-
-      this.appointment.order_id = this.order.id;
 
       let response = !id ? await axios.post('api/appointment', this.appointment) : await axios.put(`api/appointment/${id}`, this.appointment);
 

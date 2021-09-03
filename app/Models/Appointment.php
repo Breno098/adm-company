@@ -50,7 +50,7 @@ class Appointment extends Model
 
     public function client()
     {
-        return $this->hasOne(Client::class);
+        return $this->belongsTo(Client::class);
     }
 
     public function order()
@@ -58,8 +58,14 @@ class Appointment extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
+    }
+
     public function status()
     {
         return $this->belongsTo(Status::class);
     }
+    
 }

@@ -24,7 +24,9 @@ class UpdateService
             $id = isset($contact['id']) ? $contact['id'] : false;
 
             if($id){
-                $client->contacts()->find($id)->restore();
+                $contactClient = $client->contacts()->withTrashed()->find($id);
+                $contactClient->restore();
+                $contactClient->update($contact);
             } else {
                 $verifyContact = isset($contact['contact']);
                 if($verifyContact){
@@ -37,7 +39,9 @@ class UpdateService
             $id = isset($address['id']) ? $address['id'] : false;
 
             if($id){
-                $client->addresses()->find($id)->restore();
+                $addressClient = $client->addresses()->withTrashed()->find($id);
+                $addressClient->restore();
+                $addressClient->update($address);
             } else {
                 $verifyAddress = isset($address['street']) || isset($address['city']) || isset($address['cep']) || isset($address['apartment']);
                 if($verifyAddress){

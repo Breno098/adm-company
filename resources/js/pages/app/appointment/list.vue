@@ -1,5 +1,13 @@
 <template>
   <div>
+    <v-row>
+      <v-col cols="12">
+        <v-btn color="blue" @click="_add" rounded dark>
+            Adicionar <v-icon dark>mdi-plus</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+
     <v-row class="d-flex flex-row justify-center">
       <v-col cols="12">
         <v-btn block @click="_loadNotConcluded" :color="filters.concluded == 'N' ? 'blue' : 'grey'" large>
@@ -27,14 +35,17 @@
           <v-list-item three-line>
             <v-list-item-content>
               <div class="text-overline mb-4 d-flex justify-space-between">
-                {{ appointment.order.client.name }} 
+                {{ appointment.client ? appointment.client.name : '' }} 
                 <v-chip :color="appointment.concluded == 'S' ? 'green' : 'blue'" class="py-2" label>{{ appointment.concluded == 'S' ? 'CONCLUÍDO' : 'PENDENTE' }}</v-chip>
               </div>
               <v-list-item-subtitle>
                 {{ appointment.date }}
               </v-list-item-subtitle>
               <v-list-item-subtitle>
-                {{ appointment.order.address.street }} {{ appointment.order.address.number ? `n° ${appointment.order.address.number}` : '' }}, {{ appointment.order.address.district }} - {{ appointment.order.address.city }}
+                {{ appointment.order_id ? `Pedido: ${appointment.order_id}` : '' }}
+              </v-list-item-subtitle>
+              <v-list-item-subtitle v-if="appointment.address">
+                {{ `${appointment.address.street} n° ${appointment.address.number}, ${appointment.address.district } - ${ appointment.address.city}` }}
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -120,7 +131,6 @@ export default {
       });
     },
     async _edit(appointment){
-      await this.$store.dispatch('order/setData', { order: appointment.order })
       this.$router.push({ name: 'appointment.show', params: { id: appointment.id } })
     },
      _add(){

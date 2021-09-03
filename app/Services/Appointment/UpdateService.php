@@ -19,6 +19,10 @@ class UpdateService
 
         $appointment->order()->associate(Arr::get($data, 'order_id'));
 
+        $appointment->client()->associate(Arr::get($data, 'client_id'));
+
+        $appointment->address()->associate(Arr::get($data, 'address_id'));
+
         $appointment->save();
         
         return $appointment;

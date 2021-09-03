@@ -76,7 +76,7 @@
               outlined
               dense
               :rules="[rules.required]"
-              :error="errors.client"
+              :error="errors.client_id"
             ></v-autocomplete>
           </v-col>
 
@@ -622,9 +622,10 @@ export default {
       status: null
     },
     errors: {
-      client: false,
-      products: [],
-      services: []
+      client_id: false,
+      address_id: false,
+      // products: [],
+      // services: []
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
@@ -734,6 +735,7 @@ export default {
       this.loadingAddresses = true;
       await axios.get(`api/address`, { params }).then(response => {
         if(response.data.success){
+          this.order.address_id = response.data.data.length > 0 ? response.data.data[0].id : null;
           return this.addresses = response.data.data;
         }
         this._modal('Error ao carregar endereços', 'error');
@@ -791,30 +793,12 @@ export default {
       this.tab = null;
 
       /* Validations */
-      if(!this.order.client_id){
-        return this.errors.client = true;
-      }
-      
-      for (const key in this.order.products) {
-        const product = this.order.products[key];
-
-        if(product.id && !product.value){
-          return this.errors.products[key] = true;
+      for (const field in this.errors) {
+        if(!this.order[field]){
+          this.errors[field] = true;
+          return false;
         }
-
-        this.errors.products[key] = false;
       }
-
-      for (const key in this.order.services) {
-        const service = this.order.services[key];
-
-        if(service.id && !service.value){
-          return this.errors.services[key] = true;
-        }
-
-        this.errors.services[key] = false;
-      }
-      /* End Validations */
 
       let id = this.order.id;
 
@@ -837,8 +821,10 @@ export default {
       }
 
       if(backRoute){
-        return setTimeout(() => this.$router.push({ name: 'order.index' }), 1500);
+        setTimeout(() => this.$router.push({ name: 'order.index' }), 1500);
       } 
+
+      return response.data.success;
     },
     _formatMoney(value){
       return value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
@@ -849,9 +835,16 @@ export default {
       window.open(routeData.href, '_blank');
     },
     async _generateAppointment(){
-      await this._store();
-      await this.$store.dispatch('order/setData', { order: this.order })
-      this.$router.push({ name: 'appointment.form' })
+      if(await this._store()){
+        this.$router.push({ 
+          name: 'appointment.create', 
+          query: {
+            orderId: this.order.id,
+            clientId: this.order.client_id,
+            addressId: this.order.address_id,
+          } 
+        })
+      }
     },
   }
 

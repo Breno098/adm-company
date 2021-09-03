@@ -134,7 +134,7 @@
   }
 
   tr, td {
-    padding: 4px 5px;
+    padding: 3px 5px;
   }
 
   .line-write {

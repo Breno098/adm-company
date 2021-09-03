@@ -185,8 +185,7 @@ export default {
       return event.color
     },
     async _edit(appointment){
-      await this.$store.dispatch('order/setData', { order: appointment.order })
-      this.$router.push({ name: 'appointment.form', params: { id: appointment.id } })
+      this.$router.push({ name: 'appointment.show', params: { id: appointment.id } })
     },
   }
 }

@@ -35,7 +35,8 @@ class AppointmentRequest extends FormRequest
             
             /** Relations */
             'order_id' => 'nullable',
-            
+            'client_id' => 'nullable',
+            'address_id' => 'nullable',
         ];
     }
 }
