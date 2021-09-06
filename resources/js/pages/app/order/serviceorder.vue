@@ -1,7 +1,7 @@
 <template>
-      <table id="order-service-order">
+      <table id="order-service-order" style="margin-top: 5px">
         <tr>
-          <td colspan="4"> 
+          <td colspan="6"> 
             <div  style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 95%; margin: 0 auto">
               <img src="storage/logo.png" style="height: 60px; width: 90px"/>
               <span> CONDOMINÍOS E RESIDÊNNCIAS, SERVIÇOS DE ENCANAMENTO EM GERAL </span>
@@ -14,92 +14,93 @@
           </td>
         </tr>
         <tr>
-          <td colspan="4" style="font-size: 18px; font-weight: bold"> NÚMERO DA ORDEM DE SERVIÇO: {{ order.id }} </td>
+          <td colspan="6" style="font-size: 18px; font-weight: bold"> NÚMERO DA ORDEM DE SERVIÇO: {{ order.id }} </td>
         </tr>
         <tr v-if="order.client">
-          <td colspan="4"> CLIENTE: {{ order.client.name }} </td>
+          <td colspan="6"> <strong> CLIENTE: </strong> {{ order.client.name }} </td>
         </tr>
         <tr v-if="order.address_id">
-          <td colspan="4"> ENDEREÇO: {{ `R. ${order.address.street} nº ${order.address.number}` }} </td>
+          <td colspan="6"> <strong> ENDEREÇO: </strong> {{ `R. ${order.address.street} nº ${order.address.number}` }} </td>
         </tr>
         <tr v-if="order.address_id">
-          <td colspan="2"> CIDADE: {{ order.address.city }} </td>
-          <td colspan="2"> BAIRRO: {{ order.address.district }} </td>
+          <td colspan="3"> <strong> CIDADE:  </strong> {{ order.address.city }} </td>
+          <td colspan="3"> <strong> BAIRRO:  </strong> {{ order.address.district }} </td>
         </tr>
         <tr>
-          <td colspan="2"> PROGRAMAÇÃO: {{ order.address.city }} </td>
-          <td colspan="2"> TELEFONE: 16 99999-9999 </td>
+          <td colspan="3"> <strong> PROGRAMAÇÃO: </strong> {{ order.address.city }} </td>
+          <td colspan="3"> <strong> TELEFONE(S): </strong> {{ telefonesComputed }} </td>
         </tr>
         <tr>
-          <td colspan="4"> PROBLEMA RECLAMADA:  </td>
+          <td colspan="6"> <strong> PROBLEMA RECLAMADA: </strong>  </td>
         </tr>
 
         <tr>
-          <td colspan="4"> VISTORIA PRÉVIA DO LOCAL </td>
+          <td colspan="6"> <strong> VISTORIA PRÉVIA DO LOCAL </strong> </td>
         </tr>
         <tr>
-          <td colspan="4"> LOCAL POSSUI AVARIAS OU ALGUMA IRREGULARIDADE? ( ) NÃO  ( ) SIM   QUAIS? DESCREVA ABAIXO: </td>
+          <td colspan="6"> LOCAL POSSUI AVARIAS OU ALGUMA IRREGULARIDADE? ( ) NÃO  ( ) SIM   QUAIS? DESCREVA ABAIXO: </td>
         </tr>
         <tr v-for="line in [0, 1, 2]" :key="line" >
-          <td colspan="4" class="line-write"> </td>
+          <td colspan="6" class="line-write"> </td>
         </tr>
 
         <tr>
-          <td colspan="4"> LOCALIZAÇÃO E DESCRIÇÃO DO PROBLEMA CONSTATADO E SUA CAUSA </td>
+          <td colspan="6"> LOCALIZAÇÃO E DESCRIÇÃO DO PROBLEMA CONSTATADO E SUA CAUSA </td>
         </tr>
         <tr v-for="line in [0, 1, 2, 4]" :key="line">
-          <td colspan="4" class="line-write"> </td>
+          <td colspan="6" class="line-write"> </td>
         </tr>
 
         <tr>
-          <td colspan="4"> 
+          <td colspan="6"> 
             AUTORIZAÇÃO PRÉVIA: DECLARO TER ACEITO AS INFORMAÇÕES ACIMA DESCRITAS, AUTORIZO PREVIAMENTE O PRESTADOR DE SERVIÇOS
             A EXECUTAR OS REPAROS NECESSÁRIOS, SOB CONDIÇÕES EXPOSTAS.
           </td>
         </tr>
 
         <tr>
-          <td colspan="2">ASSINATURA/NOME RESPONSÁVEL: </td>
-          <td colspan="2">DATA/HORA:</td>
+          <td colspan="2">  <strong> DATA/HORA:  </strong></td>
+          <td colspan="4">  <strong> ASSINATURA/NOME RESPONSÁVEL: </strong> </td>
         </tr>
 
         <tr>
-          <td colspan="4"> DESCRIÇÃO DO SERVIÇO EXECUTADO (PARA CONHECIMENTO E AVAL DO RESPONSÁVEL) </td>
+          <td colspan="6"> DESCRIÇÃO DO SERVIÇO EXECUTADO (PARA CONHECIMENTO E AVAL DO RESPONSÁVEL) </td>
         </tr>
         <tr v-for="line in [0, 1, 2, 4, 5, 6 , 7]" :key="line">
-          <td colspan="4" class="line-write"> </td>
+          <td colspan="6" class="line-write"> </td>
         </tr>
 
         <tr>
-          <td colspan="1"> MÃO DE OBRA </td>
-          <td colspan="1"> R$ </td>
-          <td colspan="2" rowspan="2"> TOTAL R$ </td>
+          <td colspan="1"> <strong> MÃO DE OBRA </strong> </td>
+          <td colspan="3"> R$ </td>
+          <td colspan="2" rowspan="2"> <strong> TOTAL R$ </strong> </td>
         </tr>
 
         <tr>
-          <td colspan="1"> MATERIAIS </td>
-          <td colspan="1"> R$ </td>
+          <td colspan="1"> <strong> MATERIAIS </strong> </td>
+          <td colspan="3"> R$ </td>
         </tr>
 
         <tr>
-          <td colspan="4"> 
-            FORMAS DE PAGAMENTO: 
-            <span v-for="payment in ['DINHEIRO', 'DÉBITO', 'CRÉDITO', 'BOLETO', 'CONTRATO', 'TRANSFÊRENCIA', 'PIX']" :key="payment">
-              ( ){{ payment }}
-            </span>
+          <td colspan="6"> 
+            <strong> FORMAS DE PAGAMENTO: 
+              <span v-for="payment in ['DINHEIRO', 'DÉBITO', 'CRÉDITO', 'BOLETO', 'CONTRATO', 'TRANSFÊRENCIA', 'PIX']" :key="payment">
+                ( ){{ payment }}
+              </span>
+            </strong>
           </td>
         </tr>
 
         <tr>
-          <td colspan="4"> FORNECIDO POR: ( ) PRESTADOR  ( ) CLIENTE </td>
+          <td colspan="6"> <strong> FORNECIDO POR: ( ) PRESTADOR  ( ) CLIENTE </strong> </td>
         </tr>
 
         <tr>
-          <td colspan="4"> OBS.: ORÇAMENTOS NÃO APROVADOS, SERÁ COBRADO O VALOR DA VISITA TÉCNICA R$ 30,00 </td>
+          <td colspan="6"> OBS.: ORÇAMENTOS NÃO APROVADOS, SERÁ COBRADO O VALOR DA VISITA TÉCNICA R$ 30,00 </td>
         </tr>
 
         <tr>
-          <td colspan="4"> 
+          <td colspan="6"> 
             DECLARO QUE ACOMPANHEI E APROVEI A EXECUÇÃO DO SERVIÇO REALIZADO POR PROFISSIONAIS DEVIDADAMENTE UNIFORMIZADOS E 
             TODOS OS TESTES FORAM EFETUADOS CONSTATANDO QUE O SERVIÇO FOI REALIZADO A CONTENTO E NÃO HÁ NENHUM DANO.
             DECLARO TAMBÉM QUE FUI ORIENTADO(A) SOBRE A UTILIZAÇÃO DO LOCAL ONDE FOI EFETUADO  O SERVIÇO E QUE RECEBI UMA VIA DESTE DOCUMENTO. 
@@ -107,17 +108,17 @@
         </tr>
 
         <tr>
-          <td colspan="2"> NOME PRESTADOR/ASSINATURA </td>
-          <td colspan="2"> LOCAL - DATA - HORA </td>
+          <td colspan="3"> <strong> NOME PRESTADOR/ASSINATURA </strong> </td>
+          <td colspan="3"> <strong> LOCAL-DATA-HORA </strong> </td>
         </tr>
 
         <tr>
-          <td colspan="2" rowspan="2"> </td>
-          <td colspan="2"> NOME DO RESPONSÁVEL: </td>
+          <td colspan="3" rowspan="2"> </td>
+          <td colspan="3"> <strong> NOME DO RESPONSÁVEL: </strong> </td>
         </tr>
 
         <tr>
-          <td colspan="2"> ASSINATURA </td>
+          <td colspan="3"> <strong> ASSINATURA </strong> </td>
         </tr>
 
       </table>
@@ -135,6 +136,7 @@
 
   tr, td {
     padding: 3px 5px;
+    width: 16.66%
   }
 
   .line-write {
@@ -158,6 +160,15 @@ export default {
     this._start();
   },
   computed: {
+    telefonesComputed(){
+      let telefones = [];
+
+      this.order.client.contacts.forEach(contact => { 
+        contact.type === 'TELEFONE' ? telefones.push(contact.contact) : '';
+      });
+
+      return telefones.join(' | ');
+    },
     technicalVisitDate(){
       return moment(this.order.technical_visit).format('DD/MM/YYYY');
     },
@@ -171,7 +182,7 @@ export default {
   methods: {
     _start(){
       this.order = JSON.parse(this.$route.params.order);
-      setTimeout(() => window.print(), 200)
+      // setTimeout(() => window.print(), 200)
     },
     _formatMoney(value){
       return value ? value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }) : '';

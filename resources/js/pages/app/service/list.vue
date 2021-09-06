@@ -23,7 +23,7 @@
         </v-row>
       </v-container>
 
-      <v-col cols="12">
+      <v-col cols="12" v-if="!table.loading">
         <v-simple-table>
           <template v-slot:default>
             <thead>
