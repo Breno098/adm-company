@@ -10,6 +10,8 @@ use App\Services\Client\IndexService;
 use App\Services\Client\StoreService;
 use App\Services\Client\ShowService;
 use App\Services\Client\UpdateService;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class ClientController extends BaseControllerApi
 {
@@ -20,6 +22,8 @@ class ClientController extends BaseControllerApi
      */
     public function index(Request $request)
     {
+        // Gate::authorize('index_client');
+
         $clients = IndexService::run(
             $request->query(), 
             $request->get('relations', ['category']),

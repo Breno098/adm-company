@@ -25,6 +25,15 @@ axios.interceptors.request.use(request => {
 axios.interceptors.response.use(response => response, error => {
   const { status } = error.response
 
+  if (status == 403) {
+    Swal.fire({
+      title: 'Permissão negada',
+      timer: 2000
+    }).then(() => {
+      router.push({ name: 'home' })
+    })
+  }
+
   if (status === 401 && store.getters['auth/check']) {
     Swal.fire({
       icon: 'warning',
