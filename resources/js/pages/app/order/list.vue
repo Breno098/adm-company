@@ -15,7 +15,7 @@
 
     <v-row>
       <v-col cols="12">
-        <v-btn color="blue" @click="_add" rounded>
+        <v-btn color="blue" @click="_add" rounded dark small>
             Adicionar <v-icon dark>mdi-plus</v-icon>
         </v-btn>
       </v-col>
