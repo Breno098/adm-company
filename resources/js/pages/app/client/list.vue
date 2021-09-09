@@ -1,6 +1,6 @@
 <template>
   <div>
-    <confirm-dialog ref="confirmDialog"></confirm-dialog>
+    <fire-dialog ref="fireDialog"></fire-dialog>
     
     <v-row>
       <v-col cols="12">
@@ -140,16 +140,20 @@ export default {
       });
     },
     async _delete(client){
-      const ok = await this.$refs.confirmDialog.show({
+      const ok = await this.$refs.fireDialog.confirm({
           title: 'Deletar Cliente',
           message: 'Deseja realmente deletar o cliente?',
-          confirmButton: 'Deletar',
+          textConfirmButton: 'Deletar',
+          colorConfirButton: 'red'
       })
 
       if (ok) {
+        this.$refs.fireDialog.loading({ title: 'Deletando' });
+
         await axios.delete(`api/client/${client.id}`).then(response => {
           if(response.data.success){
             this._load();
+            this.$refs.fireDialog.hide();
           }
         });
       }

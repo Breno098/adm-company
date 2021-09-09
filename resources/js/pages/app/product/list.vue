@@ -1,6 +1,6 @@
 <template>
   <div>
-    <confirm-dialog ref="confirmDialog"></confirm-dialog>
+    <fire-dialog ref="fireDialog"></fire-dialog>
 
     <v-row>
       <v-col cols="12">
@@ -135,16 +135,20 @@ export default {
       });
     },
     async _delete(product){
-      const ok = await this.$refs.confirmDialog.show({
+      const ok = await this.$refs.fireDialog.confirm({
           title: 'Deletar Produto',
           message: 'Deseja realmente deletar o produto?',
-          confirmButton: 'Deletar',
+          textConfirmButton: 'Deletar',
+          colorConfirButton: 'red'
       })
 
       if (ok) {
+        this.$refs.fireDialog.loading({ title: 'Deletando' });
+
         await axios.delete(`api/item/${product.id}`).then(response => {
           if(response.data.success){
             this._load();
+            this.$refs.fireDialog.hide();
           }
         });
       }
