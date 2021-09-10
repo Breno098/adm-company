@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        $this->registerRoles();
+        // $this->registerRoles();
     }
 
     private function registerRoles()
