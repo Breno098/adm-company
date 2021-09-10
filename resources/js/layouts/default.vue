@@ -1,13 +1,16 @@
 <template>
   <v-app>
       <v-navigation-drawer v-model="drawer" fixed app class="elevation-0" :mini-variant="miniVariant" color="grey lighten-1">
-        <v-list dense>
+        <v-list dense two-line>
           <v-list-item link class="py-4" @click="_homeRoute">
-              <v-list-item-content class="black--text font-weight-bold">
-                  {{ !miniVariant ? appName : variantAppName }}
+              <v-list-item-content>
+                <v-list-item-title class="black--text font-weight-bold text-subtitle-2"> {{ !miniVariant ? appName : variantAppName }} </v-list-item-title>
+                <v-list-item-subtitle> {{ hour }} </v-list-item-subtitle>
               </v-list-item-content>
           </v-list-item>
+        </v-list>
 
+        <v-list dense>
           <v-list-item-group v-model="selectedItem" >
             <router-link :to="{ name: item.route }" style="text-decoration: none" v-for="(item, index) in menuItems" :key="index">
               <v-list-item :color="selectedItem == index ? item.color : ''">
@@ -78,12 +81,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+import moment from 'moment';
 
 export default {
   name: 'MainLayout',
   data: () => ({
     appName: window.config.appName,
+     hour: moment().format('DD/MM/YYYY HH:mm:ss'),
     drawer: true,
     userMenu: false,
     selectedItem: 0,
@@ -99,7 +104,13 @@ export default {
       { title: 'Categorias', route: 'category.index', icon: 'mdi-format-list-bulleted-type', color: 'cyan accent-4'},
     ]
   }),
+  mounted() {
+     this.setHour();
+  },
   methods: {
+    setHour(){
+      setInterval(() => this.hour = moment().add(1, 'seconds').format('DD/MM/YYYY HH:mm:ss'), 1000)
+    },
     async logout () {
       await this.$store.dispatch('auth/logout')
       this.$router.push({ name: 'login' })

@@ -211,7 +211,7 @@
                     dense
                     v-model="order.description"
                     :loading="loading"
-                    hint="DESCRIÇÃO DO ORÇAMENTO."
+                    hint="DESCRIÇÃO DO ORÇAMENTO E ORDEM DE SERVIÇO"
                     placeholder="DESCRIÇÃO E OBSERVAÇÕES FORMAR (VISÍVEL AO CLIENTE)."
                     @input="order.description = order.description.toUpperCase()"
                   ></v-textarea>
