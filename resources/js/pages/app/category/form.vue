@@ -56,12 +56,6 @@
                 </v-chip>
               </v-chip-group>
             </v-col>
-
-            <v-col cols="12">
-                <v-btn color="green darken-1" @click="_store" :loading="loading" rounded>
-                    Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-                </v-btn>
-            </v-col>
           </v-row>
 
           <v-card-actions>
@@ -169,7 +163,7 @@ export default {
       this.loading = false;
 
       if(response.data.success){
-         this.$refs.fireDialog.success({ title: 'Categoria salvo com sucesso' })
+        this.$refs.fireDialog.success({ title: 'Categoria salvo com sucesso' })
         return setTimeout(() => this.$router.push({ name: 'category.index' }), 1500);
       }
 

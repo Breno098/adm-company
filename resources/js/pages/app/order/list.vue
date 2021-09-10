@@ -31,7 +31,7 @@
       <v-col cols="12" md="6" v-for="order in items" :key="order.id" v-else>
         <v-card v-on:click="_edit(order.id)">
           <v-list-item three-line>
-            <v-list-item-content>
+            <v-list-item-content v-if="order.client">
               <div class="text-overline mb-4 d-flex justify-space-between">
                 {{ order.client.name }}
                 <v-chip v-if="order.status" :color="order.status.color" class="py-2" label>{{ order.status.name }}</v-chip>
