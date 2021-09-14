@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -75,7 +76,9 @@ class Order extends Model
                     'items.id',
                     'item_order.quantity',
                     'item_order.value',
-                    'items.name'
+                    'items.name',
+                    'items.default_value',
+                    DB::raw('(item_order.quantity * item_order.value) as total_value')
                 ]);
     }
 
@@ -87,7 +90,9 @@ class Order extends Model
                 'items.id',
                 'item_order.quantity',
                 'item_order.value',
-                'items.name'
+                'items.name',
+                'items.default_value',
+                DB::raw('(item_order.quantity * item_order.value) as total_value')
             ]);
     }
 

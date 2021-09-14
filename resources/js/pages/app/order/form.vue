@@ -289,24 +289,40 @@
                       </v-btn>
                     </v-col>
 
-                    <v-col cols="12" md="6">
-                      <v-select
+                    <v-col cols="12" md="4">
+                      <v-autocomplete
                         v-model="product.id"
                         :items="products"
+                        item-value="id"
+                        item-text="name"
                         label="PRODUTO"
                         outlined
                         dense
                         :loading="loadingProducts"
-                        item-value="id"
-                        no-data-text="Cadastre produtos para adicionar a listagem"
+                        no-data-text="Nenhum produto encontrado"
+                        v-on:change="_addDefaultValueProduct(index)"
                       >
-                        <template v-slot:selection="{ item }">
-                          <span>{{ item.name }} {{item.default_value ? `(R$ ${item.default_value.toFixed(2)})` : null}} </span>
+                      </v-autocomplete>
+                    </v-col>
+
+                    <v-col cols="12" md="2">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            prefix="R$"
+                            label="PREÇO PADRÃO"
+                            outlined
+                            dense
+                            :value="product.default_value"
+                            :loading="loading"
+                            readonly
+                            color="black"
+                            v-bind="attrs" 
+                            v-on="on"
+                          ></v-text-field>
                         </template>
-                        <template v-slot:item="{ item }">
-                          <span>{{ item.name }} {{item.default_value ? `(R$ ${item.default_value.toFixed(2)})` : null}} </span>
-                        </template>
-                      </v-select>
+                        <span> Preço cadastrado no produto </span>
+                      </v-tooltip>
                     </v-col>
 
                     <v-col cols="12" md="2">
@@ -317,30 +333,40 @@
                         dense
                         v-model="product.quantity"
                         :loading="loading"
+                        v-on:click="_sumTotalValueProduct(index)"
+                        v-on:keyup="_sumTotalValueProduct(index)"
                       ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="2">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            prefix="R$"
+                            type="number"
+                            label="VALOR"
+                            outlined
+                            dense
+                            v-model="product.value"
+                            :loading="loading"
+                            v-on:click="_sumTotalValueProduct(index)"
+                            v-on:keyup="_sumTotalValueProduct(index)"
+                            v-bind="attrs" 
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <span> Se necessário, use ponto (.) ao invés de virgula (,) </span>
+                      </v-tooltip>
                     </v-col>
 
                     <v-col cols="12" md="2">
                       <v-text-field
                         prefix="R$"
-                        type="number"
-                        label="VALOR"
-                        outlined
-                        dense
-                        v-model="product.value"
-                        :loading="loading"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="2">
-                      <v-text-field
-                        prefix="R$"
-                        type="number"
                         label="VALOR TOTAL"
                         readonly
                         outlined
                         dense
-                        :value="((product.value * product.quantity) || 0).toFixed(2)"
+                        :value="product.total_value.toFixed(2)"
                         :loading="loading"
                         color="black"
                       ></v-text-field>
@@ -351,7 +377,18 @@
                 </v-col>
 
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn color="green" @click="order.products.push({})" :loading="loading" small rounded>
+                  <v-btn 
+                    color="green" 
+                    @click="order.products.push({ 
+                      quantity: 1, 
+                      value: 0,
+                      default_value: 0,
+                      total_value: 0 
+                    })" 
+                    :loading="loading" 
+                    small 
+                    rounded
+                  >
                     Adicionar produto <v-icon>mdi-plus</v-icon>
                   </v-btn>
                 </v-col>
@@ -371,24 +408,40 @@
                       </v-btn>
                     </v-col>
 
-                    <v-col cols="12" md="6">
-                      <v-select
+                    <v-col cols="12" md="4">
+                      <v-autocomplete
                         v-model="service.id"
                         :items="services"
+                        item-value="id"
+                        item-text="name"
                         label="SERVIÇO"
                         outlined
                         dense
                         :loading="loadingServices"
-                        item-value="id"
-                         no-data-text="Cadastre serviços para adicionar a listagem"
+                        no-data-text="Nenhum serviço encontrado"
+                        v-on:change="_addDefaultValueService(index)"
                       >
-                        <template v-slot:selection="{ item }">
-                          <span>{{ item.name }} {{item.default_value ? `(R$ ${item.default_value.toFixed(2)})` : null}} </span>
-                        </template>
-                        <template v-slot:item="{ item }">
-                          <span>{{ item.name }} {{item.default_value ? `(R$ ${item.default_value.toFixed(2)})` : null}} </span>
-                        </template>
-                      </v-select>
+                      </v-autocomplete>
+                    </v-col>
+
+                    <v-col cols="12" md="2">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            prefix="R$"
+                            label="PREÇO PADRÃO"
+                            outlined
+                            dense
+                            :value="service.default_value"
+                            :loading="loading"
+                            readonly
+                            color="black"
+                            v-bind="attrs" 
+                            v-on="on"
+                          ></v-text-field>
+                         </template>
+                        <span> Preço cadastrado no serviço </span>
+                      </v-tooltip>
                     </v-col>
 
                     <v-col cols="12" md="2">
@@ -399,30 +452,40 @@
                         dense
                         v-model="service.quantity"
                         :loading="loading"
+                        v-on:click="_sumTotalValueService(index)"
+                        v-on:keyup="_sumTotalValueService(index)"
                       ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="2">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            prefix="R$"
+                            type="number"
+                            label="VALOR"
+                            outlined
+                            dense
+                            v-model="service.value"
+                            :loading="loading"
+                            v-on:click="_sumTotalValueService(index)"
+                            v-on:keyup="_sumTotalValueService(index)"
+                            v-bind="attrs" 
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <span> Se necessário, use ponto (.) ao invés de virgula (,) </span>
+                      </v-tooltip>
                     </v-col>
 
                     <v-col cols="12" md="2">
                       <v-text-field
                         prefix="R$"
-                        type="number"
-                        label="VALOR"
-                        outlined
-                        dense
-                        v-model="service.value"
-                        :loading="loading"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="2">
-                      <v-text-field
-                        prefix="R$"
-                        type="number"
                         label="VALOR TOTAL"
                         readonly
                         outlined
                         dense
-                        :value="((service.value * service.quantity) || 0).toFixed(2)"
+                        :value="service.total_value.toFixed(2)"
                         :loading="loading"
                         color="black"
                       ></v-text-field>
@@ -433,7 +496,18 @@
                 </v-col>
 
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn color="green" @click="order.services.push({})" :loading="loading" small rounded>
+                  <v-btn 
+                    color="green" 
+                    @click="order.services.push({ 
+                      quantity: 1, 
+                      value: 0,
+                      default_value: 0,
+                      total_value: 0 
+                    })" 
+                    :loading="loading" 
+                    small 
+                    rounded
+                  >
                     Adicionar serviço <v-icon>mdi-plus</v-icon>
                   </v-btn>
                 </v-col>
@@ -865,6 +939,36 @@ export default {
       if(this.order.payments[index].all){
         this.order.payments[index].value = this.valueTotalWithDiscont;
       }
+    },
+    _addDefaultValueProduct(index){
+      let filterProduct = this.products.filter(prod => prod.id === this.order.products[index].id);
+      if(filterProduct[0] && filterProduct[0].default_value){
+        this.order.products[index].default_value = filterProduct[0].default_value.toFixed(2);
+        this.order.products[index].value = filterProduct[0].default_value.toFixed(2);
+      } else {
+        this.order.products[index].default_value = 0
+        this.order.products[index].value = 0
+      }
+
+      this._sumTotalValueProduct(index)
+    },
+    _sumTotalValueProduct(index){
+      this.order.products[index].total_value = this.order.products[index].value * this.order.products[index].quantity;
+    },
+    _addDefaultValueService(index){
+      let filterService = this.services.filter(prod => prod.id === this.order.services[index].id);
+      if(filterService[0] && filterService[0].default_value){
+        this.order.services[index].default_value = filterService[0].default_value.toFixed(2);
+        this.order.services[index].value = filterService[0].default_value.toFixed(2);
+      } else {
+        this.order.services[index].default_value = 0
+        this.order.services[index].value = 0
+      }
+      
+      this._sumTotalValueService(index)
+    },
+    _sumTotalValueService(index){
+      this.order.services[index].total_value = this.order.services[index].value * this.order.services[index].quantity;
     },
     async _store(backRoute = false){
       this.tab = null;
