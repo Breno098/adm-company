@@ -27,7 +27,7 @@
         <td colspan="3"> <v-icon size="14" class="mr-2" color="#ff7403">mdi-instagram</v-icon> /desentupidoracrispim </td>
       </tr>
       <tr>
-        <td colspan="3"> <v-icon size="14" class="mr-2">mdi-email</v-icon> desentupidoracrispim@hotmail.com </td>
+        <td colspan="3"> <v-icon size="14" class="mr-2">mdi-email</v-icon> desentupidoracrispim@gmail.com </td>
       </tr>
       <tr>
         <td colspan="3"> <v-icon size="14" class="mr-2" color="#000">mdi-phone</v-icon> (16) 99187-8532 </td>
@@ -103,11 +103,13 @@
         <td colspan="4" style="padding: 10px 5px 0px"> FORMAS DE PAGAMENTO </td>
       </tr>
       <tr>
-        <td colspan="4"> CARTÃO DE CRÉDITO OU DÉBITO, DINHEIRO, CHEQUE, BOLETO OU TRANSFERÊNCIA BANCÁRIA </td>
+         <span v-for="payment in order.form_of_payments" :key="payment">
+            ( ){{ payment.name }}
+          </span>
       </tr>
-      <tr>
+      <!-- <tr>
         <td colspan="4"> (Banco Itaú | Agência 1635 | Conta 35942-3) </td>
-      </tr>
+      </tr> -->
       <tr>
         <td colspan="4" style="padding: 0 5px"> <hr style="color: #eee;"/> </td>
       </tr>
