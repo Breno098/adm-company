@@ -47,7 +47,8 @@ class OrderController extends BaseControllerApi
             'address',
             'products',
             'services',
-            'payments'
+            'payments',
+            'formOfPayments'
         ]);
 
         return $this->sendResponse($order, 'Order created successfully.');
@@ -66,7 +67,8 @@ class OrderController extends BaseControllerApi
             'address',
             'products',
             'services',
-            'payments'
+            'payments',
+            'formOfPayments'
         ]);
 
         return $this->sendResponse($order, 'Order retrieved successfully.');
@@ -90,7 +92,8 @@ class OrderController extends BaseControllerApi
             'address',
             'products',
             'services',
-            'payments'
+            'payments',
+            'formOfPayments'
         ]);
 
         return $this->sendResponse($order, 'Order updated successfully.');

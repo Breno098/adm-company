@@ -97,8 +97,8 @@
         <tr>
           <td colspan="6"> 
             <strong> FORMAS DE PAGAMENTO: 
-              <span v-for="payment in ['DINHEIRO', 'DÉBITO', 'CRÉDITO', 'BOLETO', 'CONTRATO', 'TRANSFÊRENCIA', 'PIX']" :key="payment">
-                ( ){{ payment }}
+              <span v-for="payment in order.form_of_payments" :key="payment">
+                ( ){{ payment.name }}
               </span>
             </strong>
           </td>

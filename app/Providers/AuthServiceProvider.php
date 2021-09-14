@@ -28,16 +28,20 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        // $this->registerRoles();
+        $this->registerRoles();
     }
 
     private function registerRoles()
     {
-        foreach (Role::all() as $role) {
-            Gate::define($role->role, function (User $user) use ($role) {
-                return $user->roles()->filterByRole($role->role)->count();
-                // return $user->roles()->filterByRole($role->role)->count() ? Response::allow() : Response::deny('Unauthorized');
-            });
+        try {
+            foreach (Role::all() as $role) {
+                Gate::define($role->role, function (User $user) use ($role) {
+                    return $user->roles()->filterByRole($role->role)->count();
+                    // return $user->roles()->filterByRole($role->role)->count() ? Response::allow() : Response::deny('Unauthorized');
+                });
+            }
+        } catch (\Exception $e) {
+            //
         }
     }
 }

@@ -106,4 +106,9 @@ class Order extends Model
                         'order_payment.date',
                     ]);
     }
+
+    public function formOfPayments()
+    {
+        return $this->belongsToMany(Payment::class, 'form_of_payment_order', 'order_id', 'payment_id');
+    }
 }

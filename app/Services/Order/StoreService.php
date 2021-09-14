@@ -21,6 +21,8 @@ class StoreService
         $order->client()->associate(Arr::get($data, 'client_id'));
         $order->status()->associate(Arr::get($data, 'status_id'));
         $order->address()->associate(Arr::get($data, 'address_id'));
+
+        $order->formOfPayments()->sync(Arr::get($data, 'form_of_payments'));
         
         foreach ($data['products'] as $product) {
             if(!isset($product['id'])){
