@@ -18,7 +18,14 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn dark color="blue" @click="_add" rounded small>
+            <v-btn 
+              dark 
+              color="blue" 
+              @click="_add" 
+              rounded 
+              small 
+              v-if="$role.expense.add()"
+            >
               Adicionar <v-icon dark>mdi-plus</v-icon>
             </v-btn>
           </v-toolbar>
@@ -33,11 +40,19 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in table.items" :key="item.id" v-on:click="_edit(item.id)">
+                <tr 
+                  v-for="item in table.items" 
+                  :key="item.id" 
+                  v-on:click="$role.expense.show() ? _edit(item.id) : null"
+                >
                   <td>{{ item.title }}</td>
                   <td>{{ item.value }}</td>
                   <td>
-                    <v-menu transition="slide-y-transition" bottom>
+                    <v-menu 
+                      transition="slide-y-transition" 
+                      bottom
+                      v-if="$role.expense.show() || $role.expense.delete()"
+                    >
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn text block v-bind="attrs" v-on="on">
                                 <v-icon>mdi-dots-vertical</v-icon>
@@ -45,15 +60,21 @@
                         </template>
 
                         <v-list nav dense>
-                            <v-list-item v-on:click="_edit(item.id)">
+                            <v-list-item 
+                              v-on:click="_edit(item.id)"
+                              v-if="$role.expense.show()"
+                            >
                                 <v-list-item-icon>
-                                    <v-icon outlined color="green">mdi-pencil</v-icon>
+                                    <v-icon outlined color="green">mdi-eye</v-icon>
                                 </v-list-item-icon>
                                 <v-list-item-content>
-                                    <v-list-item-title> Editar </v-list-item-title>
+                                    <v-list-item-title> Visualizar </v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
-                            <v-list-item v-on:click="_delete(item)">
+                            <v-list-item 
+                              v-on:click="_delete(item)"
+                              v-if="$role.expense.delete()"
+                            >
                                 <v-list-item-icon>
                                     <v-icon outlined color="red">mdi-delete</v-icon>
                                 </v-list-item-icon>
@@ -125,12 +146,18 @@ export default {
           this._load()
         }
 
+        this.table.loading = false;
+
         if(response.data.success){
-            this.table.items = response.data.data.data;
-            this.table.pageCount = response.data.data.last_page;
-            this.table.loading = false;
+          this.table.items = response.data.data.data;
+          this.table.pageCount = response.data.data.last_page;
+        } else {
+          this.$refs.fireDialog.error({ title: 'Erro ao carregar custos'});
         }
-      });
+      }).catch(error => {
+        this.$refs.fireDialog.error({ title: 'Erro ao carregar custos'});
+        this.table.loading = false;
+      })
     },
     async _delete(expense){
       const ok = await this.$refs.fireDialog.confirm({

@@ -18,7 +18,14 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn dark color="blue" @click="_add" rounded small>
+            <v-btn 
+              dark 
+              color="blue" 
+              @click="_add" 
+              rounded 
+              small 
+              v-if="$role.category.add()"
+            >
               Adicionar <v-icon dark>mdi-plus</v-icon>
             </v-btn>
           </v-toolbar>
@@ -34,12 +41,20 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="category in table.categories" :key="category.id" v-on:click="_edit(category.id)">
+                <tr  
+                  v-for="category in table.categories" 
+                  :key="category.id" 
+                  v-on:click="$role.category.show() ? _edit(category.id) : null"
+                >
                   <td> <v-icon color="blue">{{ category.icon }}</v-icon> </td>
                   <td>{{ category.name }}</td>
                   <td>{{ category.description }}</td>
                   <td>
-                    <v-menu transition="slide-y-transition" bottom>
+                    <v-menu 
+                      transition="slide-y-transition" 
+                      bottom
+                      v-if="$role.category.show() || $role.category.delete()"
+                    >
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn text block v-bind="attrs" v-on="on">
                                 <v-icon>mdi-dots-vertical</v-icon>
@@ -47,21 +62,27 @@
                         </template>
 
                         <v-list nav dense>
-                            <v-list-item v-on:click="_edit(category.id)">
-                                <v-list-item-icon>
-                                    <v-icon outlined color="green">mdi-pencil</v-icon>
-                                </v-list-item-icon>
-                                <v-list-item-content>
-                                    <v-list-item-title> Editar </v-list-item-title>
-                                </v-list-item-content>
+                            <v-list-item 
+                              v-on:click="_edit(category.id)"
+                              v-if="$role.category.show()"
+                            >
+                              <v-list-item-icon>
+                                  <v-icon outlined color="green">mdi-eye</v-icon>
+                              </v-list-item-icon>
+                              <v-list-item-content>
+                                  <v-list-item-title> Visualizar </v-list-item-title>
+                              </v-list-item-content>
                             </v-list-item>
-                            <v-list-item v-on:click="_delete(category)">
-                                <v-list-item-icon>
-                                    <v-icon outlined color="red">mdi-delete</v-icon>
-                                </v-list-item-icon>
-                                <v-list-item-content>
-                                    <v-list-item-title> Deletar </v-list-item-title>
-                                </v-list-item-content>
+                            <v-list-item 
+                              v-on:click="_delete(category)"
+                              v-if="$role.category.delete()"
+                            >
+                              <v-list-item-icon>
+                                  <v-icon outlined color="red">mdi-delete</v-icon>
+                              </v-list-item-icon>
+                              <v-list-item-content>
+                                  <v-list-item-title> Deletar </v-list-item-title>
+                              </v-list-item-content>
                             </v-list-item>
                         </v-list>
                     </v-menu>
@@ -116,7 +137,6 @@ export default {
     async _load(){
        let params = { 
         page: this.table.pagTe, 
-        pagination: true,
         itemsPerPage: 20,
         ...this.filters 
       }
@@ -128,12 +148,18 @@ export default {
           this._load()
         }
 
+        this.table.loading = false;
+
         if(response.data.success){
-            this.table.categories = response.data.data.data;
-            this.table.pageCount = response.data.data.last_page;
-            this.table.loading = false;
+          this.table.categories = response.data.data.data;
+          this.table.pageCount = response.data.data.last_page;
+        } else {
+          this.$refs.fireDialog.error({ title: 'Erro ao carregar categoria'});
         }
-      });
+      }).catch(error => {
+        this.$refs.fireDialog.error({ title: 'Erro ao carregar categoria'});
+        this.table.loading = false;
+      })
     },
     async _delete(category){
       const ok = await this.$refs.fireDialog.confirm({

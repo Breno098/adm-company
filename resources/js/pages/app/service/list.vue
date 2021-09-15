@@ -18,7 +18,14 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn dark color="blue" @click="_add" rounded small>
+            <v-btn 
+              dark 
+              color="blue" 
+              @click="_add" 
+              rounded 
+              small 
+              v-if="$role.service.add()"
+            >
               Adicionar <v-icon dark>mdi-plus</v-icon>
             </v-btn>
           </v-toolbar>
@@ -33,11 +40,19 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in table.items" :key="item.id" v-on:click="_edit(item.id)">
+                <tr 
+                  v-for="item in table.items" 
+                  :key="item.id"
+                  v-on:click="$role.service.show() ? _edit(item.id) : null"
+                >
                   <td>{{ item.name }}</td>
                   <td>{{ item.default_value }}</td>
                   <td>
-                    <v-menu transition="slide-y-transition" bottom>
+                    <v-menu 
+                      transition="slide-y-transition" 
+                      bottom 
+                      v-if="$role.service.show() || $role.service.delete()"
+                    >
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn text block v-bind="attrs" v-on="on">
                                 <v-icon>mdi-dots-vertical</v-icon>
@@ -45,15 +60,15 @@
                         </template>
 
                         <v-list nav dense>
-                            <v-list-item v-on:click="_edit(item.id)">
+                            <v-list-item v-on:click="_edit(item.id)" v-if="$role.service.show()">
                                 <v-list-item-icon>
-                                    <v-icon outlined color="green">mdi-pencil</v-icon>
+                                    <v-icon outlined color="green">mdi-eye</v-icon>
                                 </v-list-item-icon>
                                 <v-list-item-content>
-                                    <v-list-item-title> Editar </v-list-item-title>
+                                    <v-list-item-title> Visualizar </v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
-                            <v-list-item v-on:click="_delete(item)">
+                            <v-list-item v-on:click="_delete(item)" v-if="$role.service.delete()">
                                 <v-list-item-icon>
                                     <v-icon outlined color="red">mdi-delete</v-icon>
                                 </v-list-item-icon>
@@ -112,8 +127,6 @@ export default {
   },
   methods: {
     async _load(){
-      this.table.filters.type = 'service';
-      
       let params = { 
         page: this.table.page, 
         itemsPerPage: 20,
@@ -121,23 +134,29 @@ export default {
       }
 
       this.table.loading = true;
-      await axios.get('api/item', { params }).then(response => {
+      await axios.get('api/service', { params }).then(response => {
         if(response.data.data.data.length === 0 && this.table.page != 1){
           this.table.page = 1;
           this._load()
         }
 
+        this.table.loading = false;
+
         if(response.data.success){
-            this.table.items = response.data.data.data;
-            this.table.pageCount = response.data.data.last_page;
-            this.table.loading = false;
+          this.table.items = response.data.data.data;
+          this.table.pageCount = response.data.data.last_page;
+        } else {
+          this.$refs.fireDialog.error({ title: 'Erro ao carregar serviços'});
         }
-      });
+      }).catch(error => {
+        this.$refs.fireDialog.error({ title: 'Erro ao carregar serviços'});
+        this.table.loading = false;
+      })
     },
     async _delete(service){
       const ok = await this.$refs.fireDialog.confirm({
-          title: 'Deletar Serviço',
-          message: 'Deseja realmente deletar o serviço?',
+          title: 'Deletar Produto',
+          message: 'Deseja realmente deletar o produto?',
           textConfirmButton: 'Deletar',
           colorConfirButton: 'red'
       })

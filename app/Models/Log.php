@@ -18,8 +18,15 @@ class Log extends Model
         'operation'
     ];
 
-    public function users()
+    protected static function booted()
     {
-        return $this->hasOne(User::class);
+        static::saving(function ($model) {
+            $model->user()->associate(auth()->user());
+        });
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

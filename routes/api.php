@@ -23,6 +23,8 @@ use App\Http\Controllers\API\ApplicationPreferencesController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\AppointmentController;
 use App\Http\Controllers\API\ExpenseController;
+use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\ServiceController;
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [LoginController::class, 'logout']);
@@ -63,4 +65,7 @@ Route::middleware('auth:api')->group( function () {
     Route::apiResource('expense', ExpenseController::class);
     Route::apiResource('payment', PaymentController::class)->only(['index']);
     Route::apiResource('address', AddressController::class)->only(['index']);
+
+    Route::apiResource('product', ProductController::class);
+    Route::apiResource('service', ServiceController::class);
 });

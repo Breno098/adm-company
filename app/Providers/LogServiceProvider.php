@@ -61,7 +61,6 @@ class LogServiceProvider extends ServiceProvider
                 'table_name' => $this->discoverTableNameByEvent($eventName),
                 'data'       => json_encode($data),
                 'operation'  => $operation,
-                'user_id'    => auth()->user()->id
             ]);
         } catch (\Exception $e) {
             FacadesLog::info($e->getMessage());

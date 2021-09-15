@@ -27,6 +27,7 @@ class CategoryRequest extends FormRequest
             'name' => 'required|string',
             'description' => 'nullable|string',
             'icon' => 'nullable|string',
+            'type' => 'required:in:product,service,expense,client'
         ];
     }
 }

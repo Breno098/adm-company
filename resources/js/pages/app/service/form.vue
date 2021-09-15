@@ -18,7 +18,15 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn color="green" @click="_store" :loading="loading" rounded dark small>
+            <v-btn
+              v-if="(!idByRoute && $role.service.add()) || (idByRoute && $role.service.update()) "  
+              color="green" 
+              @click="_store" 
+              :loading="loading" 
+              rounded 
+              dark 
+              small
+            >
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
           </v-toolbar>
@@ -26,7 +34,7 @@
           <v-row>
             <v-col cols="12" md="6" offset-md="6">
               <v-select
-                v-model="item.status_id"
+                v-model="service.status_id"
                 vali
                 :items="statuses"
                 item-text="name"
@@ -35,6 +43,7 @@
                 outlined
                 dense
                 :loading="loading"
+                no-data-text="Nenhum status encontrada"
               ></v-select>
             </v-col>
 
@@ -43,17 +52,17 @@
                 label="NOME"
                 outlined
                 dense
-                v-model="item.name"
+                v-model="service.name"
                 :loading="loading"
                 :rules="[rules.required]"
-                :error="errors.name && !item.name"
-                @input="item.name = item.name.toUpperCase()"
+                :error="errors.name && !service.name"
+                @input="service.name = service.name.toUpperCase()"
               ></v-text-field>
             </v-col>
 
             <v-col cols="12" md="6">
               <v-select
-                v-model="item.categories"
+                v-model="service.categories"
                 vali
                 :items="categories"
                 item-text="name"
@@ -63,6 +72,7 @@
                 dense
                 :loading="loading"
                 multiple
+                no-data-text="Nenhuma categoria encontrada"
               ></v-select>
             </v-col>
 
@@ -71,15 +81,15 @@
                 label="MARCA"
                 outlined
                 dense
-                v-model="item.brand"
+                v-model="service.brand"
                 :loading="loading"
-                @input="item.brand = item.brand.toUpperCase()"
+                @input="service.brand = service.brand.toUpperCase()"
               ></v-text-field>
             </v-col>
 
             <v-col cols="12" md="6">
               <v-select
-                v-model="item.unit_measure"
+                v-model="service.unit_measure"
                 :items="unit_measures"
                 item-text="label"
                 item-value="value"
@@ -95,10 +105,10 @@
                 label="DESCRIÇÃO"
                 outlined
                 dense
-                v-model="item.description"
+                v-model="service.description"
                 :loading="loading"
-                hint="Detalhes do Serviço/item"
-                @input="item.description = item.description.toUpperCase()"
+                hint="Detalhes"
+                @input="service.description = service.description.toUpperCase()"
               ></v-textarea>
             </v-col>
 
@@ -109,9 +119,9 @@
                 label="VALOR"
                 outlined
                 dense
-                v-model="item.default_value"
+                v-model="service.default_value"
                 :loading="loading"
-                hint="Valor padrão do item/Serviço"
+                hint="Valor padrão"
               ></v-text-field>
             </v-col>
 
@@ -122,9 +132,8 @@
                 label="CUSTO"
                 outlined
                 dense
-                v-model="item.cost"
+                v-model="service.cost"
                 :loading="loading"
-                hint="Custo do item/Serviço"
               ></v-text-field>
             </v-col>
 
@@ -135,7 +144,7 @@
                 label="LUCRO"
                 outlined
                 dense
-                :value="(item.default_value - item.cost).toFixed(2)"
+                :value="(service.default_value - service.cost).toFixed(2)"
                 :loading="loading"
                 color="black"
                 readonly
@@ -148,7 +157,7 @@
                 type="number"
                 outlined
                 dense
-                v-model="item.warranty_days"
+                v-model="service.warranty_days"
                 :loading="loading"
               ></v-text-field>
             </v-col>
@@ -158,17 +167,24 @@
                 label="CONDIÇÃO DE GARANTIA"
                 outlined
                 dense
-                v-model="item.warranty_conditions"
+                v-model="service.warranty_conditions"
                 :loading="loading"
-                hint="Termos de garantia do Serviço/item"
-                @input="item.warranty_conditions = item.warranty_conditions.toUpperCase()"
+                hint="Termos de garantia"
+                @input="service.warranty_conditions = service.warranty_conditions.toUpperCase()"
               ></v-textarea>
             </v-col>
           </v-row>
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green" @click="_store" :loading="loading" rounded dark>
+            <v-btn 
+              v-if="(!idByRoute && $role.service.add()) || (idByRoute && $role.service.update()) "  
+              color="green" 
+              @click="_store" 
+              :loading="loading" 
+              rounded 
+              dark
+            >
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
             <v-spacer></v-spacer>
@@ -196,7 +212,7 @@ export default {
     rules: {
       required: value => !!value || 'Campo obrigatório.',
     },
-    item: {
+    service: {
       description: null,
       name: null,
       brand: null,
@@ -234,7 +250,7 @@ export default {
   }),
   computed: {
     titlePage(){
-      return this.$route.params.id ? 'Editar Serviço' : 'Adicionar Serviço';
+      return this.$route.params.id ? 'Serviço' : 'Adicionar Serviço';
     },
     idByRoute(){
       return this.$route.params.id;
@@ -254,12 +270,12 @@ export default {
     },
     async _load(){
       this.loading = true;
-      await axios.get(`api/item/${this.idByRoute}`).then(response => {
+      await axios.get(`api/service/${this.idByRoute}`).then(response => {
         if(response.data.success){
-          return this.item = response.data.data;
+          return this.service = response.data.data;
         }
 
-        this.$refs.fireDialog.error({ title: 'Error ao carregar dados Serviço' })
+        this.$refs.fireDialog.error({ title: 'Error ao carregar dados serviço' })
         this.$refs.fireDialog.hide(1500);
       });
       this.loading = false;
@@ -276,7 +292,7 @@ export default {
     },
     async _loadStatuses(){
       this.loading = true;
-      await axios.get(`api/status?type=item`).then(response => {
+      await axios.get(`api/status?type=service`).then(response => {
         if(response.data.success){
           return this.statuses = response.data.data;
         }
@@ -287,20 +303,14 @@ export default {
     },
     async _store(){
       for (const field in this.errors) {
-        if(!this.item[field])
+        if(!this.service[field])
           return this.errors[field] = true;
       }
-
-      let id = this.$route.params.id;
 
       this.loading = true;
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
 
-      this.item.type = 'service';
-
-      this.loading = true;
-
-      const response = !this.idByRoute ? await axios.post('api/item', this.item) : await axios.put(`api/item/${this.idByRoute}`, this.item);
+      const response = !this.idByRoute ? await axios.post('api/service', this.service) : await axios.put(`api/service/${this.idByRoute}`, this.service);
 
       this.loading = false;
 
@@ -309,7 +319,7 @@ export default {
         return setTimeout(() => this.$router.push({ name: 'service.index' }), 1500);
       }
 
-      this.$refs.fireDialog.error({ title: 'Error aos salvar Serviço' })
+      this.$refs.fireDialog.error({ title: 'Error aos salvar serviço' })
     },
   }
 

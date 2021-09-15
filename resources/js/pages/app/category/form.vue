@@ -18,13 +18,21 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn color="green" @click="_store" :loading="loading" rounded dark small>
+            <v-btn
+              v-if="(!idByRoute && $role.category.add()) || (idByRoute && $role.category.update()) "  
+              color="green" 
+              @click="_store" 
+              :loading="loading" 
+              rounded 
+              dark 
+              small
+            >
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
           </v-toolbar>
 
           <v-row>
-            <v-col cols="12">
+            <v-col cols="12" md="6">
               <v-text-field
                 label="NOME"
                 color="blue"
@@ -34,7 +42,23 @@
                 :loading="loading"
                 :rules="[rules.required]"
                 :error="errors.name"
+                @input="category.name = category.name.toUpperCase()"
               ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-select
+                v-model="category.type"
+                :items="types"
+                item-text="label"
+                item-value="value"
+                label="TIPO"
+                outlined
+                dense
+                :loading="loading"
+                :rules="[rules.required]"
+                :error="errors.type"
+              ></v-select>
             </v-col>
 
             <v-col cols="12">
@@ -46,6 +70,7 @@
                 v-model="category.description"
                 :loading="loading"
                 hint="Detalhes da categoria"
+                @input="category.description = category.description.toUpperCase()"
               ></v-textarea>
             </v-col>
 
@@ -60,7 +85,14 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green" @click="_store" :loading="loading" rounded dark>
+            <v-btn 
+              v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "  
+              color="green" 
+              @click="_store" 
+              :loading="loading" 
+              rounded 
+              dark
+            >
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
             <v-spacer></v-spacer>
@@ -117,7 +149,21 @@ export default {
       description: null,
       name: null,
       icon: null,
-    }
+      type: null
+    },
+    types: [{
+      label: 'PRODUTOS',
+      value: 'product'
+    }, {
+      label: 'SERVIÇOS',
+      value: 'service'
+    }, {
+      label: 'CUSTOS',
+      value: 'expense'
+    }, {
+      label: 'CLIENTES',
+      value: 'client'
+    }],
   }),
   computed: {
     birthDateFormat () {

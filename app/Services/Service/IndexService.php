@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Item;
+namespace App\Services\Service;
 
-use App\Models\Item;
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
@@ -17,7 +17,7 @@ class IndexService
      */
     static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
     {
-        return Item::with($relations)
+        return Service::with($relations)
             ->orderby('name')
             ->when(
                 $itemsPerPage,

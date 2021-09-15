@@ -18,6 +18,8 @@ class ExpenseController extends BaseControllerApi
      */
     public function index(Request $request)
     {
+        $this->authorize('index_expense');
+
         $expenses = IndexService::run(
             $request->query(), 
             $request->get('relations', []),
@@ -35,6 +37,8 @@ class ExpenseController extends BaseControllerApi
      */
     public function store(ExpenseRequest $request)
     {
+        $this->authorize('add_expense');
+
         $data = $request->validated();
 
         $expense = StoreService::run($data);
@@ -50,6 +54,8 @@ class ExpenseController extends BaseControllerApi
      */
     public function show(Expense $expense)
     {
+        $this->authorize('show_expense');
+
         $expense->load(['categories']);
         
         return $this->sendResponse($expense, 'Expense retrieved successfully.');
@@ -64,6 +70,8 @@ class ExpenseController extends BaseControllerApi
      */
     public function update(ExpenseRequest $request, Expense $expense)
     {
+        $this->authorize('update_expense');
+
         $data = $request->validated();
 
         $expense = UpdateService::run($expense, $data);
@@ -79,6 +87,8 @@ class ExpenseController extends BaseControllerApi
      */
     public function destroy(Expense $expense)
     {
+        $this->authorize('delete_expense');
+
         $expense->delete();
 
         return $this->sendResponse([], 'Expense deleted successfully.');

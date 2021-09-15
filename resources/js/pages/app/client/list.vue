@@ -18,7 +18,14 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn dark color="blue" @click="_add" rounded small v-if="$role.client.add()">
+            <v-btn 
+              dark 
+              color="blue" 
+              @click="_add" 
+              rounded 
+              small 
+              v-if="$role.client.add()"
+            >
               Adicionar <v-icon dark>mdi-plus</v-icon>
             </v-btn>
           </v-toolbar>
@@ -36,14 +43,22 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="client in table.clients" :key="client.id" v-on:click="$role.client.show() ? _edit(client.id) : null">
+                <tr 
+                  v-for="client in table.clients" 
+                  :key="client.id" 
+                  v-on:click="$role.client.show() ? _edit(client.id) : null"
+                >
                   <td>{{ client.name }}</td>
                   <td>{{ client.fantasy_name }}</td>
                   <td>{{ client.category ? client.category.name : '' }}</td>
                   <td>{{ client.cpf  }}</td>
                   <td>{{ client.cnpj }}</td>
                   <td>
-                    <v-menu transition="slide-y-transition" bottom>
+                    <v-menu 
+                      transition="slide-y-transition" 
+                      bottom
+                      v-if="$role.client.show() || $role.client.delete()"
+                    >
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn text block v-bind="attrs" v-on="on">
                                 <v-icon>mdi-dots-vertical</v-icon>
@@ -51,7 +66,10 @@
                         </template>
 
                         <v-list nav dense>
-                            <v-list-item v-on:click="_edit(client.id)" v-if="$role.client.show()">
+                            <v-list-item 
+                              v-on:click="_edit(client.id)" 
+                              v-if="$role.client.show()"
+                            >
                                 <v-list-item-icon>
                                     <v-icon outlined color="green">mdi-eye</v-icon>
                                 </v-list-item-icon>
@@ -59,7 +77,10 @@
                                     <v-list-item-title> Visualizar </v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
-                            <v-list-item v-on:click="_delete(client)" v-if="$role.client.delete()">
+                            <v-list-item 
+                              v-on:click="_delete(client)" 
+                              v-if="$role.client.delete()"
+                            >
                                 <v-list-item-icon>
                                     <v-icon outlined color="red">mdi-delete</v-icon>
                                 </v-list-item-icon>
@@ -134,12 +155,18 @@ export default {
           this._load()
         }
 
+        this.table.loading = false;
+
         if(response.data.success){
             this.table.clients = response.data.data.data;
             this.table.pageCount = response.data.data.last_page;
-            this.table.loading = false;
+        } else {
+          this.$refs.fireDialog.error({ title: 'Erro ao carregar clientes'});
         }
-      });
+      }).catch(error => {
+        this.$refs.fireDialog.error({ title: 'Erro ao carregar clientes'});
+        this.table.loading = false;
+      })
     },
     async _delete(client){
       const ok = await this.$refs.fireDialog.confirm({
