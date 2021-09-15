@@ -1,7 +1,7 @@
 <template>
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
-    
+
     <v-row>
       <v-col cols="12">
         <v-card elevation="0">
@@ -18,7 +18,7 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn dark color="blue" @click="_add" rounded small>
+            <v-btn dark color="blue" @click="_add" rounded small v-if="$role.client.add()">
               Adicionar <v-icon dark>mdi-plus</v-icon>
             </v-btn>
           </v-toolbar>
@@ -36,7 +36,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="client in table.clients" :key="client.id" v-on:click="_edit(client.id)">
+                <tr v-for="client in table.clients" :key="client.id" v-on:click="$role.client.show() ? _edit(client.id) : null">
                   <td>{{ client.name }}</td>
                   <td>{{ client.fantasy_name }}</td>
                   <td>{{ client.category ? client.category.name : '' }}</td>
@@ -51,15 +51,15 @@
                         </template>
 
                         <v-list nav dense>
-                            <v-list-item v-on:click="_edit(client.id)">
+                            <v-list-item v-on:click="_edit(client.id)" v-if="$role.client.show()">
                                 <v-list-item-icon>
-                                    <v-icon outlined color="green">mdi-pencil</v-icon>
+                                    <v-icon outlined color="green">mdi-eye</v-icon>
                                 </v-list-item-icon>
                                 <v-list-item-content>
-                                    <v-list-item-title> Editar </v-list-item-title>
+                                    <v-list-item-title> Visualizar </v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
-                            <v-list-item v-on:click="_delete(client)">
+                            <v-list-item v-on:click="_delete(client)" v-if="$role.client.delete()">
                                 <v-list-item-icon>
                                     <v-icon outlined color="red">mdi-delete</v-icon>
                                 </v-list-item-icon>
@@ -113,6 +113,8 @@ export default {
       loading: false,
     }
   }),
+  computed: {
+  },
   mounted() {
     this._load();
   },

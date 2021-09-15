@@ -18,7 +18,15 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn color="green" @click="_store" :loading="loading" rounded dark small>
+            <v-btn
+              v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "  
+              color="green" 
+              @click="_store" 
+              :loading="loading" 
+              rounded 
+              dark 
+              small
+            >
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
           </v-toolbar>
@@ -345,7 +353,15 @@
                 </v-col>
 
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn color="green" @click="client.addresses.push({})"  :loading="loading" small rounded>
+                  <v-btn 
+                    color="green" 
+                    @click="client.addresses.push({
+                      cep: null
+                    })"  
+                    :loading="loading" 
+                    small 
+                    rounded
+                  >
                     Adicionar endereço <v-icon>mdi-plus</v-icon>
                   </v-btn>
                 </v-col>
@@ -355,7 +371,14 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green" @click="_store" :loading="loading" rounded dark>
+            <v-btn 
+              v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "  
+              color="green" 
+              @click="_store" 
+              :loading="loading" 
+              rounded 
+              dark
+            >
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
             <v-spacer></v-spacer>
@@ -395,8 +418,8 @@ export default {
       notes: null,
       status_id: null,
       type: null,
-      addresses: [{}],
-      contacts: [{}]
+      addresses: [],
+      contacts: []
     },
     contact_types: [
       'CELULAR',
@@ -412,7 +435,7 @@ export default {
       return this.client.birth_date ? moment(this.client.birth_date).format('DD/MM/YYYY') : ''
     },
     titlePage(){
-      return this.$route.params.id ? 'Editar Cliente' : 'Adicionar Cliente';
+      return this.$route.params.id ? 'Cliente' : 'Adicionar Cliente';
     },
     idByRoute(){
       return this.$route.params.id;

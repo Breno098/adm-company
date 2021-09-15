@@ -22,7 +22,7 @@ class ClientController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        // Gate::authorize('index_client');
+        $this->authorize('index_client');
 
         $clients = IndexService::run(
             $request->query(), 
@@ -41,6 +41,8 @@ class ClientController extends BaseControllerApi
      */
     public function store(ClientRequest $request)
     {
+        $this->authorize('add_client');
+
         $data = $request->validated();
 
         $client = StoreService::run($data);
@@ -56,6 +58,8 @@ class ClientController extends BaseControllerApi
      */
     public function show(Client $client)
     {
+        $this->authorize('show_client');
+
         $client->load([ 'addresses', 'contacts' ]);
 
         return $this->sendResponse($client, 'Client retrieved successfully.');
@@ -70,6 +74,8 @@ class ClientController extends BaseControllerApi
      */
     public function update(ClientRequest $request, Client $client)
     {
+        $this->authorize('update_client');
+
         $data = $request->validated();
 
         $client = UpdateService::run($client, $data);
@@ -85,6 +91,8 @@ class ClientController extends BaseControllerApi
      */
     public function destroy(Client $client)
     {
+        $this->authorize('delete_client');
+
         $client->delete();
 
         return $this->sendResponse([], 'Client deleted successfully.');
