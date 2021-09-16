@@ -88,21 +88,11 @@ export default {
   name: 'MainLayout',
   data: () => ({
     appName: window.config.appName,
-     hour: moment().format('DD/MM/YYYY HH:mm:ss'),
+    hour: moment().format('DD/MM/YYYY HH:mm:ss'),
     drawer: true,
     userMenu: false,
     selectedItem: 0,
     miniVariant: false,
-    menuItems: [
-      { title: 'Inicio' , route: 'home', icon: 'mdi-home', color: 'blue' },
-      { title: 'Ordens' , route: 'order.index', icon: 'mdi-format-list-checks', color: 'purple' },
-      { title: 'Agenda' , route: 'appointment.index', icon: 'mdi-calendar-today', color: 'teal accent-4' },
-      { title: 'Custos/Despesas' , route: 'expense.index', icon: 'mdi-database-minus', color: 'red' },
-      { title: 'Clientes' , route: 'client.index', icon: 'mdi-account', color: 'green' },
-      { title: 'Produtos', route: 'product.index', icon: 'mdi-barcode', color: 'orange' },
-      { title: 'Serviços', route: 'service.index', icon: 'mdi-wrench', color: 'indigo' },
-      { title: 'Categorias', route: 'category.index', icon: 'mdi-format-list-bulleted-type', color: 'cyan accent-4'},
-    ]
   }),
   mounted() {
      this.setHour();
@@ -126,6 +116,75 @@ export default {
     }
   },
   computed: { 
+    menuItems(){
+      let menu = [
+        { 
+          title: 'Inicio', 
+          route: 'home', 
+          icon: 'mdi-home', 
+          color: 'blue',
+          role: true
+        },
+        { 
+          title: 'Ordens' , 
+          route: 'order.index', 
+          icon: 'mdi-format-list-checks', 
+          color: 'purple',
+          role: this.$role.order.index()
+        },
+        { 
+          title: 'Agenda', 
+          route: 'appointment.index', 
+          icon: 'mdi-calendar-today', 
+          color: 'teal accent-4',
+          role: this.$role.appointment.index()
+        },
+        { 
+          title: 'Custos/Despesas', 
+          route: 'expense.index', 
+          icon: 'mdi-database-minus', 
+          color: 'red',
+          role: this.$role.expense.index()
+        },
+        { 
+          title: 'Clientes', 
+          route: 'client.index', 
+          icon: 'mdi-account', 
+          color: 'green',
+          role: this.$role.client.index()
+        },
+        { 
+          title: 'Produtos', 
+          route: 'product.index', 
+          icon: 'mdi-barcode', 
+          color: 'orange',
+          role: this.$role.product.index()
+        },
+        { 
+          title: 'Serviços', 
+          route: 'service.index', 
+          icon: 'mdi-wrench', 
+          color: 'indigo',
+          role: this.$role.service.index()
+        },
+        { 
+          title: 'Categorias', 
+          route: 'category.index', 
+          icon: 'mdi-format-list-bulleted-type', 
+          color: 'cyan accent-4',
+          role: this.$role.category.index()
+        },
+        { 
+          title: 'Usuários', 
+          route: 'user.index', 
+          icon: 'mdi-account', 
+          color: 'orange',
+          role: this.$role.user.index(),
+        }
+      ];
+
+      return menu.filter(item => item.role)
+    },
     variantAppName(){
       let splitName = this.appName.split(' ');
       if(splitName.length > 1){

@@ -9,7 +9,7 @@
 
     <v-row>
       <v-col cols="12" md="4">
-        <router-link :to="{ name: 'settings.profile' }" style="text-decoration: none">
+        <router-link :to="{ name: 'settings-user-profile' }" style="text-decoration: none">
           <v-card>
             <v-toolbar class="d-flex flex-row justify-center" color="blue">
               <v-toolbar-title>Alterar dados do usuario</v-toolbar-title>

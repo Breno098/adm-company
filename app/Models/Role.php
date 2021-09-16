@@ -15,6 +15,7 @@ class Role extends Model
         'description',
         'name',
         'role',
+        'tag'
     ];
 
     public function scopeFilterByRole(Builder $builder, $role)

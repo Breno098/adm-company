@@ -29,7 +29,7 @@ class BaseControllerApi extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendError($error, $errorMessages = [])
+    public function sendError($error, $errorMessages = [], $codeError = 400)
     {
     	$response = [
             'success' => false,
@@ -40,6 +40,6 @@ class BaseControllerApi extends Controller
             $response['data'] = $errorMessages;
         }
 
-        return response()->json($response, 400);
+        return response()->json($response, $codeError);
     }
 }

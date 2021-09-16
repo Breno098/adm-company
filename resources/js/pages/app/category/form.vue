@@ -163,6 +163,9 @@ export default {
     }, {
       label: 'CLIENTES',
       value: 'client'
+    }, {
+      label: 'PERMISSÃO',
+      value: 'role'
     }],
   }),
   computed: {

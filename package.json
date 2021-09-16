@@ -25,6 +25,7 @@
     "js-cookie": "^2.2.1",
     "jspdf": "^2.3.1",
     "jspdf-autotable": "^3.5.15",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "popper.js": "^1.16.1",
     "sweetalert2": "^10.16.9",

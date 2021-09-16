@@ -55,7 +55,7 @@ export default {
         },
         iconByType(){
             return this.type == 'success' ? 'mdi-check-circle-outline' : 
-                   this.type == 'error' ? 'mdi-minus-circle-outline' : 
+                   this.type == 'error' ? 'mdi-close' : 
                    this.type == 'warning' ? 'mdi-alert-circle-outline' : '';
         },
         colorByType(){

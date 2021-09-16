@@ -18,7 +18,7 @@ class ServiceController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $this->authorize('index_service');
+        $this->authorize('service_index');
 
         $item = IndexService::run(
             $request->query(), 
@@ -37,7 +37,7 @@ class ServiceController extends BaseControllerApi
      */
     public function store(ServiceRequest $request)
     {
-        $this->authorize('add_service');
+        $this->authorize('service_add');
 
         $data = $request->validated();
 
@@ -54,7 +54,7 @@ class ServiceController extends BaseControllerApi
      */
     public function show(Service $service)
     {
-        $this->authorize('show_service');
+        $this->authorize('service_show');
 
         $service->load(['categories']);
         
@@ -70,7 +70,7 @@ class ServiceController extends BaseControllerApi
      */
     public function update(ServiceRequest $request, Service $service)
     {
-        $this->authorize('update_service');
+        $this->authorize('service_update');
 
         $data = $request->validated();
 
@@ -87,7 +87,7 @@ class ServiceController extends BaseControllerApi
      */
     public function destroy(Service $service)
     {
-        $this->authorize('delete_service');
+        $this->authorize('service_delete');
 
         $service->delete();
 

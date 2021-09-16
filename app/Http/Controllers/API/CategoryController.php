@@ -21,6 +21,8 @@ class CategoryController extends BaseControllerApi
      */
     public function index(Request $request)
     {
+        $this->authorize('category_index');
+
         $categories = IndexService::run(
             $request->query(), 
             $request->get('relations', []),
@@ -38,6 +40,8 @@ class CategoryController extends BaseControllerApi
      */
     public function store(CategoryRequest $request)
     {
+        $this->authorize('category_add');
+
         $data = $request->validated();
 
         $client = StoreService::run($data);
@@ -53,6 +57,8 @@ class CategoryController extends BaseControllerApi
      */
     public function show(Category $category)
     {
+        $this->authorize('category_show');
+
         return $this->sendResponse($category, 'Category retrieved successfully.');
     }
 
@@ -65,6 +71,8 @@ class CategoryController extends BaseControllerApi
      */
     public function update(CategoryRequest $request, Category $category)
     {
+        $this->authorize('category_update');
+
         $data = $request->validated();
 
         $category = UpdateService::run($category, $data);
@@ -80,6 +88,8 @@ class CategoryController extends BaseControllerApi
      */
     public function destroy(Category $category)
     {
+        $this->authorize('category_delete');
+
         $category->delete();
 
         return $this->sendResponse([], 'Client deleted successfully.');

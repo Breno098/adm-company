@@ -18,7 +18,7 @@ class ProductController extends BaseControllerApi
      */
     public function index(Request $request)
     {
-        $this->authorize('index_product');
+        $this->authorize('product_index');
 
         $item = IndexService::run(
             $request->query(), 
@@ -37,7 +37,7 @@ class ProductController extends BaseControllerApi
      */
     public function store(ProductRequest $request)
     {
-        $this->authorize('add_product');
+        $this->authorize('product_add');
 
         $data = $request->validated();
 
@@ -54,7 +54,7 @@ class ProductController extends BaseControllerApi
      */
     public function show(Product $product)
     {
-        $this->authorize('show_product');
+        $this->authorize('product_show');
 
         $product->load(['categories']);
         
@@ -70,7 +70,7 @@ class ProductController extends BaseControllerApi
      */
     public function update(ProductRequest $request, Product $product)
     {
-        $this->authorize('update_product');
+        $this->authorize('product_update');
 
         $data = $request->validated();
 
@@ -87,7 +87,7 @@ class ProductController extends BaseControllerApi
      */
     public function destroy(Product $product)
     {
-        $this->authorize('delete_product');
+        $this->authorize('product_delete');
 
         $product->delete();
 

@@ -7,12 +7,12 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\OAuthController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Auth\UserController as AuthUserController;
 use App\Http\Controllers\Auth\VerificationController;
 
-use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\ClientController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ItemController;
@@ -25,14 +25,15 @@ use App\Http\Controllers\API\AppointmentController;
 use App\Http\Controllers\API\ExpenseController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ServiceController;
+use App\Http\Controllers\API\RoleController;
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [LoginController::class, 'logout']);
 
-    Route::get('user', [UserController::class, 'current']);
+    Route::get('user/current', [AuthUserController::class, 'current']);
 
-    Route::patch('settings/profile', [ProfileController::class, 'update']);
-    Route::patch('settings/password', [PasswordController::class, 'update']);
+    Route::patch('profile/update', [ProfileController::class, 'update']);
+    Route::patch('profile/password', [ProfileController::class, 'password']);
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
@@ -60,12 +61,13 @@ Route::middleware('auth:api')->group( function () {
     Route::apiResource('status', StatusController::class);
     Route::apiResource('order', OrderController::class);
     Route::apiResource('item', ItemController::class);
+    Route::apiResource('product', ProductController::class);
+    Route::apiResource('service', ServiceController::class);
     Route::apiResource('appointment', AppointmentController::class);
     Route::apiResource('app-preferences', ApplicationPreferencesController::class);
     Route::apiResource('expense', ExpenseController::class);
+    Route::apiResource('user', UserController::class);
     Route::apiResource('payment', PaymentController::class)->only(['index']);
     Route::apiResource('address', AddressController::class)->only(['index']);
-
-    Route::apiResource('product', ProductController::class);
-    Route::apiResource('service', ServiceController::class);
+    Route::apiResource('role', RoleController::class)->only(['index']);
 });

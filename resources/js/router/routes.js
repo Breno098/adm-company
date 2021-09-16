@@ -34,25 +34,22 @@ export default [
   { path: '/expense/create', name: 'expense.create', component: page('app/expense/form.vue') },
   { path: '/expense/:id', name: 'expense.show', component: page('app/expense/form.vue') },
 
+  { path: '/settings-user-profile', name: 'settings-user-profile', component: page('app/profile/index.vue') },
+  { path: '/settings-user-password', name: 'settings-user-password', component: page('app/profile/password.vue') },
+
+  { path: '/user', name: 'user.index', component: page('app/user/list.vue') },
+  { path: '/user/create', name: 'user.create', component: page('app/user/form.vue') },
+  { path: '/user/:id', name: 'user.show', component: page('app/user/form.vue') },
+
+  { path: '/home', name: 'home', component: page('app/home/index.vue') },
+  { path: '/', name: 'home', component: page('app/home/index.vue') },
+
   { path: '/login', name: 'login', component: page('auth/login.vue') },
   { path: '/register', name: 'register', component: page('auth/register.vue') },
   { path: '/password/reset', name: 'password.request', component: page('auth/password/email.vue') },
   { path: '/password/reset/:token', name: 'password.reset', component: page('auth/password/reset.vue') },
   { path: '/email/verify/:id', name: 'verification.verify', component: page('auth/verification/verify.vue') },
   { path: '/email/resend', name: 'verification.resend', component: page('auth/verification/resend.vue') },
-
-  { path: '/home', name: 'home', component: page('app/home/index.vue') },
-  { path: '/', name: 'home', component: page('app/home/index.vue') },
-
-  {
-    path: '/settings',
-    component: page('settings/index.vue'),
-    children: [
-      { path: '', redirect: { name: 'settings.profile' } },
-      { path: 'profile', name: 'settings.profile', component: page('settings/profile.vue') },
-      { path: 'password', name: 'settings.password', component: page('settings/password.vue') }
-    ]
-  },
 
   { path: '*', component: page('errors/404.vue') }
 ]
