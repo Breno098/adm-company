@@ -13,7 +13,11 @@ class StoreService
      */
     static public function run(array $data = [])
     {
-        $user = User::create($data);
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+        ]);
 
         return $user;
     }

@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Requests\User\StoreRequest;
+use App\Http\Requests\User\UpdateRequest;
 use Illuminate\Http\Request;
-use App\Http\Requests\UserRequest;
-use App\Models\Category;
 use App\Models\User;
 use App\Services\User\IndexService;
 use App\Services\User\StoreService;
 use App\Services\User\UpdateService;
-use Illuminate\Support\Facades\Log;
 
 class UserController extends BaseControllerApi
 {
@@ -37,7 +36,7 @@ class UserController extends BaseControllerApi
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserRequest $request)
+    public function store(StoreRequest $request)
     {
         $this->authorize('user_add');
 
@@ -68,7 +67,7 @@ class UserController extends BaseControllerApi
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, User $user)
+    public function update(UpdateRequest $request, User $user)
     {
         $this->authorize('user_update');
 

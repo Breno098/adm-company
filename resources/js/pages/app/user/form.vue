@@ -58,6 +58,25 @@
               ></v-text-field>
             </v-col>
 
+            <v-col cols="12" md="10" v-if="!idByRoute">
+              <v-text-field
+                label="SENHA INICIAL"
+                color="blue"
+                outlined
+                dense
+                v-model="user.password"
+                :loading="loading"
+                :rules="[rules.required]"
+                :error="errors.password"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="2" v-if="!idByRoute">
+              <v-btn color="blue" @click="_generateRandomPass" dark block>
+                Gerar senha
+              </v-btn>
+            </v-col>
+
             <v-col cols="12" md="6" v-if="$role.user.roles()">
               <v-btn color="blue" @click="_groupUser('admin')" rounded dark block>
                 Admin
@@ -134,7 +153,8 @@ export default {
     loadingRole: false,
     errors: {
       name: false,
-      email: false
+      email: false,
+      password: false
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
@@ -142,6 +162,7 @@ export default {
     user: {
       name: null,
       email: null,
+      password: null,
       roles: [],
       roles_format: [],
     },
@@ -164,6 +185,9 @@ export default {
         await this._load();
       }
       await this._loadRoles();
+    },
+    _generateRandomPass(){
+      this.user.password = (Math.random() + 1).toString(36).substring(2);
     },
     _groupUser(type){
       let rolesGroup = [];
