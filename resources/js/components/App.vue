@@ -25,40 +25,28 @@ const layouts = requireContext.keys()
 
 export default {
   el: '#app',
-
   components: {
     Loading
   },
-
   data: () => ({
     layout: null,
     defaultLayout: 'default'
   }),
-
   metaInfo () {
     const { appName } = window.config
-
     return {
       title: appName,
       titleTemplate: `%s · ${appName}`
     }
   },
-
   mounted () {
-    this.$loading = this.$refs.loading
+    this.$loading = this.$refs.loading;
   },
-
   methods: {
-    /**
-     * Set the application layout.
-     *
-     * @param {String} layout
-     */
     setLayout (layout) {
       if (!layout || !layouts[layout]) {
         layout = this.defaultLayout
       }
-
       this.layout = layouts[layout]
     }
   }

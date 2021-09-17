@@ -94,8 +94,17 @@ export default {
     selectedItem: 0,
     miniVariant: false,
   }),
+  created () {
+    if(this.user && this.user.first_access){
+      this.$router.push({ name: 'settings-first-access' })
+    }
+  },
   mounted() {
-     this.setHour();
+    this.setHour();
+
+    if(this.user && !this.user.first_access){
+      // this.$router.push({ name: 'settings-first-access' })
+    }
   },
   methods: {
     setHour(){
@@ -112,7 +121,7 @@ export default {
     _configs(){
       this.selectedItem = null;
       this.userMenu = false;
-      this.$router.push({ name: 'settings.profile' });
+      this.$router.push({ name: 'settings-user-profile' });
     }
   },
   computed: { 

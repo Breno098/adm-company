@@ -1,5 +1,7 @@
 <template>
      <v-container fluid fill-height style="background: #7986CB; background: linear-gradient(to bottom, #2196F3, #90CAF9, #E3F2FD);">
+         <fire-dialog ref="fireDialog"></fire-dialog>
+
         <v-layout flex align-center justify-center>
             <v-flex xs12 sm8 elevation-6>
               <v-card >
@@ -26,7 +28,6 @@
                         label="Password"
                         color="blue"
                         required
-                        type="password"
                         v-on:keyup.enter="login"
                         outlined
                         dense
@@ -67,17 +68,31 @@ export default {
   }),
   methods: {
     async login () {
-      await axios.post('api/login', this.form)
-      .then(async (response) => {
-        this.$store.dispatch('auth/saveToken', {
-          token: response.data.token,
-          remember: this.remember
-        })
-
-        await this.$store.dispatch('auth/fetchUser');
-
-        this.redirect();
+      this.$refs.fireDialog.loading({ 
+        title: 'Entrando',
+        message: 'Estamos buscando seus dados' 
       })
+
+      await axios
+              .post('api/login', this.form)
+              .then(async (response) => {
+                this.$store.dispatch('auth/saveToken', {
+                  token: response.data.token,
+                  remember: this.remember
+                })
+
+                this.$refs.fireDialog.success({ title: 'Entrando' })
+
+                await this.$store.dispatch('auth/fetchUser');
+
+                this.redirect();
+              })
+              .catch(error => {
+                this.$refs.fireDialog.error({ 
+                  title: 'Erro',
+                  message: 'Não encontramos seus dados. Verifique seu usuário e senha por favor.'
+                })
+              })
     },
     redirect () {
       const intendedUrl = Cookies.get('intended_url')

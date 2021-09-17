@@ -3,7 +3,7 @@ import store from '~/store'
 
 const verify = (nameRole) => {
   const user = store.getters['auth/user']
-  return user.roles.find(role => role.role === nameRole);
+  return user ? user.roles.find(role => role.role === nameRole) : false;
 };
 
 const roles = {

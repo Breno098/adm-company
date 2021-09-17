@@ -10,8 +10,6 @@ export default (to, from, next, roles) => {
   // Grab the user
   const user = store.getters['auth/user']
 
-  console.log(roles);
-
   // Split roles into an array
   roles = roles.split(',')
 

@@ -54,6 +54,8 @@ export const actions = {
       const { data } = await axios.get('/api/user/current')
 
       commit(types.FETCH_USER_SUCCESS, { user: data })
+
+      return data;
     } catch (e) {
       commit(types.FETCH_USER_FAILURE)
     }

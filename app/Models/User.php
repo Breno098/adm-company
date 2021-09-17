@@ -23,6 +23,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
         'name',
         'email',
         'password',
+        'first_access'
     ];
 
     /**
@@ -42,6 +43,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'first_access' => 'boolean'
     ];
 
     /**
@@ -50,7 +52,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
      * @var array
      */
     protected $appends = [
-        'photo_url',
+        // 'photo_url',
     ];
 
     public function roles()

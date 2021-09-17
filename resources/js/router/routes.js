@@ -36,6 +36,7 @@ export default [
 
   { path: '/settings-user-profile', name: 'settings-user-profile', component: page('app/profile/index.vue') },
   { path: '/settings-user-password', name: 'settings-user-password', component: page('app/profile/password.vue') },
+  { path: '/settings-first-access', name: 'settings-first-access', component: page('app/profile/first_access.vue') },
 
   { path: '/user', name: 'user.index', component: page('app/user/list.vue') },
   { path: '/user/create', name: 'user.create', component: page('app/user/form.vue') },

@@ -19,6 +19,10 @@ class StoreService
             'password' => bcrypt($data['password']),
         ]);
 
+        $user->roles()->sync(Arr::get($data, 'roles'));
+
+        $user->save();
+
         return $user;
     }
 }

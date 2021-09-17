@@ -39,6 +39,27 @@ class ProfileController extends Controller
 
         $request->user()->update([
             'password' => bcrypt($request->password),
+            'first_access' => false
+        ]);
+
+        return response()->json(null, 204);
+    }
+
+    /* 
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function firstAccess(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        $request->user()->update([
+            'name' => $request->name,
+            'password' => bcrypt($request->password),
+            'first_access' => false
         ]);
 
         return response()->json(null, 204);

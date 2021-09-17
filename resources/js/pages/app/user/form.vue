@@ -154,7 +154,6 @@ export default {
     errors: {
       name: false,
       email: false,
-      password: false
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
@@ -183,7 +182,10 @@ export default {
    async _start(){
       if(this.idByRoute){
         await this._load();
+      } else {
+        this.errors.password = false;
       }
+
       await this._loadRoles();
     },
     _generateRandomPass(){

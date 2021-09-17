@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::patch('profile/update', [ProfileController::class, 'update']);
     Route::patch('profile/password', [ProfileController::class, 'password']);
+    Route::patch('profile/first-access', [ProfileController::class, 'firstAccess']);
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
