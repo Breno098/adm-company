@@ -61,6 +61,10 @@
           <div class="text-h6"> SERVIÇOS </div> 
         </v-card-text>
 
+        <v-card-text class="py-5">
+          
+        </v-cart-text>
+
         <v-card-title class="d-flex flex-row justify-space-between grey lighten-2">
           <div> VALOR DO RECIBO: </div> 
           <div> {{ amountPaid }} </div> 
