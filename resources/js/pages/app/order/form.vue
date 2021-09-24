@@ -142,38 +142,53 @@
                 </v-col>
 
                 <v-col cols="12" md="6">
-                    <v-menu
-                        v-model="menu_technical_visit_date"
-                        :close-on-content-click="false"
-                        max-width="290"
-                        transition="scale-transition"
-                        offset-y
-                    >
+                  <v-dialog
+                    ref="dialog"
+                    v-model="menu_technical_visit_date"
+                    :return-value.sync="order.technical_visit_date"
+                    persistent
+                    width="290px"
+                  >
                     <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                            append-icon="mdi-calendar"
-                            :value="technicalVisitDateFormat"
-                            clearable
-                            label="DATA VISITA TÉCNICA"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                            @click:clear="order.technical_visit_date = null"
-                            outlined
-                            dense
-                        ></v-text-field>
+                      <v-text-field
+                        :value="technicalVisitDateFormat"
+                        label="DATA VISITA TÉCNICA"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        outlined
+                        dense
+                        clearable
+                        @click:clear="order.technical_visit_date = null"
+                      ></v-text-field>
                     </template>
                     <v-date-picker
-                        v-model="order.technical_visit_date"
-                        @change="menu_technical_visit_date = false"
-                        no-title
-                        crollable
-                    ></v-date-picker>
-                    </v-menu>
+                      v-model="order.technical_visit_date"
+                      scrollable
+                      no-title
+                    >
+                      <v-spacer></v-spacer>
+                      <v-btn text @click="menu_technical_visit_date = false">
+                        Cancelar
+                      </v-btn>
+                      <v-btn text @click="$refs.dialog.save(order.technical_visit_date)">
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-dialog>
                 </v-col>
 
                 <v-col cols="12" md="6">
-                    <v-menu
+                  <v-text-field
+                      v-model="order.technical_visit_time"
+                      label="HORÁRIO VISITA TÉCNICA"
+                      prepend-icon="mdi-clock-time-four-outline"
+                      dense
+                      outlined
+                  ></v-text-field>
+
+                    <!-- <v-menu
                         ref="menu_time"
                         v-model="menu_time"
                         :close-on-content-click="false"
@@ -202,7 +217,7 @@
                             @click:minute="$refs.menu_time.save(order.technical_visit_time)"
                             format="24hr"
                         ></v-time-picker>
-                    </v-menu>
+                    </v-menu> -->
                 </v-col>
 
                 <v-col cols="12">
@@ -213,7 +228,7 @@
                     v-model="order.description"
                     :loading="loading"
                     hint="DESCRIÇÃO DO ORÇAMENTO E ORDEM DE SERVIÇO"
-                    placeholder="DESCRIÇÃO E OBSERVAÇÕES FORMAR (VISÍVEL AO CLIENTE)."
+                    placeholder="DESCRIÇÃO E OBSERVAÇÕES (VISÍVEL AO CLIENTE)."
                     @input="order.description = order.description.toUpperCase()"
                   ></v-textarea>
                 </v-col>
@@ -907,7 +922,7 @@ export default {
     },
     async _loadProducts(){
       this.loadingProducts = true;
-      await axios.get(`api/item?type=product`).then(response => {
+      await axios.get(`api/product`).then(response => {
         if(response.data.success){
           return this.products = response.data.data;
         }
@@ -917,7 +932,7 @@ export default {
     },
     async _loadServices(){
       this.loadingServices = true;
-      await axios.get(`api/item?type=service`).then(response => {
+      await axios.get(`api/service`).then(response => {
         if(response.data.success){
           return this.services = response.data.data;
         }

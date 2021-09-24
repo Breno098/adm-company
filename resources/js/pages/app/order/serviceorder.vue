@@ -35,7 +35,7 @@
           <td colspan="3"> <strong> BAIRRO:  </strong> {{ order.address.district }} </td>
         </tr>
         <tr>
-          <td colspan="3"> <strong> PROGRAMAÇÃO: </strong> {{ order.address.city }} </td>
+          <td colspan="3"> <strong> PROGRAMAÇÃO: </strong> {{ programationDateFormat }} </td>
           <td colspan="3"> <strong> TELEFONE(S): </strong> {{ telefonesComputed }} </td>
         </tr>
         <tr>
@@ -45,16 +45,19 @@
         <tr>
           <td colspan="6"> <strong> VISTORIA PRÉVIA DO LOCAL </strong> </td>
         </tr>
-        <tr>
-          <td colspan="6"> OBSERVAÇÕES: </td>
-        </tr>
 
         <tr v-if="order.description">
-          <td colspan="6"> {{ order.description }} </td>
+          <td colspan="6"> OBSERVAÇÕES: {{ order.description.substring(0, 550) }} </td>
         </tr>
 
-        <tr v-for="line in linesDescription" :key="line" >
-          <td colspan="6" class="line-write"> </td>
+        <tr v-if="!order.description">
+          <td colspan="6"> OBSERVAÇÕES: </td>
+        </tr>
+         <tr v-if="!order.description">
+          <td colspan="6"></td>
+        </tr>
+         <tr v-if="!order.description">
+          <td colspan="6"></td>
         </tr>
 
         <tr>
@@ -182,18 +185,26 @@ export default {
 
       return telefones.join(' | ');
     },
-    technicalVisitDate(){
-      return moment(this.order.technical_visit).format('DD/MM/YYYY');
-    },
-    technicalVisitHour(){
-      return moment(this.order.technical_visit).format('HH:mm');
+    programationDateFormat () {
+      let dateformat = '';
+
+      if(this.order.technical_visit_date){
+        dateformat += moment(this.order.technical_visit_date).format('DD/MM/YYYY');
+      }
+
+      if(this.order.technical_visit_date && this.order.technical_visit_time){
+        dateformat += ' às ';
+      }
+
+      if(this.order.technical_visit_time){
+        dateformat += this.order.technical_visit_time;
+      }
+
+      return dateformat;
     },
     nowFormat () {
       return moment().format('DD/MM/YYYY')
     },
-    linesDescription(){
-      return this.order.description ? [0, 1] : [0, 1, 2];
-    }
   },
   methods: {
     _start(){

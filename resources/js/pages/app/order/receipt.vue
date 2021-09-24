@@ -28,37 +28,12 @@
         </v-card-text>
 
         <v-card-text class="d-flex flex-column justify-center align-center grey lighten-2 py-1">
-          <div class="text-h6"> ORÇAMENTO </div> 
+          <div class="text-h6"> RECIBO </div> 
           <small> {{ order.id }} </small> 
         </v-card-text>
 
-        <v-card-text class="py-5">
-          <div v-if="order.client">
-            {{ `CLIENTE: ${order.client.name}` }}
-          </div>
-          <div v-if="order.address_id">
-            {{ `R. ${order.address.street} nº ${order.address.number}, ${order.address.district}` }}
-          </div>
-          <div v-if="order.address_id">
-            {{ `${order.address.city} - ${order.address.state}, CEP ${order.address.cep}` }}
-          </div>
-          <div class="d-flex flex-row justify-start">
-            <div v-for="(contact, index) in order.client.contacts" :key="index">
-              {{ `${contact.type}: ${contact.contact}` }}
-            </div>
-          </div>
-
-          <div v-if="order.technical_visit_date || order.technical_visit_time" class="d-flex flex-row justify-start">
-            {{ order.technical_visit_date ? `Data visita técnica: ${technicalVisitDateFormat}` : '' }} </td>
-            {{ order.technical_visit_time ? `Hora visita técnica: ${order.technical_visit_time}` : '' }} </td>
-          </div>
-        </v-card-text>
-
-        <v-card-text 
-          v-if="order.services.length > 0"
-          class="d-flex flex-column justify-center align-center grey lighten-2 py-1"
-        >
-          <div class="text-h6"> SERVIÇOS </div> 
+        <v-card-text class="d-flex flex-row justify-center py-5">
+          {{ messageBody }}
         </v-card-text>
 
         <v-card-title class="d-flex flex-row justify-space-between grey lighten-2">
@@ -101,10 +76,7 @@ export default {
   },
   computed: {
     titlePage(){
-      return `Orçamento ${this.order.id}`;
-    },
-    technicalVisitDateFormat(){
-      return moment(this.order.technical_visit_date).format('DD/MM/YYYY');
+      return `Recibo ${this.order.id}`;
     },
     infos() {
       return [
