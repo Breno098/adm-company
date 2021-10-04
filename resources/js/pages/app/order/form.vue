@@ -46,24 +46,6 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn 
-                    color="green" 
-                    @click="_generateDoc('receipt')" 
-                    :loading="loading" 
-                    v-bind="attrs" 
-                    v-on="on" 
-                    class="mx-3" 
-                    rounded 
-                    dark 
-                    small
-                  >
-                    <v-icon>mdi-file-check</v-icon>
-                  </v-btn>
-                </template>
-                <span>Gerar Recibo</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn 
                     color="grey lighten-1" 
                     @click="_generateDoc('serviceorder')" 
                     :loading="loading" 
@@ -77,6 +59,24 @@
                   </v-btn>
                 </template>
                 <span>Gerar Ordem de Serviço</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn 
+                    color="green lighten-2" 
+                    @click="_generateDoc('receipt')" 
+                    :loading="loading" 
+                    v-bind="attrs" 
+                    v-on="on" 
+                    class="mx-3" 
+                    rounded 
+                    dark 
+                    small
+                  >
+                    <v-icon>mdi-file-check</v-icon>
+                  </v-btn>
+                </template>
+                <span>Gerar Recibo</span>
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -734,22 +734,27 @@
           <v-card-actions>
             <v-row>
               <v-col cols="12" md=3>
-                <v-btn color="green darken-1" @click="_store(true)" :loading="loading" rounded dark>
+                <v-btn color="green darken-1" @click="_store(true)" :loading="loading" rounded dark block>
                   Salvar <v-icon dark>mdi-content-save</v-icon>
                 </v-btn>
               </v-col>
               <v-col cols="12" md=3>
-                <v-btn color="grey lighten-2" @click="_generateDoc('budget')" :loading="loading" rounded>
+                <v-btn color="grey lighten-2" @click="_generateDoc('budget')" :loading="loading" rounded block>
                   Orçamento <v-icon dark>mdi-file-document</v-icon>
                 </v-btn>
               </v-col>
               <v-col cols="12" md=3>
-                <v-btn color="grey lighten-2" @click="_generateDoc('serviceorder')" :loading="loading" rounded>
+                <v-btn color="grey lighten-2" @click="_generateDoc('serviceorder')" :loading="loading" rounded block>
                   Ordem de Serviço <v-icon dark>mdi-file-export</v-icon>
                 </v-btn>
               </v-col>
+               <v-col cols="12" md=3>
+                <v-btn color="green lighten-2" @click="_generateDoc('receipt')" :loading="loading" rounded block>
+                  Recibo <v-icon dark>mdi-file-check</v-icon>
+                </v-btn>
+              </v-col>
               <v-col cols="12" md=3>
-                <v-btn color="orange" @click="_generateAppointment" :loading="loading" rounded>
+                <v-btn color="orange" @click="_generateAppointment" :loading="loading" rounded block>
                   Agendar Compromisso <v-icon dark>mdi-calendar-today</v-icon>
                 </v-btn>
               </v-col>
