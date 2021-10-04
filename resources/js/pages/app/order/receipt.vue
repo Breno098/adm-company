@@ -148,7 +148,7 @@ export default {
       message += this.order.address.city     ? ` ${this.order.address.city}` : '';
       message += this.order.address.state    ? ` - ${this.order.address.state}` : '';
       message += this.order.address.cep      ? ` (${this.order.address.cep})` : '';
-      message += `, O VALOR DE ${this.amountPaid}`;
+      message += `, O VALOR DE ${this.amountPaid} `;
       message += `REFERENTE A PAGAMENTO REALIZADO (${this.typesPayment})`;
 
       return message;

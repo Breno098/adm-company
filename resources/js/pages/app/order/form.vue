@@ -46,6 +46,24 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn 
+                    color="green" 
+                    @click="_generateDoc('receipt')" 
+                    :loading="loading" 
+                    v-bind="attrs" 
+                    v-on="on" 
+                    class="mx-3" 
+                    rounded 
+                    dark 
+                    small
+                  >
+                    <v-icon>mdi-file-check</v-icon>
+                  </v-btn>
+                </template>
+                <span>Gerar Recibo</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn 
                     color="grey lighten-1" 
                     @click="_generateDoc('serviceorder')" 
                     :loading="loading" 

@@ -20,7 +20,7 @@ class IndexService
             ->when(
                 $itemsPerPage,
                 function (Builder $builder) use ($itemsPerPage) {
-                    return $builder->paginate($itemsPerPage)->withQueryString();
+                    return $builder->paginate($itemsPerPage);
                 },
                 function (Builder $builder) {
                     return $builder->get();
