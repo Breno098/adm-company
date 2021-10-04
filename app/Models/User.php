@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -23,7 +24,8 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
         'name',
         'email',
         'password',
-        'first_access'
+        'first_access',
+        'company_id'
     ];
 
     /**
@@ -54,10 +56,28 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     protected $appends = [
         // 'photo_url',
     ];
+    
+    protected static function booted()
+    {
+        if(auth()->user()){
+            static::saving(function ($model) {
+                $model->company_id = auth()->user()->company_id;
+            });
+
+            static::addGlobalScope('company_auth', function (Builder $builder) {
+                $builder->where('company_id', auth()->user()->company_id);
+            });
+        }
+    }
 
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
     /**

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Service extends Model
+class Service extends AuthBaseModel
 {
     use HasFactory, SoftDeletes;
 
@@ -40,6 +40,8 @@ class Service extends Model
         static::addGlobalScope('service_type', function (Builder $builder) {
             $builder->where('type', 'service');
         });
+
+        parent::booted();
     }
  
     public function scopeFilterByName(Builder $builder, $name)

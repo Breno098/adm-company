@@ -20,13 +20,15 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Breno Souza',
             'email' => 'brenohenrique098@gmail.com',
-            'password' => Hash::make('defaultAdm098')
+            'password' => Hash::make('defaultAdm098'),
+            'company_id' => 1
         ]);
 
         User::create([
             'name' => 'Admin',
             'email' => 'admin@admin.com',
-            'password' => Hash::make('senhaParaAdmin@9876')
+            'password' => Hash::make('senhaParaAdmin@9876'),
+            'company_id' => 2
         ]);
     }
 }

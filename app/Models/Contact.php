@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Contact extends Model
+class Contact extends AuthBaseModel
 {
     use HasFactory, SoftDeletes;
 

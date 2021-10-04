@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class Product extends AuthBaseModel
 {
     use HasFactory, SoftDeletes;
 
@@ -40,6 +40,8 @@ class Product extends Model
         static::addGlobalScope('product_type', function (Builder $builder) {
             $builder->where('type', 'product');
         });
+
+        parent::booted();
     }
  
     public function scopeFilterByName(Builder $builder, $name)

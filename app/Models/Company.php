@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Client extends AuthBaseModel
+class Company extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -15,14 +16,9 @@ class Client extends AuthBaseModel
         'cpf',
         'cnpj',
         'fantasy_name',
-        'birth_date',
-        'type',
-        'notes',
-        'category_id',
     ];
 
     protected $casts = [
-        'birth_date' => 'datetime:Y-m-d',
     ];
 
     public function scopeFilterByName(Builder $builder, $name)
@@ -46,11 +42,9 @@ class Client extends AuthBaseModel
         });
     }
 
-    public function scopeFilterByType(Builder $builder, $type)
+    public function users()
     {
-        return $builder->when($type, function (Builder $builder, $type) {
-            return $builder->where('type', $type);
-        });
+        return $this->hasMany(User::class);
     }
 
     public function addresses()
@@ -61,30 +55,5 @@ class Client extends AuthBaseModel
     public function contacts()
     {
         return $this->hasMany(Contact::class);
-    }
-
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
-
-    public function appointment()
-    {
-        return $this->belongsTo(Appointment::class);
-    }
-
-    public function status()
-    {
-        return $this->hasOne(Status::class);
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
     }
 }
