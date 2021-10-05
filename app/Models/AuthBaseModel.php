@@ -9,14 +9,12 @@ class AuthBaseModel extends Model
 {
     protected static function booted()
     {
-        if(auth()->user()){
-            static::saving(function ($model) {
-                $model->company_id = auth()->user()->company_id;
-            });
+        static::saving(function ($model) {
+            $model->company_id = auth()->user()->company_id;
+        });
 
-            static::addGlobalScope('company_auth', function (Builder $builder) {
-                $builder->where('company_id', auth()->user()->company_id);
-            });
-        }
+        static::addGlobalScope('company_auth', function (Builder $builder) {
+            $builder->where('company_id', auth()->user()->company_id);
+        });
     }
 }
