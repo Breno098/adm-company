@@ -9,23 +9,27 @@ use Illuminate\Support\Arr;
 class IndexService
 {
     /**
-     * @param  array  $filters
-     * @param  array  $relations
-     * @param  bool|int  $itemsPerPage
-     *
      * @return mixed
      */
-    static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
+    static public function run()
     {
-        return Client::with($relations)
-            ->filterByName(Arr::get($filters, 'name'))
-            ->filterByCpf(Arr::get($filters, 'cpf'))
-            ->filterByCnpj(Arr::get($filters, 'cnpj'))
-            ->filterByType(Arr::get($filters, 'type'))
-            ->orderby('name')
+        return Client::with(request()->get('relations', []))
+            ->when(request()->get('name'), function (Builder $builder, $name) {
+                return $builder->where('name', 'like', "%{$name}%");
+            })
+            ->when(request()->get('cpf'), function (Builder $builder, $cpf) {
+                return $builder->where('cpf', 'like', "%{$cpf}%");
+            })
+            ->when(request()->get('cnpj'), function (Builder $builder, $cnpj) {
+                return $builder->where('cnpj', 'like', "%{$cnpj}%");
+            })
+            ->when(request()->get('category_id'), function (Builder $builder, $category_id) {
+                return $builder->where('category_id', $category_id);
+            })
+            ->orderby(request()->get('orderBy'))
             ->when(
-                $itemsPerPage,
-                function (Builder $builder) use ($itemsPerPage) {
+                request()->get('itemsPerPage'),
+                function (Builder $builder, $itemsPerPage) {
                     return $builder->paginate($itemsPerPage);
                 },
                 function (Builder $builder) {

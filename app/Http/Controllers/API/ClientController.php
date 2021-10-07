@@ -20,15 +20,11 @@ class ClientController extends BaseControllerApi
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         $this->authorize('client_index');
 
-        $clients = IndexService::run(
-            $request->query(), 
-            $request->get('relations', ['category']),
-            $request->get('itemsPerPage', false),
-        );
+        $clients = IndexService::run();
 
         return $this->sendResponse($clients, 'Clients retrieved successfully.');
     }
