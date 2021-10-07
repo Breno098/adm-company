@@ -9,26 +9,37 @@ use Illuminate\Support\Arr;
 class IndexService
 {
     /**
+     * @param  array  $filters
+     * @param  array  $relations
+     * @param  bool|string $orderBy
+     * @param  bool|int  $itemsPerPage
+     * @param  bool $authorized
+     *
      * @return mixed
      */
-    static public function run()
+    static public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false, bool $authorized = true)
     {
-        return Client::with(request()->get('relations', []))
-            ->when(request()->get('name'), function (Builder $builder, $name) {
+        return Client::with($relations)
+            ->when($authorized, function (Builder $builder) {
+                return $builder->authorizedByCompany();
+            })
+            ->when(Arr::get($filters, 'name'), function (Builder $builder, $name) {
                 return $builder->where('name', 'like', "%{$name}%");
             })
-            ->when(request()->get('cpf'), function (Builder $builder, $cpf) {
+            ->when(Arr::get($filters, 'cpf'), function (Builder $builder, $cpf) {
                 return $builder->where('cpf', 'like', "%{$cpf}%");
             })
-            ->when(request()->get('cnpj'), function (Builder $builder, $cnpj) {
+            ->when(Arr::get($filters, 'cnpj'), function (Builder $builder, $cnpj) {
                 return $builder->where('cnpj', 'like', "%{$cnpj}%");
             })
-            ->when(request()->get('category_id'), function (Builder $builder, $category_id) {
+            ->when(Arr::get($filters, 'category_id'), function (Builder $builder, $category_id) {
                 return $builder->where('category_id', $category_id);
             })
-            ->orderby(request()->get('orderBy'))
+            ->when($orderBy, function (Builder $builder, $orderBy) {
+                return $builder->orderby($orderBy);
+            })
             ->when(
-                request()->get('itemsPerPage'),
+                $itemsPerPage,
                 function (Builder $builder, $itemsPerPage) {
                     return $builder->paginate($itemsPerPage);
                 },

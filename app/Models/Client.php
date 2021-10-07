@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Client extends AuthBaseModel
+class Client extends BaseModel
 {
     use HasFactory, SoftDeletes;
 
