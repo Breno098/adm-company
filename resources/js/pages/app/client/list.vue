@@ -115,17 +115,6 @@
     </v-expansion-panels>
       
     <v-card>
-      <v-toolbar elevation="0">
-        <v-progress-linear
-          color="blue"
-          indeterminate
-          height="4"
-          bottom
-          absolute
-          :active="table.loading"
-        ></v-progress-linear>
-      </v-toolbar>
-      
       <v-card-text>
         <v-simple-table dense>
           <template v-slot:default>

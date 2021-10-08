@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends AuthBaseModel
+class Product extends BaseModel
 {
     use HasFactory, SoftDeletes;
 
@@ -44,12 +44,7 @@ class Product extends AuthBaseModel
         parent::booted();
     }
  
-    public function scopeFilterByName(Builder $builder, $name)
-    {
-        return $builder->when($name, function (Builder $builder, $name) {
-            return $builder->where('name', 'like', "%{$name}%");
-        });
-    }
+    
 
     public function categories()
     {

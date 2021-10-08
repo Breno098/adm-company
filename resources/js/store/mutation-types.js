@@ -13,3 +13,5 @@ export const SHOW_MODAL_SYSTEM = 'SHOW_MODAL_SYSTEM'
 export const HIDE_MODAL_SYSTEM = 'HIDE_MODAL_SYSTEM'
 
 export const SET_ORDER = 'SET_ORDER'
+
+export const SET_COMPANY = 'SET_COMPANY'

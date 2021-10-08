@@ -2,34 +2,96 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-row>
-      <v-col cols="12">
-        <v-card elevation="0">
-          <v-toolbar elevation="0">
-            <v-toolbar-title> Produtos/Peças </v-toolbar-title>
-            <v-progress-linear
-              color="blue"
-              indeterminate
-              height="4"
-              bottom
-              absolute
-              :active="table.loading"
-            ></v-progress-linear>
+     <v-card class="mb-4">
+      <v-toolbar elevation="0">
+        <v-toolbar-title> Produtos/Peças </v-toolbar-title>
+        <v-progress-linear
+          color="blue"
+          indeterminate
+          height="4"
+          bottom
+          absolute
+          :active="table.loading"
+        ></v-progress-linear>
 
+        <v-spacer></v-spacer>
+
+        <v-btn 
+          dark 
+          color="blue" 
+          @click="_add" 
+          rounded 
+          small 
+          v-if="$role.product.add()"
+        >
+          Adicionar <v-icon dark>mdi-plus</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </v-card>
+
+     <v-expansion-panels class="mb-4">
+      <v-expansion-panel>
+        <v-expansion-panel-header disable-icon-rotate>
+          Filtros 
+          <template v-slot:actions>
+             <v-icon class="ml-2">mdi-magnify</v-icon>
+          </template>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-text-field
+                label="NOME"
+                outlined
+                dense
+                v-model="table.filters.name"
+                :loading="table.loading"
+                @input="table.filters.name = table.filters.name.toUpperCase()"
+                v-on:keyup.enter="_load"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-select
+                v-model="table.filters.category_id"
+                :items="categories"
+                item-text="name"
+                item-value="id"
+                label="TIPO DE CLIENTE"
+                outlined
+                dense
+                :loading="table.loading"
+                v-on:change="_load"
+              ></v-select>
+            </v-col>
+          </v-row>
+
+          <v-card-actions class="pb-4">
             <v-spacer></v-spacer>
-
             <v-btn 
-              dark 
-              color="blue" 
-              @click="_add" 
-              rounded 
-              small 
-              v-if="$role.product.add()"
+              color="green" 
+              @click="_load" 
+              class="px-5"
+              rounded
             >
-              Adicionar <v-icon dark>mdi-plus</v-icon>
+              Buscar <v-icon dark class="ml-2">mdi-magnify</v-icon>
             </v-btn>
-          </v-toolbar>
+            <v-btn 
+              color="grey lighten-2" 
+              @click="_eraser" 
+              class="px-5"
+              rounded
+            >
+              Limpar <v-icon dark class="ml-2">mdi-eraser</v-icon>
+            </v-btn>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
+    <v-card>
+      <v-card-text>
           <v-simple-table>
             <template v-slot:default>
               <thead>
@@ -89,22 +151,36 @@
               </tbody>
             </template>
           </v-simple-table>
+        </v-card-text>
 
-          <v-card-actions>
-            <v-spacer></v-spacer>
+        <v-card-actions>
+         <v-row>
+          <v-col cols="12" md="10">
             <v-pagination
+              v-show="table.pageCount > 1"
               v-model="table.page"
               :length="table.pageCount"
               @input="_load"
-              :total-visible="15"
+              :total-visible="5"
               color="blue"
               circle
             ></v-pagination>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-  </v-row>
+          </v-col>
+
+          <v-col cols="12" md="2">
+            <v-select
+              v-model="table.itemsPerPage"
+              :items="[5, 10, 15, 20, 40, 50]"
+              label="Linhas por página"
+              dense
+              class="mt-2 mx-5"
+              :loading="table.loading"
+              v-on:change="_load"
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-card-actions>
+    </v-card>
 </div>
 </template>
 
@@ -117,16 +193,19 @@ export default {
     return { title: 'Produtos' }
   },
   data: () => ({
-    dialog: false,
-    deleted: {},
-    search: '',
     table: {
-      filters: {},
+      filters: {
+        name: '',
+        category_id: null
+      },
+      orderBy: 'name',
       page: 1,
       pageCount: 0,
+      itemsPerPage: 10,
       items: [],
       loading: false,
-    }
+    },
+    categories: []
   }),
   mounted() {
     this._load();
@@ -135,7 +214,9 @@ export default {
     async _load(){
       let params = { 
         page: this.table.page, 
-        itemsPerPage: 20,
+        itemsPerPage: this.table.itemsPerPage,
+        orderBy: this.table.orderBy,
+        relations: [ 'category' ],
         ...this.table.filters 
       }
 
@@ -184,9 +265,34 @@ export default {
           params: { id }
       })
     },
-     _add(){
+    _add(){
       this.$router.push({ name: 'product.create' })
-    }
+    },
+    _eraser(){
+      for (const field in this.table.filters) {
+        this.table.filters[field] = null;
+      }
+
+      this._load();
+    },
+    _orderBy(field = ''){
+      this.table.orderBy = field;
+      this._load();
+    },
+    async _loadCategories(){
+      this.table.loading = true;
+      await axios.get(`api/category?type=product`).then(response => {
+        if(response.data.success){
+          this.categories = [ 
+            { id: null, name: 'TODOS' },
+            ...response.data.data
+          ];
+          return;
+        }
+        this.$refs.fireDialog.error({ title: 'Error ao carregar tipos' })
+      });
+      this.table.loading = false;
+    },
   }
 }
 </script>

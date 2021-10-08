@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
-class Order extends AuthBaseModel
+class Order extends BaseModel
 {
     use HasFactory, SoftDeletes;
 

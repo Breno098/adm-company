@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Expense extends AuthBaseModel
+class Expense extends BaseModel
 {
      use HasFactory, SoftDeletes;
 
