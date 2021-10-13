@@ -22,8 +22,9 @@ class ServiceController extends BaseControllerApi
 
         $item = IndexService::run(
             $request->query(), 
-            $request->get('relations', [ 'status' ]),
-            $request->get('itemsPerPage', false),
+            $request->get('relations', []),
+            $request->get('orderBy'),
+            $request->get('itemsPerPage'),
         );
 
         return $this->sendResponse($item, 'Services retrieved successfully.');

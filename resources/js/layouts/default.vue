@@ -135,7 +135,7 @@ export default {
           role: true
         },
         { 
-          title: 'Ordens' , 
+          title: 'Pedidos' , 
           route: 'order.index', 
           icon: 'mdi-format-list-checks', 
           color: 'purple',
@@ -181,7 +181,7 @@ export default {
           route: 'category.index', 
           icon: 'mdi-format-list-bulleted-type', 
           color: 'cyan accent-4',
-          role: this.$role.category.index()
+          role: false, //this.$role.category.index()
         },
         { 
           title: 'Usuários', 

@@ -50,20 +50,6 @@
                 v-on:keyup.enter="_load"
               ></v-text-field>
             </v-col>
-
-            <v-col cols="12" md="6">
-              <v-select
-                v-model="table.filters.category_id"
-                :items="categories"
-                item-text="name"
-                item-value="id"
-                label="TIPO DE CLIENTE"
-                outlined
-                dense
-                :loading="table.loading"
-                v-on:change="_load"
-              ></v-select>
-            </v-col>
           </v-row>
 
           <v-card-actions class="pb-4">
@@ -208,15 +194,18 @@ export default {
     categories: []
   }),
   mounted() {
-    this._load();
+    this._start();
   },
   methods: {
+    async _start(){
+      this._load();
+    },
     async _load(){
       let params = { 
         page: this.table.page, 
         itemsPerPage: this.table.itemsPerPage,
         orderBy: this.table.orderBy,
-        relations: [ 'category' ],
+        relations: [ 'categories' ],
         ...this.table.filters 
       }
 
@@ -278,20 +267,6 @@ export default {
     _orderBy(field = ''){
       this.table.orderBy = field;
       this._load();
-    },
-    async _loadCategories(){
-      this.table.loading = true;
-      await axios.get(`api/category?type=product`).then(response => {
-        if(response.data.success){
-          this.categories = [ 
-            { id: null, name: 'TODOS' },
-            ...response.data.data
-          ];
-          return;
-        }
-        this.$refs.fireDialog.error({ title: 'Error ao carregar tipos' })
-      });
-      this.table.loading = false;
     },
   }
 }

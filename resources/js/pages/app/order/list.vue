@@ -1,26 +1,51 @@
 <template>
   <div>
-    <v-row>
-      <v-col cols="12" md="4" v-for="(status) in statuses" :key="status.id" >
-        <v-btn :color="status.color" block @click="_loadFilterByStatus(status.id)">
-            {{ status.name }}
+    <fire-dialog ref="fireDialog"></fire-dialog>
+
+    <v-card class="mb-4">
+      <v-toolbar elevation="0">
+        <v-toolbar-title> Pedidos </v-toolbar-title>
+        <v-progress-linear
+          color="blue"
+          indeterminate
+          height="4"
+          bottom
+          absolute
+          :active="table.loading"
+        ></v-progress-linear>
+
+        <v-spacer></v-spacer>
+
+        <v-btn 
+          dark 
+          color="blue" 
+          @click="_add" 
+          rounded 
+          small 
+        >
+          Adicionar <v-icon dark>mdi-plus</v-icon>
         </v-btn>
-      </v-col>
-      <v-col cols="12" md="4" >
-        <v-btn block @click="_loadAll" color="grey">
-          Todas
-        </v-btn>
-      </v-col>
-    </v-row>
+      </v-toolbar>
+
+      <v-card-text>
+        <v-row>
+          <v-col cols="12" md="4" v-for="(status) in statuses" :key="status.id" >
+            <v-btn :color="status.color" block @click="_loadFilterByStatus(status.id)">
+                {{ status.name }}
+            </v-btn>
+          </v-col>
+          <v-col cols="12" md="4" >
+            <v-btn block @click="_loadAll" color="grey">
+              Todas
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+
 
     <v-row>
-      <v-col cols="12">
-        <v-btn color="blue" @click="_add" rounded dark small>
-            Adicionar <v-icon dark>mdi-plus</v-icon>
-        </v-btn>
-      </v-col>
-
-      <v-col cols="12" v-if="loading">
+      <v-col cols="12" v-if="table.loading">
         <v-row>
           <v-col cols="12" md="6" v-for="index in [0, 1, 2, 3]" :key="index">
             <v-skeleton-loader type="image"></v-skeleton-loader>
@@ -28,7 +53,7 @@
         </v-row>
       </v-col>
       
-      <v-col cols="12" md="6" v-for="order in items" :key="order.id" v-else>
+      <v-col cols="12" md="6" v-for="order in table.items" :key="order.id" v-else>
         <v-card v-on:click="_edit(order.id)">
           <v-list-item three-line>
             <v-list-item-content v-if="order.client">
@@ -54,36 +79,17 @@
       <v-col cols="12">
         <div class="text-center pt-2 mt-4">
           <v-pagination
-            v-model="page"
-            :length="pageCount"
+            v-show="table.pageCount > 1"
+            v-model="table.page"
+            :length="table.pageCount"
             @input="_load"
             :total-visible="15"
+            color="blue"
             circle
           ></v-pagination>
         </div>
       </v-col>
   </v-row>
-
-  <v-dialog v-model="dialog" max-width="350">
-    <v-card>
-        <v-card-title>
-            Confirmar exclusão do cliente?
-        </v-card-title>
-        <v-card-text>
-            {{ deleted.name }}
-        </v-card-text>
-
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green" text @click="dialog = false">
-                Fechar
-            </v-btn>
-            <v-btn color="red" text @click="_delete">
-                Excluir
-            </v-btn>
-        </v-card-actions>
-    </v-card>
-  </v-dialog>
 </div>
 </template>
 
@@ -96,14 +102,15 @@ export default {
     return { title: 'Ordens de Serviços' }
   },
   data: () => ({
-    dialog: false,
-    filters: {},
-    deleted: {},
-    search: '',
-    page: 1,
-    pageCount: 0,
-    items: [],
-    loading: false,
+    table: {
+      filters: {},
+      orderBy: 'created_at',
+      page: 1,
+      pageCount: 0,
+      itemsPerPage: 10,
+      items: [],
+      loading: false,
+    },
     statuses: []
   }),
   mounted() {
@@ -114,40 +121,45 @@ export default {
       await this._loadStatuses();
     },
     async _loadStatuses(){
-      this.loading = true;
+      this.table.loading = true;
       await axios.get(`api/status?type=order`).then(response => {
         if(response.data.success){
           return this.statuses = response.data.data;
         }
       });
-      this.loading = false;
+      this.table.loading = false;
     },
     _loadFilterByStatus(status_id){
-      this.filters.status_id = status_id;
+      this.table.filters.status_id = status_id;
       this._load();
     },
     _loadAll(){
-      this.filters = {};
+      this.table.filters = {};
       this._load();
     },
     async _load(){
       let params = { 
-        page: this.page, 
-        itemsPerPage: 20,
-        ...this.filters 
+        page: this.table.page, 
+        itemsPerPage: this.table.itemsPerPage,
+        orderBy: this.table.orderBy,
+        relations: ['client','address'],
+        ...this.table.filters 
       }
 
-      this.loading = true;
+      this.table.loading = true;
       await axios.get(`api/order`, { params }).then(response => {
-        if(response.data.data.data.length === 0 && this.page != 1){
-          this.page = 1;
+        if(response.data.data.data.length === 0 && this.table.page != 1){
+          this.table.page = 1;
           this._load()
         }
 
+        this.table.loading = false;
+     
         if(response.data.success){
-            this.items = response.data.data.data;
-            this.pageCount = response.data.data.last_page;
-            this.loading = false;
+          this.table.items = response.data.data.data;
+          this.table.pageCount = response.data.data.last_page;
+        } else {
+          this.$refs.fireDialog.error({ title: 'Erro ao carregar pedidos'});
         }
       });
     },
@@ -159,13 +171,6 @@ export default {
           this._load();
         }
       });
-    },
-    filterOnlyCapsText (value, search, item) {
-        return value != null && search != null && typeof value === 'string' && value.toString().indexOf(search) !== -1
-    },
-    confirmDelete(deleted){
-        this.deleted = deleted;
-        this.dialog = true;
     },
     _edit(id){
       this.$router.push({ name: 'order.show', params: { id } })

@@ -43,8 +43,6 @@ class Product extends BaseModel
 
         parent::booted();
     }
- 
-    
 
     public function categories()
     {

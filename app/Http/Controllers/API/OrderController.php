@@ -22,9 +22,11 @@ class OrderController extends BaseControllerApi
     public function index(Request $request)
     {
         $orders = IndexService::run(
+            // $request->get('relations', ['client','address']),
             $request->query(), 
-            $request->get('relations', ['client','address']),
-            $request->get('itemsPerPage', false),
+            $request->get('relations', []),
+            $request->get('orderBy'),
+            $request->get('itemsPerPage'),
         );
 
         return $this->sendResponse($orders, 'Orders retrieved successfully.');

@@ -2,34 +2,82 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-row>
-      <v-col cols="12">
-        <v-card elevation="0">
-          <v-toolbar elevation="0">
-            <v-toolbar-title> Serviços </v-toolbar-title>
-            <v-progress-linear
-              color="blue"
-              indeterminate
-              height="4"
-              bottom
-              absolute
-              :active="table.loading"
-            ></v-progress-linear>
+    <v-card class="mb-4">
+      <v-toolbar elevation="0">
+        <v-toolbar-title> Serviços </v-toolbar-title>
+        <v-progress-linear
+          color="blue"
+          indeterminate
+          height="4"
+          bottom
+          absolute
+          :active="table.loading"
+        ></v-progress-linear>
 
+        <v-spacer></v-spacer>
+
+        <v-btn 
+          dark 
+          color="blue" 
+          @click="_add" 
+          rounded 
+          small 
+          v-if="$role.service.add()"
+        >
+          Adicionar <v-icon dark>mdi-plus</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </v-card>
+
+     <v-expansion-panels class="mb-4">
+      <v-expansion-panel>
+        <v-expansion-panel-header disable-icon-rotate>
+          Filtros 
+          <template v-slot:actions>
+             <v-icon class="ml-2">mdi-magnify</v-icon>
+          </template>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-text-field
+                label="NOME"
+                outlined
+                dense
+                v-model="table.filters.name"
+                :loading="table.loading"
+                @input="table.filters.name = table.filters.name.toUpperCase()"
+                v-on:keyup.enter="_load"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-card-actions class="pb-4">
             <v-spacer></v-spacer>
-
             <v-btn 
-              dark 
-              color="blue" 
-              @click="_add" 
-              rounded 
-              small 
-              v-if="$role.service.add()"
+              color="green" 
+              @click="_load" 
+              class="px-5"
+              rounded
             >
-              Adicionar <v-icon dark>mdi-plus</v-icon>
+              Buscar <v-icon dark class="ml-2">mdi-magnify</v-icon>
             </v-btn>
-          </v-toolbar>
+            <v-btn 
+              color="grey lighten-2" 
+              @click="_eraser" 
+              class="px-5"
+              rounded
+            >
+              Limpar <v-icon dark class="ml-2">mdi-eraser</v-icon>
+            </v-btn>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
+    <v-card>
+      <v-card-text>
           <v-simple-table>
             <template v-slot:default>
               <thead>
@@ -42,7 +90,7 @@
               <tbody>
                 <tr 
                   v-for="item in table.items" 
-                  :key="item.id"
+                  :key="item.id" 
                   v-on:click="$role.service.show() ? _edit(item.id) : null"
                 >
                   <td>{{ item.name }}</td>
@@ -50,7 +98,7 @@
                   <td>
                     <v-menu 
                       transition="slide-y-transition" 
-                      bottom 
+                      bottom
                       v-if="$role.service.show() || $role.service.delete()"
                     >
                         <template v-slot:activator="{ on, attrs }">
@@ -60,21 +108,27 @@
                         </template>
 
                         <v-list nav dense>
-                            <v-list-item v-on:click="_edit(item.id)" v-if="$role.service.show()">
-                                <v-list-item-icon>
-                                    <v-icon outlined color="green">mdi-eye</v-icon>
-                                </v-list-item-icon>
-                                <v-list-item-content>
-                                    <v-list-item-title> Visualizar </v-list-item-title>
-                                </v-list-item-content>
+                            <v-list-item 
+                              v-on:click="_edit(item.id)"
+                              v-if="$role.service.show()"
+                            >
+                              <v-list-item-icon>
+                                  <v-icon outlined color="green">mdi-eye</v-icon>
+                              </v-list-item-icon>
+                              <v-list-item-content>
+                                  <v-list-item-title> Visualizar </v-list-item-title>
+                              </v-list-item-content>
                             </v-list-item>
-                            <v-list-item v-on:click="_delete(item)" v-if="$role.service.delete()">
-                                <v-list-item-icon>
-                                    <v-icon outlined color="red">mdi-delete</v-icon>
-                                </v-list-item-icon>
-                                <v-list-item-content>
-                                    <v-list-item-title> Deletar </v-list-item-title>
-                                </v-list-item-content>
+                            <v-list-item 
+                              v-on:click="_delete(item)" 
+                              v-if="$role.client.delete()"
+                            >
+                              <v-list-item-icon>
+                                  <v-icon outlined color="red">mdi-delete</v-icon>
+                              </v-list-item-icon>
+                              <v-list-item-content>
+                                  <v-list-item-title> Deletar </v-list-item-title>
+                              </v-list-item-content>
                             </v-list-item>
                         </v-list>
                     </v-menu>
@@ -83,22 +137,36 @@
               </tbody>
             </template>
           </v-simple-table>
+        </v-card-text>
 
-          <v-card-actions>
-            <v-spacer></v-spacer>
+        <v-card-actions>
+         <v-row>
+          <v-col cols="12" md="10">
             <v-pagination
+              v-show="table.pageCount > 1"
               v-model="table.page"
               :length="table.pageCount"
               @input="_load"
-              :total-visible="15"
+              :total-visible="10"
               color="blue"
               circle
             ></v-pagination>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-  </v-row>
+          </v-col>
+
+          <v-col cols="12" md="2">
+            <v-select
+              v-model="table.itemsPerPage"
+              :items="[5, 10, 15, 20, 40, 50]"
+              label="Linhas por página"
+              dense
+              class="mt-2 mx-5"
+              :loading="table.loading"
+              v-on:change="_load"
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-card-actions>
+    </v-card>
 </div>
 </template>
 
@@ -111,25 +179,33 @@ export default {
     return { title: 'Serviços' }
   },
   data: () => ({
-    dialog: false,
-    deleted: {},
-    search: '',
     table: {
-      filters: {},
+      filters: {
+        name: '',
+        category_id: null
+      },
+      orderBy: 'name',
       page: 1,
       pageCount: 0,
+      itemsPerPage: 10,
       items: [],
       loading: false,
-    }
+    },
+    categories: []
   }),
   mounted() {
-    this._load();
+    this._start();
   },
   methods: {
+    async _start(){
+      this._load();
+    },
     async _load(){
       let params = { 
         page: this.table.page, 
-        itemsPerPage: 20,
+        itemsPerPage: this.table.itemsPerPage,
+        orderBy: this.table.orderBy,
+        relations: [ 'categories' ],
         ...this.table.filters 
       }
 
@@ -146,10 +222,10 @@ export default {
           this.table.items = response.data.data.data;
           this.table.pageCount = response.data.data.last_page;
         } else {
-          this.$refs.fireDialog.error({ title: 'Erro ao carregar serviços'});
+          this.$refs.fireDialog.error({ title: 'Erro ao carregar Serviços'});
         }
       }).catch(error => {
-        this.$refs.fireDialog.error({ title: 'Erro ao carregar serviços'});
+        this.$refs.fireDialog.error({ title: 'Erro ao carregar Serviços'});
         this.table.loading = false;
       })
     },
@@ -178,9 +254,20 @@ export default {
           params: { id }
       })
     },
-     _add(){
+    _add(){
       this.$router.push({ name: 'service.create' })
-    }
+    },
+    _eraser(){
+      for (const field in this.table.filters) {
+        this.table.filters[field] = null;
+      }
+
+      this._load();
+    },
+    _orderBy(field = ''){
+      this.table.orderBy = field;
+      this._load();
+    },
   }
 }
 </script>
