@@ -38,6 +38,10 @@
           </div>
           <div v-if="order.address_id">
             {{ `R. ${order.address.street} nº ${order.address.number}, ${order.address.district}` }}
+            {{ order.address.tower && `| TORRE: ${order.address.tower}` }}
+            {{ order.address.floor && `| ANDAR: ${order.address.floor}` }}
+            {{ order.address.apartment && `| AP.: ${order.address.apartment}` }}
+            {{ order.address.house && `| CASA: ${order.address.house}` }}
           </div>
           <div v-if="order.address_id">
             {{ `${order.address.city} - ${order.address.state}, CEP ${order.address.cep}` }}
