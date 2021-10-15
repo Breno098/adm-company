@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use App\Models\Client;
+use App\Services\Client\CountService;
 use App\Services\Client\DestroyService;
 use App\Services\Client\IndexService;
 use App\Services\Client\StoreService;
@@ -97,5 +98,12 @@ class ClientController extends BaseControllerApi
         $client->delete();
 
         return $this->sendResponse([], 'Client deleted successfully.');
+    }
+
+    public function count(Request $request)
+    {
+        return $this->sendResponse([
+            'count' => CountService::run($request->query()),
+        ], 'Total count clients.');
     }
 }

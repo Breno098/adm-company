@@ -185,6 +185,7 @@
                       v-model="order.technical_visit_date"
                       scrollable
                       no-title
+                      locale="pt-Br"
                     >
                       <v-spacer></v-spacer>
                       <v-btn text @click="menu_technical_visit_date = false">
@@ -198,44 +199,36 @@
                 </v-col>
 
                 <v-col cols="12" md="6">
-                  <v-text-field
+                  <v-menu
+                    ref="menu_time"
+                    v-model="menu_time"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    :return-value.sync="order.technical_visit_time"
+                    transition="scale-transition"
+                    offset-y
+                    max-width="290px"
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="order.technical_visit_time"
+                        label="HORÁRIO VISITA TÉCNICA"
+                        prepend-icon="mdi-clock-time-four-outline"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        dense
+                        outlined
+                      ></v-text-field>
+                    </template>
+                    <v-time-picker
+                      v-if="menu_time"
                       v-model="order.technical_visit_time"
-                      label="HORÁRIO VISITA TÉCNICA"
-                      prepend-icon="mdi-clock-time-four-outline"
-                      dense
-                      outlined
-                  ></v-text-field>
-
-                    <!-- <v-menu
-                        ref="menu_time"
-                        v-model="menu_time"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        :return-value.sync="order.technical_visit_time"
-                        transition="scale-transition"
-                        offset-y
-                        max-width="290px"
-                        min-width="290px"
-                    >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                              v-model="order.technical_visit_time"
-                              label="HORÁRIO VISITA TÉCNICA"
-                              prepend-icon="mdi-clock-time-four-outline"
-                              readonly
-                              v-bind="attrs"
-                              v-on="on"
-                              dense
-                              outlined
-                          ></v-text-field>
-                        </template>
-                        <v-time-picker
-                            v-if="menu_time"
-                            v-model="order.technical_visit_time"
-                            @click:minute="$refs.menu_time.save(order.technical_visit_time)"
-                            format="24hr"
-                        ></v-time-picker>
-                    </v-menu> -->
+                      @click:minute="$refs.menu_time.save(order.technical_visit_time)"
+                      format="24hr"
+                    ></v-time-picker>
+                  </v-menu>
                 </v-col>
 
                 <v-col cols="12">
@@ -690,6 +683,7 @@
                               @change="menu_date_payments[index] = false"
                               no-title
                               crollable
+                              locale="pt-Br"
                           ></v-date-picker>
                           </v-menu>
                         </v-col>
@@ -826,7 +820,7 @@ export default {
   }),
   computed: {
     titlePage(){
-      return this.$route.params.id ? `Editar Ordem | nº ${this.$route.params.id}` : 'Adicionar Ordem';
+      return this.$route.params.id ? `Editar Pedido | nº ${this.$route.params.id}` : 'Adicionar Pedido';
     },
     idByRoute(){
       return this.$route.params.id;

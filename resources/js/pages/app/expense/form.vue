@@ -90,6 +90,7 @@
                 @change="menu_date = false"
                 no-title
                 crollable
+                locale="pt-Br"
             ></v-date-picker>
             </v-menu>
           </v-col>

@@ -56,6 +56,10 @@ Route::middleware('auth:api')->group( function () {
     Route::prefix('address')->group( function () {
         Route::get('/searchCep', [AddressController::class, 'searchCep']);
     });
+
+    Route::prefix('client')->group( function () {
+        Route::get('/count', [ClientController::class, 'count']);
+    });
     
     Route::apiResource('client', ClientController::class);
     Route::apiResource('category', CategoryController::class);

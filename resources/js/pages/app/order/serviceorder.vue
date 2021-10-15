@@ -4,7 +4,7 @@
           <td colspan="6"> 
             <div  style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 95%; margin: 0 auto">
               <img src="storage/logo.png" style="height: 60px; width: 110px"/>
-              <span> CONDOMINÍOS E RESIDÊNNCIAS, SERVIÇOS DE ENCANAMENTO EM GERAL </span>
+              <span> CONDOMINÍOS E RESIDÊNCIAS, SERVIÇOS DE ENCANAMENTO EM GERAL </span>
               <span style="display: flex; flex-direction: column; justify-content: center; align-items: center" colspan="1"> 
                 <span style="font-size: 14px; font-weight: bold">16 99187-8532</span> 
                 <span style="font-size: 10px;">LEONOR P. GALLO, 350</span> 
@@ -28,7 +28,14 @@
           <td colspan="6"> <strong> CLIENTE: </strong> {{ order.client.name }} </td>
         </tr>
         <tr v-if="order.address_id">
-          <td colspan="6"> <strong> ENDEREÇO: </strong> {{ `R. ${order.address.street} nº ${order.address.number}` }} </td>
+          <td colspan="6"> 
+            <strong> ENDEREÇO: </strong> 
+            {{ `R. ${order.address.street} nº ${order.address.number}` }} 
+            {{ order.address.tower && `| TORRE: ${order.address.tower}` }}
+            {{ order.address.floor && `| ANDAR: ${order.address.floor}` }}
+            {{ order.address.apartment && `| AP.: ${order.address.apartment}` }}
+            {{ order.address.house && `| CASA: ${order.address.house}` }}
+          </td>
         </tr>
         <tr v-if="order.address_id">
           <td colspan="3"> <strong> CIDADE:  </strong> {{ order.address.city }} </td>
@@ -54,10 +61,10 @@
           <td colspan="6"> OBSERVAÇÕES: </td>
         </tr>
          <tr v-if="!order.description">
-          <td colspan="6"></td>
+          <td colspan="6" class="line-write"></td>
         </tr>
          <tr v-if="!order.description">
-          <td colspan="6"></td>
+          <td colspan="6" class="line-write"></td>
         </tr>
 
         <tr>
@@ -209,7 +216,7 @@ export default {
   methods: {
     _start(){
       this.order = JSON.parse(this.$route.params.order);
-      setTimeout(() => window.print(), 200)
+      setTimeout(() => window.print(), 400)
     },
     _formatMoney(value){
       return value ? value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }) : '';

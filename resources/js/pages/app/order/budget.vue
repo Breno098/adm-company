@@ -124,15 +124,15 @@
         </v-card-text>
 
         <v-card-text 
-          class="grey lighten-2 py-0 mt-3"
-          v-if="order.discount_amount"
+          class="grey lighten-2 py-0 mt-5"
+          v-if="order.amount"
         >
           <v-row>
             <v-col cols="10">
               <h2> Valor total: </h2>
             </v-col>
             <v-col cols="2">
-              <h2> {{ order.amount | formatMoney }} </h2>
+              <h3> {{ order.amount | formatMoney }} </h3>
             </v-col>
           </v-row>
         </v-card-text>
@@ -183,7 +183,7 @@ export default {
   methods: {
     _start(){
       this.order = JSON.parse(this.$route.params.order);
-      setTimeout(() => window.print(), 300)
+      setTimeout(() => window.print(), 400)
     },
   },
   computed: {

@@ -71,7 +71,7 @@ export default {
   methods: {
     _start(){
       this.order = JSON.parse(this.$route.params.order);
-      setTimeout(() => window.print(), 200)
+      setTimeout(() => window.print(), 400)
     },
   },
   computed: {

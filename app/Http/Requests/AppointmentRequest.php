@@ -27,9 +27,9 @@ class AppointmentRequest extends FormRequest
             'title' => 'required|string',
             'date_start' => 'required|date',
             'date_end' => 'nullable|date',
-            'hour_start' => 'nullable',
+            'time_start' => 'nullable',
             'date_end' => 'nullable',
-            'hour_end' => 'nullable',
+            'time_end' => 'nullable',
             'description' => 'nullable|string',
             'concluded' => 'nullable|string|in:S,N',
             

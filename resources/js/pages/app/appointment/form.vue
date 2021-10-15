@@ -94,17 +94,19 @@
               >
               <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                      append-icon="mdi-calendar"
-                      :value="DateStartFormat"
-                      clearable
-                      label="DATA INICIO"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      @click:clear="appointment.date_start = null"
-                      outlined
-                      dense
-                      :loading="loading"
+                    append-icon="mdi-calendar"
+                    :value="DateStartFormat"
+                    clearable
+                    label="DATA INICIO"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    @click:clear="appointment.date_start = null"
+                    outlined
+                    dense
+                    :loading="loading"
+                    :rules="[rules.required]"
+                    :error="errors.date_start && !appointment.date_start"
                   ></v-text-field>
               </template>
               <v-date-picker
@@ -112,6 +114,7 @@
                   @change="menu_date_start = false"
                   no-title
                   crollable
+                  locale="pt-Br"
               ></v-date-picker>
               </v-menu>
             </v-col>
@@ -131,6 +134,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                       v-model="appointment.time_start"
+                      clearable
                       label="HORA INICIO"
                       prepend-icon="mdi-clock-time-four-outline"
                       readonly
@@ -139,6 +143,8 @@
                       dense
                       outlined
                       :loading="loading"
+                      :rules="[rules.required]"
+                      :error="errors.time_start && !appointment.time_start"
                   ></v-text-field>
                 </template>
                 <v-time-picker
@@ -160,17 +166,19 @@
               >
               <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                      append-icon="mdi-calendar"
-                      :value="DateEndFormat"
-                      clearable
-                      label="DATA FIM"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      @click:clear="appointment.date_end = null"
-                      outlined
-                      dense
-                      :loading="loading"
+                    append-icon="mdi-calendar"
+                    :value="DateEndFormat"
+                    clearable
+                    label="DATA FIM"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    @click:clear="appointment.date_end = null"
+                    outlined
+                    dense
+                    :loading="loading"
+                    :rules="[rules.required]"
+                    :error="errors.date_end && !appointment.date_end"
                   ></v-text-field>
               </template>
               <v-date-picker
@@ -178,6 +186,7 @@
                   @change="menu_date_end = false"
                   no-title
                   crollable
+                  locale="pt-Br"
               ></v-date-picker>
               </v-menu>
             </v-col>
@@ -196,15 +205,18 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                      v-model="appointment.time_end"
-                      label="HORA FIM"
-                      prepend-icon="mdi-clock-time-four-outline"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      dense
-                      outlined
-                      :loading="loading"
+                    v-model="appointment.time_end"
+                    clearable
+                    label="HORA FIM"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    dense
+                    outlined
+                    :loading="loading"
+                    :rules="[rules.required]"
+                    :error="errors.time_end && !appointment.time_end"
                   ></v-text-field>
                 </template>
                 <v-time-picker
@@ -273,9 +285,9 @@ export default {
     appointment: {
       title: null,
       date_start : format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
-      time_start : '',
+      time_start : moment().add(1, 'hour').format('HH:00'),
       date_end: format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
-      time_end : '',
+      time_end : moment().add(2, 'hour').format('HH:00'),
       description: null,
       order_id: null,
       client_id: null,
@@ -288,6 +300,10 @@ export default {
     loadingAddresses: false,
     errors: {
       title: false,
+      date_start: false,
+      date_end: false,
+      time_start: false,
+      time_end: false,
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
