@@ -31,6 +31,7 @@
           <td colspan="6"> 
             <strong> ENDEREÇO: </strong> 
             {{ `R. ${order.address.street} nº ${order.address.number}` }} 
+            {{ order.address.block && `| BLOCO: ${order.address.block}` }}
             {{ order.address.tower && `| TORRE: ${order.address.tower}` }}
             {{ order.address.floor && `| ANDAR: ${order.address.floor}` }}
             {{ order.address.apartment && `| AP.: ${order.address.apartment}` }}
