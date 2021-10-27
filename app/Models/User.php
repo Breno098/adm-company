@@ -25,7 +25,8 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
         'email',
         'password',
         'first_access',
-        'company_id'
+        'company_id',
+        'admin'
     ];
 
     /**
@@ -45,7 +46,8 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'first_access' => 'boolean'
+        'first_access' => 'boolean',
+        'admin' => 'boolean'
     ];
 
     /**

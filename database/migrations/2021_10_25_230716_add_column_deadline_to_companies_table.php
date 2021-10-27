@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnAddressIdToAppointmentsTable extends Migration
+class AddColumnDeadlineToCompaniesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddColumnAddressIdToAppointmentsTable extends Migration
      */
     public function up()
     {
-        Schema::table('appointments', function (Blueprint $table) {
-            $table->foreignId('address_id')->nullable()->constrained();
+        Schema::table('companies', function (Blueprint $table) {
+            $table->dateTime('deadline')->nullable();
         });
     }
 
@@ -25,9 +25,8 @@ class AddColumnAddressIdToAppointmentsTable extends Migration
      */
     public function down()
     {
-        Schema::table('appointments', function (Blueprint $table) {
-            $table->dropForeign('appointments_address_id_foreign');
-            $table->dropColumn('address_id');
+        Schema::table('companies', function (Blueprint $table) {
+            $table->dropColumn('deadline');
         });
     }
 }

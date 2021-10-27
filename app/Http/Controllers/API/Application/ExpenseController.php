@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Application;
 
+use App\Http\Controllers\API\Bases\BaseApiController;
 use Illuminate\Http\Request;
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Expense;
@@ -9,7 +10,7 @@ use App\Services\Expense\IndexService;
 use App\Services\Expense\StoreService;
 use App\Services\Expense\UpdateService;
 
-class ExpenseController extends BaseControllerApi
+class ExpenseController extends BaseApiController
 {
     /**
      * Display a listing of the resource.

@@ -1,20 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Application;
 
+use App\Http\Controllers\API\Bases\BaseApiController;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use App\Services\Client\CountService;
-use App\Services\Client\DestroyService;
 use App\Services\Client\IndexService;
 use App\Services\Client\StoreService;
-use App\Services\Client\ShowService;
 use App\Services\Client\UpdateService;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
 
-class ClientController extends BaseControllerApi
+class ClientController extends BaseApiController
 {
     /**
      * Display a listing of the resource.

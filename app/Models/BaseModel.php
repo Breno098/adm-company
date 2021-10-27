@@ -10,7 +10,7 @@ class BaseModel extends Model
     protected static function booted()
     {
         static::saving(function ($model) {
-            $model->company_id = auth()->user()->company_id;
+            $model->company_id = auth()->user()->company_id ?? 1;
         });
     }
 

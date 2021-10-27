@@ -17,14 +17,14 @@ class StoreService
     {
         $client = Client::create($data);
 
-        foreach ($data['contacts'] as $contact) {
+        foreach ($data['contacts'] ?? [] as $contact) {
             $verifyContact = isset($contact['contact']);
             if($verifyContact){
                 $client->contacts()->create($contact);
             }
         }
 
-        foreach ($data['addresses'] as $address) {
+        foreach ($data['addresses'] ?? [] as $address) {
             $verifyAddress = isset($address['street']) || isset($address['city']) || isset($address['cep']) || isset($address['apartment']);
             if($verifyAddress){
                 $client->addresses()->create($address);

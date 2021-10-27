@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Application;
 
+use App\Http\Controllers\API\Bases\BaseApiController;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class PaymentController extends BaseControllerApi
+class PaymentController extends BaseApiController
 {
     /**
      * Display a listing of the resource.

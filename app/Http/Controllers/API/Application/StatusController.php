@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Application;
 
+use App\Http\Controllers\API\Bases\BaseApiController;
 use Illuminate\Http\Request;
 use App\Http\Requests\StatusRequest;
 use App\Models\Status;
@@ -11,7 +12,7 @@ use App\Services\Status\StoreService;
 use App\Services\Status\UpdateService;
 use App\Services\Status\DestroyService;
 
-class StatusController extends BaseControllerApi
+class StatusController extends BaseApiController
 {
     /**
      * Display a listing of the resource.

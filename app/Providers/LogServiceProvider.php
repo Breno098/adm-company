@@ -28,23 +28,23 @@ class LogServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Event::listen('eloquent.*', function ($eventName, array $data) {
-            if(strpos($eventName, 'Log') !== false){
-               return true;
-            }
+        // Event::listen('eloquent.*', function ($eventName, array $data) {
+        //     if(strpos($eventName, 'Log') !== false){
+        //        return true;
+        //     }
 
-            if(strpos($eventName, 'eloquent.created') !== false){
-               $this->saveLog($data, $eventName, 'created');
-            }
+        //     if(strpos($eventName, 'eloquent.created') !== false){
+        //        $this->saveLog($data, $eventName, 'created');
+        //     }
 
-            if(strpos($eventName, 'eloquent.updated') !== false){
-                $this->saveLog($data, $eventName, 'updated');
-            }
+        //     if(strpos($eventName, 'eloquent.updated') !== false){
+        //         $this->saveLog($data, $eventName, 'updated');
+        //     }
 
-            if(strpos($eventName, 'eloquent.deleted') !== false){
-                $this->saveLog($data, $eventName, 'deleted');
-            }
-        });
+        //     if(strpos($eventName, 'eloquent.deleted') !== false){
+        //         $this->saveLog($data, $eventName, 'deleted');
+        //     }
+        // });
     }
 
     private function discoverTableNameByEvent($eventName)

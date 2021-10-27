@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Application;
 
-use App\Services\Appointment\DestroyService;
+use App\Http\Controllers\API\Bases\BaseApiController;
 use App\Services\Appointment\IndexService;
-use App\Services\Appointment\ShowService;
 use App\Services\Appointment\StoreService;
 use App\Services\Appointment\UpdateService;
 use App\Http\Requests\AppointmentRequest;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
 
-class AppointmentController extends BaseControllerApi
+class AppointmentController extends BaseApiController
 {
     /**
      * Display a listing of the resource.

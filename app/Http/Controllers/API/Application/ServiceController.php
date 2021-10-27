@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Application;
 
+use App\Http\Controllers\API\Bases\BaseApiController;
 use Illuminate\Http\Request;
 use App\Http\Requests\ServiceRequest;
 use App\Models\Service;
@@ -9,7 +10,7 @@ use App\Services\Service\IndexService;
 use App\Services\Service\StoreService;
 use App\Services\Service\UpdateService;
 
-class ServiceController extends BaseControllerApi
+class ServiceController extends BaseApiController
 {
     /**
      * Display a listing of the resource.

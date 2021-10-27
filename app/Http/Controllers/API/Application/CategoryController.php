@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Application;
 
+use App\Http\Controllers\API\Bases\BaseApiController;
 use Illuminate\Http\Request;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
-use App\Services\Category\DestroyService;
 use App\Services\Category\IndexService;
-use App\Services\Category\ShowService;
 use App\Services\Category\StoreService;
 use App\Services\Category\UpdateService;
-use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends BaseControllerApi
+class CategoryController extends BaseApiController
 {
     /**
      * Display a listing of the resource.

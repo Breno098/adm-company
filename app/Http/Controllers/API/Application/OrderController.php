@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Application;
 
+use App\Http\Controllers\API\Bases\BaseApiController;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Requests\OrderRequest;
-use App\Services\Order\DestroyService;
 use App\Services\Order\IndexService;
-use App\Services\Order\ShowService;
 use App\Services\Order\StoreService;
 use App\Services\Order\UpdateService;
-class OrderController extends BaseControllerApi
+
+class OrderController extends BaseApiController
 {
     /** 290 lines */
 

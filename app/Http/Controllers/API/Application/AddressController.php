@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Application;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\API\Bases\BaseApiController;
 use App\Services\Address\IndexService;
 use App\Services\Address\SearcheCep;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 
-class AddressController extends BaseControllerApi
+class AddressController extends BaseApiController
 {
     /**
      * Display a listing of the resource.
