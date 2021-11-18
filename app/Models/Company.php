@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Company extends Model
 {
@@ -21,6 +22,12 @@ class Company extends Model
     protected $casts = [
     ];
 
+    /**
+     * @param Builder $builder
+     * @param string $name
+     * 
+     * @return 
+     */
     public function scopeFilterByName(Builder $builder, $name)
     {
         return $builder->when($name, function (Builder $builder, $name) {
@@ -55,5 +62,46 @@ class Company extends Model
     public function contacts()
     {
         return $this->hasMany(Contact::class);
+    }
+
+    public function bankAccounts()
+    {
+        return $this->hasMany(BankAccount::class);
+    }
+
+    public function images()
+    {
+        return $this->belongsToMany(Image::class);
+    }
+
+    /**
+     * attributes
+     */
+    public function getPathAttribute()
+    {
+        return "company/id_{$this->id}";
+    }
+
+    public function getPathStorageAttribute()
+    {
+        return "storage/company/id_{$this->id}";
+    }
+
+    public function getLogoAttribute()
+    {
+        return $this->images()->where('tag', 'logo')->first();
+    }
+
+    public function getSignatureAttribute()
+    {
+        return $this->images()->where('tag', 'signature')->first();
+    }
+
+    /**
+     * action
+     */
+    public function makeDirectory()
+    {
+        return Storage::makeDirectory("company/id_{$this->id}");
     }
 }
