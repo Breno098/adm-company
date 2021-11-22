@@ -17,16 +17,29 @@ class Company extends Model
         'cpf',
         'cnpj',
         'fantasy_name',
+        'deadline'
     ];
 
     protected $casts = [
+        'deadline' => 'datetime:Y-m-d',
+    ];
+
+    protected $appends = [
+        'path_storage',
+        'logo',
+        'signature'
+    ];
+
+    protected $hidden = [
+        'cpf',
+        'deleted_at'
     ];
 
     /**
      * @param Builder $builder
      * @param string $name
-     * 
-     * @return 
+     *
+     * @return
      */
     public function scopeFilterByName(Builder $builder, $name)
     {
@@ -75,7 +88,7 @@ class Company extends Model
     }
 
     /**
-     * attributes
+     * Attributes
      */
     public function getPathAttribute()
     {
@@ -98,7 +111,7 @@ class Company extends Model
     }
 
     /**
-     * action
+     * Actions
      */
     public function makeDirectory()
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Application;
+namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class ClientController extends BaseApiController
         $this->authorize('client_index');
 
         $clients = IndexService::run(
-            $request->query(), 
+            $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
             $request->get('itemsPerPage'),

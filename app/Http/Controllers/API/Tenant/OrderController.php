@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Application;
+namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
 use App\Models\Order;
@@ -23,7 +23,7 @@ class OrderController extends BaseApiController
     {
         $orders = IndexService::run(
             // $request->get('relations', ['client','address']),
-            $request->query(), 
+            $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
             $request->get('itemsPerPage'),
@@ -110,7 +110,7 @@ class OrderController extends BaseApiController
     public function destroy(Order $order)
     {
         $order->delete();
-        
+
         return $this->sendResponse([], 'Order deleted successfully.');
     }
 }

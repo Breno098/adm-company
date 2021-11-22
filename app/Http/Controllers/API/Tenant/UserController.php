@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Application;
+namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
 use App\Http\Requests\User\StoreRequest;
@@ -23,7 +23,7 @@ class UserController extends BaseApiController
         $this->authorize('user_index');
 
         $users = IndexService::run(
-            $request->query(), 
+            $request->query(),
             $request->get('relations', []),
             $request->get('itemsPerPage', false),
         );
@@ -75,7 +75,7 @@ class UserController extends BaseApiController
         if($user->id === $request->user()->id){
             return $this->sendError('Action not allowed', [], 403);
         }
-        
+
         $data = $request->validated();
 
         $user = UpdateService::run($user, $data);

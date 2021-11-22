@@ -25,6 +25,24 @@ class Client extends BaseModel
         'birth_date' => 'datetime:Y-m-d',
     ];
 
+    /**
+     * Scopes
+     */
+
+    /**
+     * @param Builder $builder
+     * @param string $name
+     */
+    public function scopeFilterName(Builder $builder, $name)
+    {
+        return $builder->when($name, function (Builder $builder, $name) {
+            return $builder->where('name', $name);
+        });
+    }
+
+    /**
+     * Relationships
+     */
     public function addresses()
     {
         return $this->hasMany(Address::class);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Application;
+namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
 use App\Services\Appointment\IndexService;
@@ -20,7 +20,7 @@ class AppointmentController extends BaseApiController
     public function index(Request $request)
     {
         $appointments = IndexService::run(
-            $request->query(), 
+            $request->query(),
             $request->get('relations', ['client', 'address']),
             $request->get('itemsPerPage', false),
         );
@@ -81,7 +81,7 @@ class AppointmentController extends BaseApiController
     public function destroy(Appointment $appointment)
     {
         $appointment->delete();
-        
+
         return $this->sendResponse([], 'Appointment deleted successfully.');
     }
 }

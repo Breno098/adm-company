@@ -1,31 +1,31 @@
 <?php
 
-namespace App\Services\User;
+namespace App\Services\Company;
 
-use App\Models\User;
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
 class IndexService
 {
-   /**
+    /**
      * @param  array  $filters
      * @param  array  $relations
-     * @param  bool|string $orderBy
      * @param  bool|int  $itemsPerPage
      * @param  bool $authorized
      *
      * @return mixed
      */
-    static public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false, bool $authorized = true)
+    static public function run(array $filters = [], array $relations = [], $itemsPerPage = false, bool $authorized = true)
     {
-        return User::with($relations)
+        return Company::with($relations)
             ->when($authorized, function (Builder $builder) {
                 return $builder->authorizedByCompany();
             })
-            ->when($orderBy, function (Builder $builder, $orderBy) {
-                return $builder->orderby($orderBy);
-            })
+            ->filterByName(Arr::get($filters, 'name'))
+            ->filterByCpf(Arr::get($filters, 'cpf'))
+            ->filterByCnpj(Arr::get($filters, 'cnpj'))
+            ->orderby('name')
             ->when(
                 $itemsPerPage,
                 function (Builder $builder) use ($itemsPerPage) {

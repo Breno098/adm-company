@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Application;
+namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
 use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class ExpenseController extends BaseApiController
         $this->authorize('expense_index');
 
         $expenses = IndexService::run(
-            $request->query(), 
+            $request->query(),
             $request->get('relations', []),
             $request->get('itemsPerPage', false),
         );
@@ -58,7 +58,7 @@ class ExpenseController extends BaseApiController
         $this->authorize('expense_show');
 
         $expense->load(['categories']);
-        
+
         return $this->sendResponse($expense, 'Expense retrieved successfully.');
     }
 

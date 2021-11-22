@@ -2,67 +2,63 @@
 
 use Illuminate\Support\Facades\Route;
 
-// use App\Http\Controllers\Auth\ForgotPasswordController;
-// use App\Http\Controllers\Auth\OAuthController;
-// use App\Http\Controllers\Auth\RegisterController;
-// use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\Auth\UserController as AuthUserController;
-// use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\API\Auth\UserController as AuthUserController;
+
+use App\Http\Controllers\API\Auth\ForgotPasswordController;
+use App\Http\Controllers\API\Auth\LoginController;
+use App\Http\Controllers\API\Auth\OAuthController;
+use App\Http\Controllers\API\Auth\RegisterController;
+use App\Http\Controllers\API\Auth\ResetPasswordController;
+use App\Http\Controllers\API\Auth\VerificationController;
 
 use App\Http\Controllers\Settings\ProfileController;
 
-use App\Http\Controllers\API\Application\UserController;
-use App\Http\Controllers\API\Application\ClientController;
-use App\Http\Controllers\API\Application\CategoryController;
-use App\Http\Controllers\API\Application\OrderController;
-use App\Http\Controllers\API\Application\StatusController;
-use App\Http\Controllers\API\Application\AddressController;
-use App\Http\Controllers\API\Application\PaymentController;
-use App\Http\Controllers\API\Application\AppointmentController;
-use App\Http\Controllers\API\Application\ExpenseController;
-use App\Http\Controllers\API\Application\ProductController;
-use App\Http\Controllers\API\Application\ServiceController;
-use App\Http\Controllers\API\Application\RoleController;
-use App\Http\Controllers\API\Application\Auth\LoginController;
+use App\Http\Controllers\API\Tenant\UserController;
+use App\Http\Controllers\API\Tenant\ClientController;
+use App\Http\Controllers\API\Tenant\CategoryController;
+use App\Http\Controllers\API\Tenant\OrderController;
+use App\Http\Controllers\API\Tenant\StatusController;
+use App\Http\Controllers\API\Tenant\AddressController;
+use App\Http\Controllers\API\Tenant\PaymentController;
+use App\Http\Controllers\API\Tenant\AppointmentController;
+use App\Http\Controllers\API\Tenant\ExpenseController;
+use App\Http\Controllers\API\Tenant\ProductController;
+use App\Http\Controllers\API\Tenant\ServiceController;
+use App\Http\Controllers\API\Tenant\RoleController;
 
-use App\Http\Controllers\API\Administrator\Auth\LoginController as AdministratorLoginController;
+/**
+ * Auth routes
+ */
+Route::group(['middleware' => 'guest:api'], function () {
+    Route::post('login', [LoginController::class, 'login']);
+    Route::post('register', [RegisterController::class, 'register']);
 
-Route::group(['middleware' => 'auth:api'], function () {
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+
+    Route::post('email/verify/{user}', [VerificationController::class, 'verify'])->name('verification.verify');
+    Route::post('email/resend', [VerificationController::class, 'resend']);
+
+    Route::post('oauth/{driver}', [OAuthController::class, 'redirect']);
+    Route::get('oauth/{driver}/callback', [OAuthController::class, 'handleCallback'])->name('oauth.callback');
+});
+
+/**
+ * Tenant routes
+ */
+Route::middleware('auth:api')->group( function () {
     Route::post('logout', [LoginController::class, 'logout']);
 
-    Route::get('user/current', [AuthUserController::class, 'current']);
+    Route::get('address/searchCep', [AddressController::class, 'searchCep']);
+    Route::get('client/count', [ClientController::class, 'count']);
 
-    Route::patch('profile/update', [ProfileController::class, 'update']);
-    Route::patch('profile/password', [ProfileController::class, 'password']);
-    Route::patch('profile/first-access', [ProfileController::class, 'firstAccess']);
-});
-
-// Route::group(['middleware' => 'guest:api'], function () {
-//     Route::post('login', [LoginController::class, 'login']);
-//     Route::post('register', [RegisterController::class, 'register']);
-
-//     Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
-//     Route::post('password/reset', [ResetPasswordController::class, 'reset']);
-
-//     Route::post('email/verify/{user}', [VerificationController::class, 'verify'])->name('verification.verify');
-//     Route::post('email/resend', [VerificationController::class, 'resend']);
-// });
-
-Route::middleware('guest:api')->group( function () {
-    Route::post('login', [LoginController::class, 'login'])->name('login');
-
-    Route::post('admin/login', [AdministratorLoginController::class, 'login'])->name('admin.login');
-
-    // Route::post('oauth/{driver}', [OAuthController::class, 'redirect']);
-    // Route::get('oauth/{driver}/callback', [OAuthController::class, 'handleCallback'])->name('oauth.callback');
-});
-
-
-Route::middleware('auth:api')->group( function () {
     Route::middleware('deadline')->group( function () {
-        Route::get('address/searchCep', [AddressController::class, 'searchCep']);
-        Route::get('client/count', [ClientController::class, 'count']);
-        
+        Route::patch('profile/update', [ProfileController::class, 'update']);
+        Route::patch('profile/password', [ProfileController::class, 'password']);
+        Route::patch('profile/first-access', [ProfileController::class, 'firstAccess']);
+
+        Route::get('user/current', [AuthUserController::class, 'current']);
+
         Route::apiResource('client', ClientController::class);
         Route::apiResource('category', CategoryController::class);
         Route::apiResource('status', StatusController::class);
@@ -76,8 +72,11 @@ Route::middleware('auth:api')->group( function () {
         Route::apiResource('address', AddressController::class)->only(['index']);
         Route::apiResource('role', RoleController::class)->only(['index']);
     });
+});
 
-    Route::middleware('administrator')->prefix('admin')->name('admin.')->group( function () {
+/**
+ * Administrator routes
+ */
+Route::middleware(['auth:api', 'administrator'])->prefix('admin')->name('admin.')->group( function () {
 
-    });
 });

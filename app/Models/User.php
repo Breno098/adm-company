@@ -58,18 +58,10 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     protected $appends = [
         // 'photo_url',
     ];
-    
-    protected static function booted()
-    {
-        if(auth()->user()){
-            static::saving(function ($model) {
-                $model->company_id = auth()->user()->company_id;
-            });
 
-            static::addGlobalScope('company_auth', function (Builder $builder) {
-                $builder->where('company_id', auth()->user()->company_id);
-            });
-        }
+    public function scopeAuthorizedByCompany(Builder $builder)
+    {
+        return $builder->where('company_id', auth()->user()->company_id);
     }
 
     public function roles()
@@ -140,5 +132,29 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdm()
+    {
+        return $this->adm;
+    }
+
+     /**
+     * @return bool
+     */
+    public function isMaster()
+    {
+        return $this->master;
+    }
+
+    /**
+     * @return void
+     */
+    public function associateCompany()
+    {
+        $this->update(['company_id' => auth()->user()->company_id]);
     }
 }

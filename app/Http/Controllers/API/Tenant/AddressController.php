@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Application;
+namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
 use App\Services\Address\IndexService;
@@ -17,7 +17,7 @@ class AddressController extends BaseApiController
     public function index(Request $request)
     {
         $addresses = IndexService::run(
-            $request->query(), 
+            $request->query(),
             $request->get('relations', []),
             $request->get('itemsPerPage', false),
         );
@@ -37,7 +37,7 @@ class AddressController extends BaseApiController
         if(!$cep){
             return $this->sendError('CEP not found', []);
         }
-         
+
         return $this->sendResponse($cep, 'CEP');
     }
 }

@@ -32,12 +32,24 @@ class Address extends BaseModel
         'main' => 'boolean'
     ];
 
+    /**
+     * Scopes
+     */
+
+    /**
+     * @param Builder $builder
+     * @param int $client_id
+     */
     public function scopeFilterClientId(Builder $builder, $cliente_id)
     {
         return $builder->when($cliente_id, function (Builder $builder, $cliente_id) {
             return $builder->where('client_id', $cliente_id);
         });
     }
+
+    /**
+     * Relationships
+     */
 
     public function clients()
     {

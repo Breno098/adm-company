@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Application;
+namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
 use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class ServiceController extends BaseApiController
         $this->authorize('service_index');
 
         $item = IndexService::run(
-            $request->query(), 
+            $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
             $request->get('itemsPerPage'),
@@ -59,7 +59,7 @@ class ServiceController extends BaseApiController
         $this->authorize('service_show');
 
         $service->load(['categories']);
-        
+
         return $this->sendResponse($service, 'Service retrieved successfully.');
     }
 
