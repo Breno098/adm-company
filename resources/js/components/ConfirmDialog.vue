@@ -5,8 +5,8 @@
             <v-card-text> {{ message }} </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="green" text @click="_cancel"> {{ cancelButton }} </v-btn>
-                <v-btn color="red" text @click="_confirm"> {{ confirmButton }} </v-btn>
+                <v-btn color="btnPrimary" text @click="_cancel"> {{ cancelButton }} </v-btn>
+                <v-btn color="btnDanger" text @click="_confirm"> {{ confirmButton }} </v-btn>
             </v-card-actions>
         </v-card>
     </base-modal>

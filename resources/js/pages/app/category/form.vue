@@ -8,7 +8,7 @@
           <v-toolbar elevation="0" class="mb-2">
             <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
             <v-progress-linear
-              color="blue"
+              color="primary"
               indeterminate
               height="4"
               bottom
@@ -19,12 +19,12 @@
             <v-spacer></v-spacer>
 
             <v-btn
-              v-if="(!idByRoute && $role.category.add()) || (idByRoute && $role.category.update()) "  
-              color="green" 
-              @click="_store" 
-              :loading="loading" 
-              rounded 
-              dark 
+              v-if="(!idByRoute && $role.category.add()) || (idByRoute && $role.category.update()) "
+              color="btnPrimary"
+              @click="_store"
+              :loading="loading"
+              rounded
+              dark
               small
             >
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
@@ -35,7 +35,7 @@
             <v-col cols="12" md="6">
               <v-text-field
                 label="NOME"
-                color="blue"
+                color="primary"
                 outlined
                 dense
                 v-model="category.name"
@@ -64,7 +64,7 @@
             <v-col cols="12">
               <v-textarea
                 label="DESCRIÇÃO"
-                color="blue"
+                color="primary"
                 outlined
                 dense
                 v-model="category.description"
@@ -76,7 +76,7 @@
 
             <v-col cols="12">
               <v-chip-group active-class="green" column v-model="category.icon">
-                <v-chip v-for="icon in icons" :key="icon" :value="icon" large color="blue">
+                <v-chip v-for="icon in icons" :key="icon" :value="icon" large color="primary">
                   <v-icon>{{ icon }}</v-icon>
                 </v-chip>
               </v-chip-group>
@@ -85,12 +85,12 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn 
-              v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "  
-              color="green" 
-              @click="_store" 
-              :loading="loading" 
-              rounded 
+            <v-btn
+              v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
+              color="btnPrimary"
+              @click="_store"
+              :loading="loading"
+              rounded
               dark
             >
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>

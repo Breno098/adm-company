@@ -5,7 +5,7 @@
         <v-layout flex align-center justify-center>
             <v-flex xs12 sm8 elevation-6>
               <v-card >
-                <v-toolbar class="d-flex flex-row justify-center" color="blue">
+                <v-toolbar class="d-flex flex-row justify-center" color="primary">
                   <v-toolbar-title>
                     <v-icon color="black">mdi-wrench</v-icon>
                     {{ appName }} | ENTRAR
@@ -15,7 +15,7 @@
                     <v-text-field
                         v-model="form.email"
                         label="Email"
-                        color="blue"
+                        color="primary"
                         required
                         v-on:keyup.enter="login"
                         outlined
@@ -26,7 +26,7 @@
                     <v-text-field
                         v-model="form.password"
                         label="Password"
-                        color="blue"
+                        color="primary"
                         required
                         v-on:keyup.enter="login"
                         outlined
@@ -36,7 +36,7 @@
                         :type="showPassword ? 'text' : 'password'"
                         @click:append="showPassword = !showPassword"
                     ></v-text-field>
-  
+
                     <v-btn color="blue white--text" v-on:click="login" large>
                         Entrar
                     </v-btn>
@@ -68,9 +68,9 @@ export default {
   }),
   methods: {
     async login () {
-      this.$refs.fireDialog.loading({ 
+      this.$refs.fireDialog.loading({
         title: 'Entrando',
-        message: 'Estamos buscando seus dados' 
+        message: 'Estamos buscando seus dados'
       })
 
       await axios
@@ -88,7 +88,7 @@ export default {
                 this.redirect();
               })
               .catch(error => {
-                this.$refs.fireDialog.error({ 
+                this.$refs.fireDialog.error({
                   title: 'Erro',
                   message: 'Não encontramos seus dados. Verifique seu usuário e senha por favor.'
                 })

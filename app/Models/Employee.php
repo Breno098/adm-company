@@ -45,4 +45,9 @@ class Employee extends BaseModel
     {
         return $this->belongsTo(Position::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

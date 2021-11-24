@@ -11,13 +11,13 @@
           <v-progress-circular
             v-if="loading"
             :width="7"
-            color="blue"
+            color="primary"
             :size="70"
             indeterminate
           ></v-progress-circular>
 
-          <v-icon :size="70" color="green" v-if="status === 'success'"> mdi-check</v-icon>
-          <v-icon :size="70" color="red" v-if="status === 'error'"> mdi-alert-decagram</v-icon>
+          <v-icon :size="70" color="btnPrimary" v-if="status === 'success'"> mdi-check</v-icon>
+          <v-icon :size="70" color="btnDanger" v-if="status === 'error'"> mdi-alert-decagram</v-icon>
         </v-card-text>
     </v-card>
   </v-dialog>

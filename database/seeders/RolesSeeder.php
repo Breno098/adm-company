@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RolesSeeder extends Seeder
 {
@@ -14,7 +15,13 @@ class RolesSeeder extends Seeder
      * @return void
      */
     public function run()
-    {   
+    {
+        DB::table('role_user')->truncate();
+
+        Role::all()->map(function($role){
+            $role->forceDelete();
+        });
+
         Role::create([
             'name' => 'Permissões para Usuário',
             'role' => 'user_roles',
@@ -84,6 +91,36 @@ class RolesSeeder extends Seeder
             'name' => 'Atualizar Cliente',
             'role' => 'client_update',
             'tag' => 'Cliente',
+        ]);
+
+        Role::create([
+            'name' => 'Ver Funcionários',
+            'role' => 'employee_index',
+            'tag' => 'Cliente',
+        ]);
+
+        Role::create([
+            'name' => 'Adicionar Funcionário',
+            'role' => 'employee_add',
+            'tag' => 'Funcionário',
+        ]);
+
+        Role::create([
+            'name' => 'Visualizar Funcionário',
+            'role' => 'employee_show',
+            'tag' => 'Funcionário',
+        ]);
+
+        Role::create([
+            'name' => 'Deletar Funcionário',
+            'role' => 'employee_delete',
+            'tag' => 'Funcionário',
+        ]);
+
+        Role::create([
+            'name' => 'Atualizar Funcionário',
+            'role' => 'employee_update',
+            'tag' => 'Funcionário',
         ]);
 
 
@@ -181,31 +218,31 @@ class RolesSeeder extends Seeder
 
 
         Role::create([
-            'name' => 'Ver Custos/Despesa',       
+            'name' => 'Ver Custos/Despesa',
             'role' => 'expense_index',
             'tag' => 'Custos',
         ]);
 
         Role::create([
-            'name' => 'Adicionar Custo/Despesa',  
+            'name' => 'Adicionar Custo/Despesa',
             'role' => 'expense_add',
             'tag' => 'Custos',
         ]);
 
         Role::create([
-            'name' => 'Visualizar Custo/Despesa', 
+            'name' => 'Visualizar Custo/Despesa',
             'role' => 'expense_show',
             'tag' => 'Custos',
         ]);
 
         Role::create([
-            'name' => 'Deletar Custo/Despesa',    
+            'name' => 'Deletar Custo/Despesa',
             'role' => 'expense_delete',
             'tag' => 'Custos',
         ]);
 
         Role::create([
-            'name' => 'Atualizar Custo/Despesa',  
+            'name' => 'Atualizar Custo/Despesa',
             'role' => 'expense_update',
             'tag' => 'Custos',
         ]);
@@ -276,7 +313,7 @@ class RolesSeeder extends Seeder
         User::all()->map(function($user){
             Role::all()->map(function($role) use ($user){
                 $user->roles()->attach($role);
-            }); 
+            });
         });
     }
 }

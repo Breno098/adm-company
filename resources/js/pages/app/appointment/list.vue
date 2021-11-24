@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col cols="12">
-        <v-btn color="blue" @click="_add" rounded dark small>
+        <v-btn color="primary" @click="_add" rounded dark small>
             Adicionar <v-icon dark>mdi-plus</v-icon>
         </v-btn>
       </v-col>
@@ -29,13 +29,13 @@
           </v-col>
         </v-row>
       </v-col>
-      
+
       <v-col cols="12" v-for="appointment in appointments" :key="appointment.id" v-else>
         <v-card v-on:click="_edit(appointment)">
           <v-list-item three-line>
             <v-list-item-content>
               <div class="text-overline mb-4 d-flex justify-space-between">
-                {{ appointment.client ? appointment.client.name : '' }} 
+                {{ appointment.client ? appointment.client.name : '' }}
                 <v-chip :color="appointment.concluded == 'S' ? 'green' : 'blue'" class="py-2" label>{{ appointment.concluded == 'S' ? 'CONCLUÍDO' : 'PENDENTE' }}</v-chip>
               </div>
               <v-list-item-subtitle>
@@ -52,7 +52,7 @@
 
           <v-card-actions>
             <v-spacer/>
-            <v-btn text color="blue" v-on:click="_edit(appointment)">
+            <v-btn text color="primary" v-on:click="_edit(appointment)">
               Ver informações
             </v-btn>
           </v-card-actions>
@@ -111,10 +111,10 @@ export default {
       this._load();
     },
     async _load(){
-      let params = { 
-        page: this.page, 
+      let params = {
+        page: this.page,
         itemsPerPage: 20,
-        ...this.filters 
+        ...this.filters
       }
 
       this.loading = true;

@@ -20,7 +20,7 @@ class EmployeeController extends BaseApiController
      */
     public function index(Request $request)
     {
-        // $this->authorize('employee_index');
+        $this->authorize('employee_index');
 
         $employees = IndexService::run(
             $request->query(),
@@ -59,7 +59,7 @@ class EmployeeController extends BaseApiController
     {
         $this->authorize('employee_show');
 
-        $employee->load([ 'addresses', 'contacts' ]);
+        $employee->load([ 'addresses', 'contacts', 'user' ]);
 
         return $this->sendResponse($employee, 'Employee retrieved successfully.');
     }

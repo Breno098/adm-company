@@ -14,10 +14,14 @@ export default [
   { path: '/appointment', name: 'appointment.index', component: page('app/appointment/list.vue') },
   { path: '/appointment/create', name: 'appointment.create', component: page('app/appointment/form.vue') },
   { path: '/appointment/:id', name: 'appointment.show', component: page('app/appointment/form.vue') },
-  
+
   { path: '/client', name: 'client.index', component: page('app/client/list.vue') },
   { path: '/client/create', name: 'client.create', component: page('app/client/form.vue') },
   { path: '/client/:id', name: 'client.show', component: page('app/client/form.vue') },
+
+  { path: '/employee', name: 'employee.index', component: page('app/employee/list.vue') },
+  { path: '/employee/create', name: 'employee.create', component: page('app/employee/form.vue') },
+  { path: '/employee/:id', name: 'employee.show', component: page('app/employee/form.vue') },
 
   { path: '/category', name: 'category.index', component: page('app/category/list.vue') },
   { path: '/category/create', name: 'category.create', component: page('app/category/form.vue') },

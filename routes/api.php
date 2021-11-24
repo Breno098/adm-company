@@ -23,6 +23,7 @@ use App\Http\Controllers\API\Tenant\PaymentController;
 use App\Http\Controllers\API\Tenant\AppointmentController;
 use App\Http\Controllers\API\Tenant\EmployeeController;
 use App\Http\Controllers\API\Tenant\ExpenseController;
+use App\Http\Controllers\API\Tenant\PositionController;
 use App\Http\Controllers\API\Tenant\ProductController;
 use App\Http\Controllers\API\Tenant\ServiceController;
 use App\Http\Controllers\API\Tenant\RoleController;
@@ -73,6 +74,7 @@ Route::middleware('auth:api')->group( function () {
         Route::apiResource('payment', PaymentController::class)->only(['index']);
         Route::apiResource('address', AddressController::class)->only(['index']);
         Route::apiResource('role', RoleController::class)->only(['index']);
+        Route::apiResource('position', PositionController::class)->only(['index']);
     });
 });
 

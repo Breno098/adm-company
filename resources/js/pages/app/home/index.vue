@@ -11,13 +11,13 @@
       <!-- <v-col cols="12" md="4">
         <router-link :to="{ name: 'settings-user-profile' }" style="text-decoration: none">
           <v-card>
-            <v-toolbar class="d-flex flex-row justify-center" color="blue">
+            <v-toolbar class="d-flex flex-row justify-center" color="primary">
               <v-toolbar-title>Alterar dados do usuario</v-toolbar-title>
             </v-toolbar>
 
             <v-card-text class="d-flex flex-row justify-center">
               <v-avatar size="110" color="grey lighten-3">
-                <img src="storage/laptop-user.png" alt="user-config"/> 
+                <img src="storage/laptop-user.png" alt="user-config"/>
               </v-avatar>
             </v-card-text>
           </v-card>
@@ -41,8 +41,8 @@
         <v-card>
           <v-card-title class="d-flex flex-row justify-center">
             Agenda {{ typeAppointment }}
-          </v-card-title> 
-          
+          </v-card-title>
+
           <v-card-text>
             <v-row>
               <v-col cols="1">
@@ -94,7 +94,7 @@
         </v-card>
       </v-col>
     </v-row>
-        
+
 
       <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
           <v-card color="grey lighten-4" min-width="350px" flat>

@@ -8,7 +8,7 @@
           <v-toolbar elevation="0" class="mb-2">
             <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
             <v-progress-linear
-              color="blue"
+              color="primary"
               indeterminate
               height="4"
               bottom
@@ -18,7 +18,7 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn color="green" @click="_store" :loading="loading" rounded dark small>
+            <v-btn color="btnPrimary" @click="_store" :loading="loading" rounded dark small>
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
           </v-toolbar>
@@ -27,15 +27,15 @@
             <v-col cols="12" class="d-flex flex-row justify-center">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn 
-                    color="grey" 
-                    @click="_generateDoc('budget')" 
-                    :loading="loading" 
-                    v-bind="attrs" 
-                    v-on="on" 
-                    class="mx-3" 
-                    rounded 
-                    dark 
+                  <v-btn
+                    color="grey"
+                    @click="_generateDoc('budget')"
+                    :loading="loading"
+                    v-bind="attrs"
+                    v-on="on"
+                    class="mx-3"
+                    rounded
+                    dark
                     small
                   >
                     <v-icon>mdi-file-document</v-icon>
@@ -45,14 +45,14 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn 
-                    color="grey lighten-1" 
-                    @click="_generateDoc('serviceorder')" 
-                    :loading="loading" 
-                    v-bind="attrs" 
-                    v-on="on" 
-                    class="mx-3" 
-                    rounded 
+                  <v-btn
+                    color="grey lighten-1"
+                    @click="_generateDoc('serviceorder')"
+                    :loading="loading"
+                    v-bind="attrs"
+                    v-on="on"
+                    class="mx-3"
+                    rounded
                     small
                   >
                     <v-icon>mdi-file-export</v-icon>
@@ -62,15 +62,15 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn 
-                    color="green lighten-2" 
-                    @click="_generateDoc('receipt')" 
-                    :loading="loading" 
-                    v-bind="attrs" 
-                    v-on="on" 
-                    class="mx-3" 
-                    rounded 
-                    dark 
+                  <v-btn
+                    color="green lighten-2"
+                    @click="_generateDoc('receipt')"
+                    :loading="loading"
+                    v-bind="attrs"
+                    v-on="on"
+                    class="mx-3"
+                    rounded
+                    dark
                     small
                   >
                     <v-icon>mdi-file-check</v-icon>
@@ -80,14 +80,14 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn 
-                    color="orange" 
-                    @click="_generateAppointment" 
+                  <v-btn
+                    color="orange"
+                    @click="_generateAppointment"
                     :loading="loading"
-                    v-bind="attrs" 
-                    v-on="on" 
-                    class="mx-3" 
-                    rounded 
+                    v-bind="attrs"
+                    v-on="on"
+                    class="mx-3"
+                    rounded
                     small
                   >
                     <v-icon dark>mdi-calendar-today</v-icon>
@@ -99,7 +99,7 @@
           </v-row>
 
           <v-tabs v-model="tab">
-            <v-tabs-slider color="blue"></v-tabs-slider>
+            <v-tabs-slider color="primary"></v-tabs-slider>
             <v-tab>Informações <v-icon class="ml-2">mdi-information</v-icon></v-tab>
             <v-tab>Produtos e Serviços <v-icon class="ml-2">mdi-wrench</v-icon></v-tab>
             <v-tab>Garantias <v-icon class="ml-2">mdi-format-align-center</v-icon></v-tab>
@@ -310,7 +310,7 @@
                 <v-col cols="12" v-for="(product, index) in order.products" :key="product.id">
                   <v-row>
                     <v-col cols="12" class="d-flex flex-row justify-end">
-                      <v-btn color="red" @click="order.products.splice(index, 1);" :loading="loading" small rounded>
+                      <v-btn color="btnDanger" @click="order.products.splice(index, 1);" :loading="loading" small rounded>
                         <v-icon color="red darken-4">mdi-delete</v-icon>
                       </v-btn>
                     </v-col>
@@ -343,7 +343,7 @@
                             :loading="loading"
                             readonly
                             color="black"
-                            v-bind="attrs" 
+                            v-bind="attrs"
                             v-on="on"
                           ></v-text-field>
                         </template>
@@ -377,7 +377,7 @@
                             :loading="loading"
                             v-on:click="_sumTotalValueProduct(index)"
                             v-on:keyup="_sumTotalValueProduct(index)"
-                            v-bind="attrs" 
+                            v-bind="attrs"
                             v-on="on"
                           ></v-text-field>
                         </template>
@@ -403,16 +403,16 @@
                 </v-col>
 
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn 
-                    color="green" 
-                    @click="order.products.push({ 
-                      quantity: 1, 
+                  <v-btn
+                    color="btnPrimary"
+                    @click="order.products.push({
+                      quantity: 1,
                       value: 0,
                       default_value: 0,
-                      total_value: 0 
-                    })" 
-                    :loading="loading" 
-                    small 
+                      total_value: 0
+                    })"
+                    :loading="loading"
+                    small
                     rounded
                   >
                     Adicionar produto <v-icon>mdi-plus</v-icon>
@@ -429,7 +429,7 @@
                 <v-col cols="12" v-for="(service, index) in order.services" :key="service.id">
                   <v-row>
                     <v-col cols="12" class="d-flex flex-row justify-end">
-                      <v-btn color="red" @click="order.services.splice(index, 1);" :loading="loading" small rounded>
+                      <v-btn color="btnDanger" @click="order.services.splice(index, 1);" :loading="loading" small rounded>
                         <v-icon color="red darken-4">mdi-delete</v-icon>
                       </v-btn>
                     </v-col>
@@ -462,7 +462,7 @@
                             :loading="loading"
                             readonly
                             color="black"
-                            v-bind="attrs" 
+                            v-bind="attrs"
                             v-on="on"
                           ></v-text-field>
                          </template>
@@ -496,7 +496,7 @@
                             :loading="loading"
                             v-on:click="_sumTotalValueService(index)"
                             v-on:keyup="_sumTotalValueService(index)"
-                            v-bind="attrs" 
+                            v-bind="attrs"
                             v-on="on"
                           ></v-text-field>
                         </template>
@@ -522,16 +522,16 @@
                 </v-col>
 
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn 
-                    color="green" 
-                    @click="order.services.push({ 
-                      quantity: 1, 
+                  <v-btn
+                    color="btnPrimary"
+                    @click="order.services.push({
+                      quantity: 1,
                       value: 0,
                       default_value: 0,
-                      total_value: 0 
-                    })" 
-                    :loading="loading" 
-                    small 
+                      total_value: 0
+                    })"
+                    :loading="loading"
+                    small
                     rounded
                   >
                     Adicionar serviço <v-icon>mdi-plus</v-icon>
@@ -624,7 +624,7 @@
                     <v-col cols="12" v-for="(payment, index) in order.payments" :key="index">
                       <v-row>
                         <v-col cols="12" class="d-flex flex-row justify-end">
-                          <v-btn color="red" @click="order.payments.splice(index, 1);" :loading="loading" small rounded>
+                          <v-btn color="btnDanger" @click="order.payments.splice(index, 1);" :loading="loading" small rounded>
                             <v-icon color="red darken-4">mdi-delete</v-icon>
                           </v-btn>
                         </v-col>
@@ -687,11 +687,11 @@
                           ></v-date-picker>
                           </v-menu>
                         </v-col>
-                        
+
                         <v-col cols="1">
                           <v-checkbox
                             label="Total"
-                            color="blue"
+                            color="primary"
                             class="my-auto"
                             v-model="payment.all"
                             v-on:change="_totalValue(index)"
@@ -701,7 +701,7 @@
                     </v-col>
 
                     <v-col cols="12" class="d-flex flex-row justify-end">
-                      <v-btn color="green" @click="order.payments.push({})" :loading="loading" small rounded>
+                      <v-btn color="btnPrimary" @click="order.payments.push({})" :loading="loading" small rounded>
                         Adicionar pagamento <v-icon>mdi-plus</v-icon>
                       </v-btn>
                     </v-col>
@@ -724,7 +724,7 @@
               </v-card>
             </v-tab-item>
           </v-tabs-items>
-          
+
           <v-card-actions>
             <v-row>
               <v-col cols="12" md=3>
@@ -829,8 +829,8 @@ export default {
       let accept = [];
 
       this.order.form_of_payments_format.forEach(formPayment => {
-        this.payments.forEach(payment => { 
-          if(payment.id == formPayment){ 
+        this.payments.forEach(payment => {
+          if(payment.id == formPayment){
             accept.push(payment);
           }
         })
@@ -881,7 +881,7 @@ export default {
       this.loading = true;
       await axios.get(`api/order/${id}`).then(response => {
         if(response.data.success){
-          this.order = { 
+          this.order = {
             form_of_payments_format: [],
             ...response.data.data
           };
@@ -902,7 +902,7 @@ export default {
       await axios.get(`api/client`).then(response => {
         if(response.data.success){
           this.clients = response.data.data;
-          
+
           if(this.idByRoute){
             this._loadAddresses();
           }
@@ -914,7 +914,7 @@ export default {
     },
     async _loadAddresses(){
       let params = { client_id: this.order.client_id };
-      
+
       this.loadingAddresses = true;
       await axios.get(`api/address`, { params }).then(response => {
         if(response.data.success){
@@ -927,7 +927,7 @@ export default {
     },
     async _loadStatuses(){
       let params = { type: 'order' };
-      
+
       this.loadingStatuses = true;
       await axios.get(`api/status`, { params }).then(response => {
         if(response.data.success){
@@ -996,7 +996,7 @@ export default {
         this.order.services[index].default_value = 0
         this.order.services[index].value = 0
       }
-      
+
       this._sumTotalValueService(index)
     },
     _sumTotalValueService(index){
@@ -1027,7 +1027,7 @@ export default {
       this.loading = false;
 
       if(response.data.success){
-        this.order = { 
+        this.order = {
           form_of_payments_format: [],
           ...response.data.data
         };
@@ -1044,7 +1044,7 @@ export default {
 
       if(backRoute){
         setTimeout(() => this.$router.push({ name: 'order.index' }), 1500);
-      } 
+      }
 
       return response.data.success;
     },
@@ -1055,7 +1055,7 @@ export default {
       this.tab = 3;
 
       if(this.order.form_of_payments_format.length === 0){
-        this.$refs.fireDialog.warning({ 
+        this.$refs.fireDialog.warning({
           title: 'Formas de pagamento',
           message: 'Selecione as fomar de pagamento aceitas (que sairam no Orçamento/Ordem de serviço)'
         });
@@ -1068,13 +1068,13 @@ export default {
     },
     async _generateAppointment(){
       if(await this._store()){
-        this.$router.push({ 
-          name: 'appointment.create', 
+        this.$router.push({
+          name: 'appointment.create',
           query: {
             orderId: this.order.id,
             clientId: this.order.client_id,
             addressId: this.order.address_id,
-          } 
+          }
         })
       }
     },

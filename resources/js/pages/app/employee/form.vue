@@ -16,7 +16,7 @@
         <v-spacer></v-spacer>
 
         <v-btn
-          v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
+          v-if="(!idByRoute && $role.employee.add()) || (idByRoute && $role.employee.update()) "
           color="btnPrimary"
           @click="_store"
           :loading="loading"
@@ -45,45 +45,34 @@
                 label="NOME"
                 outlined
                 dense
-                v-model="client.name"
+                v-model="employee.name"
                 :loading="loading"
                 :rules="[rules.required]"
-                :error="errors.name && !client.name"
-                @input="client.name = client.name.toUpperCase()"
+                :error="errors.name && !employee.name"
+                @input="employee.name = employee.name.toUpperCase()"
               ></v-text-field>
             </v-col>
 
             <v-col cols="12" md="6">
-              <v-text-field
-                label="NOME FANTASIA"
-                outlined
-                dense
-                v-model="client.fantasy_name"
-                :loading="loading"
-                @input="client.fantasy_name = client.fantasy_name.toUpperCase()"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="6">
-              <v-select
-                v-model="client.category_id"
-                :items="categories"
+              <v-autocomplete
+                v-model="employee.position_id"
+                :items="positions"
                 item-text="name"
                 item-value="id"
-                label="TIPO DE CLIENTE"
+                label="CARGO"
                 outlined
                 dense
                 :loading="loading"
-              ></v-select>
+              ></v-autocomplete>
             </v-col>
 
             <v-col cols="12" md="6">
               <v-text-field
-                label="CNPJ"
-                v-mask="'##.###.###/####-##'"
+                label="RG"
+                v-mask="'##.###.###-#'"
                 outlined
                 dense
-                v-model="client.cnpj"
+                v-model="employee.rg"
                 :loading="loading"
               ></v-text-field>
             </v-col>
@@ -94,7 +83,7 @@
                 v-mask="'###.###.###-##'"
                 outlined
                 dense
-                v-model="client.cpf"
+                v-model="employee.cpf"
                 :loading="loading"
               ></v-text-field>
             </v-col>
@@ -119,13 +108,13 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    @click:clear="client.birth_date = null"
+                    @click:clear="employee.birth_date = null"
                     outlined
                     dense
                   ></v-text-field>
                 </template>
                 <v-date-picker
-                  v-model="client.birth_date"
+                  v-model="employee.birth_date"
                   @change="menuBirthDate = false"
                   no-title
                   crollable
@@ -133,13 +122,60 @@
                 ></v-date-picker>
               </v-menu>
             </v-col>
+
+            <v-col cols="12" md="6">
+              <v-menu
+                :loading="loading"
+                v-model="menuAdmissionDate"
+                :close-on-content-click="false"
+                max-width="290"
+                transition="scale-transition"
+                offset-y
+                outlined
+                dense
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    prepend-inner-icon="mdi-calendar"
+                    :value="admissionDateFormat"
+                    clearable
+                    label="DATA DE ADMISSÃO"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    @click:clear="employee.admission_date = null"
+                    outlined
+                    dense
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="employee.admission_date"
+                  @change="menuAdmissionDate = false"
+                  no-title
+                  crollable
+                  locale="pt-Br"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+
+            <v-col cols="12" v-if="employee.user">
+              <v-text-field
+                readonly
+                label="EMAIL DE USUÁRIO"
+                outlined
+                dense
+                v-model="employee.user.email"
+                :loading="loading"
+              ></v-text-field>
+            </v-col>
+
           </v-row>
         </v-tab-item>
 
         <!-- Contatos -->
         <v-tab-item>
           <v-row>
-            <v-col cols="12" v-for="(contact, index) in client.contacts" :key="contact.id">
+            <v-col cols="12" v-for="(contact, index) in employee.contacts" :key="contact.id">
               <v-row>
                 <v-col cols="12" class="d-flex flex-row justify-end">
                   <v-btn color="btnDanger" @click="client.contacts.splice(index, 1);" :loading="loading" small rounded>
@@ -192,11 +228,11 @@
                 </v-col>
               </v-row>
 
-              <v-divider color="grey" class="mx-5" v-if="(index + 1) < client.contacts.length"/>
+              <v-divider color="grey" class="mx-5" v-if="(index + 1) < employee.contacts.length"/>
             </v-col>
 
             <v-col cols="12" class="d-flex flex-row justify-end">
-              <v-btn color="btnPrimary" @click="client.contacts.push({})" :loading="loading" small rounded>
+              <v-btn color="btnPrimary" @click="employee.contacts.push({})" :loading="loading" small rounded>
                 Adicionar contato <v-icon>mdi-plus</v-icon>
               </v-btn>
             </v-col>
@@ -206,10 +242,10 @@
         <!-- Endereço -->
         <v-tab-item>
           <v-row>
-            <v-col cols="12" v-for="(address, index) in client.addresses" :key="address.id">
+            <v-col cols="12" v-for="(address, index) in employee.addresses" :key="address.id">
               <v-row>
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn color="btnDanger" @click="client.addresses.splice(index, 1);" :loading="loading" small rounded>
+                  <v-btn color="btnDanger" @click="employee.addresses.splice(index, 1);" :loading="loading" small rounded>
                     <v-icon color="btnDanger darken-4">mdi-delete</v-icon>
                   </v-btn>
                 </v-col>
@@ -348,13 +384,13 @@
                 </v-col>
               </v-row>
 
-              <v-divider color="grey" class="mx-5" v-if="(index + 1) < client.addresses.length"/>
+              <v-divider color="grey" class="mx-5" v-if="(index + 1) < employee.addresses.length"/>
             </v-col>
 
             <v-col cols="12" class="d-flex flex-row justify-end">
               <v-btn
                 color="btnPrimary"
-                @click="client.addresses.push({
+                @click="employee.addresses.push({
                   cep: null
                 })"
                 :loading="loading"
@@ -371,7 +407,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-          v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
+          v-if="(!idByRoute && $role.employee.add()) || (idByRoute && $role.employee.update()) "
           color="btnPrimary"
           @click="_store"
           :loading="loading"
@@ -398,22 +434,21 @@ export default {
     tab: null,
     loading: false,
     menuBirthDate: false,
+    menuAdmissionDate: false,
     errors: {
       name: false,
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
     },
-    client: {
-      birth_date: null,
-      cnpj: null,
-      cpf: null,
-      category_id: null,
-      fantasy_name: null,
+    employee: {
       name: null,
-      notes: null,
-      status_id: null,
-      type: null,
+      birth_date: null,
+      rg: null,
+      cpf: null,
+      positions_id: null,
+      salary: null,
+      admission_date: null,
       addresses: [],
       contacts: []
     },
@@ -424,14 +459,17 @@ export default {
       'WHATSAPP',
       'OUTROS'
     ],
-    categories: []
+    positions: []
   }),
   computed: {
     birthDateFormat () {
-      return this.client.birth_date ? moment(this.client.birth_date).format('DD/MM/YYYY') : ''
+      return this.employee.birth_date ? moment(this.employee.birth_date).format('DD/MM/YYYY') : ''
+    },
+    admissionDateFormat () {
+      return this.employee.admission_date ? moment(this.employee.admission_date).format('DD/MM/YYYY') : ''
     },
     titlePage(){
-      return this.$route.params.id ? 'Cliente' : 'Adicionar Cliente';
+      return this.$route.params.id ? 'Funcionário' : 'Adicionar Funcionário';
     },
     idByRoute(){
       return this.$route.params.id;
@@ -446,20 +484,20 @@ export default {
         await this._load();
       }
 
-      await this._loadCategories();
+      await this._loadPositions();
     },
-    async _loadCategories(){
+    async _loadPositions(){
       this.loading = true;
-      await axios.get(`api/category?type=client`).then(response => {
+      await axios.get(`api/position`).then(response => {
         if(response.data.success){
-          return this.categories = response.data.data;
+          return this.positions = response.data.data;
         }
         this.$refs.fireDialog.error({ title: 'Error ao carregar tipos' })
       });
       this.loading = false;
     },
     async _searchCep(indexAddress){
-      let cep = this.client.addresses[indexAddress].cep.replace('-', '');
+      let cep = this.employee.addresses[indexAddress].cep.replace('-', '');
 
       if(cep.length != 8)
         return;
@@ -474,10 +512,10 @@ export default {
 
         let { logradouro, bairro, localidade, uf } = response.data.data;
 
-        this.client.addresses[indexAddress].street = logradouro.toUpperCase();
-        this.client.addresses[indexAddress].district = bairro.toUpperCase();
-        this.client.addresses[indexAddress].city = localidade.toUpperCase();
-        this.client.addresses[indexAddress].state = uf.toUpperCase();
+        this.employee.addresses[indexAddress].street = logradouro.toUpperCase();
+        this.employee.addresses[indexAddress].district = bairro.toUpperCase();
+        this.employee.addresses[indexAddress].city = localidade.toUpperCase();
+        this.employee.addresses[indexAddress].state = uf.toUpperCase();
 
         this.$refs.fireDialog.hide();
       }).catch(error => {
@@ -486,12 +524,12 @@ export default {
     },
     async _load(){
       this.loading = true;
-      await axios.get(`api/client/${this.idByRoute}`).then(response => {
+      await axios.get(`api/employee/${this.idByRoute}`).then(response => {
         if(response.data.success){
-          return this.client = response.data.data;
+          return this.employee = response.data.data;
         }
 
-        this.$refs.fireDialog.error({ title: 'Error ao carregar dados cliente' })
+        this.$refs.fireDialog.error({ title: 'Error ao carregar dados do funcionário' })
         this.$refs.fireDialog.hide(1500);
       });
       this.loading = false;
@@ -500,23 +538,23 @@ export default {
       this.tab = 0;
 
       for (const field in this.errors) {
-        if(!this.client[field])
+        if(!this.employee[field])
           return this.errors[field] = true;
       }
 
       this.loading = true;
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
 
-      const response = !this.idByRoute ? await axios.post('api/client', this.client) : await axios.put(`api/client/${this.idByRoute}`, this.client);
+      const response = !this.idByRoute ? await axios.post('api/employee', this.employee) : await axios.put(`api/employee/${this.idByRoute}`, this.employee);
 
       this.loading = false;
 
       if(response.data.success){
-        this.$refs.fireDialog.success({ title: 'Cliente salvo com sucesso' })
-        return setTimeout(() => this.$router.push({ name: 'client.index' }), 1500);
+        this.$refs.fireDialog.success({ title: 'Funcionário salvo com sucesso' })
+        return setTimeout(() => this.$router.push({ name: 'employee.index' }), 1500);
       }
 
-      this.$refs.fireDialog.error({ title: 'Error aos salvar cliente' })
+      this.$refs.fireDialog.error({ title: 'Error aos salvar funcionário' })
     },
   }
 }

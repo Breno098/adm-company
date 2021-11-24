@@ -8,7 +8,7 @@
           <v-toolbar elevation="0" class="mb-2">
             <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
             <v-progress-linear
-              color="blue"
+              color="primary"
               indeterminate
               height="4"
               bottom
@@ -19,12 +19,12 @@
             <v-spacer></v-spacer>
 
              <v-btn
-              v-if="(!idByRoute && $role.expense.add()) || (idByRoute && $role.expense.update()) "  
-              color="green" 
-              @click="_store" 
-              :loading="loading" 
-              rounded 
-              dark 
+              v-if="(!idByRoute && $role.expense.add()) || (idByRoute && $role.expense.update()) "
+              color="btnPrimary"
+              @click="_store"
+              :loading="loading"
+              rounded
+              dark
               small
             >
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
@@ -167,12 +167,12 @@
             </v-col>
 
             <v-col cols="12">
-                <v-btn 
-                  v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "  
-                  color="green" 
-                  @click="_store" 
-                  :loading="loading" 
-                  rounded 
+                <v-btn
+                  v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
+                  color="btnPrimary"
+                  @click="_store"
+                  :loading="loading"
+                  rounded
                   dark
                 >
                   Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
@@ -182,7 +182,7 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green" @click="_store" :loading="loading" rounded dark>
+            <v-btn color="btnPrimary" @click="_store" :loading="loading" rounded dark>
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
             <v-spacer></v-spacer>

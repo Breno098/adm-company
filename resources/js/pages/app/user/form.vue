@@ -8,7 +8,7 @@
           <v-toolbar elevation="0" class="mb-2">
             <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
             <v-progress-linear
-              color="blue"
+              color="primary"
               indeterminate
               height="4"
               bottom
@@ -19,12 +19,12 @@
             <v-spacer></v-spacer>
 
             <v-btn
-              v-if="(!idByRoute && $role.user.add()) || (idByRoute && $role.user.update()) "  
-              color="green" 
-              @click="_store" 
-              :loading="loading" 
-              rounded 
-              dark 
+              v-if="(!idByRoute && $role.user.add()) || (idByRoute && $role.user.update()) "
+              color="btnPrimary"
+              @click="_store"
+              :loading="loading"
+              rounded
+              dark
               small
             >
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
@@ -35,7 +35,7 @@
             <v-col cols="12" md="6">
               <v-text-field
                 label="NOME"
-                color="blue"
+                color="primary"
                 outlined
                 dense
                 v-model="user.name"
@@ -48,7 +48,7 @@
             <v-col cols="12" md="6">
               <v-text-field
                 label="EMAIL"
-                color="blue"
+                color="primary"
                 outlined
                 dense
                 v-model="user.email"
@@ -61,7 +61,7 @@
             <v-col cols="12" md="10" v-if="!idByRoute">
               <v-text-field
                 label="SENHA INICIAL"
-                color="blue"
+                color="primary"
                 outlined
                 dense
                 v-model="user.password"
@@ -72,32 +72,32 @@
             </v-col>
 
             <v-col cols="12" md="2" v-if="!idByRoute">
-              <v-btn color="blue" @click="_generateRandomPass" dark block>
+              <v-btn color="primary" @click="_generateRandomPass" dark block>
                 Gerar senha
               </v-btn>
             </v-col>
 
             <v-col cols="12" md="6" v-if="$role.user.roles()">
-              <v-btn color="blue" @click="_groupUser('admin')" rounded dark block>
+              <v-btn color="primary" @click="_groupUser('admin')" rounded dark block>
                 Admin
               </v-btn>
             </v-col>
             <v-col cols="12" md="6" v-if="$role.user.roles()">
-              <v-btn color="green" @click="_groupUser('i')" rounded dark block>
+              <v-btn color="btnPrimary" @click="_groupUser('i')" rounded dark block>
                 Visualizar
               </v-btn>
             </v-col>
             <v-col cols="12" md="6" v-if="$role.user.roles()">
-              <v-btn color="green" @click="_groupUser('i|a')" rounded dark block>
-                Visualizar | Adicionar 
+              <v-btn color="btnPrimary" @click="_groupUser('i|a')" rounded dark block>
+                Visualizar | Adicionar
               </v-btn>
             </v-col>
             <v-col cols="12" md="6" v-if="$role.user.roles()">
-              <v-btn color="green" @click="_groupUser('i|a|u')" rounded dark block>
+              <v-btn color="btnPrimary" @click="_groupUser('i|a|u')" rounded dark block>
                 Visualizar | Adicionar | Atualizar
               </v-btn>
             </v-col>
-              
+
             <v-col cols="12" v-if="$role.user.roles()">
               <v-card elevation="2">
                 <v-card-title>
@@ -122,12 +122,12 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn 
-              v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "  
-              color="green" 
-              @click="_store" 
-              :loading="loading" 
-              rounded 
+            <v-btn
+              v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
+              color="btnPrimary"
+              @click="_store"
+              :loading="loading"
+              rounded
               dark
             >
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
@@ -216,7 +216,7 @@ export default {
               .filter(role => role.role.includes('index') || role.role.includes('show') || role.role.includes('add') || role.role.includes('update') )
               .forEach(role => rolesGroup.push(role.id));
           break;
-        
+
         case 'i|a|u|d':
           this.roles
               .filter(role => role.role.includes('index') || role.role.includes('show') || role.role.includes('add') || role.role.includes('update') || role.role.includes('delete'))
@@ -232,7 +232,7 @@ export default {
       this.loading = true;
       await axios.get(`api/user/${this.idByRoute}`).then(response => {
         if(response.data.success){
-          this.user = { 
+          this.user = {
             roles_format: [],
             ...response.data.data
           };
@@ -283,7 +283,7 @@ export default {
 
       this.$refs.fireDialog.error({ title: 'Error aos salvar usuário' })
     },
-    
+
   }
 
 }

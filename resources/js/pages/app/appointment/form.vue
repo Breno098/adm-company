@@ -8,7 +8,7 @@
           <v-toolbar elevation="0" class="mb-2">
             <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
             <v-progress-linear
-              color="blue"
+              color="primary"
               indeterminate
               height="4"
               bottom
@@ -18,19 +18,19 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn color="green" @click="_store" :loading="loading" rounded dark small>
+            <v-btn color="btnPrimary" @click="_store" :loading="loading" rounded dark small>
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
           </v-toolbar>
 
           <v-row>
             <v-col cols="12" v-if="appointment.concluded == 'N'">
-              <v-btn color="green" @click="_conclude" :loading="loading" small>
+              <v-btn color="btnPrimary" @click="_conclude" :loading="loading" small>
                 Concluír Compromisso <v-icon dark class="ml-3">mdi-check</v-icon>
               </v-btn>
             </v-col>
             <v-col cols="12" md="6" v-if="appointment.concluded == 'S'">
-              <v-btn color="blue" @click="_unconclude" :loading="loading" small>
+              <v-btn color="primary" @click="_unconclude" :loading="loading" small>
                 Voltar Compromisso como Pendente <v-icon dark class="ml-3">mdi-backburger</v-icon>
               </v-btn>
             </v-col>
@@ -253,11 +253,11 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green" @click="_store" :loading="loading" rounded dark>
+            <v-btn color="btnPrimary" @click="_store" :loading="loading" rounded dark>
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="red" @click="_delete" :loading="loading" rounded dark v-if="idByRoute">
+            <v-btn color="btnDanger" @click="_delete" :loading="loading" rounded dark v-if="idByRoute">
               Deletar <v-icon dark class="ml-2">mdi-delete</v-icon>
             </v-btn>
           </v-card-actions>
@@ -375,7 +375,7 @@ export default {
     },
     async _loadAddresses(){
       let params = { client_id: this.appointment.client_id };
-      
+
       this.loadingAddresses = true;
       await axios.get(`api/address`, { params }).then(response => {
         if(response.data.success){
@@ -400,7 +400,7 @@ export default {
       }
 
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
-      
+
       this.loading = true;
 
       const response = !this.idByRoute ? await axios.post('api/appointment', this.appointment) : await axios.put(`api/appointment/${this.idByRoute}`, this.appointment);
@@ -421,7 +421,8 @@ export default {
       const ok = await this.$refs.fireDialog.confirm({
           title: 'Deletar Compromisso?',
           textConfirmButton: 'Deletar',
-          colorConfirButton: 'red'
+          colorConfirButton: 'btnDanger',
+        colorCancelButton: 'btnPrimary'
       })
 
       if (ok) {
@@ -440,6 +441,6 @@ export default {
       }
     }
   },
- 
+
 }
 </script>

@@ -6,7 +6,6 @@
       <v-toolbar elevation="0">
         <v-toolbar-title> Clientes </v-toolbar-title>
         <v-progress-linear
-          color="blue"
           indeterminate
           height="4"
           bottom
@@ -16,12 +15,12 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn 
-          dark 
-          color="blue" 
-          @click="_add" 
-          rounded 
-          small 
+        <v-btn
+          dark
+          color="primary"
+          @click="_add"
+          rounded
+          small
           v-if="$role.client.add()"
         >
           Adicionar <v-icon dark>mdi-plus</v-icon>
@@ -31,11 +30,11 @@
 
     <v-expansion-panels class="mb-4">
       <v-expansion-panel>
-        <v-expansion-panel-header disable-icon-rotate>
-          Filtros 
-          <template v-slot:actions>
-             <v-icon class="ml-2">mdi-magnify</v-icon>
-          </template>
+        <v-expansion-panel-header>
+          <span>
+            <v-icon :size="15">mdi-magnify</v-icon>
+            Filtros
+          </span>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-row>
@@ -92,17 +91,17 @@
 
           <v-card-actions class="pb-4">
             <v-spacer></v-spacer>
-            <v-btn 
-              color="green" 
-              @click="_load" 
+            <v-btn
+              color="btnPrimary"
+              @click="_load"
               class="px-5"
               rounded
             >
               Buscar <v-icon dark class="ml-2">mdi-magnify</v-icon>
             </v-btn>
-            <v-btn 
-              color="grey lighten-2" 
-              @click="_eraser" 
+            <v-btn
+              color="btnCleanFilter"
+              @click="_eraser"
               class="px-5"
               rounded
             >
@@ -113,7 +112,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-      
+
     <v-card>
       <v-card-text>
         <v-simple-table dense>
@@ -129,9 +128,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr 
-                v-for="client in table.clients" 
-                :key="client.id" 
+              <tr
+                v-for="client in table.clients"
+                :key="client.id"
                 v-on:click="$role.client.show() ? _edit(client.id) : null"
               >
                 <td>{{ client.name }}</td>
@@ -140,8 +139,8 @@
                 <td>{{ client.cpf  }}</td>
                 <td>{{ client.cnpj }}</td>
                 <td>
-                  <v-menu 
-                    transition="slide-y-transition" 
+                  <v-menu
+                    transition="slide-y-transition"
                     bottom
                     v-if="$role.client.show() || $role.client.delete()"
                   >
@@ -152,23 +151,23 @@
                       </template>
 
                       <v-list nav dense>
-                          <v-list-item 
-                            v-on:click="_edit(client.id)" 
+                          <v-list-item
+                            v-on:click="_edit(client.id)"
                             v-if="$role.client.show()"
                           >
                               <v-list-item-icon>
-                                  <v-icon outlined color="green">mdi-eye</v-icon>
+                                  <v-icon outlined color="btnPrimary">mdi-eye</v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
                                   <v-list-item-title> Visualizar </v-list-item-title>
                               </v-list-item-content>
                           </v-list-item>
-                          <v-list-item 
-                            v-on:click="_delete(client)" 
+                          <v-list-item
+                            v-on:click="_delete(client)"
                             v-if="$role.client.delete()"
                           >
                               <v-list-item-icon>
-                                  <v-icon outlined color="red">mdi-delete</v-icon>
+                                  <v-icon outlined color="btnDanger">mdi-delete</v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
                                   <v-list-item-title> Deletar </v-list-item-title>
@@ -192,7 +191,7 @@
               :length="table.pageCount"
               @input="_load"
               :total-visible="5"
-              color="blue"
+              color="primary"
               circle
             ></v-pagination>
           </v-col>
@@ -248,12 +247,12 @@ export default {
   },
   methods: {
     async _load(){
-      let params = { 
-        page: this.table.page, 
+      let params = {
+        page: this.table.page,
         itemsPerPage: this.table.itemsPerPage,
         orderBy: this.table.orderBy,
         relations: [ 'category' ],
-        ...this.table.filters 
+        ...this.table.filters
       }
 
       this.table.loading = true;
@@ -281,7 +280,8 @@ export default {
           title: 'Deletar Cliente',
           message: 'Deseja realmente deletar o cliente?',
           textConfirmButton: 'Deletar',
-          colorConfirButton: 'red'
+          colorConfirButton: 'btnDanger',
+          colorCancelButton: 'btnPrimary'
       })
 
       if (ok) {
@@ -319,7 +319,7 @@ export default {
       this.table.loading = true;
       await axios.get(`api/category?type=client`).then(response => {
         if(response.data.success){
-          this.categories = [ 
+          this.categories = [
             { id: null, name: 'TODOS' },
             ...response.data.data
           ];

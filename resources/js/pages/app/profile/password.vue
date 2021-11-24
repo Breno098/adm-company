@@ -8,7 +8,7 @@
           <v-toolbar elevation="0" class="mb-2">
             <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
             <v-progress-linear
-              color="blue"
+              color="primary"
               indeterminate
               height="4"
               bottom
@@ -19,11 +19,11 @@
             <v-spacer></v-spacer>
 
             <v-btn
-              color="green" 
-              @click="_store" 
-              :loading="loading" 
-              rounded 
-              dark 
+              color="btnPrimary"
+              @click="_store"
+              :loading="loading"
+              rounded
+              dark
               small
             >
               Atualizar <v-icon dark class="ml-2" small>mdi-content-save</v-icon>
@@ -62,11 +62,11 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn 
-              color="green" 
-              @click="_store" 
-              :loading="loading" 
-              rounded 
+            <v-btn
+              color="btnPrimary"
+              @click="_store"
+              :loading="loading"
+              rounded
               dark
             >
               Atualizar <v-icon dark class="ml-2">mdi-content-save</v-icon>
@@ -123,17 +123,17 @@ export default {
       }
 
       if(this.form.password !== this.form.password_confirmation){
-        this.$refs.fireDialog.error({ 
+        this.$refs.fireDialog.error({
           title: 'Senhas incorretas',
-          message: 'Verifique se as senhas estão corretas' 
+          message: 'Verifique se as senhas estão corretas'
         })
         return;
       }
 
       if(this.form.password.split('').length < 6){
-        this.$refs.fireDialog.error({ 
+        this.$refs.fireDialog.error({
           title: 'Quantidade de caracteres',
-          message: 'A senha deve conter no minimo 6 caracteres' 
+          message: 'A senha deve conter no minimo 6 caracteres'
         })
         return;
       }

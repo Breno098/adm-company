@@ -1,14 +1,14 @@
 <template>
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
-    
+
     <v-row>
       <v-col cols="12">
         <v-card elevation="0">
           <v-toolbar elevation="0">
             <v-toolbar-title> Usuários </v-toolbar-title>
             <v-progress-linear
-              color="blue"
+              color="primary"
               indeterminate
               height="4"
               bottom
@@ -18,19 +18,19 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn 
-              dark 
-              color="blue" 
-              @click="_add" 
-              rounded 
-              small 
+            <v-btn
+              dark
+              color="primary"
+              @click="_add"
+              rounded
+              small
               v-if="$role.user.add()"
             >
               Adicionar <v-icon dark>mdi-plus</v-icon>
             </v-btn>
           </v-toolbar>
 
-          <v-simple-table>
+          <v-simple-table dense>
             <template v-slot:default>
               <thead>
                 <tr>
@@ -40,16 +40,16 @@
                 </tr>
               </thead>
               <tbody>
-                <tr  
-                  v-for="user in table.users" 
-                  :key="user.id" 
+                <tr
+                  v-for="user in table.users"
+                  :key="user.id"
                   v-on:click="$role.user.show() ? _edit(user.id) : null"
                 >
                   <td>{{ user.name }}</td>
                   <td>{{ user.email }}</td>
                   <td>
-                    <v-menu 
-                      transition="slide-y-transition" 
+                    <v-menu
+                      transition="slide-y-transition"
                       bottom
                       v-if="$role.user.show() || $role.user.delete()"
                     >
@@ -60,23 +60,23 @@
                         </template>
 
                         <v-list nav dense>
-                            <v-list-item 
+                            <v-list-item
                               v-on:click="_edit(user.id)"
                               v-if="$role.user.show()"
                             >
                               <v-list-item-icon>
-                                  <v-icon outlined color="green">mdi-eye</v-icon>
+                                  <v-icon outlined color="btnPrimary">mdi-eye</v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
                                   <v-list-item-title> Visualizar </v-list-item-title>
                               </v-list-item-content>
                             </v-list-item>
-                            <v-list-item 
+                            <v-list-item
                               v-on:click="_delete(user)"
                               v-if="$role.user.delete()"
                             >
                               <v-list-item-icon>
-                                  <v-icon outlined color="red">mdi-delete</v-icon>
+                                  <v-icon outlined color="btnDanger">mdi-delete</v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
                                   <v-list-item-title> Deletar </v-list-item-title>
@@ -97,7 +97,7 @@
               :length="table.pageCount"
               @input="_load"
               :total-visible="15"
-              color="blue"
+              color="primary"
               circle
             ></v-pagination>
             <v-spacer></v-spacer>
@@ -140,10 +140,10 @@ export default {
   },
   methods: {
     async _load(){
-       let params = { 
-        page: this.table.pagTe, 
+       let params = {
+        page: this.table.pagTe,
         itemsPerPage: 20,
-        ...this.filters 
+        ...this.filters
       }
 
       this.table.loading = true;
@@ -173,7 +173,8 @@ export default {
           title: 'Deletar Usuário',
           message: 'Deseja realmente deletar a usuário?',
           textConfirmButton: 'Deletar',
-          colorConfirButton: 'red'
+          colorConfirButton: 'btnDanger',
+        colorCancelButton: 'btnPrimary'
       })
 
       if (ok) {
