@@ -22,6 +22,7 @@ use App\Http\Controllers\API\Tenant\AddressController;
 use App\Http\Controllers\API\Tenant\PaymentController;
 use App\Http\Controllers\API\Tenant\AppointmentController;
 use App\Http\Controllers\API\Tenant\EmployeeController;
+use App\Http\Controllers\API\Tenant\EmployeeReceiptController;
 use App\Http\Controllers\API\Tenant\ExpenseController;
 use App\Http\Controllers\API\Tenant\PositionController;
 use App\Http\Controllers\API\Tenant\ProductController;
@@ -84,3 +85,5 @@ Route::middleware('auth:api')->group( function () {
 Route::middleware(['auth:api', 'administrator'])->prefix('admin')->name('admin.')->group( function () {
 
 });
+
+Route::get('employee-receipt/{employeeReceipt}', [EmployeeReceiptController::class, 'download']);
