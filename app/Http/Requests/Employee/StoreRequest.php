@@ -31,6 +31,7 @@ class StoreRequest extends FormRequest
             'salary' => 'nullable',
             'admission_date' => 'nullable|date',
             'resignation_date' => 'nullable|date',
+            'position_id' => 'nullable|int',
 
              /** Relations */
             'contacts' => 'nullable|array',
