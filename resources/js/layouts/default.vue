@@ -183,7 +183,7 @@ export default {
         },
         {
           title: 'Arquivos',
-          route: 'employee.index', //  route: 'files.index',
+          route: 'file.index',
           icon: 'mdi-file',
           role: true,
         }

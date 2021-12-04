@@ -29,6 +29,13 @@ const roles = {
     show: () => role('employee_show'),
     update: () => role('employee_update'),
   },
+  employee_receipt: {
+    index: () => role('employee_receipt_index'),
+    add: () => role('employee_receipt_add'),
+    delete: () => role('employee_receipt_delete'),
+    show: () => role('employee_receipt_show'),
+    update: () => role('employee_receipt_update'),
+  },
   product: {
     index: () => role('product_index'),
     add: () => role('product_add'),

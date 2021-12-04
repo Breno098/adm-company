@@ -4,13 +4,13 @@ namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
 use Illuminate\Http\Request;
-use App\Http\Requests\Employee\StoreRequest;
-use App\Http\Requests\Employee\UpdateRequest;
+use App\Http\Requests\EmployeeReceipt\StoreRequest;
+use App\Http\Requests\EmployeeReceipt\UpdateRequest;
 use App\Models\Employee;
 use App\Models\EmployeeReceipt;
-use App\Services\Employee\IndexService;
-use App\Services\Employee\StoreService;
-use App\Services\Employee\UpdateService;
+use App\Services\EmployeeReceipt\StoreService;
+use App\Services\EmployeeReceipt\UpdateService;
+use App\Services\EmployeeReceipt\IndexService;
 use App\Services\Image\LogoBase64;
 use Barryvdh\DomPDF\PDF;
 
@@ -23,16 +23,16 @@ class EmployeeReceiptController extends BaseApiController
      */
     public function index(Request $request)
     {
-        $this->authorize('employee_index');
+        $this->authorize('employee_receipt_index');
 
-        $employees = IndexService::run(
+        $employeesReceipt = IndexService::run(
             $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
             $request->get('itemsPerPage'),
         );
 
-        return $this->sendResponse($employees, 'Employee retrieved successfully.');
+        return $this->sendResponse($employeesReceipt, 'Employee Receipts retrieved successfully.');
     }
 
     /**
@@ -43,7 +43,7 @@ class EmployeeReceiptController extends BaseApiController
      */
     public function store(StoreRequest $request)
     {
-        $this->authorize('employee_add');
+        $this->authorize('employee_receipt_add');
 
         $data = $request->validated();
 
@@ -58,9 +58,9 @@ class EmployeeReceiptController extends BaseApiController
      * @param  Employee $employee
      * @return \Illuminate\Http\Response
      */
-    public function show(Employee $employee)
+    public function show(EmployeeReceipt $employee)
     {
-        $this->authorize('employee_show');
+        $this->authorize('employee_receipt_show');
 
         $employee->load([ 'addresses', 'contacts', 'user' ]);
 
@@ -76,7 +76,7 @@ class EmployeeReceiptController extends BaseApiController
      */
     public function update(UpdateRequest $request, Employee $employee)
     {
-        $this->authorize('employee_update');
+        $this->authorize('employee_receipt_update');
 
         $data = $request->validated();
 
@@ -93,7 +93,7 @@ class EmployeeReceiptController extends BaseApiController
      */
     public function destroy(Employee $employee)
     {
-        $this->authorize('employee_delete');
+        $this->authorize('employee_receipt_delete');
 
         $employee->delete();
 
@@ -107,6 +107,8 @@ class EmployeeReceiptController extends BaseApiController
      */
     public function download(EmployeeReceipt $employeeReceipt, PDF $pdf, LogoBase64 $logoBase64)
     {
+        $this->authorize('employee_receipt_download');
+
         $pdf->loadView('docs.employee-receipt', [
             'employeeReceipt' => $employeeReceipt,
             'url' => $logoBase64->run()

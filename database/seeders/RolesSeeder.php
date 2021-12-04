@@ -309,6 +309,41 @@ class RolesSeeder extends Seeder
             'tag' => 'Ordem',
         ]);
 
+        Role::create([
+            'name' => 'Ver Recibos de Funcionários',
+            'role' => 'employee_receipt_index',
+            'tag' => 'Recibo de Funcionário',
+        ]);
+
+        Role::create([
+            'name' => 'Adicionar Recibo de Funcionário',
+            'role' => 'employee_receipt_add',
+            'tag' => 'Recibo de Funcionário',
+        ]);
+
+        Role::create([
+            'name' => 'Visualizar Recibo de Funcionário',
+            'role' => 'employee_receipt_show',
+            'tag' => 'Recibo de Funcionário',
+        ]);
+
+        Role::create([
+            'name' => 'Deletar Recibo de Funcionário',
+            'role' => 'employee_receipt_delete',
+            'tag' => 'Recibo de Funcionário',
+        ]);
+
+        Role::create([
+            'name' => 'Atualizar Recibo de Funcionário',
+            'role' => 'employee_receipt_update',
+            'tag' => 'Recibo de Funcionário',
+        ]);
+
+        Role::create([
+            'name' => 'Baixar Recibo de Funcionário',
+            'role' => 'employee_receipt_download',
+            'tag' => 'Recibo de Funcionário',
+        ]);
 
         User::all()->map(function($user){
             Role::all()->map(function($role) use ($user){

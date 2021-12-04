@@ -76,6 +76,7 @@ Route::middleware('auth:api')->group( function () {
         Route::apiResource('address', AddressController::class)->only(['index']);
         Route::apiResource('role', RoleController::class)->only(['index']);
         Route::apiResource('position', PositionController::class)->only(['index']);
+        Route::apiResource('employee-receipt', EmployeeReceiptController::class);
     });
 });
 

@@ -50,6 +50,9 @@ export default [
   { path: '/home', name: 'home', component: page('app/home/index.vue') },
   { path: '/', name: 'home', component: page('app/home/index.vue') },
 
+  { path: '/file', name: 'file.index', component: page('app/file/index.vue') },
+  { path: '/file/employee-receipt', name: 'employee-receipt.index', component: page('app/file/employee-receipt/list.vue') },
+
   { path: '/login', name: 'login', component: page('auth/login.vue') },
   { path: '/register', name: 'register', component: page('auth/register.vue') },
   { path: '/password/reset', name: 'password.request', component: page('auth/password/email.vue') },
