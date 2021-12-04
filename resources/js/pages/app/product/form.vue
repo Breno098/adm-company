@@ -173,7 +173,7 @@
         </v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>
-      </v-card>
+    </v-card>
   </div>
 </template>
 

@@ -180,6 +180,12 @@ export default {
           route: 'employee.index',
           icon: 'mdi-account',
           role: true,
+        },
+        {
+          title: 'Arquivos',
+          route: 'employee.index', //  route: 'files.index',
+          icon: 'mdi-file',
+          role: true,
         }
       ];
 

@@ -23,6 +23,9 @@ class IndexService
             ->when($authorized, function (Builder $builder) {
                 return $builder->authorizedByCompany();
             })
+            ->when(Arr::get($filters, 'name'), function (Builder $builder, $name) {
+                return $builder->where('name', 'like', "%{$name}%");
+            })
             ->when($orderBy, function (Builder $builder, $orderBy) {
                 return $builder->orderby($orderBy);
             })

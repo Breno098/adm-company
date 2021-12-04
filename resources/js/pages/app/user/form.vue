@@ -2,141 +2,138 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-row>
-      <v-col cols="12">
-        <v-card elevation="0">
-          <v-toolbar elevation="0" class="mb-2">
-            <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
-            <v-progress-linear
+    <v-card class="mb-4">
+      <v-toolbar elevation="0" class="mb-2">
+        <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
+        <v-progress-linear
+          indeterminate
+          height="4"
+          bottom
+          absolute
+          :active="loading"
+        ></v-progress-linear>
+
+        <v-spacer></v-spacer>
+
+        <v-btn
+          v-if="(!idByRoute && $role.user.add()) || (idByRoute && $role.user.update()) "
+          color="btnPrimary"
+          @click="_store"
+          :loading="loading"
+          rounded
+          small
+        >
+          Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </v-card>
+
+    <v-card>
+      <v-card-text>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              label="NOME"
               color="primary"
-              indeterminate
-              height="4"
-              bottom
-              absolute
-              :active="loading"
-            ></v-progress-linear>
-
-            <v-spacer></v-spacer>
-
-            <v-btn
-              v-if="(!idByRoute && $role.user.add()) || (idByRoute && $role.user.update()) "
-              color="btnPrimary"
-              @click="_store"
+              outlined
+              dense
+              v-model="user.name"
               :loading="loading"
-              rounded
-              dark
-              small
-            >
-              Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-            </v-btn>
-          </v-toolbar>
+              :rules="[rules.required]"
+              :error="errors.name"
+            ></v-text-field>
+          </v-col>
 
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field
-                label="NOME"
-                color="primary"
-                outlined
-                dense
-                v-model="user.name"
-                :loading="loading"
-                :rules="[rules.required]"
-                :error="errors.name"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="6">
-              <v-text-field
-                label="EMAIL"
-                color="primary"
-                outlined
-                dense
-                v-model="user.email"
-                :loading="loading"
-                :rules="[rules.required]"
-                :error="errors.email"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="10" v-if="!idByRoute">
-              <v-text-field
-                label="SENHA INICIAL"
-                color="primary"
-                outlined
-                dense
-                v-model="user.password"
-                :loading="loading"
-                :rules="[rules.required]"
-                :error="errors.password"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="2" v-if="!idByRoute">
-              <v-btn color="primary" @click="_generateRandomPass" dark block>
-                Gerar senha
-              </v-btn>
-            </v-col>
-
-            <v-col cols="12" md="6" v-if="$role.user.roles()">
-              <v-btn color="primary" @click="_groupUser('admin')" rounded dark block>
-                Admin
-              </v-btn>
-            </v-col>
-            <v-col cols="12" md="6" v-if="$role.user.roles()">
-              <v-btn color="btnPrimary" @click="_groupUser('i')" rounded dark block>
-                Visualizar
-              </v-btn>
-            </v-col>
-            <v-col cols="12" md="6" v-if="$role.user.roles()">
-              <v-btn color="btnPrimary" @click="_groupUser('i|a')" rounded dark block>
-                Visualizar | Adicionar
-              </v-btn>
-            </v-col>
-            <v-col cols="12" md="6" v-if="$role.user.roles()">
-              <v-btn color="btnPrimary" @click="_groupUser('i|a|u')" rounded dark block>
-                Visualizar | Adicionar | Atualizar
-              </v-btn>
-            </v-col>
-
-            <v-col cols="12" v-if="$role.user.roles()">
-              <v-card elevation="2">
-                <v-card-title>
-                  Permissões de sistemas
-                </v-card-title>
-
-                <v-card-text>
-                  <v-row>
-                    <v-col cols="12" md="4" v-for="(role, index) in roles" :key="index">
-                      <v-switch
-                        inset
-                        :label="role.name"
-                        v-model="user.roles_format"
-                        :value="role.id"
-                      ></v-switch>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
-            </v-col>
-          </v-row>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
-              color="btnPrimary"
-              @click="_store"
+          <v-col cols="12" md="6">
+            <v-text-field
+              label="EMAIL"
+              color="primary"
+              outlined
+              dense
+              v-model="user.email"
               :loading="loading"
-              rounded
-              dark
-            >
-              Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
+              :rules="[rules.required]"
+              :error="errors.email"
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="12" md="10" v-if="!idByRoute">
+            <v-text-field
+              label="SENHA INICIAL"
+              color="primary"
+              outlined
+              dense
+              v-model="user.password"
+              :loading="loading"
+              :rules="[rules.required]"
+              :error="errors.password"
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="12" md="2" v-if="!idByRoute">
+            <v-btn color="primary" @click="_generateRandomPass" dark block>
+              Gerar senha
             </v-btn>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-         </v-card>
-      </v-col>
-    </v-row>
+          </v-col>
+
+          <v-col cols="12" md="6" v-if="$role.user.roles()">
+            <v-btn color="primary" @click="_groupUser('admin')" rounded dark block>
+              Admin
+            </v-btn>
+          </v-col>
+          <v-col cols="12" md="6" v-if="$role.user.roles()">
+            <v-btn color="btnPrimary" @click="_groupUser('i')" rounded dark block>
+              Visualizar
+            </v-btn>
+          </v-col>
+          <v-col cols="12" md="6" v-if="$role.user.roles()">
+            <v-btn color="btnPrimary" @click="_groupUser('i|a')" rounded dark block>
+              Visualizar | Adicionar
+            </v-btn>
+          </v-col>
+          <v-col cols="12" md="6" v-if="$role.user.roles()">
+            <v-btn color="btnPrimary" @click="_groupUser('i|a|u')" rounded dark block>
+              Visualizar | Adicionar | Atualizar
+            </v-btn>
+          </v-col>
+
+          <v-col cols="12" v-if="$role.user.roles()">
+            <v-card elevation="2">
+              <v-card-title>
+                Permissões de sistemas
+              </v-card-title>
+
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12" md="4" v-for="(role, index) in roles" :key="index">
+                    <v-switch
+                      inset
+                      :label="role.name"
+                      v-model="user.roles_format"
+                      :value="role.id"
+                    ></v-switch>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
+          color="btnPrimary"
+          @click="_store"
+          :loading="loading"
+          rounded
+        >
+          Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
+        </v-btn>
+        <v-spacer></v-spacer>
+      </v-card-actions>
+    </v-card>
   </div>
 </template>
 
