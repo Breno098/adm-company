@@ -21,7 +21,10 @@ use App\Http\Controllers\API\Tenant\StatusController;
 use App\Http\Controllers\API\Tenant\AddressController;
 use App\Http\Controllers\API\Tenant\PaymentController;
 use App\Http\Controllers\API\Tenant\AppointmentController;
+use App\Http\Controllers\API\Tenant\EmployeeController;
+use App\Http\Controllers\API\Tenant\EmployeeReceiptController;
 use App\Http\Controllers\API\Tenant\ExpenseController;
+use App\Http\Controllers\API\Tenant\PositionController;
 use App\Http\Controllers\API\Tenant\ProductController;
 use App\Http\Controllers\API\Tenant\ServiceController;
 use App\Http\Controllers\API\Tenant\RoleController;
@@ -59,6 +62,8 @@ Route::middleware('auth:api')->group( function () {
 
         Route::get('user/current', [AuthUserController::class, 'current']);
 
+        Route::get('employee-receipt/{employeeReceipt}/download', [EmployeeReceiptController::class, 'download']);
+
         Route::apiResource('client', ClientController::class);
         Route::apiResource('category', CategoryController::class);
         Route::apiResource('status', StatusController::class);
@@ -68,9 +73,12 @@ Route::middleware('auth:api')->group( function () {
         Route::apiResource('appointment', AppointmentController::class);
         Route::apiResource('expense', ExpenseController::class);
         Route::apiResource('user', UserController::class);
+        Route::apiResource('employee', EmployeeController::class);
         Route::apiResource('payment', PaymentController::class)->only(['index']);
         Route::apiResource('address', AddressController::class)->only(['index']);
         Route::apiResource('role', RoleController::class)->only(['index']);
+        Route::apiResource('position', PositionController::class)->only(['index']);
+        Route::apiResource('employee-receipt', EmployeeReceiptController::class);
     });
 });
 
@@ -80,3 +88,4 @@ Route::middleware('auth:api')->group( function () {
 Route::middleware(['auth:api', 'administrator'])->prefix('admin')->name('admin.')->group( function () {
 
 });
+

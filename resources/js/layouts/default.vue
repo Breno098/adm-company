@@ -1,42 +1,40 @@
 <template>
-  <v-app>
-      <v-navigation-drawer v-model="drawer" fixed app class="elevation-0" :mini-variant="miniVariant" color="grey lighten-1">
+  <v-app :style="{ background: '#FAFAFA' }">
+      <v-navigation-drawer v-model="drawer" fixed app class="elevation-0" :mini-variant="miniVariant" color="sideBar">
         <v-list dense two-line>
           <v-list-item link class="py-4" @click="_homeRoute">
               <v-list-item-content>
                 <v-list-item-title class="black--text font-weight-bold text-subtitle-2"> {{ !miniVariant ? appName : variantAppName }} </v-list-item-title>
-                <v-list-item-subtitle> {{ hour }} </v-list-item-subtitle>
+                <v-list-item-subtitle v-show="!miniVariant"> {{ hour }} </v-list-item-subtitle>
               </v-list-item-content>
           </v-list-item>
         </v-list>
 
-        <v-list dense>
-          <v-list-item-group v-model="selectedItem" >
+        <v-list dense shaped>
+          <v-list-item-group v-model="selectedItem">
             <router-link :to="{ name: item.route }" style="text-decoration: none" v-for="(item, index) in menuItems" :key="index">
-              <v-list-item :color="selectedItem == index ? item.color : ''">
-                <v-list-item-icon v-if="miniVariant">
-                  <v-icon v-text="item.icon"></v-icon>
+              <v-list-item class="py-1" :color="selectedItem == index ? 'sidebarActive' : ''">
+
+                <v-list-item-icon>
+                  <v-icon
+                    v-text="item.icon"
+                    :class="{
+                      'white--text' : selectedItem == index,
+                      'mr-4': true
+                    }">
+                  </v-icon>
                 </v-list-item-icon>
+
                 <v-list-item-content>
-                  <v-list-item-title> 
-                    <v-chip class="py-2 px-5" label :color="selectedItem == index ? item.color : 'grey lighten-1'">
-                      <v-icon 
-                        v-text="item.icon" 
-                        v-show="!miniVariant" 
-                        :class="{ 
-                          'white--text' : selectedItem == index, 
-                          'mr-4': true 
-                        }">
-                      </v-icon> 
-                      <span 
-                        :class="{ 
-                          'white--text' : selectedItem == index , 
+                  <v-list-item-title>
+                      <span
+                        :class="{
+                          'white--text' : selectedItem == index ,
                           'font-weight-bold': selectedItem == index,
                           'font-weight-medium': !(selectedItem == index),
-                        }"> 
+                        }">
                         {{ item.title }}
-                      </span> 
-                    </v-chip>
+                      </span>
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -64,17 +62,17 @@
         </v-fab-transition>
 
         <v-fab-transition>
-          <v-btn color="orange" @click="_configs" small fab class="mr-2 mt-2 float-right"  v-show="userMenu">
+          <v-btn color="primary" @click="_configs" small fab class="mr-2 mt-2 float-right"  v-show="userMenu">
             <v-icon>mdi-cog</v-icon>
           </v-btn>
         </v-fab-transition>
 
         <v-fab-transition>
-          <v-btn color="red" @click.prevent="logout" small fab class="mr-2 mt-2 float-right" v-show="userMenu">
+          <v-btn color="primary" @click.prevent="logout" small fab class="mr-2 mt-2 float-right" v-show="userMenu">
             <v-icon>mdi-logout</v-icon>
           </v-btn>
         </v-fab-transition>
-         
+
         <child class="my-8 mx-5"/>
       </v-main>
   </v-app>
@@ -95,16 +93,12 @@ export default {
     miniVariant: false,
   }),
   created () {
-    if(this.user && this.user.first_access){
-      this.$router.push({ name: 'settings-first-access' })
-    }
+    // if(this.user && this.user.first_access){
+    //   this.$router.push({ name: 'settings-first-access' })
+    // }
   },
   mounted() {
     this.setHour();
-
-    if(this.user && !this.user.first_access){
-      // this.$router.push({ name: 'settings-first-access' })
-    }
   },
   methods: {
     setHour(){
@@ -124,71 +118,74 @@ export default {
       this.$router.push({ name: 'settings-user-profile' });
     }
   },
-  computed: { 
+  computed: {
     menuItems(){
       let menu = [
-        { 
-          title: 'Inicio', 
-          route: 'home', 
-          icon: 'mdi-home', 
-          color: 'blue',
+        {
+          title: 'Inicio',
+          route: 'home',
+          icon: 'mdi-home',
           role: true
         },
-        { 
-          title: 'Pedidos' , 
-          route: 'order.index', 
-          icon: 'mdi-format-list-checks', 
-          color: 'purple',
+        {
+          title: 'Pedidos' ,
+          route: 'order.index',
+          icon: 'mdi-format-list-checks',
           role: this.$role.order.index()
         },
-        { 
-          title: 'Agenda', 
-          route: 'appointment.index', 
-          icon: 'mdi-calendar-today', 
-          color: 'teal accent-4',
+        {
+          title: 'Agenda',
+          route: 'appointment.index',
+          icon: 'mdi-calendar-today',
           role: this.$role.appointment.index()
         },
-        { 
-          title: 'Custos/Despesas', 
-          route: 'expense.index', 
-          icon: 'mdi-database-minus', 
-          color: 'red',
+        {
+          title: 'Custos/Despesas',
+          route: 'expense.index',
+          icon: 'mdi-database-minus',
           role: this.$role.expense.index()
         },
-        { 
-          title: 'Clientes', 
-          route: 'client.index', 
-          icon: 'mdi-account', 
-          color: 'green',
+        {
+          title: 'Clientes',
+          route: 'client.index',
+          icon: 'mdi-account',
           role: this.$role.client.index()
         },
-        { 
-          title: 'Produtos', 
-          route: 'product.index', 
-          icon: 'mdi-barcode', 
-          color: 'orange',
+        {
+          title: 'Produtos',
+          route: 'product.index',
+          icon: 'mdi-barcode',
           role: this.$role.product.index()
         },
-        { 
-          title: 'Serviços', 
-          route: 'service.index', 
-          icon: 'mdi-wrench', 
-          color: 'indigo',
+        {
+          title: 'Serviços',
+          route: 'service.index',
+          icon: 'mdi-wrench',
           role: this.$role.service.index()
         },
-        { 
-          title: 'Categorias', 
-          route: 'category.index', 
-          icon: 'mdi-format-list-bulleted-type', 
-          color: 'cyan accent-4',
+        {
+          title: 'Categorias',
+          route: 'category.index',
+          icon: 'mdi-format-list-bulleted-type',
           role: false, //this.$role.category.index()
         },
-        { 
-          title: 'Usuários', 
-          route: 'user.index', 
-          icon: 'mdi-account', 
-          color: 'orange',
+        {
+          title: 'Usuários',
+          route: 'user.index',
+          icon: 'mdi-account',
           role: this.$role.user.index(),
+        },
+        {
+          title: 'Funcionáros',
+          route: 'employee.index',
+          icon: 'mdi-account',
+          role: true,
+        },
+        {
+          title: 'Arquivos',
+          route: 'file.index',
+          icon: 'mdi-file',
+          role: true,
         }
       ];
 
@@ -203,23 +200,23 @@ export default {
     },
     fabMiniVariant () {
       if (this.miniVariant) {
-        return { color: 'blue', icon: 'mdi-chevron-right' }
+        return { color: 'primary', icon: 'mdi-chevron-right' }
       } else {
-         return { color: 'blue', icon: 'mdi-page-layout-sidebar-left' }
+         return { color: 'primary', icon: 'mdi-page-layout-sidebar-left' }
       }
     },
     fabDrawer () {
       if (this.drawer) {
-        return { color: 'grey', icon: 'mdi-chevron-left' }
+        return { color: '#757575', icon: 'mdi-chevron-left' }
       } else {
-         return { color: 'grey', icon: 'mdi-menu' }
+         return { color: '#757575', icon: 'mdi-menu' }
       }
     },
     fabUser () {
       if (this.userMenu) {
-        return { color: 'blue', icon: 'mdi-close' }
+        return { color: 'primary', icon: 'mdi-close' }
       } else {
-         return { color: 'green', icon: 'mdi-account' }
+         return { color: 'primary', icon: 'mdi-account' }
       }
     },
     ... mapGetters({
@@ -229,18 +226,3 @@ export default {
 }
 </script>
 
-<style scoped>
-  .v-application ::-webkit-scrollbar {
-    height: 8px;
-    width: 13px;
-  }
-
-  .v-application ::-webkit-scrollbar-corner {
-    background: transparent;
-  }
-
-  .v-application ::-webkit-scrollbar-thumb {
-    background: #2196F3;
-    border-radius: 8px;
-  }
-</style>

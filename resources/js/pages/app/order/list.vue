@@ -6,7 +6,7 @@
       <v-toolbar elevation="0">
         <v-toolbar-title> Pedidos </v-toolbar-title>
         <v-progress-linear
-          color="blue"
+          color="primary"
           indeterminate
           height="4"
           bottom
@@ -16,12 +16,12 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn 
-          dark 
-          color="blue" 
-          @click="_add" 
-          rounded 
-          small 
+        <v-btn
+          dark
+          color="primary"
+          @click="_add"
+          rounded
+          small
         >
           Adicionar <v-icon dark>mdi-plus</v-icon>
         </v-btn>
@@ -52,7 +52,7 @@
           </v-col>
         </v-row>
       </v-col>
-      
+
       <v-col cols="12" md="6" v-for="order in table.items" :key="order.id" v-else>
         <v-card v-on:click="_edit(order.id)">
           <v-list-item three-line>
@@ -69,7 +69,7 @@
 
           <v-card-actions>
             <v-spacer/>
-            <v-btn text color="blue" v-on:click="_edit(order.id)">
+            <v-btn text color="primary" v-on:click="_edit(order.id)">
               Ver informações
             </v-btn>
           </v-card-actions>
@@ -84,7 +84,7 @@
             :length="table.pageCount"
             @input="_load"
             :total-visible="15"
-            color="blue"
+            color="primary"
             circle
           ></v-pagination>
         </div>
@@ -138,12 +138,12 @@ export default {
       this._load();
     },
     async _load(){
-      let params = { 
-        page: this.table.page, 
+      let params = {
+        page: this.table.page,
         itemsPerPage: this.table.itemsPerPage,
         orderBy: this.table.orderBy,
         relations: ['client','address'],
-        ...this.table.filters 
+        ...this.table.filters
       }
 
       this.table.loading = true;
@@ -154,7 +154,7 @@ export default {
         }
 
         this.table.loading = false;
-     
+
         if(response.data.success){
           this.table.items = response.data.data.data;
           this.table.pageCount = response.data.data.last_page;

@@ -8,7 +8,7 @@
           <v-toolbar elevation="0" class="mb-2">
             <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
             <v-progress-linear
-              color="blue"
+              color="primary"
               indeterminate
               height="4"
               bottom
@@ -19,11 +19,11 @@
             <v-spacer></v-spacer>
 
             <v-btn
-              color="blue" 
-              @click="_goUpdatePass" 
-              :loading="loading" 
-              rounded 
-              dark 
+              color="primary"
+              @click="_goUpdatePass"
+              :loading="loading"
+              rounded
+              dark
               small
               class="mr-3"
             >
@@ -31,11 +31,11 @@
             </v-btn>
 
             <v-btn
-              color="green" 
-              @click="_store" 
-              :loading="loading" 
-              rounded 
-              dark 
+              color="btnPrimary"
+              @click="_store"
+              :loading="loading"
+              rounded
+              dark
               small
             >
               Atualizar <v-icon dark class="ml-2" small>mdi-content-save</v-icon>
@@ -46,7 +46,7 @@
             <v-col cols="12">
               <v-text-field
                 label="NOME"
-                color="blue"
+                color="primary"
                 outlined
                 dense
                 v-model="form.name"
@@ -69,11 +69,11 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn 
-              color="green" 
-              @click="_store" 
-              :loading="loading" 
-              rounded 
+            <v-btn
+              color="btnPrimary"
+              @click="_store"
+              :loading="loading"
+              rounded
               dark
             >
               Atualizar <v-icon dark class="ml-2">mdi-content-save</v-icon>

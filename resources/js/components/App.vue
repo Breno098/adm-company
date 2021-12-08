@@ -54,10 +54,10 @@ export default {
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 
   * {
-    font-family: 'Ubuntu Mono', monospace;
+    font-family: 'Roboto', sans-serif;
   }
 
   .v-application ::-webkit-scrollbar {
@@ -70,7 +70,7 @@ export default {
   }
 
   .v-application ::-webkit-scrollbar-thumb {
-    background: #2196F3;
+    background: #00BCD4;
     border-radius: 8px;
   }
 </style>

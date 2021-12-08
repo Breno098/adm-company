@@ -2,51 +2,36 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-row>
-      <v-col cols="12">
-        <v-card elevation="0">
-          <v-toolbar elevation="0" class="mb-2">
-            <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
-            <v-progress-linear
-              color="blue"
-              indeterminate
-              height="4"
-              bottom
-              absolute
-              :active="loading"
-            ></v-progress-linear>
+      <v-card class="mb-4">
+        <v-toolbar elevation="0">
+          <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
+          <v-progress-linear
+            indeterminate
+            height="4"
+            bottom
+            absolute
+            :active="loading"
+          ></v-progress-linear>
 
-            <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
 
-            <v-btn
-              v-if="(!idByRoute && $role.service.add()) || (idByRoute && $role.service.update()) "  
-              color="green" 
-              @click="_store" 
-              :loading="loading" 
-              rounded 
-              dark 
-              small
-            >
-              Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-            </v-btn>
-          </v-toolbar>
+          <v-btn
+            v-if="(!idByRoute && $role.service.add()) || (idByRoute && $role.service.update()) "
+            color="btnPrimary"
+            @click="_store"
+            :loading="loading"
+            rounded
+            dark
+            small
+          >
+            Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
+          </v-btn>
+        </v-toolbar>
+      </v-card>
 
+      <v-card>
+        <v-card-text>
           <v-row>
-            <v-col cols="12" md="6" offset-md="6">
-              <v-select
-                v-model="service.status_id"
-                vali
-                :items="statuses"
-                item-text="name"
-                item-value="id"
-                label="STATUS"
-                outlined
-                dense
-                :loading="loading"
-                no-data-text="Nenhum status encontrada"
-              ></v-select>
-            </v-col>
-
             <v-col cols="12" md="6">
               <v-text-field
                 label="NOME"
@@ -73,30 +58,6 @@
                 :loading="loading"
                 multiple
                 no-data-text="Nenhuma categoria encontrada"
-              ></v-select>
-            </v-col>
-
-            <v-col cols="12" md="6">
-              <v-text-field
-                label="MARCA"
-                outlined
-                dense
-                v-model="service.brand"
-                :loading="loading"
-                @input="service.brand = service.brand.toUpperCase()"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="6">
-              <v-select
-                v-model="service.unit_measure"
-                :items="unit_measures"
-                item-text="label"
-                item-value="value"
-                label="UN. MEDIDA"
-                outlined
-                dense
-                :loading="loading"
               ></v-select>
             </v-col>
 
@@ -174,24 +135,23 @@
               ></v-textarea>
             </v-col>
           </v-row>
+        </v-card-text>
 
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn 
-              v-if="(!idByRoute && $role.service.add()) || (idByRoute && $role.service.update()) "  
-              color="green" 
-              @click="_store" 
-              :loading="loading" 
-              rounded 
-              dark
-            >
-              Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-            </v-btn>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-         </v-card>
-      </v-col>
-    </v-row>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            v-if="(!idByRoute && $role.service.add()) || (idByRoute && $role.service.update()) "
+            color="btnPrimary"
+            @click="_store"
+            :loading="loading"
+            rounded
+            dark
+          >
+            Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
   </div>
 </template>
 
@@ -215,38 +175,15 @@ export default {
     service: {
       description: null,
       name: null,
-      brand: null,
       cost: null,
       default_value: null,
       type: null,
-      unit_measure: null,
       warranty_conditions: null,
       warranty_days: null,
       bar_code: null,
       categories: [],
-      status_id: null
     },
     categories: [],
-    statuses: [],
-    unit_measures: [{
-      label: 'cm (centimetros)',
-      value: 'cm'
-    }, {
-      label: 'cm² (centimetro quadrado)',
-      value: 'cm²'
-    }, {
-      label: 'cm³ (centimetro cúbico)',
-      value: 'cm³'
-    }, {
-      label: 'un. (unidade)',
-      value: 'un'
-    }, {
-      label: 'l (litro)',
-      value: 'l'
-    } , {
-      label: 'mg (miligrama)',
-      value: 'mg'
-    }],
   }),
   computed: {
     titlePage(){
@@ -266,7 +203,6 @@ export default {
       }
 
       await this._loadCategories();
-      await this._loadStatuses();
     },
     async _load(){
       this.loading = true;
@@ -287,17 +223,6 @@ export default {
           return this.categories = response.data.data;
         }
         this.$refs.fireDialog.error({ title: 'Error ao carregar categorias' })
-      });
-      this.loading = false;
-    },
-    async _loadStatuses(){
-      this.loading = true;
-      await axios.get(`api/status?type=service`).then(response => {
-        if(response.data.success){
-          return this.statuses = response.data.data;
-        }
-
-        this.$refs.fireDialog.error({ title: 'Error ao carregar status' })
       });
       this.loading = false;
     },

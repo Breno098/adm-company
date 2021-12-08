@@ -1,21 +1,21 @@
 <template>
     <base-modal ref="basemodal">
-        <v-card 
-            transparent 
-            elevation="0" 
-            width="400" 
+        <v-card
+            transparent
+            elevation="0"
+            width="400"
             :class="{ 'py-2': !confirmButton && !cancelButton }"
         >
-            <v-card-title> 
+            <v-card-title>
                 <div class="mx-auto"> {{ title }} </div>
             </v-card-title>
 
-            <v-card-text class="text-center"> 
+            <v-card-text class="text-center">
                 {{ message }}
             </v-card-text>
 
             <v-card-text class="text-center py-2" v-if="!confirmeByType">
-                <v-progress-circular v-if="loadingByType" :width="5" color="blue" :size="70" indeterminate></v-progress-circular>
+                <v-progress-circular v-if="loadingByType" :width="5" color="primary" :size="70" indeterminate></v-progress-circular>
                 <v-icon :size="70" :color="colorByType"> {{ iconByType }} </v-icon>
             </v-card-text>
 
@@ -39,10 +39,10 @@ export default {
         message: undefined,
         confirmButton: false,
         textConfirmButton: 'Aceitar',
-        colorConfirButton: 'green',
+        colorConfirButton: 'btnPrimary',
         cancelButton: false,
         textCancelButton: 'Fechar',
-        colorCancelButton: 'blue',
+        colorCancelButton: 'btnDanger',
         resolvePromise: undefined,
         rejectPromise: undefined,
         icon: undefined,
@@ -54,14 +54,14 @@ export default {
             return this.type === 'confirm';
         },
         iconByType(){
-            return this.type == 'success' ? 'mdi-check-circle-outline' : 
-                   this.type == 'error' ? 'mdi-close' : 
+            return this.type == 'success' ? 'mdi-check-circle-outline' :
+                   this.type == 'error' ? 'mdi-close' :
                    this.type == 'warning' ? 'mdi-alert-circle-outline' : '';
         },
         colorByType(){
-            return this.type == 'success' ? 'green' : 
-                   this.type == 'error' ? 'red' : 
-                   this.type == 'warning' ? 'orange' : '';
+            return this.type == 'success' ? 'success' :
+                   this.type == 'error' ? 'error' :
+                   this.type == 'warning' ? 'warning' : '';
         },
         loadingByType(){
              return this.type === 'loading';

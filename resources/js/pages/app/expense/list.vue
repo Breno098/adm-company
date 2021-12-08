@@ -8,7 +8,7 @@
           <v-toolbar elevation="0">
             <v-toolbar-title> Custos/Despesas </v-toolbar-title>
             <v-progress-linear
-              color="blue"
+              color="primary"
               indeterminate
               height="4"
               bottom
@@ -18,19 +18,19 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn 
-              dark 
-              color="blue" 
-              @click="_add" 
-              rounded 
-              small 
+            <v-btn
+              dark
+              color="primary"
+              @click="_add"
+              rounded
+              small
               v-if="$role.expense.add()"
             >
               Adicionar <v-icon dark>mdi-plus</v-icon>
             </v-btn>
           </v-toolbar>
 
-          <v-simple-table>
+          <v-simple-table dense>
             <template v-slot:default>
               <thead>
                 <tr>
@@ -40,16 +40,16 @@
                 </tr>
               </thead>
               <tbody>
-                <tr 
-                  v-for="item in table.items" 
-                  :key="item.id" 
+                <tr
+                  v-for="item in table.items"
+                  :key="item.id"
                   v-on:click="$role.expense.show() ? _edit(item.id) : null"
                 >
                   <td>{{ item.title }}</td>
                   <td>{{ item.value }}</td>
                   <td>
-                    <v-menu 
-                      transition="slide-y-transition" 
+                    <v-menu
+                      transition="slide-y-transition"
                       bottom
                       v-if="$role.expense.show() || $role.expense.delete()"
                     >
@@ -60,23 +60,23 @@
                         </template>
 
                         <v-list nav dense>
-                            <v-list-item 
+                            <v-list-item
                               v-on:click="_edit(item.id)"
                               v-if="$role.expense.show()"
                             >
                                 <v-list-item-icon>
-                                    <v-icon outlined color="green">mdi-eye</v-icon>
+                                    <v-icon outlined color="btnPrimary">mdi-eye</v-icon>
                                 </v-list-item-icon>
                                 <v-list-item-content>
                                     <v-list-item-title> Visualizar </v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
-                            <v-list-item 
+                            <v-list-item
                               v-on:click="_delete(item)"
                               v-if="$role.expense.delete()"
                             >
                                 <v-list-item-icon>
-                                    <v-icon outlined color="red">mdi-delete</v-icon>
+                                    <v-icon outlined color="btnDanger">mdi-delete</v-icon>
                                 </v-list-item-icon>
                                 <v-list-item-content>
                                     <v-list-item-title> Deletar </v-list-item-title>
@@ -97,7 +97,7 @@
               :length="table.pageCount"
               @input="_load"
               :total-visible="15"
-              color="blue"
+              color="primary"
               circle
             ></v-pagination>
             <v-spacer></v-spacer>
@@ -133,10 +133,10 @@ export default {
   },
   methods: {
     async _load(){
-      let params = { 
-        page: this.table.page, 
+      let params = {
+        page: this.table.page,
         itemsPerPage: 20,
-        ...this.table.filters 
+        ...this.table.filters
       }
 
       this.table.loading = true;
@@ -163,7 +163,8 @@ export default {
       const ok = await this.$refs.fireDialog.confirm({
           title: 'Deletar Custo',
           textConfirmButton: 'Deletar',
-          colorConfirButton: 'red'
+          colorConfirButton: 'btnDanger',
+        colorCancelButton: 'btnPrimary'
       })
 
       if (ok) {

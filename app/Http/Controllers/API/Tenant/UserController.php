@@ -25,6 +25,7 @@ class UserController extends BaseApiController
         $users = IndexService::run(
             $request->query(),
             $request->get('relations', []),
+            $request->get('orderBy'),
             $request->get('itemsPerPage', false),
         );
 
