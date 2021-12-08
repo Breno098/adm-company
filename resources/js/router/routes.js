@@ -52,6 +52,8 @@ export default [
 
   { path: '/file', name: 'file.index', component: page('app/file/index.vue') },
   { path: '/file/employee-receipt', name: 'employee-receipt.index', component: page('app/file/employee-receipt/list.vue') },
+  { path: '/file/employee-receipt/create', name: 'employee-receipt.create', component: page('app/file/employee-receipt/form.vue') },
+  { path: '/file/employee-receipt/:id', name: 'employee-receipt.show', component: page('app/file/employee-receipt/form.vue') },
 
   { path: '/login', name: 'login', component: page('auth/login.vue') },
   { path: '/register', name: 'register', component: page('auth/register.vue') },

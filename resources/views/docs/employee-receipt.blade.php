@@ -22,8 +22,8 @@
       <div style="margin: 30px; display: flex; justify-content: space-between"
       >
         <div style="line-height: 0.8;">
-          <p> Nome: {{ $employeeReceipt->employee->name }} </p>
-          <p> Cargo/Função: {{ $employeeReceipt->employee->position->name }} </p>
+          <p> Nome: {{ $employeeReceipt->employee->name ?? '' }} </p>
+          <p> Cargo/Função: {{ $employeeReceipt->employee->position->name ?? '' }} </p>
 
           @isset($employeeReceipt->employee->cpf)
             <p> CPF: {{ $employeeReceipt->employee->cpf }} </p>

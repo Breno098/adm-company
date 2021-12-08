@@ -35,6 +35,7 @@ const roles = {
     delete: () => role('employee_receipt_delete'),
     show: () => role('employee_receipt_show'),
     update: () => role('employee_receipt_update'),
+    download: () => role('employee_receipt_download'),
   },
   product: {
     index: () => role('product_index'),

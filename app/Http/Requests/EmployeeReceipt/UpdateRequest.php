@@ -24,18 +24,13 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'cpf' => 'nullable',
-            'rg' => 'nullable',
-            'birth_date' => 'nullable|date',
-            'salary' => 'nullable',
-            'admission_date' => 'nullable|date',
-            'resignation_date' => 'nullable|date',
-            'position_id' => 'nullable|int',
-
-             /** Relations */
-            'contacts' => 'nullable|array',
-            'addresses' => 'nullable|array',
+            'date_start' => 'required|date',
+            'date_end' => 'required|date',
+            'amount' => 'required',
+            'discount_amount' => 'nullable',
+            'comments' => 'nullable|string',
+            'paid' => 'nullable',
+            'employee_id' => 'required|int',
         ];
     }
 }

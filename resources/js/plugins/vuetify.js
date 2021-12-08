@@ -24,6 +24,7 @@ export default new Vuetify({
         sidebarActive: '#000',
 
         btnPrimary: '#00BCD4',
+        btnSecondary: '#00838F',
         btnDanger: "#F44336",
         btnCleanFilter: '#E0E0E0'
       },

@@ -27,10 +27,10 @@ class StoreRequest extends FormRequest
             'date_start' => 'required|date',
             'date_end' => 'required|date',
             'amount' => 'required',
-            'discount_amount' => 'required',
-            'comments' => 'required|string',
+            'discount_amount' => 'nullable',
+            'comments' => 'nullable|string',
             'paid' => 'nullable',
-            'employee_id' => 'nullable|int',
+            'employee_id' => 'required|int',
         ];
     }
 }

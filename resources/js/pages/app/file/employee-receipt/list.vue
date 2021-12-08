@@ -121,7 +121,8 @@
               <tr>
                 <th class="text-left">FUNCIONÁRIO</th>
                 <th class="text-left">PERIODO</th>
-                <th class="text-left">DATA CRIAÇÃO</th>
+                <th class="text-left">CARGO</th>
+                <th class="text-left">DATA EMISSÃO</th>
                 <th></th>
               </tr>
             </thead>
@@ -135,6 +136,7 @@
                 <td>
                   {{ receipt.date_start | formatDate }} - {{ receipt.date_end | formatDate }}
                 </td>
+                <td>{{ receipt.employee.position ?  receipt.employee.position.name : '' }}</td>
                 <td>{{ receipt.created_at | formatDate }}</td>
                 <td>
                   <v-menu
@@ -169,6 +171,18 @@
                               </v-list-item-icon>
                               <v-list-item-content>
                                   <v-list-item-title> Deletar </v-list-item-title>
+                              </v-list-item-content>
+                          </v-list-item>
+
+                          <v-list-item
+                            v-on:click="_download(receipt)"
+                            v-if="$role.employee_receipt.download() || $role.employee_receipt.show()"
+                          >
+                              <v-list-item-icon>
+                                  <v-icon outlined color="btnSecondary">mdi-download</v-icon>
+                              </v-list-item-icon>
+                              <v-list-item-content>
+                                  <v-list-item-title> Baixar arquivo </v-list-item-title>
                               </v-list-item-content>
                           </v-list-item>
                       </v-list>
@@ -250,7 +264,7 @@ export default {
         page: this.table.page,
         itemsPerPage: this.table.itemsPerPage,
         orderBy: this.table.orderBy,
-        relations: [ 'employee' ],
+        relations: [ 'employee.position' ],
         ...this.table.filters
       }
 
@@ -296,12 +310,12 @@ export default {
     },
     _edit(id){
       this.$router.push({
-          name: 'client.show',
+          name: 'employee-receipt.show',
           params: { id }
       })
     },
     _add(){
-      this.$router.push({ name: 'client.create' })
+      this.$router.push({ name: 'employee-receipt.create' })
     },
     _eraser(){
       for (const field in this.table.filters) {
@@ -314,6 +328,9 @@ export default {
       this.table.orderBy = field;
       this._load();
     },
+    _download(receipt){
+      window.open(`api/employee-receipt/${receipt.id}/download`);
+    }
   }
 }
 </script>

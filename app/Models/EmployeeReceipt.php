@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\Number\NumberExtensive;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeReceipt extends BaseModel
 {
@@ -48,6 +49,11 @@ class EmployeeReceipt extends BaseModel
     /**
      * Attributes
      */
+    public function getHasFileAttribute(): bool
+    {
+        return (bool) $this->path && Storage::exists($this->download_path);
+    }
+
     public function getDateStartFormatAttribute(): string
     {
         return $this->date_start ? (string) $this->date_start->format('d/m/Y') : '';
@@ -66,5 +72,18 @@ class EmployeeReceipt extends BaseModel
     public function getAmountToCurrencyAttribute(): string
     {
         return $this->amount ? 'R$ ' . number_format($this->amount,2,",","") : '';
+    }
+
+    public function getDownloadPathAttribute(): string
+    {
+        return str_replace('storage', '', $this->path ?? '');
+    }
+
+    /**
+     * Actions
+     */
+    public function download()
+    {
+        return Storage::download($this->download_path ?? '');
     }
 }

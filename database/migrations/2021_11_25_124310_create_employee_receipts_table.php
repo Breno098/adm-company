@@ -19,8 +19,8 @@ class CreateEmployeeReceiptsTable extends Migration
             $table->time('time_start')->nullable();
             $table->date('date_end')->nullable();
             $table->time('time_end')->nullable();
-            $table->float('amount')->nullable();
-            $table->float('discount_amount')->nullable();
+            $table->float('amount', 15, 2)->nullable();
+            $table->float('discount_amount', 15, 2)->nullable();
             $table->text('comments')->nullable();
             $table->foreignId('employee_id')->nullable()->constrained();
             $table->foreignId('company_id')->nullable()->constrained();

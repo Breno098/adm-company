@@ -487,8 +487,12 @@ export default {
       await this._loadPositions();
     },
     async _loadPositions(){
+       let params = {
+        orderBy: 'name',
+      }
+
       this.loading = true;
-      await axios.get(`api/position`).then(response => {
+      await axios.get(`api/position`,{ params }).then(response => {
         if(response.data.success){
           return this.positions = response.data.data;
         }

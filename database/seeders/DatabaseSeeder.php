@@ -26,7 +26,9 @@ class DatabaseSeeder extends Seeder
                 PaymentSeeder::class,
                 ClientSeeder::class,
                 ExpenseSeeder::class,
+                PositionSeeder::class,
+                EmployeeSeeder::class,
             ]);
-        } 
+        }
     }
 }

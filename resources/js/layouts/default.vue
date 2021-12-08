@@ -93,9 +93,9 @@ export default {
     miniVariant: false,
   }),
   created () {
-    if(this.user && this.user.first_access){
-      this.$router.push({ name: 'settings-first-access' })
-    }
+    // if(this.user && this.user.first_access){
+    //   this.$router.push({ name: 'settings-first-access' })
+    // }
   },
   mounted() {
     this.setHour();

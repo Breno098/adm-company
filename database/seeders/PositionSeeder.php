@@ -24,7 +24,39 @@ class PositionSeeder extends Seeder
         ]);
 
         Position::create([
+            'name' => 'DIRETOR(A) FINANCEIRO',
+        ]);
+
+        Position::create([
             'name' => 'AUX. FINANCEIRO',
+        ]);
+
+        Position::create([
+            'name' => 'DIRETOR(A) ADMINISTRATIVO',
+        ]);
+
+        Position::create([
+            'name' => 'AUX. ADMINISTRATIVO',
+        ]);
+
+        Position::create([
+            'name' => 'ESTAGIÁRIO(A)',
+        ]);
+
+        Position::create([
+            'name' => 'SUPERVISOR(A)',
+        ]);
+
+        Position::create([
+            'name' => 'OPERADOR(A)',
+        ]);
+
+        Position::create([
+            'name' => 'INSTALADOR(A)',
+        ]);
+
+        Position::create([
+            'name' => 'AJUDANTE',
         ]);
     }
 }

@@ -62,6 +62,8 @@ Route::middleware('auth:api')->group( function () {
 
         Route::get('user/current', [AuthUserController::class, 'current']);
 
+        Route::get('employee-receipt/{employeeReceipt}/download', [EmployeeReceiptController::class, 'download']);
+
         Route::apiResource('client', ClientController::class);
         Route::apiResource('category', CategoryController::class);
         Route::apiResource('status', StatusController::class);
@@ -87,4 +89,3 @@ Route::middleware(['auth:api', 'administrator'])->prefix('admin')->name('admin.'
 
 });
 
-Route::get('employee-receipt/{employeeReceipt}', [EmployeeReceiptController::class, 'download']);

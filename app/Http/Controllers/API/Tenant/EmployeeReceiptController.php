@@ -8,11 +8,13 @@ use App\Http\Requests\EmployeeReceipt\StoreRequest;
 use App\Http\Requests\EmployeeReceipt\UpdateRequest;
 use App\Models\Employee;
 use App\Models\EmployeeReceipt;
+use App\Services\EmployeeReceipt\DownloadPdfService;
 use App\Services\EmployeeReceipt\StoreService;
 use App\Services\EmployeeReceipt\UpdateService;
 use App\Services\EmployeeReceipt\IndexService;
 use App\Services\Image\LogoBase64;
 use Barryvdh\DomPDF\PDF;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeReceiptController extends BaseApiController
 {
@@ -55,16 +57,16 @@ class EmployeeReceiptController extends BaseApiController
     /**
      * Display the specified resource.
      *
-     * @param  Employee $employee
+     * @param  EmployeeReceipt $employeeReceipt
      * @return \Illuminate\Http\Response
      */
-    public function show(EmployeeReceipt $employee)
+    public function show(EmployeeReceipt $employeeReceipt)
     {
         $this->authorize('employee_receipt_show');
 
-        $employee->load([ 'addresses', 'contacts', 'user' ]);
+        $employeeReceipt->load([ 'employee' ]);
 
-        return $this->sendResponse($employee, 'Employee retrieved successfully.');
+        return $this->sendResponse($employeeReceipt, 'Employee Receipt retrieved successfully.');
     }
 
     /**
@@ -74,30 +76,30 @@ class EmployeeReceiptController extends BaseApiController
      * @param  Employee $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Employee $employee)
+    public function update(UpdateRequest $request, EmployeeReceipt $employeeReceipt)
     {
         $this->authorize('employee_receipt_update');
 
         $data = $request->validated();
 
-        $employee = UpdateService::run($employee, $data);
+        $employee = UpdateService::run($employeeReceipt, $data);
 
-        return $this->sendResponse($employee, 'Employee updated successfully.');
+        return $this->sendResponse($employee, 'Employee Receipt updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Employee $employee
+     * @param EmployeeReceipt $employeeReceipt
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Employee $employee)
+    public function destroy(EmployeeReceipt $employeeReceipt)
     {
         $this->authorize('employee_receipt_delete');
 
-        $employee->delete();
+        $employeeReceipt->delete();
 
-        return $this->sendResponse([], 'Employee deleted successfully.');
+        return $this->sendResponse([], 'Employee Receipt deleted successfully.');
     }
 
     /**
@@ -105,18 +107,10 @@ class EmployeeReceiptController extends BaseApiController
      * @param PDF $pdf
      * @param LogoBase64 $logoBase64
      */
-    public function download(EmployeeReceipt $employeeReceipt, PDF $pdf, LogoBase64 $logoBase64)
+    public function download(EmployeeReceipt $employeeReceipt, DownloadPdfService $downloadPdfService)
     {
         $this->authorize('employee_receipt_download');
 
-        $pdf->loadView('docs.employee-receipt', [
-            'employeeReceipt' => $employeeReceipt,
-            'url' => $logoBase64->run()
-        ]);
-
-        $now = now()->format('d_m_Y_H_i_s');
-        $nameWithoutSpaces = str_replace(' ', '_', $employeeReceipt->employee->name ?? '');
-
-        return $pdf->download("recibo_pagamento_{$nameWithoutSpaces}_{$now}.pdf");
+        return $downloadPdfService->run($employeeReceipt);
     }
 }
