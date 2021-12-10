@@ -2,194 +2,185 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-row>
-      <v-col cols="12">
-        <v-card elevation="0">
-          <v-toolbar elevation="0" class="mb-2">
-            <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
-            <v-progress-linear
-              color="primary"
-              indeterminate
-              height="4"
-              bottom
-              absolute
-              :active="loading"
-            ></v-progress-linear>
+    <v-card class="mb-4">
+      <v-toolbar elevation="0">
+        <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
+        <v-progress-linear
+          indeterminate
+          height="4"
+          bottom
+          absolute
+          :active="loading"
+        ></v-progress-linear>
 
-            <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
 
-             <v-btn
-              v-if="(!idByRoute && $role.expense.add()) || (idByRoute && $role.expense.update()) "
-              color="btnPrimary"
-              @click="_store"
+          <v-btn
+          v-if="(!idByRoute && $role.expense.add()) || (idByRoute && $role.expense.update()) "
+          color="btnPrimary"
+          @click="_store"
+          :loading="loading"
+          rounded
+          small
+        >
+          Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </v-card>
+
+    <v-card>
+      <v-card-text>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              label="TITULO"
+              outlined
+              dense
+              v-model="expense.title"
               :loading="loading"
-              rounded
-              dark
-              small
+              :rules="[rules.required]"
+              :error="errors.title && !expense.title"
+              @input="expense.title = expense.title.toUpperCase()"
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-select
+              v-model="expense.categories"
+              vali
+              :items="categories"
+              item-text="name"
+              item-value="id"
+              label="CATEGORIAS"
+              outlined
+              dense
+              :loading="loading"
+              multiple
+            ></v-select>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-menu
+                v-model="menu_date"
+                :close-on-content-click="false"
+                max-width="290"
+                transition="scale-transition"
+                offset-y
             >
-              Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-            </v-btn>
-          </v-toolbar>
+            <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                    append-icon="mdi-calendar"
+                    :value="DateFormat"
+                    clearable
+                    label="DATA"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    @click:clear="expense.date = null"
+                    outlined
+                    dense
+                    :loading="loading"
+                    :rules="[rules.required]"
+                    :error="errors.date && !expense.date"
+                ></v-text-field>
+            </template>
+            <v-date-picker
+                v-model="expense.date"
+                @change="menu_date = false"
+                no-title
+                crollable
+                locale="pt-Br"
+            ></v-date-picker>
+            </v-menu>
+          </v-col>
 
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field
-                label="TITULO"
-                outlined
-                dense
-                v-model="expense.title"
-                :loading="loading"
-                :rules="[rules.required]"
-                :error="errors.title && !expense.title"
-                @input="expense.title = expense.title.toUpperCase()"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="6">
-              <v-select
-                v-model="expense.categories"
-                vali
-                :items="categories"
-                item-text="name"
-                item-value="id"
-                label="CATEGORIAS"
-                outlined
-                dense
-                :loading="loading"
-                multiple
-              ></v-select>
-            </v-col>
-
-            <v-col cols="12" md="6">
+          <v-col cols="12" md="6">
               <v-menu
-                  v-model="menu_date"
+                  ref="menu_time"
+                  v-model="menu_time"
                   :close-on-content-click="false"
-                  max-width="290"
+                  :nudge-right="40"
+                  :return-value.sync="expense.time"
                   transition="scale-transition"
                   offset-y
+                  max-width="290px"
+                  min-width="290px"
               >
-              <template v-slot:activator="{ on, attrs }">
+                <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                      append-icon="mdi-calendar"
-                      :value="DateFormat"
-                      clearable
-                      label="DATA"
+                      v-model="expense.time"
+                      label="HORA"
+                      prepend-icon="mdi-clock-time-four-outline"
                       readonly
                       v-bind="attrs"
                       v-on="on"
-                      @click:clear="expense.date = null"
-                      outlined
                       dense
+                      outlined
                       :loading="loading"
-                      :rules="[rules.required]"
-                      :error="errors.date && !expense.date"
                   ></v-text-field>
-              </template>
-              <v-date-picker
-                  v-model="expense.date"
-                  @change="menu_date = false"
-                  no-title
-                  crollable
-                  locale="pt-Br"
-              ></v-date-picker>
+                </template>
+                <v-time-picker
+                    v-if="menu_time"
+                    v-model="expense.time"
+                    @click:minute="$refs.menu_time.save(expense.time)"
+                    format="24hr"
+                ></v-time-picker>
               </v-menu>
             </v-col>
 
+          <v-col cols="12">
+              <v-textarea
+                label="DESCRIÇÃO"
+                outlined
+                dense
+                v-model="expense.description"
+                :loading="loading"
+                hint="DETALHES DO CUSTO/DESPESA"
+                @input="expense.description = expense.description.toUpperCase()"
+              ></v-textarea>
+            </v-col>
+
             <v-col cols="12" md="6">
-                <v-menu
-                    ref="menu_time"
-                    v-model="menu_time"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    :return-value.sync="expense.time"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="290px"
-                    min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                        v-model="expense.time"
-                        label="HORA"
-                        prepend-icon="mdi-clock-time-four-outline"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        dense
-                        outlined
-                        :loading="loading"
-                    ></v-text-field>
-                  </template>
-                  <v-time-picker
-                      v-if="menu_time"
-                      v-model="expense.time"
-                      @click:minute="$refs.menu_time.save(expense.time)"
-                      format="24hr"
-                  ></v-time-picker>
-                </v-menu>
-              </v-col>
+              <v-text-field
+                type="number"
+                prefix="R$"
+                label="VALOR"
+                outlined
+                dense
+                v-model="expense.value"
+                :loading="loading"
+                :rules="[rules.required]"
+                :error="errors.value && !expense.value"
+              ></v-text-field>
+          </v-col>
 
-              <v-col cols="12">
-                <v-textarea
-                  label="DESCRIÇÃO"
-                  outlined
-                  dense
-                  v-model="expense.description"
-                  :loading="loading"
-                  hint="DETALHES DO CUSTO/DESPESA"
-                  @input="expense.description = expense.description.toUpperCase()"
-                ></v-textarea>
-              </v-col>
+          <!-- <v-col cols="12" md="6">
+            <v-text-field
+              label="QUANTIDADE"
+              type="number"
+              outlined
+              dense
+              v-model="expense.quantity"
+              :loading="loading"
+            ></v-text-field>
+          </v-col> -->
+        </v-row>
+      </v-card-text>
 
-              <v-col cols="12" md="6">
-                <v-text-field
-                  type="number"
-                  prefix="R$"
-                  label="VALOR"
-                  outlined
-                  dense
-                  v-model="expense.value"
-                  :loading="loading"
-                  :rules="[rules.required]"
-                  :error="errors.value && !expense.value"
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12" md="6">
-                <v-text-field
-                  label="QUANTIDADES"
-                  type="number"
-                  outlined
-                  dense
-                  v-model="expense.quantity"
-                  :loading="loading"
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12">
-                  <v-btn
-                    v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
-                    color="btnPrimary"
-                    @click="_store"
-                    :loading="loading"
-                    rounded
-                    dark
-                  >
-                    Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-                  </v-btn>
-              </v-col>
-            </v-row>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="btnPrimary" @click="_store" :loading="loading" rounded dark>
-              Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-            </v-btn>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-         </v-card>
-      </v-col>
-    </v-row>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          v-if="(!idByRoute && $role.expense.add()) || (idByRoute && $role.expense.update()) "
+          color="btnPrimary"
+          @click="_store"
+          :loading="loading"
+          rounded
+        >
+          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+        </v-btn>
+        <v-spacer></v-spacer>
+      </v-card-actions>
+    </v-card>
   </div>
 </template>
 
@@ -262,7 +253,9 @@ export default {
       this.loading = true;
       await axios.get(`api/expense/${this.idByRoute}`).then(response => {
         if(response.data.success){
-          return this.expense = response.data.data;
+          this.expense = response.data.data;
+
+          return this.expense.categories = response.data.data.categories_id;
         }
 
         this.$refs.fireDialog.error({ title: 'Error ao carregar dados do custo/despesa' });

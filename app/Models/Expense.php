@@ -25,8 +25,23 @@ class Expense extends BaseModel
         'value' => 'float',
     ];
 
+    protected $appends = [
+        'categories_id'
+    ];
+
+    /**
+     * Relationships
+     */
     public function categories()
     {
         return $this->belongsToMany(Category::class);
+    }
+
+    /**
+     * Attributes
+     */
+    public function getCategoriesIdAttribute()
+    {
+        return $this->categories()->pluck('categories.id');
     }
 }

@@ -216,8 +216,6 @@ export default {
   },
   mounted() {
     this._load();
-
-    // this._loadCategories();
   },
   filters: {
     formatDate(date){

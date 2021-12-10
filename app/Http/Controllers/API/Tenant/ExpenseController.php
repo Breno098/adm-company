@@ -15,7 +15,8 @@ class ExpenseController extends BaseApiController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -24,7 +25,8 @@ class ExpenseController extends BaseApiController
         $expenses = IndexService::run(
             $request->query(),
             $request->get('relations', []),
-            $request->get('itemsPerPage', false),
+            $request->get('orderBy'),
+            $request->get('itemsPerPage'),
         );
 
         return $this->sendResponse($expenses, 'Expenses retrieved successfully.');
@@ -33,8 +35,8 @@ class ExpenseController extends BaseApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param ExpenseRequest $request
+     * @return Response
      */
     public function store(ExpenseRequest $request)
     {
@@ -50,14 +52,12 @@ class ExpenseController extends BaseApiController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Expense $expense
+     * @return Response
      */
     public function show(Expense $expense)
     {
         $this->authorize('expense_show');
-
-        $expense->load(['categories']);
 
         return $this->sendResponse($expense, 'Expense retrieved successfully.');
     }
@@ -65,9 +65,9 @@ class ExpenseController extends BaseApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param ExpenseRequest $request
+     * @param Expense $expense
+     * @return Response
      */
     public function update(ExpenseRequest $request, Expense $expense)
     {
@@ -83,8 +83,8 @@ class ExpenseController extends BaseApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Expense $expense
+     * @return Response
      */
     public function destroy(Expense $expense)
     {
