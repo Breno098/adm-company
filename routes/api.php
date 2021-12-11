@@ -26,6 +26,7 @@ use App\Http\Controllers\API\Tenant\EmployeeReceiptController;
 use App\Http\Controllers\API\Tenant\ExpenseController;
 use App\Http\Controllers\API\Tenant\PositionController;
 use App\Http\Controllers\API\Tenant\ProductController;
+use App\Http\Controllers\API\Tenant\ReportController;
 use App\Http\Controllers\API\Tenant\ServiceController;
 use App\Http\Controllers\API\Tenant\RoleController;
 
@@ -88,4 +89,6 @@ Route::middleware('auth:api')->group( function () {
 Route::middleware(['auth:api', 'administrator'])->prefix('admin')->name('admin.')->group( function () {
 
 });
+
+Route::get('report-finance', [ReportController::class, 'finance']);
 

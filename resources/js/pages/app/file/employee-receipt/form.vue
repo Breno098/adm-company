@@ -292,7 +292,7 @@ export default {
 
       if(pushRoute){
         this.$refs.fireDialog.success({ title: 'Recibo salvo com sucesso' })
-        return setTimeout(() => this.$router.push({ name: 'employee-receipt.index' }), 1500);
+        return setTimeout(() => this.$router.push({ name: 'file.employee-receipt.index' }), 1500);
       } else {
          this.$refs.fireDialog.hide();
       }

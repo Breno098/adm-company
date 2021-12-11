@@ -310,12 +310,12 @@ export default {
     },
     _edit(id){
       this.$router.push({
-          name: 'employee-receipt.show',
+          name: 'file.employee-receipt.show',
           params: { id }
       })
     },
     _add(){
-      this.$router.push({ name: 'employee-receipt.create' })
+      this.$router.push({ name: 'file.employee-receipt.create' })
     },
     _eraser(){
       for (const field in this.table.filters) {

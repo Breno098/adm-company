@@ -51,9 +51,14 @@ export default [
   { path: '/', name: 'home', component: page('app/home/index.vue') },
 
   { path: '/file', name: 'file.index', component: page('app/file/index.vue') },
-  { path: '/file/employee-receipt', name: 'employee-receipt.index', component: page('app/file/employee-receipt/list.vue') },
-  { path: '/file/employee-receipt/create', name: 'employee-receipt.create', component: page('app/file/employee-receipt/form.vue') },
-  { path: '/file/employee-receipt/:id', name: 'employee-receipt.show', component: page('app/file/employee-receipt/form.vue') },
+
+  { path: '/file/employee-receipt', name: 'file.employee-receipt.index', component: page('app/file/employee-receipt/list.vue') },
+  { path: '/file/employee-receipt/create', name: 'file.employee-receipt.create', component: page('app/file/employee-receipt/form.vue') },
+  { path: '/file/employee-receipt/:id', name: 'file.employee-receipt.show', component: page('app/file/employee-receipt/form.vue') },
+
+  { path: '/report', name: 'report.index', component: page('app/report/index.vue') },
+
+  { path: '/report/finance', name: 'report.finance.index', component: page('app/report/finance/index.vue') },
 
   { path: '/login', name: 'login', component: page('auth/login.vue') },
   { path: '/register', name: 'register', component: page('auth/register.vue') },

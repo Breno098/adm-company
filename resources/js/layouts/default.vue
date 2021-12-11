@@ -134,6 +134,12 @@ export default {
           role: this.$role.order.index()
         },
         {
+          title: 'Relatórios',
+          route: 'report.index',
+          icon: 'mdi-chart-bar',
+          role: true,
+        },
+        {
           title: 'Agenda',
           route: 'appointment.index',
           icon: 'mdi-calendar-today',

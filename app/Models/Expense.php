@@ -3,9 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @package App\Models
+ *
+ * @property string $title
+ * @property string $description
+ * @property Date $date
+ * @property DateTime $time
+ * @property int $quantity
+ * @property float $value
+ */
 class Expense extends BaseModel
 {
      use HasFactory, SoftDeletes;

@@ -24,6 +24,7 @@ class IndexService
                 return $builder->authorizedByCompany();
             })
             ->filterByStatusId(Arr::get($filters, 'status_id'))
+            ->filterByStatusType(Arr::get($filters, 'status_type'))
             ->when($orderBy, function (Builder $builder, $orderBy) {
                 return $builder->orderby($orderBy);
             })

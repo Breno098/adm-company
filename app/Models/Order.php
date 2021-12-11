@@ -4,10 +4,39 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @package App\Models
+ *
+ * @property string $description
+ * @property string $type
+ * @property float $amount
+ * @property float $amount_paid
+ * @property Date $execution_date
+ * @property Date $technical_visit_date
+ * @property DateTime $technical_visit_time
+ * @property float $discount_amount
+ * @property string $discount_percentage
+ * @property int $warranty_days
+ * @property string $warranty_conditions
+ * @property string $installments
+ * @property string $comments
+ *
+ * @property Status $status
+ * @property Client $client
+ * @property Address $address
+ * @property Item $items
+ * @property Item $products
+ * @property Item $services
+ * @property Appointment $appointment
+ * @property Payment $formOfPayments
+ *
+ * @method Builder concluded()
+ * @method Builder filterByStatusId(null|int $statusId)
+ * @method Builder filterByStatusType(null|string $status_type)
+ */
 class Order extends BaseModel
 {
     use HasFactory, SoftDeletes;
@@ -41,11 +70,26 @@ class Order extends BaseModel
         'status',
     ];
 
-    public function scopeFilterByStatusId(Builder $builder, $statusId)
+    public function scopeFilterByStatusId(Builder $query, $statusId)
     {
-        return $builder->when($statusId, function (Builder $builder, $statusId) {
-            return $builder->where('status_id', $statusId);
+        return $query->when($statusId, function (Builder $query, $statusId) {
+            return $query->where('status_id', $statusId);
         });
+    }
+
+    public function scopeFilterByStatusType(Builder $query, ?string $status_type)
+    {
+        return $query ->when($status_type, function (Builder $builder, $status_type) {
+            switch ($status_type) {
+                case 'concluded': return $builder->concluded();
+                default: return $builder;
+            }
+        });
+    }
+
+    public function scopeConcluded(Builder $query)
+    {
+        return $query->where('status_id', 5);
     }
 
     public function status()
