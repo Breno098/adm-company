@@ -26,7 +26,8 @@ class IndexService
             ->filterByStatusId(Arr::get($filters, 'status_id'))
             ->filterByStatusType(Arr::get($filters, 'status_type'))
             ->when($orderBy, function (Builder $builder, $orderBy) {
-                return $builder->orderby($orderBy);
+                $orderBy = explode(':', $orderBy);
+                return $builder->orderby($orderBy[0], $orderBy[1] ?? 'asc');
             })
             ->when(
                 $itemsPerPage,

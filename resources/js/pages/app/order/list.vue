@@ -20,27 +20,11 @@
           dark
           color="primary"
           @click="_add"
-          rounded
           small
         >
           Adicionar <v-icon dark>mdi-plus</v-icon>
         </v-btn>
       </v-toolbar>
-
-      <v-card-text>
-        <v-row>
-          <v-col cols="12" md="4" v-for="(status) in statuses" :key="status.id" >
-            <v-btn :color="status.color" block @click="_loadFilterByStatus(status.id)">
-                {{ status.name }}
-            </v-btn>
-          </v-col>
-          <v-col cols="12" md="4" >
-            <v-btn block @click="_loadAll" color="grey">
-              Todas
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-card-text>
     </v-card>
 
 
@@ -85,7 +69,6 @@
             @input="_load"
             :total-visible="15"
             color="primary"
-            circle
           ></v-pagination>
         </div>
       </v-col>
@@ -103,8 +86,10 @@ export default {
   },
   data: () => ({
     table: {
-      filters: {},
-      orderBy: 'created_at',
+      filters: {
+        status_id: null
+      },
+      orderBy: 'created_at:desc',
       page: 1,
       pageCount: 0,
       itemsPerPage: 10,
@@ -113,28 +98,19 @@ export default {
     },
     statuses: []
   }),
+  computed: {
+    statusIdByRoute(){
+      return this.$route.params.statusId ? this.$route.params.statusId : '';
+    }
+  },
   mounted() {
     this._start();
   },
   methods: {
     async _start(){
-      await this._loadStatuses();
-    },
-    async _loadStatuses(){
-      this.table.loading = true;
-      await axios.get(`api/status?type=order`).then(response => {
-        if(response.data.success){
-          return this.statuses = response.data.data;
-        }
-      });
-      this.table.loading = false;
-    },
-    _loadFilterByStatus(status_id){
-      this.table.filters.status_id = status_id;
-      this._load();
-    },
-    _loadAll(){
-      this.table.filters = {};
+
+      this.table.filters.status_id = this.statusIdByRoute;
+
       this._load();
     },
     async _load(){
@@ -160,15 +136,6 @@ export default {
           this.table.pageCount = response.data.data.last_page;
         } else {
           this.$refs.fireDialog.error({ title: 'Erro ao carregar pedidos'});
-        }
-      });
-    },
-    async _delete(){
-      this.loading = true;
-      await axios.delete(`api/order/${this.deleted.id}`).then(response => {
-        if(response.data.success){
-          this.dialog = false;
-          this._load();
         }
       });
     },

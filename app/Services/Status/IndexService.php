@@ -11,15 +11,20 @@ class IndexService
     /**
      * @param  array  $filters
      * @param  array  $relations
+     * @param  bool|string $orderBy
      * @param  bool|int  $itemsPerPage
      *
      * @return mixed
      */
-    static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
+    static public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false)
     {
         return Status::with($relations)
+            ->withCount($relations)
             ->filterByType(Arr::get($filters, 'type'))
-            ->orderby('name')
+            ->when($orderBy, function (Builder $builder, $orderBy) {
+                $orderBy = explode(':', $orderBy);
+                return $builder->orderby($orderBy[0], $orderBy[1] ?? 'asc');
+            })
             ->when(
                 $itemsPerPage,
                 function (Builder $builder) use ($itemsPerPage) {

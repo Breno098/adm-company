@@ -15,7 +15,9 @@ class Status extends Model
         'name',
         'description',
         'type',
-        'color'
+        'color',
+        'icon',
+        'order'
     ];
 
     public function scopeFilterByType(Builder $builder, $type)
@@ -27,7 +29,7 @@ class Status extends Model
 
     public function orders()
     {
-        return $this->belongsToMany(Order::class);
+        return $this->hasMany(Order::class);
     }
 
     public function client()

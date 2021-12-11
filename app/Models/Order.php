@@ -67,7 +67,7 @@ class Order extends BaseModel
     ];
 
     protected $with = [
-        'status',
+        // 'status',
     ];
 
     public function scopeFilterByStatusId(Builder $query, $statusId)

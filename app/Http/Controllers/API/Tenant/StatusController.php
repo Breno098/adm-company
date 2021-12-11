@@ -24,7 +24,8 @@ class StatusController extends BaseApiController
         $statuses = IndexService::run(
             $request->query(),
             $request->get('relations', []),
-            $request->get('itemsPerPage', false),
+            $request->get('orderBy'),
+            $request->get('itemsPerPage'),
         );
 
         return $this->sendResponse($statuses, 'Statuses retrieved successfully.');
