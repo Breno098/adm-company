@@ -137,7 +137,7 @@ export default {
           title: 'Relatórios',
           route: 'report.index',
           icon: 'mdi-chart-bar',
-          role: true,
+          role: false,
         },
         {
           title: 'Agenda',
