@@ -210,7 +210,7 @@ export default {
       }
 
       this.table.loading = true;
-      await axios.get('api/service', { params }).then(response => {
+      await axios.get('/api/service', { params }).then(response => {
         if(response.data.data.data.length === 0 && this.table.page != 1){
           this.table.page = 1;
           this._load()
@@ -241,7 +241,7 @@ export default {
       if (ok) {
         this.$refs.fireDialog.loading({ title: 'Deletando' });
 
-        await axios.delete(`api/item/${service.id}`).then(response => {
+        await axios.delete(`/api/item/${service.id}`).then(response => {
           if(response.data.success){
             this._load();
             this.$refs.fireDialog.hide();

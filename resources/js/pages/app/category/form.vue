@@ -187,7 +187,7 @@ export default {
   methods: {
     async _load(){
       this.loading = true;
-      await axios.get(`api/category/${this.idByRoute}`).then(response => {
+      await axios.get(`/api/category/${this.idByRoute}`).then(response => {
         if(response.data.success){
             return this.category = response.data.data;
         }
@@ -207,7 +207,7 @@ export default {
 
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
 
-      const response = !this.idByRoute ? await axios.post('api/category', this.category) : await axios.put(`api/category/${this.idByRoute}`, this.category);
+      const response = !this.idByRoute ? await axios.post('/api/category', this.category) : await axios.put(`/api/category/${this.idByRoute}`, this.category);
 
       this.loading = false;
 

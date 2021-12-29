@@ -95,7 +95,7 @@ export default {
       }
 
       this.loading = true;
-      await axios.get('api/order', { params }).then(response => {
+      await axios.get('/api/order', { params }).then(response => {
         if(response.data.success){
             this.orders = response.data.data.data;
         } else {

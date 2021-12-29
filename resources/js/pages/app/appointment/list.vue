@@ -118,7 +118,7 @@ export default {
       }
 
       this.loading = true;
-      await axios.get(`api/appointment`, { params }).then(response => {
+      await axios.get(`/api/appointment`, { params }).then(response => {
         if(response.data.data.data.length === 0 && this.page != 1){
           this.page = 1;
         }

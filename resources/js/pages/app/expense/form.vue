@@ -241,7 +241,7 @@ export default {
     },
     async _loadCategories(){
       this.loading = true;
-      await axios.get(`api/category?type=expense`).then(response => {
+      await axios.get(`/api/category?type=expense`).then(response => {
         if(response.data.success){
           return this.categories = response.data.data;
         }
@@ -251,7 +251,7 @@ export default {
     },
     async _load(){
       this.loading = true;
-      await axios.get(`api/expense/${this.idByRoute}`).then(response => {
+      await axios.get(`/api/expense/${this.idByRoute}`).then(response => {
         if(response.data.success){
           this.expense = response.data.data;
 
@@ -274,7 +274,7 @@ export default {
 
       this.loading = true;
 
-      const response = !this.idByRoute ? await axios.post('api/expense', this.expense) : await axios.put(`api/expense/${this.idByRoute}`, this.expense);
+      const response = !this.idByRoute ? await axios.post('/api/expense', this.expense) : await axios.put(`/api/expense/${this.idByRoute}`, this.expense);
 
       this.loading = false;
 

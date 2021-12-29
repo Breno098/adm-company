@@ -240,7 +240,7 @@ export default {
     },
     async _load(){
       this.loading = true;
-      await axios.get(`api/employee-receipt/${this.idByRoute}`).then(response => {
+      await axios.get(`/api/employee-receipt/${this.idByRoute}`).then(response => {
         if(response.data.success){
           return this.employee_receipt = response.data.data;
         }
@@ -252,7 +252,7 @@ export default {
     },
     async _loadEmployees(){
       this.loading = true;
-      await axios.get(`api/employee`).then(response => {
+      await axios.get(`/api/employee`).then(response => {
         if(response.data.success){
           return this.employees = response.data.data;
         }
@@ -279,8 +279,8 @@ export default {
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
 
       const response = !this.idByRoute
-        ? await axios.post('api/employee-receipt', this.employee_receipt)
-        : await axios.put(`api/employee-receipt/${this.idByRoute}`, this.employee_receipt);
+        ? await axios.post('/api/employee-receipt', this.employee_receipt)
+        : await axios.put(`/api/employee-receipt/${this.idByRoute}`, this.employee_receipt);
 
       this.loading = false;
 
@@ -302,7 +302,7 @@ export default {
         await this._store(false);
       }
 
-      window.open(`api/employee-receipt/${this.employee_receipt.id}/download`);
+      window.open(`/api/employee-receipt/${this.employee_receipt.id}/download`);
     }
   }
 

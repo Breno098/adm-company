@@ -12,8 +12,6 @@ use App\Services\Order\UpdateService;
 
 class OrderController extends BaseApiController
 {
-    /** 290 lines */
-
     /**
      * Display a listing of the resource.
      *
@@ -22,7 +20,6 @@ class OrderController extends BaseApiController
     public function index(Request $request)
     {
         $orders = IndexService::run(
-            // $request->get('relations', ['client','address']),
             $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),

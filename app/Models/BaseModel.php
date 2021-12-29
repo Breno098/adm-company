@@ -14,7 +14,7 @@ class BaseModel extends Model
         });
     }
 
-    public function scopeAuthorizedByCompany(Builder $builder)
+    public function scopeAuthorizedTenant(Builder $builder)
     {
         return $builder->where('company_id', auth()->user()->company_id);
     }

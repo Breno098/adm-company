@@ -269,7 +269,7 @@ export default {
       }
 
       this.table.loading = true;
-      await axios.get('api/employee-receipt', { params }).then(response => {
+      await axios.get('/api/employee-receipt', { params }).then(response => {
         if(response.data.data.data.length === 0 && this.table.page != 1){
           this.table.page = 1;
           this._load()
@@ -300,7 +300,7 @@ export default {
       if (ok) {
         this.$refs.fireDialog.loading({ title: 'Deletando' });
 
-        await axios.delete(`api/employee-receipt/${employeeReceipt.id}`).then(response => {
+        await axios.delete(`/api/employee-receipt/${employeeReceipt.id}`).then(response => {
           if(response.data.success){
             this._load();
             this.$refs.fireDialog.hide();
@@ -329,7 +329,7 @@ export default {
       this._load();
     },
     _download(receipt){
-      window.open(`api/employee-receipt/${receipt.id}/download`);
+      window.open(`/api/employee-receipt/${receipt.id}/download`);
     }
   }
 }

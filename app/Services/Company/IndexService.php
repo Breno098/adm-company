@@ -20,7 +20,7 @@ class IndexService
     {
         return Company::with($relations)
             ->when($authorized, function (Builder $builder) {
-                return $builder->authorizedByCompany();
+                return $builder->authorizedTenant();
             })
             ->filterByName(Arr::get($filters, 'name'))
             ->filterByCpf(Arr::get($filters, 'cpf'))

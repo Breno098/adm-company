@@ -23,7 +23,7 @@ class StoreService
         $order->address()->associate(Arr::get($data, 'address_id'));
 
         $order->formOfPayments()->sync(Arr::get($data, 'form_of_payments'));
-        
+
         foreach ($data['products'] as $product) {
             if(!isset($product['id'])){
                 continue;

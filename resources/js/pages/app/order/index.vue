@@ -35,8 +35,8 @@
                 <v-card-text class="d-flex flex-row justify-space-between align-center py-10 px-8">
                   <h2> {{ status.name }} </h2>
                   <v-badge
-                    :content="status.orders_count"
-                    :value="status.orders_count"
+                    :content="status.orders ? status.orders.length : 0"
+                    :value="status.orders ? status.orders.length : 0"
                     color="primary"
                     overlap
                   >
@@ -79,18 +79,18 @@ export default {
         relations: [ 'orders' ]
       }
 
-      await axios.get(`api/status`, { params }).then(response => {
+      await axios.get(`/api/status`, { params }).then(response => {
         if(response.data.success){
           this.statuses = response.data.data;
 
-          let orders_count_all = 0;
+          let orders_all = [];
 
-          this.statuses.forEach(status => orders_count_all = orders_count_all + status.orders_count);
+          this.statuses.forEach(status => status.orders.length > 0 ? orders_all.push(status.orders) : null );
 
           this.statuses.push({
             name: 'TODOS',
             icon: 'mdi-format-list-bulleted',
-            orders_count: orders_count_all
+            orders: orders_all
           });
 
           return;

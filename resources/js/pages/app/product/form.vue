@@ -249,7 +249,7 @@ export default {
     },
     async _load(){
       this.loading = true;
-      await axios.get(`api/product/${this.idByRoute}`).then(response => {
+      await axios.get(`/api/product/${this.idByRoute}`).then(response => {
         if(response.data.success){
           return this.product = response.data.data;
         }
@@ -261,7 +261,7 @@ export default {
     },
     async _loadCategories(){
       this.loading = true;
-      await axios.get(`api/category?type=product`).then(response => {
+      await axios.get(`/api/category?type=product`).then(response => {
         if(response.data.success){
           return this.categories = response.data.data;
         }
@@ -278,7 +278,7 @@ export default {
       this.loading = true;
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
 
-      const response = !this.idByRoute ? await axios.post('api/product', this.product) : await axios.put(`api/product/${this.idByRoute}`, this.product);
+      const response = !this.idByRoute ? await axios.post('/api/product', this.product) : await axios.put(`/api/product/${this.idByRoute}`, this.product);
 
       this.loading = false;
 

@@ -206,7 +206,7 @@ export default {
       this.calendar.start_date_string = moment(start.date).format('LL');
       this.calendar.end_date_string = moment(end.date).format('LL');
 
-      await axios.get('api/appointment', { params }).then(response => {
+      await axios.get('/api/appointment', { params }).then(response => {
         if(response.data.success){
           response.data.data.map(appointment => {
             let date_start = appointment.time_start ? `${appointment.date_start} ${appointment.time_start}` : appointment.date_start;
@@ -251,7 +251,7 @@ export default {
     },
     async _loadCountClients(){
       this.loading = true;
-      await axios.get(`api/client/count`).then(response => {
+      await axios.get(`/api/client/count`).then(response => {
         if(response.data.success){
           return this.countClients = response.data.data.count;
         }

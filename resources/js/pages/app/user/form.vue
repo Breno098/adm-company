@@ -227,7 +227,7 @@ export default {
     },
     async _load(){
       this.loading = true;
-      await axios.get(`api/user/${this.idByRoute}`).then(response => {
+      await axios.get(`/api/user/${this.idByRoute}`).then(response => {
         if(response.data.success){
           this.user = {
             roles_format: [],
@@ -247,7 +247,7 @@ export default {
     },
     async _loadRoles(){
       this.loadingRole = true;
-      await axios.get(`api/role`).then(response => {
+      await axios.get(`/api/role`).then(response => {
         if(response.data.success){
           return this.roles = response.data.data;
         }
@@ -267,7 +267,7 @@ export default {
 
       this.user.roles = this.user.roles_format;
 
-      const response = !this.idByRoute ? await axios.post('api/user', this.user) : await axios.put(`api/user/${this.idByRoute}`, this.user);
+      const response = !this.idByRoute ? await axios.post('/api/user', this.user) : await axios.put(`/api/user/${this.idByRoute}`, this.user);
 
       this.user.roles_format = this.user.roles;
 

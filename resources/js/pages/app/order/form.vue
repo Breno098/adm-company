@@ -879,7 +879,7 @@ export default {
       let id = this.$route.params.id ? this.$route.params.id : this.order.id ? this.order.id : null;
 
       this.loading = true;
-      await axios.get(`api/order/${id}`).then(response => {
+      await axios.get(`/api/order/${id}`).then(response => {
         if(response.data.success){
           this.order = {
             form_of_payments_format: [],
@@ -899,7 +899,7 @@ export default {
     },
     async _loadClients(){
       this.loadingClients = true;
-      await axios.get(`api/client`).then(response => {
+      await axios.get(`/api/client`).then(response => {
         if(response.data.success){
           this.clients = response.data.data;
 
@@ -916,7 +916,7 @@ export default {
       let params = { client_id: this.order.client_id };
 
       this.loadingAddresses = true;
-      await axios.get(`api/address`, { params }).then(response => {
+      await axios.get(`/api/address`, { params }).then(response => {
         if(response.data.success){
           this.order.address_id = response.data.data.length > 0 ? response.data.data[0].id : null;
           return this.addresses = response.data.data;
@@ -929,7 +929,7 @@ export default {
       let params = { type: 'order' };
 
       this.loadingStatuses = true;
-      await axios.get(`api/status`, { params }).then(response => {
+      await axios.get(`/api/status`, { params }).then(response => {
         if(response.data.success){
           return this.statuses = response.data.data;
         }
@@ -939,7 +939,7 @@ export default {
     },
     async _loadProducts(){
       this.loadingProducts = true;
-      await axios.get(`api/product`).then(response => {
+      await axios.get(`/api/product`).then(response => {
         if(response.data.success){
           return this.products = response.data.data;
         }
@@ -949,7 +949,7 @@ export default {
     },
     async _loadServices(){
       this.loadingServices = true;
-      await axios.get(`api/service`).then(response => {
+      await axios.get(`/api/service`).then(response => {
         if(response.data.success){
           return this.services = response.data.data;
         }
@@ -959,7 +959,7 @@ export default {
     },
     async _loadPayments(){
       this.loadingPayment = true;
-      await axios.get(`api/payment`).then(response => {
+      await axios.get(`/api/payment`).then(response => {
         if(response.data.success){
           return this.payments = response.data.data;
         }
@@ -1022,7 +1022,7 @@ export default {
       this.order.amount = this.valueTotalWithDiscont;
       this.order.form_of_payments = this.order.form_of_payments_format;
 
-      const response = !id ? await axios.post('api/order', this.order) : await axios.put(`api/order/${id}`, this.order);
+      const response = !id ? await axios.post('/api/order', this.order) : await axios.put(`/api/order/${id}`, this.order);
 
       this.loading = false;
 

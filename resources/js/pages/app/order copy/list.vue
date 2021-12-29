@@ -122,7 +122,7 @@ export default {
     },
     async _loadStatuses(){
       this.table.loading = true;
-      await axios.get(`api/status?type=order`).then(response => {
+      await axios.get(`/api/status?type=order`).then(response => {
         if(response.data.success){
           return this.statuses = response.data.data;
         }
@@ -147,7 +147,7 @@ export default {
       }
 
       this.table.loading = true;
-      await axios.get(`api/order`, { params }).then(response => {
+      await axios.get(`/api/order`, { params }).then(response => {
         if(response.data.data.data.length === 0 && this.table.page != 1){
           this.table.page = 1;
           this._load()
@@ -165,7 +165,7 @@ export default {
     },
     async _delete(){
       this.loading = true;
-      await axios.delete(`api/order/${this.deleted.id}`).then(response => {
+      await axios.delete(`/api/order/${this.deleted.id}`).then(response => {
         if(response.data.success){
           this.dialog = false;
           this._load();

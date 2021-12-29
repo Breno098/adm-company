@@ -206,7 +206,7 @@ export default {
     },
     async _load(){
       this.loading = true;
-      await axios.get(`api/service/${this.idByRoute}`).then(response => {
+      await axios.get(`/api/service/${this.idByRoute}`).then(response => {
         if(response.data.success){
           return this.service = response.data.data;
         }
@@ -218,7 +218,7 @@ export default {
     },
     async _loadCategories(){
       this.loading = true;
-      await axios.get(`api/category?type=service`).then(response => {
+      await axios.get(`/api/category?type=service`).then(response => {
         if(response.data.success){
           return this.categories = response.data.data;
         }
@@ -235,7 +235,7 @@ export default {
       this.loading = true;
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
 
-      const response = !this.idByRoute ? await axios.post('api/service', this.service) : await axios.put(`api/service/${this.idByRoute}`, this.service);
+      const response = !this.idByRoute ? await axios.post('/api/service', this.service) : await axios.put(`/api/service/${this.idByRoute}`, this.service);
 
       this.loading = false;
 

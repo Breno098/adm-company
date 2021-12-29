@@ -21,7 +21,7 @@ class IndexService
     {
         return Client::with($relations)
             ->when($authorized, function (Builder $builder) {
-                return $builder->authorizedByCompany();
+                return $builder->authorizedTenant();
             })
             ->when(Arr::get($filters, 'name'), function (Builder $builder, $name) {
                 return $builder->where('name', 'like', "%{$name}%");

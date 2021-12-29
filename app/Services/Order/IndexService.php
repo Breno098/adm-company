@@ -21,7 +21,7 @@ class IndexService
     {
         return Order::with($relations)
             ->when($authorized, function (Builder $builder) {
-                return $builder->authorizedByCompany();
+                return $builder->authorizedTenant();
             })
             ->filterByStatusId(Arr::get($filters, 'status_id'))
             ->filterByStatusType(Arr::get($filters, 'status_type'))

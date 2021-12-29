@@ -108,7 +108,6 @@ export default {
   },
   methods: {
     async _start(){
-
       this.table.filters.status_id = this.statusIdByRoute;
 
       this._load();
@@ -123,7 +122,8 @@ export default {
       }
 
       this.table.loading = true;
-      await axios.get(`api/order`, { params }).then(response => {
+      await axios.get(`/api/order`, { params }).then(response => {
+        console.log(response.data);
         if(response.data.data.data.length === 0 && this.table.page != 1){
           this.table.page = 1;
           this._load()

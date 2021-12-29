@@ -19,11 +19,6 @@ class IndexService
     static public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false)
     {
         return Status::with($relations)
-            ->withCount([
-                'orders' => function($query) {
-                    $query->authorizedByCompany();
-                }
-            ])
             ->filterByType(Arr::get($filters, 'type'))
             ->when($orderBy, function (Builder $builder, $orderBy) {
                 $orderBy = explode(':', $orderBy);

@@ -74,7 +74,7 @@ export default {
       })
 
       await axios
-              .post('api/login', this.form)
+              .post('/api/login', this.form)
               .then(async (response) => {
                 this.$store.dispatch('auth/saveToken', {
                   token: response.data.token,

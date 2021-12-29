@@ -450,7 +450,7 @@ export default {
     },
     async _loadCategories(){
       this.loading = true;
-      await axios.get(`api/category?type=client`).then(response => {
+      await axios.get(`/api/category?type=client`).then(response => {
         if(response.data.success){
           return this.categories = response.data.data;
         }
@@ -467,7 +467,7 @@ export default {
       this.$refs.fireDialog.loading({ title: 'Buscando endereço' })
 
       let params = { cep };
-      await axios.get(`api/address/searchCep`, { params }).then(response => {
+      await axios.get(`/api/address/searchCep`, { params }).then(response => {
         if(response.data.data.erro){
           return this.$refs.fireDialog.error({ title: 'Error ao carregar endereço' })
         }
@@ -486,7 +486,7 @@ export default {
     },
     async _load(){
       this.loading = true;
-      await axios.get(`api/client/${this.idByRoute}`).then(response => {
+      await axios.get(`/api/client/${this.idByRoute}`).then(response => {
         if(response.data.success){
           return this.client = response.data.data;
         }
@@ -507,7 +507,7 @@ export default {
       this.loading = true;
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
 
-      const response = !this.idByRoute ? await axios.post('api/client', this.client) : await axios.put(`api/client/${this.idByRoute}`, this.client);
+      const response = !this.idByRoute ? await axios.post('/api/client', this.client) : await axios.put(`/api/client/${this.idByRoute}`, this.client);
 
       this.loading = false;
 

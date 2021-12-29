@@ -17,7 +17,7 @@ class CountService
     static public function run(array $filters = [], bool $authorized = true)
     {
         return Client::when($authorized, function (Builder $builder) {
-                return $builder->authorizedByCompany();
+                return $builder->authorizedTenant();
             })
             ->when(Arr::get($filters, 'name'), function (Builder $builder, $name) {
                 return $builder->where('name', 'like', "%{$name}%");

@@ -21,7 +21,7 @@ class IndexService
     {
         return EmployeeReceipt::with($relations)
             ->when($authorized, function (Builder $builder) {
-                return $builder->authorizedByCompany();
+                return $builder->authorizedTenant();
             })
             ->when(Arr::get($filters, 'date_start'), function (Builder $builder, $date_start) {
                 return $builder->where('date_start', '>=', "%{$date_start}%");

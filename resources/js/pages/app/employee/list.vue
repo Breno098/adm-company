@@ -233,7 +233,7 @@ export default {
       }
 
       this.table.loading = true;
-      await axios.get('api/employee', { params }).then(response => {
+      await axios.get('/api/employee', { params }).then(response => {
         if(response.data.data.data.length === 0 && this.table.page != 1){
           this.table.page = 1;
           this._load()
@@ -264,7 +264,7 @@ export default {
       if (ok) {
         this.$refs.fireDialog.loading({ title: 'Deletando' });
 
-        await axios.delete(`api/employee/${employee.id}`).then(response => {
+        await axios.delete(`/api/employee/${employee.id}`).then(response => {
           if(response.data.success){
             this._load();
             this.$refs.fireDialog.hide();
@@ -294,7 +294,7 @@ export default {
     },
     async _loadCategories(){
       this.table.loading = true;
-      await axios.get(`api/category?type=employee`).then(response => {
+      await axios.get(`/api/category?type=employee`).then(response => {
         if(response.data.success){
           this.categories = [
             { id: null, name: 'TODOS' },

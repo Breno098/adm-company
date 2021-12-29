@@ -352,7 +352,7 @@ export default {
     },
     async _load(){
       this.loading = true;
-      await axios.get(`api/appointment/${this.idByRoute}`).then(response => {
+      await axios.get(`/api/appointment/${this.idByRoute}`).then(response => {
         if(response.data.success){
           return this.appointment = response.data.data;
         }
@@ -364,7 +364,7 @@ export default {
     },
     async _loadClients(){
       this.loadingClients = true;
-      await axios.get(`api/client`).then(response => {
+      await axios.get(`/api/client`).then(response => {
         if(response.data.success){
           return this.clients = response.data.data;
         }
@@ -377,7 +377,7 @@ export default {
       let params = { client_id: this.appointment.client_id };
 
       this.loadingAddresses = true;
-      await axios.get(`api/address`, { params }).then(response => {
+      await axios.get(`/api/address`, { params }).then(response => {
         if(response.data.success){
           return this.addresses = response.data.data;
         }
@@ -403,7 +403,7 @@ export default {
 
       this.loading = true;
 
-      const response = !this.idByRoute ? await axios.post('api/appointment', this.appointment) : await axios.put(`api/appointment/${this.idByRoute}`, this.appointment);
+      const response = !this.idByRoute ? await axios.post('/api/appointment', this.appointment) : await axios.put(`/api/appointment/${this.idByRoute}`, this.appointment);
 
       this.loading = false;
 
@@ -428,7 +428,7 @@ export default {
       if (ok) {
         this.$refs.fireDialog.loading({ title: 'Deletando' });
 
-        await axios.delete(`api/appointment/${this.idByRoute}`).then(response => {
+        await axios.delete(`/api/appointment/${this.idByRoute}`).then(response => {
           if(response.data.success){
             this.$refs.fireDialog.success({ title: 'Deletado com sucesso' });
             return setTimeout(() => this.$router.go(-1), 1500);
