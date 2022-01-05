@@ -33,9 +33,12 @@ use Illuminate\Support\Facades\DB;
  * @property Appointment $appointment
  * @property Payment $formOfPayments
  *
- * @method Builder concluded()
- * @method Builder filterByStatusId(null|int $statusId)
- * @method Builder filterByStatusType(null|string $status_type)
+ * @method Order concluded()
+ * @method Order filterByStatusId(null|int $statusId)
+ * @method Order filterByStatusesIds(null|array $statusesIds)
+ * @method Order filterByStatusType(null|string $status_type)
+ * @method Order filterByNameClient(null|string $client_name)
+ * @method Order filterByAddress(null|string $address)
  */
 class Order extends BaseModel
 {
@@ -70,28 +73,9 @@ class Order extends BaseModel
         // 'status',
     ];
 
-    public function scopeFilterByStatusId(Builder $query, $statusId)
-    {
-        return $query->when($statusId, function (Builder $query, $statusId) {
-            return $query->where('status_id', $statusId);
-        });
-    }
-
-    public function scopeFilterByStatusType(Builder $query, ?string $status_type)
-    {
-        return $query ->when($status_type, function (Builder $builder, $status_type) {
-            switch ($status_type) {
-                case 'concluded': return $builder->concluded();
-                default: return $builder;
-            }
-        });
-    }
-
-    public function scopeConcluded(Builder $query)
-    {
-        return $query->where('status_id', 5);
-    }
-
+    /**
+     * Relationships
+     */
     public function status()
     {
         return $this->belongsTo(Status::class);
@@ -159,5 +143,58 @@ class Order extends BaseModel
     public function formOfPayments()
     {
         return $this->belongsToMany(Payment::class, 'form_of_payment_order', 'order_id', 'payment_id');
+    }
+
+      /**
+     * Scopes
+     */
+    public function scopeFilterByStatusId(Builder $query, $statusId)
+    {
+        return $query->when($statusId, function (Builder $query, $statusId) {
+            return $query->where('status_id', $statusId);
+        });
+    }
+
+    public function scopeFilterByStatusesIds(Builder $query, $statusesIds)
+    {
+        return $query->when($statusesIds, function (Builder $query, $statusesIds) {
+            return $query->whereIn('status_id', $statusesIds);
+        });
+    }
+
+    public function scopeFilterByStatusType(Builder $query, ?string $status_type)
+    {
+        return $query ->when($status_type, function (Builder $builder, $status_type) {
+            switch ($status_type) {
+                case 'concluded': return $builder->concluded();
+                default: return $builder;
+            }
+        });
+    }
+
+    public function scopeFilterByNameClient(Builder $builder, $client_name)
+    {
+        return $builder->when($client_name, function (Builder $builder, $client_name) {
+            return $builder->whereHas('client', function (Builder $builder) use ($client_name) {
+                    return $builder->where('name', 'LIKE', "%{$client_name}%");
+                });
+        });
+    }
+
+    public function scopeFilterByAddress(Builder $builder, $address)
+    {
+        return $builder->when($address, function (Builder $builder, $address) {
+            return $builder->whereHas('address', function (Builder $builder) use ($address) {
+                    return $builder->where('street', 'LIKE', "%{$address}%")
+                                ->orWhere('district', 'LIKE', "%{$address}%")
+                                ->orWhere('city', 'LIKE', "%{$address}%")
+                                ->orWhere('cep', 'LIKE', "%{$address}%");
+                });
+        });
+    }
+
+    public function scopeConcluded(Builder $query)
+    {
+        return $query->where('status_id', 5);
     }
 }

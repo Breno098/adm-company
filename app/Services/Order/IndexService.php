@@ -19,12 +19,15 @@ class IndexService
      */
     static public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false, bool $authorized = true)
     {
-        return Order::with($relations)
+        return Order::filterByNameClient(Arr::get($filters, 'client_name'))
+            ->filterByAddress(Arr::get($filters, 'address'))
+            ->filterByStatusId(Arr::get($filters, 'status_id'))
+            ->filterByStatusesIds(Arr::get($filters, 'statuses_ids'))
+            ->filterByStatusType(Arr::get($filters, 'status_type'))
+            ->with($relations)
             ->when($authorized, function (Builder $builder) {
                 return $builder->authorizedTenant();
             })
-            ->filterByStatusId(Arr::get($filters, 'status_id'))
-            ->filterByStatusType(Arr::get($filters, 'status_type'))
             ->when($orderBy, function (Builder $builder, $orderBy) {
                 $orderBy = explode(':', $orderBy);
                 return $builder->orderby($orderBy[0], $orderBy[1] ?? 'asc');
