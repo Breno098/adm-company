@@ -197,4 +197,52 @@ class Order extends BaseModel
     {
         return $query->where('status_id', 5);
     }
+
+    /**
+     * Acessors
+     */
+    public function getProgramationDateFormatAttribute()
+    {
+        $dateformat = '';
+
+        if($this->technical_visit_date){
+            $dateformat .= $this->technical_visit_date->format('d/m/Y');
+        }
+
+        if($this->technical_visit_date && $this->technical_visit_time){
+            $dateformat .= ' às ';
+        }
+
+        if($this->technical_visit_time){
+            $dateformat .= $this->technical_visit_time->format('H:i');
+        }
+
+        return $dateformat;
+    }
+
+    public function getPhonesAttribute()
+    {
+        $phones = [];
+
+        $this->client->contacts->each(function($contact) use (&$phones){
+            if($contact->type === 'TELEFONE' || $contact->type === 'CELULAR' || $contact->type === 'WHATSAPP'){
+                $phones[] = $contact->contact;
+            }
+        });
+
+        return implode(' | ', $phones);
+    }
+
+    public function getEmailsAttribute()
+    {
+        $emails = [];
+
+        $this->client->contacts->each(function($contact) use (&$emails){
+            if($contact->type === 'EMAIL'){
+                $emails[] = $contact->contact;
+            }
+        });
+
+        return implode(' | ', $emails);
+    }
 }

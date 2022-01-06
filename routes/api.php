@@ -21,6 +21,7 @@ use App\Http\Controllers\API\Tenant\StatusController;
 use App\Http\Controllers\API\Tenant\AddressController;
 use App\Http\Controllers\API\Tenant\PaymentController;
 use App\Http\Controllers\API\Tenant\AppointmentController;
+use App\Http\Controllers\API\Tenant\DocsController;
 use App\Http\Controllers\API\Tenant\EmployeeController;
 use App\Http\Controllers\API\Tenant\EmployeeReceiptController;
 use App\Http\Controllers\API\Tenant\ExpenseController;
@@ -80,6 +81,9 @@ Route::middleware('auth:api')->group( function () {
         Route::apiResource('role', RoleController::class)->only(['index']);
         Route::apiResource('position', PositionController::class)->only(['index']);
         Route::apiResource('employee-receipt', EmployeeReceiptController::class);
+
+        Route::get('docs/service-order/{order}/download', [DocsController::class, 'downloadOrderService']);
+        Route::get('docs/budget/{order}/download', [DocsController::class, 'downloadBudget']);
     });
 });
 

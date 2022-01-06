@@ -47,7 +47,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     color="grey lighten-1"
-                    @click="_generateDoc('serviceorder')"
+                    @click="serviceOrderDownload"
                     :loading="loading"
                     v-bind="attrs"
                     v-on="on"
@@ -1050,6 +1050,11 @@ export default {
     },
     _formatMoney(value){
       return value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+    },
+    async serviceOrderDownload(){
+      await this._store();
+
+      window.open(`/api/docs/service-order/${this.order.id}/download`);
     },
     async _generateDoc(nameRoute){
       this.tab = 3;

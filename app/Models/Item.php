@@ -28,7 +28,10 @@ class Item extends BaseModel
         'default_value' => 'float',
         'cost' => 'float',
     ];
- 
+
+    /**
+     * Scopes
+     */
     public function scopeFilterByType(Builder $builder, $type)
     {
         return $builder->when($type, function (Builder $builder, $type) {
@@ -43,6 +46,9 @@ class Item extends BaseModel
         });
     }
 
+    /**
+     * Relationships
+     */
     public function categories()
     {
         return $this->belongsToMany(Category::class);
