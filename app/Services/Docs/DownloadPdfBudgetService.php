@@ -43,8 +43,6 @@ class DownloadPdfBudgetService
 
         $now = now()->format('d_m_Y_H_i_s');
 
-        return $this->pdf->stream();
-
         return $this->pdf->download("orcamento_{$order->id}_{$now}.pdf");
     }
 

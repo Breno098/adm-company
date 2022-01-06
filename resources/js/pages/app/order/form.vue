@@ -29,7 +29,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     color="grey"
-                    @click="_generateDoc('budget')"
+                    @click="budgetDownload"
                     :loading="loading"
                     v-bind="attrs"
                     v-on="on"
@@ -1055,6 +1055,11 @@ export default {
       await this._store();
 
       window.open(`/api/docs/service-order/${this.order.id}/download`);
+    },
+     async budgetDownload(){
+      await this._store();
+
+      window.open(`/api/docs/budget/${this.order.id}/download`);
     },
     async _generateDoc(nameRoute){
       this.tab = 3;
