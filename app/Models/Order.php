@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Number\NumberExtensive;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,6 +24,11 @@ use Illuminate\Support\Facades\DB;
  * @property string $warranty_conditions
  * @property string $installments
  * @property string $comments
+ *
+ * @property-read string $amount_to_currency
+ * @property-read string $amount_to_currency_extensive
+ *
+ * @property-read string $discount_amount_to_currency
  *
  * @property Status $status
  * @property Client $client
@@ -244,5 +250,20 @@ class Order extends BaseModel
         });
 
         return implode(' | ', $emails);
+    }
+
+    public function getAmountToCurrencyAttribute(): string
+    {
+        return $this->amount ? 'R$ ' . number_format($this->amount,2,",",".") : 'R$ 0,00';
+    }
+
+    public function getAmountToCurrencyExtensiveAttribute(): string
+    {
+        return $this->amount ? (new NumberExtensive($this->amount))->toCurrency() : '';
+    }
+
+    public function getDiscountAmountToCurrencyAttribute(): string
+    {
+        return $this->discount_amount ? 'R$ ' . number_format($this->discount_amount,2,",",".") : 'R$ 0,00';
     }
 }

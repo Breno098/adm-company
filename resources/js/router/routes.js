@@ -6,11 +6,6 @@ export default [
   { path: '/order', name: 'order.index', component: page('app/order/index.vue') },
   { path: '/order/create', name: 'order.create', component: page('app/order/form.vue') },
   { path: '/order/show/:id', name: 'order.show', component: page('app/order/form.vue') },
-  { path: '/order/:statusId?', name: 'order.list', component: page('app/order/list.vue') },
-
-  { path: '/budget/:order', name: 'budget', component: page('app/order/budget.vue') },
-  { path: '/serviceorder/:order', name: 'serviceorder', component: page('app/order/serviceorder.vue') },
-  { path: '/receipt/:order', name: 'receipt', component: page('app/order/receipt.vue') },
 
   { path: '/appointment', name: 'appointment.index', component: page('app/appointment/list.vue') },
   { path: '/appointment/create', name: 'appointment.create', component: page('app/appointment/form.vue') },

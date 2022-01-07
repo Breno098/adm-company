@@ -64,7 +64,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     color="green lighten-2"
-                    @click="_generateDoc('receipt')"
+                    @click="receiptDownload"
                     :loading="loading"
                     v-bind="attrs"
                     v-on="on"
@@ -1052,18 +1052,6 @@ export default {
       return value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
     },
     async serviceOrderDownload(){
-      await this._store();
-
-      window.open(`/api/docs/service-order/${this.order.id}/download`);
-    },
-     async budgetDownload(){
-      await this._store();
-
-      window.open(`/api/docs/budget/${this.order.id}/download`);
-    },
-    async _generateDoc(nameRoute){
-      this.tab = 3;
-
       if(this.order.form_of_payments_format.length === 0){
         this.$refs.fireDialog.warning({
           title: 'Formas de pagamento',
@@ -1073,8 +1061,26 @@ export default {
       }
 
       await this._store();
-      let routeData = this.$router.resolve({ name: nameRoute, params: { order: JSON.stringify(this.order) } });
-      window.open(routeData.href, '_blank');
+
+      window.open(`/api/docs/service-order/${this.order.id}/download`);
+    },
+     async budgetDownload(){
+      if(this.order.form_of_payments_format.length === 0){
+        this.$refs.fireDialog.warning({
+          title: 'Formas de pagamento',
+          message: 'Selecione as fomar de pagamento aceitas (que sairam no Orçamento/Ordem de serviço)'
+        });
+        return;
+      }
+
+      await this._store();
+
+      window.open(`/api/docs/budget/${this.order.id}/download`);
+    },
+    async receiptDownload(){
+      await this._store();
+
+      window.open(`/api/docs/receipt/${this.order.id}/download`);
     },
     async _generateAppointment(){
       if(await this._store()){

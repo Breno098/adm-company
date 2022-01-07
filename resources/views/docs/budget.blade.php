@@ -30,8 +30,12 @@
         </div>
       </div>
 
-      <div style="text-align: center; background: #eee; padding: 10px; font-size: 25px">
+      <div style="text-align: center; background: #eee; padding-top: 5px; font-size: 22px">
         ORÇAMENTO
+      </div>
+
+      <div style="text-align: center; background: #eee; padding: 3px; font-size: 12px">
+        {{ $order->id }}
       </div>
 
       <div style="padding: 10px; font-size: 12px">
@@ -86,9 +90,12 @@
                 @foreach ($order->services ?? [] as $service)
                   <tr style="font-size: 12px; line-height: 150%">
                     <td> - {{ $service->name }} </td>
-                    <td> {{ $service->value ? "R$ {$service->value}" : '' }} </td>
+                    <td> R$ {{ number_format($service->value ?? 0, 2, ",", ".") }} </td>
                     <td> {{ $service->quantity }} </td>
-                    <td style="text-align: right"> {{ $service->value && $service->quantity ? "R$ " . $service->value * $service->quantity : '' }} </td>
+                    @php
+                      $total = $service->value && $service->quantity ? number_format($service->value * $service->quantity, 2, ",", ".") : '0,00';
+                    @endphp
+                    <td style="text-align: right"> {{ "R$ {$total}" }} </td>
                   </tr>
                 @endforeach
               </tbody>
@@ -115,9 +122,12 @@
                 @foreach ($order->products ?? [] as $product)
                   <tr style="font-size: 12px; line-height: 150%">
                     <td> - {{ $product->name }} </td>
-                    <td> {{ $product->value ? "R$ {$product->value}" : '' }} </td>
+                    <td> R$ {{ number_format($product->value ?? 0, 2, ",", ".") }} </td>
                     <td> {{ $product->quantity }} </td>
-                    <td style="text-align: right"> {{ $product->value && $product->quantity ? "R$ " . $product->value * $product->quantity : '' }} </td>
+                    @php
+                      $total = $product->value && $product->quantity ? number_format($product->value * $product->quantity, 2, ",", ".") : '0,00';
+                    @endphp
+                    <td style="text-align: right"> {{ "R$ {$total}" }} </td>
                   </tr>
                 @endforeach
               </tbody>
@@ -127,12 +137,12 @@
 
       @if($order->discount_amount)
         <div style="padding: 10px; font-size: 12px; text-align: right; margin-top: 20px">
-          Desconto: {{ "R$ {$order->discount_amount}" }}
+          Desconto: {{ $order->discount_amount_to_currency }}
         </div>
       @endif
 
       <div style="background: #eee; padding: 10px; font-size: 15px; text-align: right">
-        Valor total: {{ $order->amount ? "R$ {$order->amount}" : ''}}
+        Valor total: {{ $order->amount_to_currency }}
       </div>
 
       <div style="padding: 10px; font-size: 11px; margin-top: 10px">

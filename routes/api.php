@@ -84,6 +84,7 @@ Route::middleware('auth:api')->group( function () {
 
         Route::get('docs/service-order/{order}/download', [DocsController::class, 'downloadOrderService']);
         Route::get('docs/budget/{order}/download', [DocsController::class, 'downloadBudget']);
+        Route::get('docs/receipt/{order}/download', [DocsController::class, 'downloadReceipt']);
     });
 });
 
