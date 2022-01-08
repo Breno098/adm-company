@@ -4,30 +4,28 @@ namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
 use Illuminate\Http\Request;
-use App\Http\Requests\EmployeeReceipt\StoreRequest;
-use App\Http\Requests\EmployeeReceipt\UpdateRequest;
+use App\Http\Requests\EmployeeReceipt\StoreEmployeeReceiptRequest;
+use App\Http\Requests\EmployeeReceipt\UpdateEmployeeReceiptRequest;
 use App\Models\Employee;
 use App\Models\EmployeeReceipt;
-use App\Services\EmployeeReceipt\DownloadPdfService;
-use App\Services\EmployeeReceipt\StoreService;
-use App\Services\EmployeeReceipt\UpdateService;
-use App\Services\EmployeeReceipt\IndexService;
-use App\Services\Image\LogoBase64;
-use Barryvdh\DomPDF\PDF;
-use Illuminate\Support\Facades\Storage;
+use App\Services\EmployeeReceipt\DownloadPdfEmployeeReceiptService;
+use App\Services\EmployeeReceipt\IndexEmployeeReceiptService;
+use App\Services\EmployeeReceipt\StoreEmployeeReceiptService;
+use App\Services\EmployeeReceipt\UpdateEmployeeReceiptService;
 
 class EmployeeReceiptController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * @param Request $request
+     * @param IndexEmployeeReceiptService $indexEmployeeReceiptService
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, IndexEmployeeReceiptService $indexEmployeeReceiptService)
     {
         $this->authorize('employee_receipt_index');
 
-        $employeesReceipt = IndexService::run(
+        $employeesReceipt = $indexEmployeeReceiptService->run(
             $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
@@ -38,26 +36,25 @@ class EmployeeReceiptController extends BaseApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreEmployeeReceiptRequest $storeEmployeeReceiptRequest
+     * @param StoreEmployeeReceiptService $storeEmployeeReceiptService
      *
-     * @param  StoreRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRequest $request)
+    public function store(StoreEmployeeReceiptRequest $storeEmployeeReceiptRequest, StoreEmployeeReceiptService $storeEmployeeReceiptService)
     {
         $this->authorize('employee_receipt_add');
 
-        $data = $request->validated();
+        $data = $storeEmployeeReceiptRequest->validated();
 
-        $employee = StoreService::run($data);
+        $employee = $storeEmployeeReceiptService->run($data);
 
         return $this->sendResponse($employee, 'Employee created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * @param EmployeeReceipt $employeeReceipt
      *
-     * @param  EmployeeReceipt $employeeReceipt
      * @return \Illuminate\Http\Response
      */
     public function show(EmployeeReceipt $employeeReceipt)
@@ -70,27 +67,30 @@ class EmployeeReceiptController extends BaseApiController
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param UpdateEmployeeReceiptRequest $updateEmployeeReceiptRequest
+     * @param UpdateEmployeeReceiptService $updateEmployeeReceiptService
+     * @param Employee $employee
      *
-     * @param  UpdateRequest $request
-     * @param  Employee $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, EmployeeReceipt $employeeReceipt)
+    public function update(
+        UpdateEmployeeReceiptRequest $updateEmployeeReceiptRequest,
+        UpdateEmployeeReceiptService $updateEmployeeReceiptService,
+        EmployeeReceipt $employeeReceipt
+    )
     {
         $this->authorize('employee_receipt_update');
 
-        $data = $request->validated();
+        $data = $updateEmployeeReceiptRequest->validated();
 
-        $employee = UpdateService::run($employeeReceipt, $data);
+        $employee = $updateEmployeeReceiptService->run($employeeReceipt, $data);
 
         return $this->sendResponse($employee, 'Employee Receipt updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
      * @param EmployeeReceipt $employeeReceipt
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(EmployeeReceipt $employeeReceipt)
@@ -104,13 +104,14 @@ class EmployeeReceiptController extends BaseApiController
 
     /**
      * @param EmployeeReceipt $employeeReceipt
-     * @param PDF $pdf
-     * @param LogoBase64 $logoBase64
+     * @param DownloadPdfEmployeeReceiptService $downloadPdfEmployeeReceiptService
+     *
+     * @return \Illuminate\Http\Response
      */
-    public function download(EmployeeReceipt $employeeReceipt, DownloadPdfService $downloadPdfService)
+    public function download(EmployeeReceipt $employeeReceipt, DownloadPdfEmployeeReceiptService $downloadPdfEmployeeReceiptService)
     {
         $this->authorize('employee_receipt_download');
 
-        return $downloadPdfService->run($employeeReceipt);
+        return $downloadPdfEmployeeReceiptService->run($employeeReceipt);
     }
 }

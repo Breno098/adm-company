@@ -3,19 +3,20 @@
 namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
-use App\Services\Position\IndexService;
+use App\Services\Position\IndexPositionService;
 use Illuminate\Http\Request;
 
 class PositionController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
+     * @param IndexPositionService $indexPositionService
+     *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, IndexPositionService $indexPositionService)
     {
-        $position = IndexService::run(
+        $position = $indexPositionService->run(
             $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),

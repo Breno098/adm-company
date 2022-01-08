@@ -3,26 +3,27 @@
 namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
+use App\Http\Requests\Expense\StoreExpenseRequest;
+use App\Http\Requests\Expense\UpdateExpenseRequest;
 use Illuminate\Http\Request;
-use App\Http\Requests\ExpenseRequest;
 use App\Models\Expense;
-use App\Services\Expense\IndexService;
-use App\Services\Expense\StoreService;
-use App\Services\Expense\UpdateService;
+use App\Services\Expense\IndexExpenseService;
+use App\Services\Expense\StoreExpenseService;
+use App\Services\Expense\UpdateExpenseService;
 
 class ExpenseController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * @param Request  $request
+     * @param IndexExpenseService $indexExpenseService
      *
-     * @param  Request  $request
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request, IndexExpenseService $indexExpenseService)
     {
         $this->authorize('expense_index');
 
-        $expenses = IndexService::run(
+        $expenses = $indexExpenseService->run(
             $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
@@ -33,27 +34,26 @@ class ExpenseController extends BaseApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreExpenseRequest $storeExpenseRequest
+     * @param StoreExpenseService $storeExpenseService
      *
-     * @param ExpenseRequest $request
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(ExpenseRequest $request)
+    public function store(StoreExpenseRequest $storeExpenseRequest, StoreExpenseService $storeExpenseService)
     {
         $this->authorize('expense_add');
 
-        $data = $request->validated();
+        $data = $storeExpenseRequest->validated();
 
-        $expense = StoreService::run($data);
+        $expense = $storeExpenseService->run($data);
 
         return $this->sendResponse($expense, 'Expense created successfully.');
     }
 
     /**
-     * Display the specified resource.
-     *
      * @param Expense $expense
-     * @return Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Expense $expense)
     {
@@ -63,28 +63,31 @@ class ExpenseController extends BaseApiController
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param ExpenseRequest $request
+     * @param UpdateExpenseRequest $updateExpenseRequest
+     * @param UpdateExpenseService $updateExpenseService
      * @param Expense $expense
-     * @return Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(ExpenseRequest $request, Expense $expense)
+    public function update(
+        UpdateExpenseRequest $updateExpenseRequest,
+        UpdateExpenseService $updateExpenseService,
+        Expense $expense
+    )
     {
         $this->authorize('expense_update');
 
-        $data = $request->validated();
+        $data = $updateExpenseRequest->validated();
 
-        $expense = UpdateService::run($expense, $data);
+        $expense = $updateExpenseService->run($expense, $data);
 
         return $this->sendResponse($expense, 'Expense updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
      * @param Expense $expense
-     * @return Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Expense $expense)
     {

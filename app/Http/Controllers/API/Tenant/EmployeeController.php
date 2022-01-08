@@ -4,25 +4,29 @@ namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
 use Illuminate\Http\Request;
-use App\Http\Requests\Employee\StoreRequest;
-use App\Http\Requests\Employee\UpdateRequest;
+use App\Http\Requests\Employee\StoreEmployeeRequest;
+use App\Http\Requests\Employee\UpdateEmployeeRequest;
 use App\Models\Employee;
+use App\Services\Employee\IndexEmployeeService;
 use App\Services\Employee\IndexService;
+use App\Services\Employee\StoreEmployeeService;
 use App\Services\Employee\StoreService;
+use App\Services\Employee\UpdateEmployeeService;
 use App\Services\Employee\UpdateService;
 
 class EmployeeController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * @param Request $request
+     * @param IndexEmployeeService $indexEmployeeService
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, IndexEmployeeService $indexEmployeeService)
     {
         $this->authorize('employee_index');
 
-        $employees = IndexService::run(
+        $employees = $indexEmployeeService->run(
             $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
@@ -33,26 +37,25 @@ class EmployeeController extends BaseApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreEmployeeRequest $storeEmployeeRequest
+     * @param StoreEmployeeService $storeEmployeeService
      *
-     * @param  StoreRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRequest $request)
+    public function store(StoreEmployeeRequest $storeEmployeeRequest, StoreEmployeeService $storeEmployeeService)
     {
         $this->authorize('employee_add');
 
-        $data = $request->validated();
+        $data = $storeEmployeeRequest->validated();
 
-        $employee = StoreService::run($data);
+        $employee = $storeEmployeeService->run($data);
 
         return $this->sendResponse($employee, 'Employee created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * @param Employee $employee
      *
-     * @param  Employee $employee
      * @return \Illuminate\Http\Response
      */
     public function show(Employee $employee)
@@ -65,26 +68,28 @@ class EmployeeController extends BaseApiController
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param UpdateEmployeeRequest $updateEmployeeRequest
+     * @param UpdateEmployeeService $updateEmployeeService
+     * @param Employee $employee
      *
-     * @param  UpdateRequest $request
-     * @param  Employee $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Employee $employee)
+    public function update(
+        UpdateEmployeeRequest $updateEmployeeRequest,
+        UpdateEmployeeService $updateEmployeeService,
+        Employee $employee
+    )
     {
         $this->authorize('employee_update');
 
-        $data = $request->validated();
+        $data = $updateEmployeeRequest->validated();
 
-        $employee = UpdateService::run($employee, $data);
+        $employee = $updateEmployeeService->run($employee, $data);
 
         return $this->sendResponse($employee, 'Employee updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
      * @param Employee $employee
      * @return \Illuminate\Http\Response
      */

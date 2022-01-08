@@ -3,25 +3,27 @@
 namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
+use App\Http\Requests\Service\StoreServiceRequest;
+use App\Http\Requests\Service\UpdateServiceRequest;
 use Illuminate\Http\Request;
-use App\Http\Requests\ServiceRequest;
 use App\Models\Service;
-use App\Services\Service\IndexService;
-use App\Services\Service\StoreService;
-use App\Services\Service\UpdateService;
+use App\Services\Service\IndexServiceService;
+use App\Services\Service\StoreServiceService;
+use App\Services\Service\UpdateServiceService;
 
 class ServiceController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * @param Request $request
+     * @param IndexServiceService $indexServiceService
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, IndexServiceService $indexServiceService)
     {
         $this->authorize('service_index');
 
-        $item = IndexService::run(
+        $item = $indexServiceService->run(
             $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
@@ -32,26 +34,25 @@ class ServiceController extends BaseApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreServiceRequest $storeServiceRequest
+     * @param StoreServiceService $storeServiceService
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ServiceRequest $request)
+    public function store(StoreServiceRequest $storeServiceRequest, StoreServiceService $storeServiceService)
     {
         $this->authorize('service_add');
 
-        $data = $request->validated();
+        $data = $storeServiceRequest->validated();
 
-        $item = StoreService::run($data);
+        $item = $storeServiceService->run($data);
 
         return $this->sendResponse($item, 'Service created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * @param Service $service
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show(Service $service)
@@ -64,19 +65,21 @@ class ServiceController extends BaseApiController
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
+     * @param UpdateServiceRequest $updateServiceRequest
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ServiceRequest $request, Service $service)
+    public function update(
+        UpdateServiceRequest $updateServiceRequest,
+        UpdateServiceService $updateServiceService,
+        Service $service
+    )
     {
         $this->authorize('service_update');
 
-        $data = $request->validated();
+        $data = $updateServiceRequest->validated();
 
-        $service = UpdateService::run($service, $data);
+        $service = $updateServiceService->run($service, $data);
 
         return $this->sendResponse($service, 'Service updated successfully.');
     }
@@ -84,7 +87,7 @@ class ServiceController extends BaseApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Service $service
      * @return \Illuminate\Http\Response
      */
     public function destroy(Service $service)

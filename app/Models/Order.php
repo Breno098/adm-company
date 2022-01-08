@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 /**
  * @package App\Models
@@ -15,34 +16,31 @@ use Illuminate\Support\Facades\DB;
  * @property string $type
  * @property float $amount
  * @property float $amount_paid
- * @property Date $execution_date
- * @property Date $technical_visit_date
- * @property DateTime $technical_visit_time
+ * @property Carbon $execution_date
+ * @property Carbon $technical_visit_date
+ * @property Carbon $technical_visit_time
  * @property float $discount_amount
  * @property string $discount_percentage
  * @property int $warranty_days
  * @property string $warranty_conditions
- * @property string $installments
  * @property string $comments
+ * @property string $status
+ * @property string $payment_status
+ * @property int $number_of_installments
  *
  * @property-read string $amount_to_currency
  * @property-read string $amount_to_currency_extensive
- *
  * @property-read string $discount_amount_to_currency
  *
- * @property Status $status
  * @property Client $client
  * @property Address $address
- * @property Item $items
- * @property Item $products
- * @property Item $services
+ * @property Installment[]|Collection $installments
+ * @property Item[]|Collection $products
+ * @property Item[]|Collection $services
  * @property Appointment $appointment
- * @property Payment $formOfPayments
+ * @property Payment[]|Collection $formOfPayments
  *
- * @method Order concluded()
- * @method Order filterByStatusId(null|int $statusId)
- * @method Order filterByStatusesIds(null|array $statusesIds)
- * @method Order filterByStatusType(null|string $status_type)
+ * @method Order filterByStatus(null|array|int $status)
  * @method Order filterByNameClient(null|string $client_name)
  * @method Order filterByAddress(null|string $address)
  */
@@ -62,8 +60,10 @@ class Order extends BaseModel
         'discount_percentage',
         'warranty_days',
         'warranty_conditions',
-        'installments',
-        'comments'
+        'comments',
+        'status',
+        'payment_status',
+        'number_of_installments'
     ];
 
     protected $casts = [
@@ -75,18 +75,9 @@ class Order extends BaseModel
         'discount_percentage' => 'float',
     ];
 
-    protected $with = [
-        // 'status',
-    ];
-
     /**
      * Relationships
      */
-    public function status()
-    {
-        return $this->belongsTo(Status::class);
-    }
-
     public function client()
     {
         return $this->belongsTo(Client::class);
@@ -151,30 +142,22 @@ class Order extends BaseModel
         return $this->belongsToMany(Payment::class, 'form_of_payment_order', 'order_id', 'payment_id');
     }
 
+    public function installments()
+    {
+        return $this->hasMany(Installment::class);
+    }
+
       /**
      * Scopes
      */
-    public function scopeFilterByStatusId(Builder $query, $statusId)
+    public function scopeFilterByStatus(Builder $query, $status)
     {
-        return $query->when($statusId, function (Builder $query, $statusId) {
-            return $query->where('status_id', $statusId);
-        });
-    }
-
-    public function scopeFilterByStatusesIds(Builder $query, $statusesIds)
-    {
-        return $query->when($statusesIds, function (Builder $query, $statusesIds) {
-            return $query->whereIn('status_id', $statusesIds);
-        });
-    }
-
-    public function scopeFilterByStatusType(Builder $query, ?string $status_type)
-    {
-        return $query ->when($status_type, function (Builder $builder, $status_type) {
-            switch ($status_type) {
-                case 'concluded': return $builder->concluded();
-                default: return $builder;
+        return $query->when($status, function (Builder $query, $status) {
+            if(is_array($status)){
+                return $query->whereIn('status', $status);
             }
+
+            return $query->where('status', $status);
         });
     }
 
@@ -197,11 +180,6 @@ class Order extends BaseModel
                                 ->orWhere('cep', 'LIKE', "%{$address}%");
                 });
         });
-    }
-
-    public function scopeConcluded(Builder $query)
-    {
-        return $query->where('status_id', 5);
     }
 
     /**

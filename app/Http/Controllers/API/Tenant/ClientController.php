@@ -3,26 +3,27 @@
 namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
+use App\Http\Requests\Client\StoreClientRequest;
+use App\Http\Requests\Client\UpdateClientRequest;
 use Illuminate\Http\Request;
-use App\Http\Requests\ClientRequest;
+use App\Services\Client\IndexClientService;
+use App\Services\Client\StoreClientService;
+use App\Services\Client\UpdateClientService;
 use App\Models\Client;
-use App\Services\Client\CountService;
-use App\Services\Client\IndexService;
-use App\Services\Client\StoreService;
-use App\Services\Client\UpdateService;
 
 class ClientController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * @param Request $request
+     * @param IndexClientService $indexClientService
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, IndexClientService $indexClientService)
     {
         $this->authorize('client_index');
 
-        $clients = IndexService::run(
+        $clients = $indexClientService->run(
             $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
@@ -33,26 +34,25 @@ class ClientController extends BaseApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreClientRequest $storeClientRequest
+     * @param StoreClientService $storeClientService
      *
-     * @param  \Illuminate\Http\ClientRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ClientRequest $request)
+    public function store(StoreClientRequest $storeClientRequest, StoreClientService $storeClientService)
     {
         $this->authorize('client_add');
 
-        $data = $request->validated();
+        $data = $storeClientRequest->validated();
 
-        $client = StoreService::run($data);
+        $client = $storeClientService->run($data);
 
         return $this->sendResponse($client, 'Client created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * @param Client $client
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show(Client $client)
@@ -65,27 +65,30 @@ class ClientController extends BaseApiController
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param UpdateClientRequest $updateClientRequest
+     * @param UpdateClientService $updateClientService
+     * @param Client $client
      *
-     * @param  \Illuminate\Http\ClientRequest  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ClientRequest $request, Client $client)
+    public function update(
+        UpdateClientRequest $updateClientRequest,
+        UpdateClientService $updateClientService,
+        Client $client
+    )
     {
         $this->authorize('client_update');
 
-        $data = $request->validated();
+        $data = $updateClientRequest->validated();
 
-        $client = UpdateService::run($client, $data);
+        $client = $updateClientService->run($client, $data);
 
         return $this->sendResponse($client, 'Client updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @param Client $client
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Client $client)
@@ -97,10 +100,18 @@ class ClientController extends BaseApiController
         return $this->sendResponse([], 'Client deleted successfully.');
     }
 
-    public function count(Request $request)
+    /**
+     * @param Request $request
+     * @param IndexClientService $indexClientService
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function count(Request $request, IndexClientService $indexClientService)
     {
+        $clients = $indexClientService->run($request->query());
+
         return $this->sendResponse([
-            'count' => CountService::run($request->query()),
-        ], 'Total count clients.');
+            'count' => $clients->count()
+        ], 'Count clients.');
     }
 }

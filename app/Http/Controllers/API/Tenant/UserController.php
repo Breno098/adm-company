@@ -3,26 +3,28 @@
 namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
-use App\Http\Requests\User\StoreRequest;
-use App\Http\Requests\User\UpdateRequest;
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Services\User\IndexService;
-use App\Services\User\StoreService;
+use App\Services\User\IndexUserService;
+use App\Services\User\StoreUserService;
 use App\Services\User\UpdateService;
+use App\Services\User\UpdateUserService;
 
 class UserController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * @param Request $request
+     * @param IndexUserService $indexUserService
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, IndexUserService $indexUserService)
     {
         $this->authorize('user_index');
 
-        $users = IndexService::run(
+        $users = $indexUserService->run(
             $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
@@ -33,26 +35,25 @@ class UserController extends BaseApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreUserRequest $storeUserRequest
+     * @param StoreUserService $storeUserService
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRequest $request)
+    public function store(StoreUserRequest $storeUserRequest, StoreUserService $storeUserService)
     {
         $this->authorize('user_add');
 
-        $data = $request->validated();
+        $data = $storeUserRequest->validated();
 
-        $client = StoreService::run($data);
+        $client = $storeUserService->run($data);
 
         return $this->sendResponse($client, 'User created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * @param User $user
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show(User $user)
@@ -63,31 +64,34 @@ class UserController extends BaseApiController
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param UpdateUserRequest $updateUserRequest
+     * @param UpdateUserService $updateUserService
+     * @param User $user
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, User $user)
+    public function update(
+        UpdateUserRequest $updateUserRequest,
+        UpdateUserService $updateUserService,
+        User $user
+    )
     {
         $this->authorize('user_update');
 
-        if($user->id === $request->user()->id){
+        if($user->id === $updateUserRequest->user()->id){
             return $this->sendError('Action not allowed', [], 403);
         }
 
-        $data = $request->validated();
+        $data = $updateUserRequest->validated();
 
-        $user = UpdateService::run($user, $data);
+        $user = $updateUserService->run($user, $data);
 
         return $this->sendResponse($user, 'User updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @param User $user
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(User $user)

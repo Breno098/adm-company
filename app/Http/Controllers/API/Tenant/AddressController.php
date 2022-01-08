@@ -3,36 +3,22 @@
 namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
-use App\Services\Address\IndexService;
-use App\Services\Address\SearcheCep;
+use App\Http\Requests\Tenant\Address\SeachCepRequest;
+use App\Services\Address\SearcheCepService;
 use Illuminate\Http\Request;
 
 class AddressController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
-     * @param  \Illuminate\Http\Request  $request
+     * @param  SeachCepRequest $request
+     *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function searchCep(SeachCepRequest $request, SearcheCepService $searcheCepService)
     {
-        $addresses = IndexService::run(
-            $request->query(),
-            $request->get('relations', []),
-            $request->get('itemsPerPage', false),
-        );
+        $data = $request->validated();
 
-        return $this->sendResponse($addresses, 'Addresses retrieved successfully.');
-    }
-
-    /**
-     * Display a listing of the resource.
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function searchCep(Request $request)
-    {
-        $cep = SearcheCep::run( $request->get('cep') );
+        $cep = $searcheCepService->run($data['cep']);
 
         if(!$cep){
             return $this->sendError('CEP not found', []);

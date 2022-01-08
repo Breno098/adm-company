@@ -3,25 +3,27 @@
 namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
+use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 use Illuminate\Http\Request;
-use App\Http\Requests\ProductRequest;
 use App\Models\Product;
-use App\Services\Product\IndexService;
-use App\Services\Product\StoreService;
-use App\Services\Product\UpdateService;
+use App\Services\Product\IndexProductService;
+use App\Services\Product\StoreProductService;
+use App\Services\Product\UpdateProductService;
 
 class ProductController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * @param Request $request
+     * @param IndexProductService $indexProductService
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, IndexProductService $indexProductService)
     {
         $this->authorize('product_index');
 
-        $item = IndexService::run(
+        $item = $indexProductService->run(
             $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
@@ -32,26 +34,25 @@ class ProductController extends BaseApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreProductRequest $storeProductRequest
+     * @param StoreProductService $storeProductService
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductRequest $request)
+    public function store(StoreProductRequest $storeProductRequest, StoreProductService $storeProductService)
     {
         $this->authorize('product_add');
 
-        $data = $request->validated();
+        $data = $storeProductRequest->validated();
 
-        $item = StoreService::run($data);
+        $item = $storeProductService->run($data);
 
         return $this->sendResponse($item, 'Product created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * @param Product $product
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show(Product $product)
@@ -64,27 +65,30 @@ class ProductController extends BaseApiController
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param UpdateProductRequest $updateProductRequest
+     * @param UpdateProductService $updateProductService
+     * @param Product $product
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductRequest $request, Product $product)
+    public function update(
+        UpdateProductRequest $updateProductRequest,
+        UpdateProductService $updateProductService,
+        Product $product
+    )
     {
         $this->authorize('product_update');
 
-        $data = $request->validated();
+        $data = $updateProductRequest->validated();
 
-        $product = UpdateService::run($product, $data);
+        $product = $updateProductService->run($product, $data);
 
         return $this->sendResponse($product, 'Product updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @param Product $product
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Product $product)
