@@ -71,7 +71,7 @@
         </p>
       </div>
 
-      @if($order->services)
+      @if($order->services->count())
         <div style="text-align: center; background: #eee; padding: 10px; font-size: 18px">
           SERVIÇOS | MÃO DE OBRA
         </div>
@@ -103,7 +103,7 @@
         </div>
       @endif
 
-      @if($order->products)
+      @if($order->products->count())
         <div style="text-align: center; background: #eee; padding: 10px; font-size: 18px">
           PRODUTOS
         </div>
