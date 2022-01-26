@@ -4,10 +4,22 @@ namespace App\Services\Order;
 
 use App\Models\Item;
 use App\Models\Order;
+use App\Services\Installment\StoreInstallmentByOrderService;
 use Illuminate\Support\Arr;
+use App\Services\Installment\StoreInstallmentService;
 
 class StoreOrderService
 {
+    protected StoreInstallmentByOrderService $storeInstallmentByOrderService;
+
+    /**
+     * @param StoreInstallmentByOrderService $storeInstallmentByOrderService
+     */
+    public function __construct(StoreInstallmentByOrderService $storeInstallmentByOrderService)
+    {
+        $this->storeInstallmentByOrderService = $storeInstallmentByOrderService;
+    }
+
     /**
      * @param  array  $data
      *
@@ -24,6 +36,10 @@ class StoreOrderService
         $this->insertServices($data['services'] ?? [], $order);
 
         $order->save();
+
+        foreach ($data['installments'] ?? [] as $installment) {
+            $this->storeInstallmentByOrderService->run($installment, $order);
+        }
 
         return $order;
     }

@@ -27,6 +27,7 @@ use Illuminate\Support\Carbon;
  * @property string $status
  * @property string $payment_status
  * @property int $number_of_installments
+ * @property string $accepted_payment_methods
  *
  * @property-read string $amount_to_currency
  * @property-read string $amount_to_currency_extensive
@@ -38,7 +39,6 @@ use Illuminate\Support\Carbon;
  * @property Item[]|Collection $products
  * @property Item[]|Collection $services
  * @property Appointment $appointment
- * @property Payment[]|Collection $formOfPayments
  *
  * @method Order filterByStatus(null|array|int $status)
  * @method Order filterByNameClient(null|string $client_name)
@@ -63,7 +63,8 @@ class Order extends BaseModel
         'comments',
         'status',
         'payment_status',
-        'number_of_installments'
+        'number_of_installments',
+        'accepted_payment_methods'
     ];
 
     protected $casts = [
@@ -137,11 +138,6 @@ class Order extends BaseModel
                     ]);
     }
 
-    public function formOfPayments()
-    {
-        return $this->belongsToMany(Payment::class, 'form_of_payment_order', 'order_id', 'payment_id');
-    }
-
     public function installments()
     {
         return $this->hasMany(Installment::class);
@@ -185,6 +181,12 @@ class Order extends BaseModel
     /**
      * Acessors
      */
+
+    public function getAcceptedPaymentMethodsExplodeAttribute()
+    {
+        return explode(',', $this->accepted_payment_methods);
+    }
+
     public function getProgramationDateFormatAttribute()
     {
         $dateformat = '';

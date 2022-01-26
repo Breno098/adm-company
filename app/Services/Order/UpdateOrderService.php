@@ -21,13 +21,19 @@ class UpdateOrderService
         $order->client()->associate(Arr::get($data, 'client_id'));
         $order->address()->associate(Arr::get($data, 'address_id'));
 
+        $this->updateProducts($data['products'], $order);
+        $this->updateSevices($data['services'], $order);
+
+        $order->save();
+
+        return $order;
+    }
+
+    private function updateProducts($products, Order $order)
+    {
         $order->products()->sync([]);
-        $order->services()->sync([]);
-        $order->payments()->sync([]);
 
-        $order->formOfPayments()->sync(Arr::get($data, 'form_of_payments'));
-
-        foreach ($data['products'] as $product) {
+        foreach ($products ?? [] as $product) {
             if(!isset($product['id'])){
                 continue;
             }
@@ -41,8 +47,13 @@ class UpdateOrderService
                 'value'     => isset($product['value']) ? $product['value'] : $itemTypeProduct->default_value
             ]);
         }
+    }
 
-        foreach ($data['services'] as $service) {
+    private function updateSevices($services, Order $order)
+    {
+        $order->services()->sync([]);
+
+        foreach ($services ?? [] as $service) {
             if(!isset($service['id'])){
                 continue;
             }
@@ -56,20 +67,5 @@ class UpdateOrderService
                 'value'     => isset($service['value']) ? $service['value'] : $itemTypeService->default_value
             ]);
         }
-
-        foreach ($data['payments'] as $payment) {
-            if(!isset($payment['value'])){
-                continue;
-            }
-
-            $order->payments()->attach($payment['id'], [
-                'value' => $payment['value'],
-                'date' => isset($payment['date']) ? $payment['date'] : null
-            ]);
-        }
-
-        $order->save();
-
-        return $order;
     }
 }

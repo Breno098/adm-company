@@ -9,7 +9,6 @@ use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Services\Order\IndexOrderService;
 use App\Services\Order\StoreOrderService;
 use App\Services\Order\UpdateOrderService;
-use App\Services\Installment\StoreInstallmentService;
 use App\Models\Order;
 
 
@@ -36,23 +35,17 @@ class OrderController extends BaseApiController
     /**
      * @param StoreOrderRequest $storeOrderRequest
      * @param StoreOrderService $storeOrderService
-     * @param StoreInstallmentService $storeInstallmentService
      *
      * @return \Illuminate\Http\Response
      */
     public function store(
         StoreOrderRequest $storeOrderRequest,
-        StoreOrderService $storeOrderService,
-        StoreInstallmentService $storeInstallmentService
+        StoreOrderService $storeOrderService
     )
     {
         $data = $storeOrderRequest->validated();
 
         $order = $storeOrderService->run($data);
-
-        foreach ($data['installments'] ?? [] as $installment) {
-            $storeInstallmentService->run($installment);
-        }
 
         $order->load([
             'client.contacts',
@@ -60,7 +53,7 @@ class OrderController extends BaseApiController
             'products',
             'services',
             'payments',
-            'formOfPayments'
+            'installments'
         ]);
 
         return $this->sendResponse($order, 'Order created successfully.');
@@ -79,7 +72,7 @@ class OrderController extends BaseApiController
             'products',
             'services',
             'payments',
-            'formOfPayments'
+            'installments'
         ]);
 
         return $this->sendResponse($order, 'Order retrieved successfully.');
@@ -108,7 +101,7 @@ class OrderController extends BaseApiController
             'products',
             'services',
             'payments',
-            'formOfPayments'
+            'installments'
         ]);
 
         return $this->sendResponse($order, 'Order updated successfully.');

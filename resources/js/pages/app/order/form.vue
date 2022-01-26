@@ -278,6 +278,7 @@
               <v-text-field
                 prefix="R$"
                 label="VALOR DESCONTO"
+                type="number"
                 outlined
                 dense
                 v-model="order.discount_amount"
@@ -590,172 +591,57 @@
 
         <!-- Pagamentos  -->
         <v-tab-item>
-          <v-card elevation="2">
-            <v-card-title>
-              Formas de pagamento aceitas
-            </v-card-title>
+          <v-card-title>
+            Formas de pagamento aceitas
+          </v-card-title>
 
-            <v-card-subtitle>
-              Orçamento/Order de serviço
-            </v-card-subtitle>
+          <v-card-subtitle>
+            Orçamento/Order de serviço
+          </v-card-subtitle>
 
-            <v-card-text>
-              <v-row>
-                <v-col cols="3" v-for="(payment, index) in payments" :key="index">
-                  <v-switch
-                    inset
-                    :label="payment.name"
-                    v-model="order.form_of_payments_format"
-                    :value="payment.id"
-                  ></v-switch>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-
-          <v-card elevation="0" class="mt-3">
-            <v-card-title>
-              Pagamento
-            </v-card-title>
-
-            <v-card-subtitle>
-              Realizados
-            </v-card-subtitle>
-
-            <v-card-text >
-              <v-row>
-                <v-col cols="12" v-for="(payment, index) in order.payments" :key="index">
-                  <v-row>
-                    <v-col cols="12" class="d-flex flex-row justify-end">
-                      <v-btn color="btnDanger" @click="order.payments.splice(index, 1);" :loading="loading" small rounded>
-                        <v-icon color="red darken-4">mdi-delete</v-icon>
-                      </v-btn>
-                    </v-col>
-
-                    <v-col cols="12" md="4">
-                      <v-select
-                        :items="paymentsAccept"
-                        label="PAGAMENTO"
-                        outlined
-                        dense
-                        :loading="loadingPayment"
-                        item-value="id"
-                        item-text="name"
-                        v-model="payment.id"
-                        no-data-text="Selecione formas de pagamento aceitas"
-                      >
-                      </v-select>
-                    </v-col>
-
-                    <v-col cols="12" md="4">
-                      <v-text-field
-                        prefix="R$"
-                        type="number"
-                        label="VALOR"
-                        outlined
-                        dense
-                        :loading="loadingPayment"
-                        v-model="payment.value"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="3">
-                      <v-menu
-                          v-model="menu_date_payments[index]"
-                          :close-on-content-click="false"
-                          max-width="290"
-                          transition="scale-transition"
-                          offset-y
-                      >
-                      <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                              append-icon="mdi-calendar"
-                              :value="DateFormatPayment(index)"
-                              clearable
-                              label="DATA DO PAGAMENTO"
-                              readonly
-                              v-bind="attrs"
-                              v-on="on"
-                              @click:clear="payment.date = null"
-                              outlined
-                              dense
-                          ></v-text-field>
-                      </template>
-                      <v-date-picker
-                          v-model="payment.date"
-                          @change="menu_date_payments[index] = false"
-                          no-title
-                          crollable
-                          locale="pt-Br"
-                      ></v-date-picker>
-                      </v-menu>
-                    </v-col>
-
-                    <v-col cols="1">
-                      <v-checkbox
-                        label="Total"
-                        color="primary"
-                        class="my-auto"
-                        v-model="payment.all"
-                        v-on:change="_totalValue(index)"
-                      ></v-checkbox>
-                    </v-col>
-                  </v-row>
-                </v-col>
-
-                <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn color="btnPrimary" @click="order.payments.push({})" :loading="loading" small rounded>
-                    Adicionar pagamento <v-icon>mdi-plus</v-icon>
-                  </v-btn>
-                </v-col>
-
-                <v-col cols="12" md="6" offset-md="6">
-                  <v-text-field
-                    outlined
-                    prefix="R$"
-                    type="number"
-                    :value="valueTotalWithDiscont"
-                    dense
-                    label="VALOR TOTAL"
-                    :loading="loading"
-                    readonly
-                    color="black"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
+          <v-card-text>
+            <v-row>
+              <v-col cols="4" v-for="(payment, index) in payments" :key="index">
+                <v-switch
+                  inset
+                  :label="payment"
+                  :value="payment"
+                  v-model="paymentMethods"
+                ></v-switch>
+              </v-col>
+            </v-row>
+          </v-card-text>
         </v-tab-item>
 
         <!-- Financeiro  -->
         <v-tab-item>
           <v-row>
-            <v-col cols="12" md="4">
-              <v-select
-                :items="['A VISTA', 'PARCELADO']"
+            <v-col cols="12" md="6">
+              <v-text-field
                 label="PAGAMENTO"
                 outlined
                 dense
                 v-model="order.type_payment"
+                readonly
               >
-              </v-select>
+              </v-text-field>
             </v-col>
 
-            <v-col cols="12" md="4" v-if="order.type_payment === 'PARCELADO'">
-              <v-select
-                :items="[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+            <v-col cols="12" md="6">
+              <v-text-field
                 label="QUANTIDADE PARCELAS"
                 outlined
                 dense
-                v-model="order.installments"
+                v-model="order.number_of_installments"
+                readonly
               >
-              </v-select>
+              </v-text-field>
             </v-col>
           </v-row>
 
           <v-row
-            v-for="installment in Array.from(Array(order.installments).keys())"
-            :key="installment"
+            v-for="(installment, index) in order.installments"
+            :key="index"
           >
             <v-col cols="12" md="2">
               <v-text-field
@@ -764,34 +650,82 @@
                 type="number"
                 dense
                 label="VALOR"
+                v-model="installment.value"
               ></v-text-field>
             </v-col>
 
             <v-col cols="12" md="3">
                <v-select
-                :items="['PIX', 'DINHEIRO', 'CARTÃO DÉBITO', 'CARTÃO CRÉDITO', 'CHEQUE', 'BOLETO']"
+                :items="payments"
                 label="FORMA DE PAGAMENTO"
                 outlined
                 dense
+                v-model="installment.form_of_payment"
               ></v-select>
             </v-col>
 
             <v-col cols="12" md="2">
-              <v-text-field
-                outlined
-                type="date"
-                dense
-                label="DATA PAGAMENTO"
-              ></v-text-field>
+              <v-dialog
+                v-model="menu_date_installments_pay_day[index]"
+                :close-on-content-click="false"
+                max-width="290"
+                transition="scale-transition"
+                offset-y
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    :value="installment.pay_day | formatDate"
+                    label="DATA PAGAMENTO"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    dense
+                    clearable
+                    @click:clear="installment.pay_day = null"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="installment.pay_day"
+                  @change="menu_date_installments_pay_day[index] = false"
+                  scrollable
+                  no-title
+                  crollable
+                  locale="pt-Br"
+                ></v-date-picker>
+              </v-dialog>
             </v-col>
 
             <v-col cols="12" md="2">
-              <v-text-field
-                outlined
-                type="date"
-                dense
-                label="DATA VENCIMENTO"
-              ></v-text-field>
+              <v-dialog
+                v-model="menu_date_installments_due_date[index]"
+                :close-on-content-click="false"
+                max-width="290"
+                transition="scale-transition"
+                offset-y
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    :value="installment.due_date | formatDate"
+                    label="DATA VENCIMENTO"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    dense
+                    clearable
+                    @click:clear="installment.due_date = null"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="installment.due_date"
+                  @change="menu_date_installments_due_date[index] = false"
+                  scrollable
+                  no-title
+                  crollable
+                  locale="pt-Br"
+                ></v-date-picker>
+              </v-dialog>
             </v-col>
 
             <v-col cols="12" md="3">
@@ -800,7 +734,41 @@
                 label="STATUS"
                 outlined
                 dense
+                v-model="installment.status"
               ></v-select>
+            </v-col>
+
+            <v-divider color="grey" class="mx-5" v-if="(index + 1) < order.installments.length"/>
+          </v-row>
+
+          <v-row>
+             <v-col cols="12" class="d-flex flex-row justify-end">
+              <v-btn
+                color="btnDanger"
+                @click="deleteLastInstallment"
+                :loading="loading"
+                small
+                rounded
+                v-if="order.installments.length > 0"
+              >
+                Apagar ultima parcela <v-icon color="red darken-4">mdi-delete</v-icon>
+              </v-btn>
+
+              <v-btn
+                color="btnPrimary"
+                class="ml-3"
+                :loading="loading" small rounded
+                @click="order.installments.push({
+                  number: order.installments.length + 1,
+                  form_of_payment: null,
+                  status: 'EM ABERTO',
+                  due_date: dateInstallment(),
+                  pay_day: null,
+                  value: null
+                })"
+              >
+                Adicionar parcela <v-icon>mdi-plus</v-icon>
+              </v-btn>
             </v-col>
           </v-row>
         </v-tab-item>
@@ -832,6 +800,26 @@ export default {
   metaInfo () {
     return { title: this.titlePage }
   },
+  watch: {
+    'order.installments': function (newT, oldT) {
+      this.order.number_of_installments = this.order.installments.length;
+
+      if(this.order.number_of_installments === 0){
+        this.order.type_payment = null;
+        this.order.number_of_installments = null;
+      } else if(this.order.number_of_installments === 1){
+        this.order.type_payment = 'A VISTA';
+        this.order.installments[0].value = this.valueTotalWithDiscont;
+      } else {
+        this.order.type_payment = 'PARCELADO';
+      }
+    }
+  },
+  filters: {
+    formatDate(date){
+      return date ? moment(date).format('DD/MM/YYYY') : '';
+    },
+  },
   data: () => ({
     tab: null,
     loading: false,
@@ -843,6 +831,8 @@ export default {
     menu_technical_visit_date: false,
     menu_time: false,
     menu_date_payments: [],
+    menu_date_installments_pay_day: [],
+    menu_date_installments_due_date: [],
     errors: {
       client_id: false,
       address_id: false,
@@ -861,26 +851,35 @@ export default {
       discount_amount : null,
       warranty_days : null,
       warranty_conditions : null,
-      installments: null,
+      installments: [],
+      type_payment: '',
+      number_of_installments: null,
       products: [],
       services: [],
-      payments: [],
-      form_of_payments: [],
-      form_of_payments_format: [],
       client_id: null,
-      status: 2,
-      address_id: null
+      status: 'AGUARDANDO APROVAÇÃO',
+      address_id: null,
+      accepted_payment_methods: 'PIX,DINHEIRO,CARTÃO DÉBITO,CARTÃO CRÉDITO',
     },
     clients: [],
     products: [],
     services: [],
     addresses: [],
-    payments: [],
+    accepted_payment_methods: [],
+    payments: [
+      'PIX',
+      'DINHEIRO',
+      'CARTÃO DÉBITO',
+      'CARTÃO CRÉDITO',
+      'CHEQUE',
+      'BOLETO',
+      'CONTRATO'
+    ],
     statuses: [
-      'CANCELADO',
       'AGUARDANDO APROVAÇÃO',
       'EM ANDAMENTO',
-      'CONCLUÍDO'
+      'CONCLUÍDO',
+      'CANCELADO',
     ],
   }),
   computed: {
@@ -890,18 +889,13 @@ export default {
     idByRoute(){
       return this.$route.params.id;
     },
-    paymentsAccept(){
-      let accept = [];
-
-      this.order.form_of_payments_format.forEach(formPayment => {
-        this.payments.forEach(payment => {
-          if(payment.id == formPayment){
-            accept.push(payment);
-          }
-        })
-      });
-
-      return accept;
+    paymentMethods: {
+      get: function() {
+        return this.order.accepted_payment_methods ? this.order.accepted_payment_methods.split(',') : [];
+      },
+      set: function(value) {
+        this.order.accepted_payment_methods = value.join(',');
+      }
     },
     valueTotal(){
       let valueTotal = 0;
@@ -927,8 +921,20 @@ export default {
     this._start();
   },
   methods: {
-    DateFormatPayment(index) {
-        return this.order.payments[index].date ? moment(this.order.payments[index].date).format('DD/MM/YYYY') : ''
+    dateInstallment() {
+      return moment().add(this.order.installments.length, 'M').format('YYYY-MM-DD');
+    },
+    async deleteLastInstallment() {
+      const ok = await this.$refs.fireDialog.confirm({
+          title: `Deletar parcela ${this.order.installments.length}`,
+          textConfirmButton: 'Deletar',
+          colorConfirButton: 'btnDanger',
+          colorCancelButton: 'btnPrimary'
+      })
+
+      if (ok) {
+        this.order.installments.pop();
+      }
     },
     async _start(){
       if(this.idByRoute){
@@ -937,7 +943,6 @@ export default {
       await this._loadClients();
       await this._loadProducts();
       await this._loadServices();
-      await this._loadPayments();
     },
     async _load(){
       let id = this.$route.params.id ? this.$route.params.id : this.order.id ? this.order.id : null;
@@ -945,19 +950,14 @@ export default {
       this.loading = true;
       await axios.get(`/api/order/${id}`).then(response => {
         if(response.data.success){
-          this.order = {
-            form_of_payments_format: [],
-            ...response.data.data
-          };
+          this.order = { form_of_payments_format: [],  ...response.data.data };
 
-          response.data.data.form_of_payments.forEach(payment => {
+          return response.data.data.form_of_payments.forEach(payment => {
             this.order.form_of_payments_format.push(payment.id);
           });
-          return;
         }
 
-        this.$refs.fireDialog.error({ title: 'Error ao carregar dados da ordem' })
-        this.$refs.fireDialog.hide(1500);
+        this.$refs.fireDialog.error({ title: 'Error ao carregar dados da ordem', time: 1500 })
       });
       this.loading = false;
     },
@@ -1008,16 +1008,6 @@ export default {
         this.$refs.fireDialog.error({ title: 'Error ao carregar serviços' })
       });
       this.loadingServices = false;
-    },
-    async _loadPayments(){
-      this.loadingPayment = true;
-      await axios.get(`/api/payment`).then(response => {
-        if(response.data.success){
-          return this.payments = response.data.data;
-        }
-        this.$refs.fireDialog.error({ title: 'Error ao carregar pagamentos' })
-      });
-      this.loadingPayment = false;
     },
     _totalValue(index){
       if(this.order.payments[index].all){
@@ -1101,37 +1091,16 @@ export default {
       return response.data.success;
     },
     async serviceOrderDownload(){
-      if(this.order.form_of_payments_format.length === 0){
-        return this.$refs.fireDialog.warning({
-          title: 'Formas de pagamento',
-          message: 'Selecione as fomar de pagamento aceitas.'
-        });
-      }
-
       await this._store();
 
       window.open(`/api/docs/service-order/${this.order.id}/download`);
     },
      async budgetDownload(){
-      if(this.order.form_of_payments_format.length === 0){
-        return this.$refs.fireDialog.warning({
-          title: 'Formas de pagamento',
-          message: 'Selecione as fomar de pagamento aceitas.'
-        });
-      }
-
       await this._store();
 
       window.open(`/api/docs/budget/${this.order.id}/download`);
     },
     async receiptDownload(){
-      if(this.order.form_of_payments_format.length === 0){
-        return this.$refs.fireDialog.warning({
-          title: 'Formas de pagamento',
-          message: 'Selecione as fomar de pagamento aceitas.'
-        });
-      }
-
       await this._store();
 
       window.open(`/api/docs/receipt/${this.order.id}/download`);
