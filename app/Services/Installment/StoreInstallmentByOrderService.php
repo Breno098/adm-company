@@ -17,7 +17,7 @@ class StoreInstallmentByOrderService
     {
         return $order->installments()->create([
             "number" => $data['number'],
-            "form_of_payment" => $data['form_of_payment'],
+            "payment_method" => $data['payment_method'],
             "status" => $data['status'],
             "due_date" => $data['due_date'],
             "pay_day" => $data['pay_day'],

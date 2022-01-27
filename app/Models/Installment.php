@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
  *
  * @property int $number
  * @property int $order_id
- * @property string $form_of_payment
+ * @property string $payment_method
  * @property string $status
  * @property Carbon $due_date
  * @property Carbon $pay_day
@@ -26,12 +26,12 @@ use Illuminate\Support\Carbon;
  */
 class Installment extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory; //, SoftDeletes;
 
     protected $fillable = [
         'number',
         'order_id',
-        'form_of_payment',
+        'payment_method',
         'status',
         'due_date',
         'pay_day',

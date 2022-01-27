@@ -4,13 +4,25 @@ namespace App\Services\Order;
 
 use App\Models\Item;
 use App\Models\Order;
+use App\Services\Installment\StoreInstallmentByOrderService;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class UpdateOrderService
 {
+    protected StoreInstallmentByOrderService $storeInstallmentByOrderService;
+
     /**
-     * @param  mixed  $id
-     * @param  array  $data
+     * @param StoreInstallmentByOrderService $storeInstallmentByOrderService
+     */
+    public function __construct(StoreInstallmentByOrderService $storeInstallmentByOrderService)
+    {
+        $this->storeInstallmentByOrderService = $storeInstallmentByOrderService;
+    }
+
+    /**
+     * @param Order $order
+     * @param array  $data
      *
      * @return mixed
      */
@@ -21,18 +33,24 @@ class UpdateOrderService
         $order->client()->associate(Arr::get($data, 'client_id'));
         $order->address()->associate(Arr::get($data, 'address_id'));
 
+        $order->items()->sync([]);
+
         $this->updateProducts($data['products'], $order);
         $this->updateSevices($data['services'], $order);
 
         $order->save();
+
+        $order->installments()->delete();
+
+        foreach ($data['installments'] ?? [] as $installment) {
+            $this->storeInstallmentByOrderService->run($installment, $order);
+        }
 
         return $order;
     }
 
     private function updateProducts($products, Order $order)
     {
-        $order->products()->sync([]);
-
         foreach ($products ?? [] as $product) {
             if(!isset($product['id'])){
                 continue;
@@ -51,8 +69,6 @@ class UpdateOrderService
 
     private function updateSevices($services, Order $order)
     {
-        $order->services()->sync([]);
-
         foreach ($services ?? [] as $service) {
             if(!isset($service['id'])){
                 continue;

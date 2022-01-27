@@ -47,7 +47,6 @@ class UpdateOrderRequest extends FormRequest
             'products' => 'nullable|array',
             'services' => 'nullable|array',
             'payments' => 'nullable|array',
-            'form_of_payments' => 'nullable|array',
         ];
     }
 }

@@ -17,7 +17,7 @@ class CreateInstallmentsTable extends Migration
             $table->id();
             $table->integer('number');
             $table->foreignId('order_id')->nullable()->constrained();
-            $table->enum('form_of_payment', ['PIX', 'DINHEIRO', 'CARTÃO DÉBITO', 'CARTÃO CRÉDITO', 'CHEQUE', 'BOLETO', 'CONTRATO'])->nullable();
+            $table->enum('payment_method', ['PIX', 'DINHEIRO', 'CARTÃO DÉBITO', 'CARTÃO CRÉDITO', 'CHEQUE', 'BOLETO', 'CONTRATO'])->nullable();
             $table->enum('status', ['PAGO', 'EM ABERTO', 'CANCELADO', 'INADIMPLENTE'])->nullable();
             $table->date('due_date')->nullable();
             $table->date('pay_day')->nullable();

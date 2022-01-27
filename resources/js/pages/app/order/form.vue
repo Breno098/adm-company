@@ -660,7 +660,7 @@
                 label="FORMA DE PAGAMENTO"
                 outlined
                 dense
-                v-model="installment.form_of_payment"
+                v-model="installment.payment_method"
               ></v-select>
             </v-col>
 
@@ -760,7 +760,7 @@
                 :loading="loading" small rounded
                 @click="order.installments.push({
                   number: order.installments.length + 1,
-                  form_of_payment: null,
+                  payment_method: null,
                   status: 'EM ABERTO',
                   due_date: dateInstallment(),
                   pay_day: null,
@@ -950,11 +950,8 @@ export default {
       this.loading = true;
       await axios.get(`/api/order/${id}`).then(response => {
         if(response.data.success){
-          this.order = { form_of_payments_format: [],  ...response.data.data };
-
-          return response.data.data.form_of_payments.forEach(payment => {
-            this.order.form_of_payments_format.push(payment.id);
-          });
+          this.order = response.data.data;
+          return;
         }
 
         this.$refs.fireDialog.error({ title: 'Error ao carregar dados da ordem', time: 1500 })
@@ -1062,21 +1059,13 @@ export default {
       this.$refs.fireDialog.loading({ title: id ? 'Atualizando...' : 'Salvando...' })
 
       this.order.amount = this.valueTotalWithDiscont;
-      this.order.form_of_payments = this.order.form_of_payments_format;
 
       const response = !id ? await axios.post('/api/order', this.order) : await axios.put(`/api/order/${id}`, this.order);
 
       this.loading = false;
 
       if(response.data.success){
-        this.order = {
-          form_of_payments_format: [],
-          ...response.data.data
-        };
-
-        response.data.data.form_of_payments.forEach(payment => {
-          this.order.form_of_payments_format.push(payment.id);
-        });
+        this.order = response.data.data;
 
         this.$refs.fireDialog.success({ title: 'Salvo com sucesso' });
         this.$refs.fireDialog.hide(1500);

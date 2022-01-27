@@ -47,7 +47,6 @@ class StoreOrderRequest extends FormRequest
             'products' => 'nullable|array',
             'services' => 'nullable|array',
             'payments' => 'nullable|array',
-            'form_of_payments' => 'nullable|array',
             'installments' => 'nullable|array',
         ];
     }
