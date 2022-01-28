@@ -3,19 +3,21 @@
 namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
+use App\Services\Role\IndexRoleService;
 use App\Services\Role\IndexService;
 use Illuminate\Http\Request;
 
 class RoleController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
+     * @param IndexRoleService $indexRoleService
+     *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, IndexRoleService $indexRoleService)
     {
-        $roles = IndexService::run(
+        $roles = $indexRoleService->run(
             $request->query(),
             $request->get('relations', []),
             $request->get('itemsPerPage', false),

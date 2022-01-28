@@ -147,9 +147,9 @@
 
       <div style="padding: 10px; font-size: 11px; margin-top: 10px">
         <strong> FORMAS DE PAGAMENTO:  </strong>
-          @foreach ($order->formOfPayments as $payment)
+          @foreach ($order->accepted_payment_methods_explode as $payment_method)
           <span>
-            ( ){{ $payment->name }}
+            ( ){{ $payment_method }}
           </span>
           @endforeach
       </div>

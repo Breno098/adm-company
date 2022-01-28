@@ -2,24 +2,27 @@
 
 namespace App\Http\Controllers\API\Tenant;
 
-use App\Http\Controllers\API\Bases\BaseApiController;
-use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Http\Requests\OrderRequest;
-use App\Services\Order\IndexService;
-use App\Services\Order\StoreService;
-use App\Services\Order\UpdateService;
+use App\Http\Controllers\API\Bases\BaseApiController;
+use App\Http\Requests\Order\StoreOrderRequest;
+use App\Http\Requests\Order\UpdateOrderRequest;
+use App\Services\Order\IndexOrderService;
+use App\Services\Order\StoreOrderService;
+use App\Services\Order\UpdateOrderService;
+use App\Models\Order;
+
 
 class OrderController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * @param Request $request
+     * @param IndexOrderService $indexOrderService
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, IndexOrderService $indexOrderService)
     {
-        $orders = IndexService::run(
+        $orders = $indexOrderService->run(
             $request->query(),
             $request->get('relations', []),
             $request->get('orderBy'),
@@ -30,16 +33,19 @@ class OrderController extends BaseApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @param StoreOrderRequest $storeOrderRequest
+     * @param StoreOrderService $storeOrderService
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(OrderRequest $request)
+    public function store(
+        StoreOrderRequest $storeOrderRequest,
+        StoreOrderService $storeOrderService
+    )
     {
-        $data = $request->validated();
+        $data = $storeOrderRequest->validated();
 
-        $order = StoreService::run($data);
+        $order = $storeOrderService->run($data);
 
         $order->load([
             'client.contacts',
@@ -47,16 +53,15 @@ class OrderController extends BaseApiController
             'products',
             'services',
             'payments',
-            'formOfPayments'
+            'installments'
         ]);
 
         return $this->sendResponse($order, 'Order created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * @param Order $order
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show(Order $order)
@@ -67,24 +72,28 @@ class OrderController extends BaseApiController
             'products',
             'services',
             'payments',
-            'formOfPayments'
+            'installments'
         ]);
 
         return $this->sendResponse($order, 'Order retrieved successfully.');
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param UpdateOrderRequest $updateOrderRequest
+     * @param UpdateOrderService $updateOrderService
+     * @param Order $order
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(OrderRequest $request, Order $order)
+    public function update(
+        UpdateOrderRequest $updateOrderRequest,
+        UpdateOrderService $updateOrderService,
+        Order $order
+    )
     {
-        $data = $request->validated();
+        $data = $updateOrderRequest->validated();
 
-        $order = UpdateService::run($order, $data);
+        $order = $updateOrderService->run($order, $data);
 
         $order->load([
             'client.contacts',
@@ -92,16 +101,15 @@ class OrderController extends BaseApiController
             'products',
             'services',
             'payments',
-            'formOfPayments'
+            'installments'
         ]);
 
         return $this->sendResponse($order, 'Order updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @param Order $order
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Order $order)

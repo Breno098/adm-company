@@ -25,6 +25,12 @@ class Client extends BaseModel
         'birth_date' => 'datetime:Y-m-d',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
+
     /**
      * Relationships
      */

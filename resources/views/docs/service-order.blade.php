@@ -162,9 +162,9 @@
         <tr>
           <td colspan="6">
             <strong> FORMAS DE PAGAMENTO:  </strong>
-              @foreach ($order->formOfPayments as $payment)
+              @foreach ($order->accepted_payment_methods_explode as $payment_method)
               <span>
-                ( ){{ $payment->name }}
+                ( ){{ $payment_method }}
               </span>
               @endforeach
           </td>

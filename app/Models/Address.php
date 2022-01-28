@@ -32,6 +32,12 @@ class Address extends BaseModel
         'main' => 'boolean'
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
+
     /**
      * Scopes
      */

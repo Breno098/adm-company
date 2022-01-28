@@ -71,19 +71,6 @@
 
           O VALOR DE {{ $order->amount_to_currency }} ({{ $order->amount_to_currency_extensive }})
           REFERENTE A PAGAMENTO REALIZADO
-
-
-          @foreach ($order->payments ?? [] as $key => $payment)
-            @if ($loop->first)
-                {{ "( {$payment->name}" }}
-            @else
-              {{ " E {$payment->name}" }}
-            @endif
-
-            @if ($loop->last)
-                {{ ")" }}
-            @endif
-          @endforeach
         @endif
       </div>
 

@@ -2,18 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Address;
-use App\Models\Appointment;
-use App\Models\Client;
-use App\Models\Company;
-use App\Models\Contact;
 use App\Models\Order;
-use App\Models\Product;
-use App\Models\Role;
-use App\Models\Service;
-use App\Models\User;
+use App\Models\Status;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class AppSeeder extends Seeder
 {
@@ -24,76 +15,37 @@ class AppSeeder extends Seeder
      */
     public function run()
     {
-        $company = Company::create([
-            'name' => 'Desentupidora Crispim',
-            'cnpj' => '17.107.361/0001-34',
-            'fantasy_name' =>'Desentupidora Crispim',
-        ]);
+        Order::all()->map(function($order){
+            $status = Status::find($order->status_id)->name;
 
-        Address::create([
-            'number' => 350,
-            'district' => 'PQ. FLAMBOYANS',
-            'city' => ' RIBEIRÃO PRETO',
-            'state' => 'SP',
-            'street' => 'LEONOR PENNACHIOTTI GALLO',
-            'cep' => '14093-651',
-            'company_id' => $company->id
-        ]);
+            $order->update([
+                'status' => $status
+            ]);
 
-        User::create([
-            'name' => 'Agatha Crispim',
-            'email' => 'agathacrispim66@gmail.com',
-            'password' => Hash::make('senhapadrao'),
-            'company_id' => $company->id
-        ]);
+            $payment_status = 'EM ABERTO';
 
-        User::all()->map(function($user) use ($company){
-            $user->company_id = $company->id;
-            $user->save();
-            
-            Role::all()->map(function($role) use ($user){
-                $user->roles()->attach($role);
-            }); 
-        });
+            if($status == 'CONCLUÍDO'){
+                $payment_status = 'PAGO TOTAL';
+            }
 
-        Client::all()->map(function($model) use ($company){
-            $model->company_id = $company->id;
-            $model->save();
-        });
+            if($status == 'CANCELADO'){
+                $payment_status = 'CANCELADO';
+            }
 
-        Product::all()->map(function($model) use ($company){
-            $model->company_id = $company->id;
-            $model->save();
-        });
+            $order->update([
+                'payment_status' => $payment_status,
+            ]);
 
-        Service::all()->map(function($model) use ($company){
-            $model->company_id = $company->id;
-            $model->save();
-        });
-
-        Order::all()->map(function($model) use ($company){
-            $model->company_id = $company->id;
-            $model->save();
-        });
-
-        Address::all()->map(function($model) use ($company){
-            $model->company_id = $company->id;
-            $model->save();
-        });
-
-        Contact::all()->map(function($model) use ($company){
-            $model->company_id = $company->id;
-            $model->save();
-        });
-
-        Appointment::all()->map(function($model) use ($company){
-            $model->company_id = $company->id;
-            $model->save();
-        });
-
-        Address::all()->map(function($model) use ($company){
-            $model->company_id = $company->id;
-            $model->save();
+            if($status == 'CONCLUÍDO'){
+                $order->installments()->create([
+                    "number" => 1,
+                    "payment_method" => 'DINHEIRO',
+                    "status" => 'PAGO',
+                    "due_date" => $order->updated_at,
+                    "pay_day" => $order->updated_at,
+                    "value" => $order->amount,
+                ]);
+            }
         });
     }
 }

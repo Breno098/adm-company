@@ -3,23 +3,25 @@
 namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
-use App\Services\Appointment\IndexService;
-use App\Services\Appointment\StoreService;
-use App\Services\Appointment\UpdateService;
-use App\Http\Requests\AppointmentRequest;
+use App\Services\Appointment\IndexAppointmentService;
+use App\Services\Appointment\StoreAppointmentService;
+use App\Services\Appointment\UpdateAppointmentService;
+use App\Http\Requests\Appointment\StoreAppointmentRequest;
+use App\Http\Requests\Appointment\UpdateAppointmentRequest;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
 
 class AppointmentController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
      * @param  \Illuminate\Http\Request  $request
+     * @param IndexAppointmentService $indexAppointmentService
+     *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, IndexAppointmentService $indexAppointmentService)
     {
-        $appointments = IndexService::run(
+        $appointments = $indexAppointmentService->run(
             $request->query(),
             $request->get('relations', ['client', 'address']),
             $request->get('itemsPerPage', false),
@@ -31,14 +33,15 @@ class AppointmentController extends BaseApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\AppointmentRequest  $request
+     * @param  StoreAppointmentRequest $storeAppointmentRequest
+     * @param  StoreAppointmentService $storeAppointmentService
      * @return \Illuminate\Http\Response
      */
-    public function store(AppointmentRequest $request)
+    public function store(StoreAppointmentRequest $storeAppointmentRequest, StoreAppointmentService $storeAppointmentService)
     {
-        $data = $request->validated();
+        $data = $storeAppointmentRequest->validated();
 
-        $appointment = StoreService::run($data);
+        $appointment = $storeAppointmentService->run($data);
 
         return $this->sendResponse($appointment, 'Appointment created successfully.');
     }
@@ -46,7 +49,7 @@ class AppointmentController extends BaseApiController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param Appointment $appointment
      * @return \Illuminate\Http\Response
      */
     public function show(Appointment $appointment)
@@ -57,25 +60,28 @@ class AppointmentController extends BaseApiController
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param UpdateAppointmentRequest $updateAppointmentRequest
+     * @param UpdateAppointmentService $updateAppointmentService
+     * @param Appointment $appointment
      *
-     * @param  \Illuminate\Http\AppointmentRequest  $request
-     * @param  Appointment  $appointment
      * @return \Illuminate\Http\Response
      */
-    public function update(AppointmentRequest $request, Appointment $appointment)
+    public function update(
+        UpdateAppointmentRequest $updateAppointmentRequest,
+        UpdateAppointmentService $updateAppointmentService,
+        Appointment $appointment
+    )
     {
-        $data = $request->validated();
+        $data = $updateAppointmentRequest->validated();
 
-        $appointment = UpdateService::run($appointment, $data);
+        $appointment = $updateAppointmentService->run($appointment, $data);
 
         return $this->sendResponse($appointment, 'Appointment updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @param Appointment $appointment
      *
-     * @param  Appointment  $appointment
      * @return \Illuminate\Http\Response
      */
     public function destroy(Appointment $appointment)

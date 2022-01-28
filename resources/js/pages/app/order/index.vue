@@ -39,17 +39,13 @@
           <v-row>
              <v-col cols="12">
               <v-select
-                v-model="table.filters.statuses_ids"
-                vali
+                v-model="table.filters.status"
                 :items="statuses"
-                item-text="name"
-                item-value="id"
                 label="STATUS"
                 outlined
                 dense
                 :loading="table.loading"
                 multiple
-                no-data-text="Nenhum status encontrado"
               ></v-select>
             </v-col>
 
@@ -105,7 +101,7 @@
     <v-row>
       <v-col cols="12" v-if="table.loading">
         <v-row>
-          <v-col cols="12" md="6" v-for="index in [0, 1, 2, 3]" :key="index">
+          <v-col cols="12" v-for="index in [0, 1, 2, 3]" :key="index">
             <v-skeleton-loader type="image"></v-skeleton-loader>
           </v-col>
         </v-row>
@@ -126,11 +122,10 @@
                     v-if="order.status"
                     class="py-2"
                     label
-                    :color="order.status.color"
-                    outlined
+                    :color="order.status | statusColor"
                   >
-                    {{ order.status.name }}
-                    <v-icon :color="order.status.color" class="ml-2">{{ order.status.icon }}</v-icon>
+                    {{ order.status }}
+                    <v-icon color="black" class="ml-2">{{ order.status | statusIcon }}</v-icon>
                   </v-chip>
                 </div>
                 <v-list-item-subtitle v-if="order.address">
@@ -176,10 +171,9 @@ export default {
   data: () => ({
     table: {
       filters: {
-        status_id: null,
         client_name: '',
         address: '',
-        statuses_ids: []
+        status: []
       },
       orderBy: 'created_at:desc',
       page: 1,
@@ -188,11 +182,31 @@ export default {
       items: [],
       loading: false,
     },
-    statuses: []
+    statuses: [
+      'CANCELADO',
+      'AGUARDANDO APROVAÇÃO',
+      'EM ANDAMENTO',
+      'CONCLUÍDO'
+    ]
   }),
-  computed: {
-    statusIdByRoute(){
-      return this.$route.params.statusId ? this.$route.params.statusId : '';
+  filters: {
+    statusColor(value){
+      switch (value) {
+        case 'CANCELADO': return 'orange accent-3';
+        case 'AGUARDANDO APROVAÇÃO': return 'yellow accent-2';
+        case 'EM ANDAMENTO': return 'indigo';
+        case 'CONCLUÍDO': return 'green';
+        default: return '';
+      }
+    },
+    statusIcon(value){
+      switch (value) {
+        case 'CANCELADO': return 'mdi-close';
+        case 'AGUARDANDO APROVAÇÃO': return 'mdi-thumb-up';
+        case 'EM ANDAMENTO': return 'mdi-dots-horizontal';
+        case 'CONCLUÍDO': return 'mdi-check';
+        default: return '';
+      }
     }
   },
   mounted() {
@@ -201,21 +215,18 @@ export default {
   methods: {
     async _start(){
       this._load();
-
-      this._loadStatuses();
     },
     async _load(){
       let params = {
         page: this.table.page,
         itemsPerPage: this.table.itemsPerPage,
         orderBy: this.table.orderBy,
-        relations: ['client','address', 'status'],
+        relations: ['client','address'],
         ...this.table.filters
       }
 
       this.table.loading = true;
       await axios.get(`/api/order`, { params }).then(response => {
-        console.log(response.data);
         if(response.data.data.data.length === 0 && this.table.page != 1){
           this.table.page = 1;
           this._load()
@@ -243,25 +254,7 @@ export default {
       }
 
       this._load();
-    },
-    async _loadStatuses(){
-      this.table.loading = true;
-
-      let params = {
-        type: 'order',
-        orderBy: 'order',
-      }
-
-      await axios.get(`/api/status`, { params }).then(response => {
-        if(response.data.success){
-          return this.statuses = response.data.data;
-        }
-
-        this.$refs.fireDialog.error({ title: 'Error ao carregar pedidos' })
-      });
-
-      this.table.loading = false;
-    },
+    }
   }
 }
 </script>
