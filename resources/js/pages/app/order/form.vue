@@ -107,9 +107,9 @@
         <v-tabs-slider color="primary"></v-tabs-slider>
         <v-tab>Informações <v-icon class="ml-2">mdi-information</v-icon></v-tab>
         <v-tab>Produtos e Serviços <v-icon class="ml-2">mdi-wrench</v-icon></v-tab>
-        <v-tab>Garantias <v-icon class="ml-2">mdi-format-align-center</v-icon></v-tab>
         <v-tab>Pagamento <v-icon class="ml-2">mdi-cash</v-icon></v-tab>
         <v-tab>Financeiro <v-icon class="ml-2">mdi-cash</v-icon></v-tab>
+        <v-tab>Garantia <v-icon class="ml-2">mdi-format-align-center</v-icon></v-tab>
       </v-tabs>
 
       <v-tabs-items v-model="tab" class="pt-5 px-3">
@@ -258,47 +258,6 @@
                 hint="COMENTÁRIOS E OBSERVAÇÕES INTERNAS (NÃO VISÍVEL AO CLIENTE)."
                 @input="order.comments = order.comments.toUpperCase()"
               ></v-textarea>
-            </v-col>
-
-            <v-col cols="12" md="4">
-              <v-text-field
-                outlined
-                prefix="R$"
-                type="number"
-                :value="valueTotal"
-                dense
-                label="VALOR TOTAL"
-                :loading="loading"
-                readonly
-                color="black"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="4">
-              <v-text-field
-                prefix="R$"
-                label="VALOR DESCONTO"
-                type="number"
-                outlined
-                dense
-                v-model="order.discount_amount"
-                :loading="loading"
-                hint="Valor do desconto"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="4">
-              <v-text-field
-                outlined
-                prefix="R$"
-                type="number"
-                :value="valueTotalWithDiscont"
-                dense
-                label="VALOR FINAL"
-                :loading="loading"
-                readonly
-                color="black"
-              ></v-text-field>
             </v-col>
           </v-row>
         </v-tab-item>
@@ -561,34 +520,6 @@
 
         </v-tab-item>
 
-        <!-- Garantia -->
-        <v-tab-item>
-          <v-row>
-            <v-col cols="12" md="2">
-              <v-text-field
-                label="DIAS GARANTIA"
-                type="number"
-                outlined
-                dense
-                v-model="order.warranty_days"
-                :loading="loading"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="10">
-              <v-textarea
-                label="CONDIÇÃO DE GARANTIA"
-                outlined
-                dense
-                v-model="order.warranty_conditions"
-                :loading="loading"
-                hint="TERMOS DE GARANTIA"
-                @input="order.warranty_conditions = order.warranty_conditions.toUpperCase()"
-              ></v-textarea>
-            </v-col>
-          </v-row>
-        </v-tab-item>
-
         <!-- Pagamentos  -->
         <v-tab-item>
           <v-card-title>
@@ -601,7 +532,7 @@
 
           <v-card-text>
             <v-row>
-              <v-col cols="4" v-for="(payment, index) in payments" :key="index">
+              <v-col cols="3" v-for="(payment, index) in payments" :key="index">
                 <v-switch
                   inset
                   :label="payment"
@@ -616,6 +547,83 @@
         <!-- Financeiro  -->
         <v-tab-item>
           <v-row>
+            <v-col cols="12">
+              <div class="text-h6 blue--text"> Valor </div>
+              <v-divider color="grey"/>
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <v-text-field
+                outlined
+                prefix="R$"
+                :value="valueTotal"
+                dense
+                label="VALOR TOTAL"
+                :loading="loading"
+                readonly
+                color="black"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <v-text-field
+                prefix="R$"
+                label="VALOR DESCONTO"
+                type="number"
+                outlined
+                dense
+                v-model="order.discount_amount"
+                :loading="loading"
+                hint="Valor do desconto"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <v-text-field
+                outlined
+                prefix="R$"
+                :value="valueTotalWithDiscont"
+                dense
+                label="VALOR FINAL"
+                :loading="loading"
+                readonly
+                color="black"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <v-text-field
+                outlined
+                prefix="R$"
+                :value="order.amount_paid"
+                dense
+                label="VALOR PAGO"
+                readonly
+                color="black"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <v-text-field
+                outlined
+                prefix="R$"
+                :value="(valueTotalWithDiscont - order.amount_paid).toFixed(2)"
+                dense
+                label="VALOR DEVEDOR"
+                readonly
+                color="black"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-divider color="grey" class="my-5"></v-divider>
+
+          <v-row>
+            <v-col cols="12">
+              <div class="text-h6 blue--text"> Pagamento(s) </div>
+              <v-divider color="grey"/>
+            </v-col>
+
             <v-col cols="12" md="6">
               <v-text-field
                 label="PAGAMENTO"
@@ -772,6 +780,34 @@
             </v-col>
           </v-row>
         </v-tab-item>
+
+        <!-- Garantia -->
+        <v-tab-item>
+          <v-row>
+            <v-col cols="12" md="2">
+              <v-text-field
+                label="DIAS GARANTIA"
+                type="number"
+                outlined
+                dense
+                v-model="order.warranty_days"
+                :loading="loading"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="10">
+              <v-textarea
+                label="CONDIÇÃO DE GARANTIA"
+                outlined
+                dense
+                v-model="order.warranty_conditions"
+                :loading="loading"
+                hint="TERMOS DE GARANTIA"
+                @input="order.warranty_conditions = order.warranty_conditions.toUpperCase()"
+              ></v-textarea>
+            </v-col>
+          </v-row>
+        </v-tab-item>
       </v-tabs-items>
 
       <v-card-actions>
@@ -801,17 +837,21 @@ export default {
     return { title: this.titlePage }
   },
   watch: {
-    'order.installments': function (newT, oldT) {
-      this.order.number_of_installments = this.order.installments.length;
+    'order.installments': {
+      deep: true,
+      handler() {
+        this.calculeAmoutPaid();
 
-      if(this.order.number_of_installments === 0){
-        this.order.type_payment = null;
-        this.order.number_of_installments = null;
-      } else if(this.order.number_of_installments === 1){
-        this.order.type_payment = 'A VISTA';
-        this.order.installments[0].value = this.valueTotalWithDiscont;
-      } else {
-        this.order.type_payment = 'PARCELADO';
+        this.order.number_of_installments = this.order.installments.length;
+
+        if(this.order.number_of_installments === 0){
+          this.order.type_payment = null;
+          this.order.number_of_installments = null;
+        } else if(this.order.number_of_installments === 1){
+          this.order.type_payment = 'A VISTA';
+        } else {
+          this.order.type_payment = 'PARCELADO';
+        }
       }
     }
   },
@@ -873,7 +913,8 @@ export default {
       'CARTÃO CRÉDITO',
       'CHEQUE',
       'BOLETO',
-      'CONTRATO'
+      'CONTRATO',
+      'TRANSFERÊNCIA'
     ],
     statuses: [
       'AGUARDANDO APROVAÇÃO',
@@ -923,6 +964,11 @@ export default {
   methods: {
     dateInstallment() {
       return moment().add(this.order.installments.length, 'M').format('YYYY-MM-DD');
+    },
+    calculeAmoutPaid() {
+      let amountPaid = 0;
+      this.order.installments.forEach(installment => amountPaid += installment.status === 'PAGO' ? parseFloat(installment.value) : 0);
+      this.order.amount_paid = amountPaid.toFixed(2);
     },
     async deleteLastInstallment() {
       const ok = await this.$refs.fireDialog.confirm({
@@ -1005,11 +1051,6 @@ export default {
         this.$refs.fireDialog.error({ title: 'Error ao carregar serviços' })
       });
       this.loadingServices = false;
-    },
-    _totalValue(index){
-      if(this.order.payments[index].all){
-        this.order.payments[index].value = this.valueTotalWithDiscont;
-      }
     },
     _addDefaultValueProduct(index){
       let filterProduct = this.products.filter(prod => prod.id === this.order.products[index].id);

@@ -101,7 +101,7 @@
     <v-row>
       <v-col cols="12" v-if="table.loading">
         <v-row>
-          <v-col cols="12" md="6" v-for="index in [0, 1, 2, 3]" :key="index">
+          <v-col cols="12" v-for="index in [0, 1, 2, 3]" :key="index">
             <v-skeleton-loader type="image"></v-skeleton-loader>
           </v-col>
         </v-row>

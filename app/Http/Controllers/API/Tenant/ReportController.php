@@ -13,8 +13,8 @@ class ReportController extends BaseApiController
 {
     public function finance()
     {
-        $status = Status::withCount(['orders'])->filterByType('order')->get();
+        $orders = Order::all();
 
-        return $this->sendResponse($status);
+        return $this->sendResponse($orders);
     }
 }

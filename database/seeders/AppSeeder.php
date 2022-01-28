@@ -33,8 +33,19 @@ class AppSeeder extends Seeder
             }
 
             $order->update([
-                'payment_status' => $payment_status
+                'payment_status' => $payment_status,
             ]);
+
+            if($status == 'CONCLUÍDO'){
+                $order->installments()->create([
+                    "number" => 1,
+                    "payment_method" => 'DINHEIRO',
+                    "status" => 'PAGO',
+                    "due_date" => $order->updated_at,
+                    "pay_day" => $order->updated_at,
+                    "value" => $order->amount,
+                ]);
+            }
         });
     }
 }
