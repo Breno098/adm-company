@@ -27,7 +27,7 @@ use App\Http\Controllers\API\Tenant\EmployeeReceiptController;
 use App\Http\Controllers\API\Tenant\ExpenseController;
 use App\Http\Controllers\API\Tenant\PositionController;
 use App\Http\Controllers\API\Tenant\ProductController;
-use App\Http\Controllers\API\Tenant\ReportController;
+use App\Http\Controllers\API\Tenant\ReportFinanceController;
 use App\Http\Controllers\API\Tenant\ServiceController;
 use App\Http\Controllers\API\Tenant\RoleController;
 
@@ -85,6 +85,8 @@ Route::middleware('auth:api')->group( function () {
         Route::get('docs/service-order/{order}/download', [DocsController::class, 'downloadOrderService']);
         Route::get('docs/budget/{order}/download', [DocsController::class, 'downloadBudget']);
         Route::get('docs/receipt/{order}/download', [DocsController::class, 'downloadReceipt']);
+
+        Route::get('report/finance/by-year', [ReportFinanceController::class, 'byYear']);
     });
 });
 
@@ -95,5 +97,4 @@ Route::middleware(['auth:api', 'administrator'])->prefix('admin')->name('admin.'
 
 });
 
-Route::get('report-finance', [ReportController::class, 'finance']);
 
