@@ -87,6 +87,7 @@ Route::middleware('auth:api')->group( function () {
         Route::get('docs/receipt/{order}/download', [DocsController::class, 'downloadReceipt']);
 
         Route::get('report/finance/by-year', [ReportFinanceController::class, 'byYear']);
+        Route::get('report/finance/by-month-and-year', [ReportFinanceController::class, 'byMonthAndYear']);
     });
 });
 

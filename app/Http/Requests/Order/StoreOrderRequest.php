@@ -38,6 +38,7 @@ class StoreOrderRequest extends FormRequest
             'technical_visit_time' => 'nullable',
             'status' => 'nullable|string',
             'accepted_payment_methods' => 'nullable|string',
+            'number_of_installments' => 'nullable|integer',
 
             /** Relations */
             'client_id' => 'required',

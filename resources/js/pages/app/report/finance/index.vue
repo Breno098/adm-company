@@ -15,47 +15,121 @@
       </v-toolbar>
     </v-card>
 
-    <v-expansion-panels class="mb-4">
-      <v-expansion-panel>
-        <v-expansion-panel-header>
-          <span>
-            <v-icon :size="15">mdi-magnify</v-icon>
-            Filtros
-          </span>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <v-row>
-          </v-row>
-
-          <!-- <v-card-actions class="pb-4">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="btnPrimary"
-              @click="_load"
-              class="px-5"
-              rounded
-            >
-              Buscar <v-icon dark class="ml-2">mdi-magnify</v-icon>
-            </v-btn>
-            <v-btn
-              color="btnCleanFilter"
-              @click="_eraser"
-              class="px-5"
-              rounded
-            >
-              Limpar <v-icon dark class="ml-2">mdi-eraser</v-icon>
-            </v-btn>
-            <v-spacer></v-spacer>
-          </v-card-actions> -->
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-
-    <v-card>
+    <v-card elevation="0">
       <v-card-title>
         Resumo
       </v-card-title>
+
       <v-card-text>
+        <v-row>
+          <v-col cols="12" md="3" v-if="report.monthly">
+            <v-card height="100%">
+              <v-card-text class="text-center">
+                <v-btn text color="primary" block class="mt-4" @click="addYear">
+                  <v-icon color="primary">mdi-arrow-up-drop-circle-outline</v-icon>
+                </v-btn>
+
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">Ano</div>
+                <h1 class="blue--text">{{ filter.year }}</h1>
+
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <v-btn text color="primary" block class="mt-5" @click="subYear">
+                  <v-icon color="primary">mdi-arrow-down-drop-circle-outline</v-icon>
+                </v-btn>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="9" v-if="report.monthly">
+            <v-card>
+              <v-card-text class="text-center">
+                <div class="text-subtitle-1">Faturamento</div>
+                <h1 class="green--text">{{ report.annually.amount_paid | formatMoney }}</h1>
+
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">A receber</div>
+                <h1 class="blue--text">{{ report.annually.amount_to_receive | formatMoney }}</h1>
+
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">Não recebido</div>
+                <h1 class="orange--text">{{ report.annually.amount_unpaid | formatMoney }}</h1>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="3" v-for="month in report.monthly" :key="month.month">
+            <v-hover v-slot="{ hover }">
+              <v-card
+                :class="{ 'on-hover': hover }"
+                :elevation="hover ? 12 : 2"
+              >
+                <v-app-bar color="primary" dense>
+                  <v-toolbar-title>{{ month.month_name }}</v-toolbar-title>
+                </v-app-bar>
+
+                <v-card-text>
+                  <div class="text-subtitle-1">Faturamento</div>
+                  <h1 class="green--text">{{ month.amount_paid | formatMoney }}</h1>
+
+                  <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                  <div class="text-subtitle-1">A receber</div>
+                  <h1 class="blue--text">{{ month.amount_to_receive | formatMoney }}</h1>
+
+                  <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                  <div class="text-subtitle-1">Não recebido</div>
+                  <h1 class="orange--text">{{ month.amount_unpaid | formatMoney }}</h1>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer/>
+                  <v-btn text color="primary" small>
+                    Detalhes
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-hover>
+          </v-col>
+
+
+        </v-row>
+
+
+         <!-- <v-simple-table dense>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">MÊS</th>
+                <th class="text-left">FATURAMENTO</th>
+                <th class="text-left">A RECEBER</th>
+                <th class="text-left">NÃO RECEBIDO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="month in report.monthly"
+                :key="month.month"
+              >
+                <td>{{ month.month_name }}</td>
+                <td>{{ month.amount_paid | formatMoney }}</td>
+                <td>{{ month.amount_to_receive | formatMoney }}</td>
+                <td>{{ month.amount_unpaid | formatMoney }}</td>
+              </tr>
+              <tr>
+                <td>TOTAL</td>
+                <td>{{ report.annually.amount_paid | formatMoney }}</td>
+                <td>{{ report.annually.amount_to_receive | formatMoney }}</td>
+                <td>{{ report.annually.amount_unpaid | formatMoney }}</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table> -->
       </v-card-text>
 
       <v-card-actions>
@@ -76,33 +150,46 @@ export default {
   data: () => ({
     titlePage: 'Relatório Financeiro',
     loading: false,
-    orders: []
+    report: {
+      monthly: [],
+      annually: {}
+    },
+    filter: {
+      year: moment().year()
+    },
   }),
   computed: {
   },
   mounted() {
-    this._loadOrders();
+    this._loadReport();
   },
   filters: {
     formatDate(date){
       return date ? moment(date).format('DD/MM/YYYY') : '';
     },
+    formatMoney(money){
+      return money ? 'R$ ' + money.replace('.', ',') : 'R$ 0,00';
+    }
   },
   methods: {
-    async _loadOrders(){
-      let params = {
-        status_type: 'concluded'
-      }
+    addYear() {
+      this.filter.year = this.filter.year + 1;
+      this._loadReport();
+    },
+    subYear() {
+      this.filter.year = this.filter.year - 1;
+      this._loadReport();
+    },
+    async _loadReport(){
+      let params = { year: this.filter.year };
 
       this.loading = true;
-      await axios.get('/api/order', { params }).then(response => {
-        if(response.data.success){
-            this.orders = response.data.data.data;
-        } else {
-          this.$refs.fireDialog.error({ title: 'Erro ao carregar pedidos '});
-        }
+
+      await axios.get('/api/report/finance/by-year', { params }).then(response => {
+        this.report.monthly = response.data.data.monthly;
+        this.report.annually = response.data.data.annually;
       }).catch(error => {
-        this.$refs.fireDialog.error({ title: 'Erro ao carregar pedidos'});
+        this.$refs.fireDialog.error({ title: 'Erro ao carregar relatório' });
       })
 
       this.loading = false;

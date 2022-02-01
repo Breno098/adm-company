@@ -4,7 +4,7 @@ namespace App\Http\Requests\ReportFinance;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ByYearRequest extends FormRequest
+class ReportFinanceByMonthAndYearRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,8 @@ class ByYearRequest extends FormRequest
     public function rules()
     {
         return [
-            'year' => 'required|int',
+            'year' => 'required|integer',
+            'month' => 'required|integer'
         ];
     }
 }

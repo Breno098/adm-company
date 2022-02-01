@@ -101,7 +101,7 @@ class Installment extends Model
             function (Builder $builder, $year) {
                 return $builder->whereNull('pay_day')
                     ->where('status', '!=', 'PAGO')
-                    ->where('due_date', '<', now())
+                    ->where('due_date', '<', now()->format('Y-m-d'))
                     ->whereBetween('due_date', [
                         Carbon::create($year)->startOfYear(),
                         Carbon::create($year)->endOfYear()
@@ -117,7 +117,7 @@ class Installment extends Model
             function (Builder $builder) use ($year, $month){
                 return $builder->whereNull('pay_day')
                 ->where('status', '!=', 'PAGO')
-                ->where('due_date', '<', now())
+                ->where('due_date', '<', now()->format('Y-m-d'))
                 ->whereBetween('due_date', [
                     Carbon::create($year, $month)->startOfMonth(),
                     Carbon::create($year, $month)->endOfMonth()
@@ -133,7 +133,7 @@ class Installment extends Model
             function (Builder $builder, $year) {
                 return $builder->whereNull('pay_day')
                     ->where('status', '!=', 'PAGO')
-                    ->where('due_date', '>=', now())
+                    ->where('due_date', '>=', now()->format('Y-m-d'))
                     ->whereBetween('due_date', [
                         Carbon::create($year)->startOfYear(),
                         Carbon::create($year)->endOfYear()
@@ -149,7 +149,7 @@ class Installment extends Model
             function (Builder $builder) use ($year, $month){
                 return $builder->whereNull('pay_day')
                     ->where('status', '!=', 'PAGO')
-                    ->where('due_date', '>=', now())
+                    ->where('due_date', '>=', now()->format('Y-m-d'))
                     ->whereBetween('due_date', [
                         Carbon::create($year, $month)->startOfMonth(),
                         Carbon::create($year, $month)->endOfMonth()

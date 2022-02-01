@@ -137,7 +137,7 @@ export default {
           title: 'Relatórios',
           route: 'report.index',
           icon: 'mdi-chart-bar',
-          role: false,
+          role: true,
         },
         {
           title: 'Agenda',
@@ -168,12 +168,6 @@ export default {
           route: 'service.index',
           icon: 'mdi-wrench',
           role: this.$role.service.index()
-        },
-        {
-          title: 'Categorias',
-          route: 'category.index',
-          icon: 'mdi-format-list-bulleted-type',
-          role: false, //this.$role.category.index()
         },
         {
           title: 'Usuários',
