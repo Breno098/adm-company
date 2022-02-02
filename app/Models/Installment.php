@@ -38,9 +38,15 @@ class Installment extends Model
         'value'
     ];
 
-    protected $dates = [
-        'pay_day',
-        'due_date'
+    protected $casts = [
+        'pay_day' => 'date:Y-m-d',
+        'due_date' => 'date:Y-m-d',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     /**

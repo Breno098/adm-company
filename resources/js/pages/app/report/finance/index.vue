@@ -23,23 +23,23 @@
       <v-card-text>
         <v-row>
           <v-col cols="12" md="3" v-if="report.monthly">
-            <v-card height="100%">
-              <v-card-text class="text-center">
-                <v-btn text color="primary" block class="mt-4" @click="addYear">
+            <v-card height="100%" class="d-flex flex-column justify-space-around align-center">
+                <v-btn text color="primary" block @click="addYear" class="mb-2">
                   <v-icon color="primary">mdi-arrow-up-drop-circle-outline</v-icon>
                 </v-btn>
 
-                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                <v-progress-circular
+                  :size="90"
+                  :width="8"
+                  color="primary"
+                  :indeterminate="loading"
+                >
+                  {{ filter.year }}
+                </v-progress-circular>
 
-                <div class="text-subtitle-1">Ano</div>
-                <h1 class="blue--text">{{ filter.year }}</h1>
-
-                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
-
-                <v-btn text color="primary" block class="mt-5" @click="subYear">
+                <v-btn text color="primary" block @click="subYear" class="mt-2">
                   <v-icon color="primary">mdi-arrow-down-drop-circle-outline</v-icon>
                 </v-btn>
-              </v-card-text>
             </v-card>
           </v-col>
 
@@ -64,76 +64,42 @@
 
           <v-col cols="12" md="3" v-for="month in report.monthly" :key="month.month">
             <v-hover v-slot="{ hover }">
-              <v-card
-                :class="{ 'on-hover': hover }"
-                :elevation="hover ? 12 : 2"
-              >
-                <v-app-bar color="primary" dense>
-                  <v-toolbar-title>{{ month.month_name }}</v-toolbar-title>
-                </v-app-bar>
+              <router-link :to="{ name: 'report.finance.details', params: { year: filter.year, month: month.month } }" style="text-decoration: none">
+                <v-card
+                  :class="{ 'on-hover': hover }"
+                  :elevation="hover ? 12 : 2"
+                >
+                  <v-app-bar color="primary" dense>
+                    <v-toolbar-title>{{ month.month_name }}</v-toolbar-title>
+                  </v-app-bar>
 
-                <v-card-text>
-                  <div class="text-subtitle-1">Faturamento</div>
-                  <h1 class="green--text">{{ month.amount_paid | formatMoney }}</h1>
+                  <v-card-text>
+                    <div class="text-subtitle-1">Faturamento</div>
+                    <h1 class="green--text">{{ month.amount_paid | formatMoney }}</h1>
 
-                  <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
 
-                  <div class="text-subtitle-1">A receber</div>
-                  <h1 class="blue--text">{{ month.amount_to_receive | formatMoney }}</h1>
+                    <div class="text-subtitle-1">A receber</div>
+                    <h1 class="blue--text">{{ month.amount_to_receive | formatMoney }}</h1>
 
-                  <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
 
-                  <div class="text-subtitle-1">Não recebido</div>
-                  <h1 class="orange--text">{{ month.amount_unpaid | formatMoney }}</h1>
-                </v-card-text>
+                    <div class="text-subtitle-1">Não recebido</div>
+                    <h1 class="orange--text">{{ month.amount_unpaid | formatMoney }}</h1>
+                  </v-card-text>
 
-                <v-card-actions>
-                  <v-spacer/>
-                  <v-btn text color="primary" small>
-                    Detalhes
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
+                  <v-card-actions>
+                    <v-spacer/>
+                    <v-btn text color="primary" small>
+                      Detalhes
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </router-link>
             </v-hover>
           </v-col>
-
-
         </v-row>
-
-
-         <!-- <v-simple-table dense>
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th class="text-left">MÊS</th>
-                <th class="text-left">FATURAMENTO</th>
-                <th class="text-left">A RECEBER</th>
-                <th class="text-left">NÃO RECEBIDO</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="month in report.monthly"
-                :key="month.month"
-              >
-                <td>{{ month.month_name }}</td>
-                <td>{{ month.amount_paid | formatMoney }}</td>
-                <td>{{ month.amount_to_receive | formatMoney }}</td>
-                <td>{{ month.amount_unpaid | formatMoney }}</td>
-              </tr>
-              <tr>
-                <td>TOTAL</td>
-                <td>{{ report.annually.amount_paid | formatMoney }}</td>
-                <td>{{ report.annually.amount_to_receive | formatMoney }}</td>
-                <td>{{ report.annually.amount_unpaid | formatMoney }}</td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table> -->
       </v-card-text>
-
-      <v-card-actions>
-      </v-card-actions>
     </v-card>
 </div>
 </template>

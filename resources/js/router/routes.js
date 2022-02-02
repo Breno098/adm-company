@@ -55,6 +55,7 @@ export default [
   { path: '/report', name: 'report.index', component: page('app/report/index.vue') },
 
   { path: '/report/finance', name: 'report.finance.index', component: page('app/report/finance/index.vue') },
+  { path: '/report/finance/details/:month/:year', name: 'report.finance.details', component: page('app/report/finance/details.vue') },
 
   { path: '/login', name: 'login', component: page('auth/login.vue') },
   { path: '/register', name: 'register', component: page('auth/register.vue') },
