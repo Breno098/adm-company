@@ -28,16 +28,16 @@ class AddressController extends BaseApiController
     }
 
     /**
-     * @param SeachCepRequest $request
+     * @param Request $request
      * @param SearcheCepService $searcheCepService
      *
      * @return \Illuminate\Http\Response
      */
-    public function searchCep(SeachCepRequest $request, SearcheCepService $searcheCepService)
+    public function searchCep(Request $request, SearcheCepService $searcheCepService)
     {
-        $data = $request->validated();
+        $data = $request->all();
 
-        $cep = $searcheCepService->run($data['cep']);
+        $cep = $searcheCepService->run($data['cep'] ?? null);
 
         if(!$cep){
             return $this->sendError('CEP not found', []);
