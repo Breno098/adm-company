@@ -61,7 +61,8 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
 
     public function scopeauthorizedTenant(Builder $builder)
     {
-        return $builder->where('company_id', auth()->user()->company_id);
+        return $builder;
+        // return $builder->where('company_id', auth()->user()->company_id);
     }
 
     public function roles()

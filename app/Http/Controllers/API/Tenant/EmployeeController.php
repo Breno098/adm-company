@@ -62,7 +62,7 @@ class EmployeeController extends BaseApiController
     {
         $this->authorize('employee_show');
 
-        $employee->load([ 'addresses', 'contacts', 'user' ]);
+        $employee->load([ 'addresses', 'contacts' ]);
 
         return $this->sendResponse($employee, 'Employee retrieved successfully.');
     }

@@ -96,6 +96,8 @@ class UserController extends BaseApiController
      */
     public function destroy(User $user)
     {
+        $user->roles()->sync([]);
+
         $user->delete();
 
         return $this->sendResponse([], 'User deleted successfully.');

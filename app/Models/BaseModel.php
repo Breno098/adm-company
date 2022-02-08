@@ -9,13 +9,15 @@ class BaseModel extends Model
 {
     protected static function booted()
     {
-        static::saving(function ($model) {
-            $model->company_id = auth()->user()->company_id ?? 1;
-        });
+        // static::saving(function ($model) {
+        //     $model->company_id = auth()->user()->company_id ?? 1;
+        // });
     }
 
     public function scopeAuthorizedTenant(Builder $builder)
     {
-        return $builder->where('company_id', auth()->user()->company_id);
+        return $builder;
+
+        // return $builder->where('company_id', auth()->user()->company_id);
     }
 }
