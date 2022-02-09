@@ -12,7 +12,7 @@ use Illuminate\Support\Carbon;
 /**
  * @package App\Models
  *
- * @property string $description
+ * @property string $complaint
  * @property string $type
  * @property float $amount
  * @property float $amount_paid
@@ -28,6 +28,8 @@ use Illuminate\Support\Carbon;
  * @property string $payment_status
  * @property int $number_of_installments
  * @property string $accepted_payment_methods
+ * @property string $work_found
+ * @property string $work_done
  *
  * @property-read string $amount_to_currency
  * @property-read string $amount_to_currency_extensive
@@ -49,7 +51,7 @@ class Order extends BaseModel
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'description',
+        'complaint',
         'type',
         'amount',
         'amount_paid',
@@ -64,7 +66,9 @@ class Order extends BaseModel
         'status',
         'payment_status',
         'number_of_installments',
-        'accepted_payment_methods'
+        'accepted_payment_methods',
+        'work_found',
+        'work_done'
     ];
 
     protected $casts = [

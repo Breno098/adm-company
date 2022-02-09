@@ -10,24 +10,40 @@
        * {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 12px;
+        padding: 0;
+        margin: 10px;
       }
 
       body {
-        padding: 10px;
+        padding: 0;
+        margin: 0;
       }
 
       table, th, td {
         border: 1px solid black;
         border-collapse: collapse;
+        margin: 0;
+      }
+
+      strong {
+        margin: 0;
       }
 
       tr, td {
-        padding: 3px 5px;
-        width: 16.66%
+        padding: 3.5px 5px;
+        width: 16.66%;
       }
 
       .line-write {
-        padding: 11px
+        padding: 11px;
+      }
+
+      .line-money {
+        padding: 11px 5px;
+      }
+
+       .line-signature {
+        padding: 30px 5px 5px
       }
 
     </style>
@@ -92,23 +108,18 @@
           <td colspan="3"> <strong> PROGRAMAÇÃO: </strong> {{ $order->programation_date_format }} </td>
           <td colspan="3"> <strong> TELEFONE(S): </strong> {{ $order->phones }} </td>
         </tr>
-        <tr>
-          <td colspan="6"> <strong> PROBLEMA RECLAMADA: </strong>  </td>
-        </tr>
 
         <tr>
           <td colspan="6"> <strong> VISTORIA PRÉVIA DO LOCAL </strong> </td>
         </tr>
 
-        @if($order->description)
+        @if($order->complaint)
           <tr>
-            <td colspan="6"> OBSERVAÇÕES: {{ $order->description }} </td>
+            <td colspan="6"><strong>PROBLEMA RECLAMADO:</strong>{{ $order->complaint }} </td>
           </tr>
-        @endif
-
-        @if(!$order->description)
+        @else
           <tr>
-            <td colspan="6"> OBSERVAÇÕES: </td>
+            <td colspan="6"><strong>PROBLEMA RECLAMADO:</strong></td>
           </tr>
           @foreach (range(0,2) as $line)
             <tr>
@@ -118,7 +129,7 @@
         @endif
 
         <tr>
-          <td colspan="6"> LOCALIZAÇÃO E DESCRIÇÃO DO PROBLEMA CONSTATADO E SUA CAUSA </td>
+          <td colspan="6"><strong>LOCALIZAÇÃO E DESCRIÇÃO DO PROBLEMA CONSTATADO E SUA CAUSA:</strong></td>
         </tr>
         @foreach (range(0,4) as $line)
           <tr>
@@ -131,7 +142,7 @@
             AUTORIZAÇÃO PRÉVIA: DECLARO TER ACEITO AS INFORMAÇÕES ACIMA DESCRITAS, AUTORIZO PREVIAMENTE O PRESTADOR DE SERVIÇOS
             A EXECUTAR OS REPAROS NECESSÁRIOS, SOB CONDIÇÕES EXPOSTAS.
           </td>
-          <td colspan="3">  <strong> DATA/HORA: </strong></td>
+          <td colspan="3"><strong> DATA/HORA: </strong></td>
         </tr>
 
         <tr>
@@ -149,14 +160,14 @@
         @endforeach
 
         <tr>
-          <td colspan="1"> <strong> MÃO DE OBRA </strong> </td>
-          <td colspan="2"> R$ </td>
+          <td colspan="1" class="line-money"> <strong> MÃO DE OBRA </strong> </td>
+          <td colspan="2" class="line-money"> R$ </td>
           <td colspan="3" rowspan="2"> <strong> TOTAL R$ </strong> </td>
         </tr>
 
         <tr>
-          <td colspan="1"> <strong> MATERIAIS </strong> </td>
-          <td colspan="2"> R$ </td>
+          <td colspan="1" class="line-money"> <strong> MATERIAIS </strong> </td>
+          <td colspan="2" class="line-money"> R$ </td>
         </tr>
 
         <tr>
@@ -197,7 +208,7 @@
         </tr>
 
         <tr>
-          <td colspan="4"> <strong> ASSINATURA: </strong> </td>
+          <td colspan="4" class="line-signature"> <strong> ASSINATURA: </strong> </td>
         </tr>
 
       </table>

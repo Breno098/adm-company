@@ -236,14 +236,13 @@
 
             <v-col cols="12">
               <v-textarea
-                label="DESCRIÇÃO"
+                label="PROBLEMA RECLAMADO"
                 outlined
                 dense
-                v-model="order.description"
+                v-model="order.complaint"
                 :loading="loading"
-                hint="DESCRIÇÃO DO ORÇAMENTO E ORDEM DE SERVIÇO"
-                placeholder="DESCRIÇÃO E OBSERVAÇÕES (VISÍVEL AO CLIENTE)."
-                @input="order.description = order.description.toUpperCase()"
+                hint="ORDEM DE SERVIÇO"
+                @input="order.complaint = order.complaint.toUpperCase()"
               ></v-textarea>
             </v-col>
 
@@ -254,9 +253,32 @@
                 dense
                 v-model="order.comments"
                 :loading="loading"
-                placeholder="COMENTÁRIOS E OBSERVAÇÕES INTERNAS (NÃO VISÍVEL AO CLIENTE)."
-                hint="COMENTÁRIOS E OBSERVAÇÕES INTERNAS (NÃO VISÍVEL AO CLIENTE)."
+                hint="COMENTÁRIOS E OBSERVAÇÕES INTERNAS"
                 @input="order.comments = order.comments.toUpperCase()"
+              ></v-textarea>
+            </v-col>
+
+            <v-col cols="12">
+              <v-textarea
+                label="SERVIÇO NECESSÁRIO"
+                outlined
+                dense
+                v-model="order.work_found"
+                :loading="loading"
+                hint="SERVIÇO NECESSÁRIO A SER FEITO"
+                @input="order.work_found = order.work_found.toUpperCase()"
+              ></v-textarea>
+            </v-col>
+
+            <v-col cols="12">
+              <v-textarea
+                label="SERVIÇO REALIZADO"
+                outlined
+                dense
+                v-model="order.work_done"
+                :loading="loading"
+                hint="SERVIÇO REALIZADO"
+                @input="order.work_done = order.work_done.toUpperCase()"
               ></v-textarea>
             </v-col>
           </v-row>
@@ -1125,7 +1147,7 @@ export default {
 
       window.open(`/api/docs/service-order/${this.order.id}/download`);
     },
-     async budgetDownload(){
+    async budgetDownload(){
       await this._store();
 
       window.open(`/api/docs/budget/${this.order.id}/download`);

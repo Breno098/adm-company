@@ -24,7 +24,7 @@ class UpdateOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'description' => 'nullable|string',
+            'complaint' => 'nullable|string',
             'type' => 'nullable|string',
             'amount' => 'nullable',
             'amount_paid' => 'nullable',
@@ -39,6 +39,8 @@ class UpdateOrderRequest extends FormRequest
             'status' => 'nullable|string',
             'accepted_payment_methods' => 'nullable|string',
             'number_of_installments' => 'nullable|integer',
+            'work_found' => 'nullable|string',
+            'work_done' => 'nullable|string',
 
             /** Relations */
             'client_id' => 'required',

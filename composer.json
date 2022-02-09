@@ -17,7 +17,7 @@
         "tymon/jwt-auth": "^1.0.2"
     },
     "require-dev": {
-        "doctrine/dbal": "^2.12",
+        "doctrine/dbal": "^3.3",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "laravel/dusk": "^6.8",
