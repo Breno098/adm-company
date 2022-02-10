@@ -57,6 +57,16 @@ const roles = {
     delete: () => role('order_delete'),
     show: () => role('order_show'),
     update: () => role('order_update'),
+
+    installmentAdd: () => role('order_installment_add'),
+    installmentDelete: () => role('order_installment_delete'),
+    installmentUpdate: () => role('order_installment_update'),
+    productAdd: () => role('order_product_add'),
+    productDelete: () => role('order_product_delete'),
+    productUpdate: () => role('order_product_update'),
+    serviceAdd: () => role('order_service_add'),
+    serviceDelete: () => role('order_service_delete'),
+    serviceUpdate: () => role('order_service_update'),
   },
   category: {
     index: () => role('category_index'),
@@ -78,11 +88,6 @@ const roles = {
     delete: () => role('appointment_delete'),
     show: () => role('appointment_show'),
     update: () => role('appointment_update'),
-  },
-  installment: {
-    add: () => role('installment_add'),
-    delete: () => role('installment_delete'),
-    update: () => role('installment_update'),
   },
   report: {
     index: () => role('report_index'),

@@ -29,96 +29,96 @@
     </v-card>
 
     <v-card>
-      <v-card-text>
-        <v-row>
-          <v-col cols="12" md="6">
-            <v-text-field
-              label="NOME"
-              color="primary"
-              outlined
-              dense
-              v-model="user.name"
-              :loading="loading"
-              :rules="[rules.required]"
-              :error="errors.name"
-            ></v-text-field>
-          </v-col>
+      <v-tabs v-model="tab">
+        <v-tabs-slider color="primary"></v-tabs-slider>
+        <v-tab>Informações <v-icon class="ml-2">mdi-information</v-icon></v-tab>
+        <v-tab>Permissões <v-icon class="ml-2">mdi-lock</v-icon></v-tab>
+      </v-tabs>
 
-          <v-col cols="12" md="6">
-            <v-text-field
-              label="EMAIL"
-              color="primary"
-              outlined
-              dense
-              v-model="user.email"
-              :loading="loading"
-              :rules="[rules.required]"
-              :error="errors.email"
-            ></v-text-field>
-          </v-col>
+      <v-tabs-items v-model="tab" class="pt-5 px-3">
+        <v-tab-item>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-text-field
+                label="NOME"
+                color="primary"
+                outlined
+                dense
+                v-model="user.name"
+                :loading="loading"
+                :rules="[rules.required]"
+                :error="errors.name"
+              ></v-text-field>
+            </v-col>
 
-          <v-col cols="12" md="10" v-if="!idByRoute">
-            <v-text-field
-              label="SENHA INICIAL"
-              color="primary"
-              outlined
-              dense
-              v-model="user.password"
-              :loading="loading"
-              :rules="[rules.required]"
-              :error="errors.password"
-            ></v-text-field>
-          </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                label="EMAIL"
+                color="primary"
+                outlined
+                dense
+                v-model="user.email"
+                :loading="loading"
+                :rules="[rules.required]"
+                :error="errors.email"
+              ></v-text-field>
+            </v-col>
 
-          <v-col cols="12" md="2" v-if="!idByRoute">
-            <v-btn color="primary" @click="_generateRandomPass" dark block>
-              Gerar senha
-            </v-btn>
-          </v-col>
+            <v-col cols="12" md="10" v-if="!idByRoute">
+              <v-text-field
+                label="SENHA INICIAL"
+                color="primary"
+                outlined
+                dense
+                v-model="user.password"
+                :loading="loading"
+                :rules="[rules.required]"
+                :error="errors.password"
+              ></v-text-field>
+            </v-col>
 
-          <v-col cols="12" md="6" v-if="$role.user.roles()">
-            <v-btn color="primary" @click="_groupUser('admin')" rounded dark block>
-              Admin
-            </v-btn>
-          </v-col>
-          <v-col cols="12" md="6" v-if="$role.user.roles()">
-            <v-btn color="btnPrimary" @click="_groupUser('i')" rounded dark block>
-              Visualizar
-            </v-btn>
-          </v-col>
-          <v-col cols="12" md="6" v-if="$role.user.roles()">
-            <v-btn color="btnPrimary" @click="_groupUser('i|a')" rounded dark block>
-              Visualizar | Adicionar
-            </v-btn>
-          </v-col>
-          <v-col cols="12" md="6" v-if="$role.user.roles()">
-            <v-btn color="btnPrimary" @click="_groupUser('i|a|u')" rounded dark block>
-              Visualizar | Adicionar | Atualizar
-            </v-btn>
-          </v-col>
+            <v-col cols="12" md="2" v-if="!idByRoute">
+              <v-btn color="btnPrimary" @click="_generateRandomPass" dark block>
+                Gerar senha
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-tab-item>
 
-          <v-col cols="12" v-if="$role.user.roles()">
-            <v-card elevation="2">
-              <v-card-title>
-                Permissões de sistemas
-              </v-card-title>
+        <v-tab-item>
+          <v-row class="mb-2">
+            <v-col cols="12" v-for="(group, index) in rolesGroupByTag" :key="index">
+              <v-card>
+                <v-card-title class="d-flex flex-row justify-space-between">
+                  {{ group.tag }}
 
-              <v-card-text>
-                <v-row>
-                  <v-col cols="12" md="4" v-for="(role, index) in roles" :key="index">
-                    <v-switch
-                      inset
-                      :label="role.name"
-                      v-model="user.roles_format"
-                      :value="role.id"
-                    ></v-switch>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-card-text>
+                   <v-tooltip left>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn color="btnPrimary" @click="selectAllTag(group.tag)" text v-bind="attrs" v-on="on">
+                        <v-icon>mdi-checkbox-multiple-marked-circle-outline</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Marcar todas as permissões para {{ group.tag }}</span>
+                  </v-tooltip>
+                </v-card-title>
+
+                <v-card-text>
+                  <v-row>
+                    <v-col cols="12" md="4" v-for="(role, index) in group.roles" :key="index">
+                      <v-switch
+                        inset
+                        :label="role.name"
+                        v-model="user.roles"
+                        :value="role.id"
+                      ></v-switch>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-tab-item>
+      </v-tabs-items>
 
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -146,6 +146,7 @@ export default {
     return { title: this.titlePage }
   },
   data: () => ({
+    tab: null,
     loading: false,
     loadingRole: false,
     errors: {
@@ -160,8 +161,8 @@ export default {
       email: null,
       password: null,
       roles: [],
-      roles_format: [],
     },
+    rolesGroupByTag: [],
     roles: []
   }),
   computed: {
@@ -170,7 +171,7 @@ export default {
     },
     idByRoute(){
       return this.$route.params.id;
-    }
+    },
   },
   mounted(){
     this._start();
@@ -183,73 +184,29 @@ export default {
         this.errors.password = false;
       }
 
-      await this._loadRoles();
+      await this._loadRolesGroupByTag();
     },
     _generateRandomPass(){
       this.user.password = (Math.random() + 1).toString(36).substring(2);
-    },
-    _groupUser(type){
-      let rolesGroup = [];
-
-      switch (type) {
-        case 'admin':
-          this.roles.forEach(role => rolesGroup.push(role.id));
-          break;
-
-        case 'i':
-          this.roles
-              .filter(role => role.role.includes('index') || role.role.includes('show') )
-              .forEach(role => rolesGroup.push(role.id));
-          break;
-
-        case 'i|a':
-          this.roles
-              .filter(role => role.role.includes('index') || role.role.includes('show') || role.role.includes('add') )
-              .forEach(role => rolesGroup.push(role.id));
-          break;
-
-        case 'i|a|u':
-          this.roles
-              .filter(role => role.role.includes('index') || role.role.includes('show') || role.role.includes('add') || role.role.includes('update') )
-              .forEach(role => rolesGroup.push(role.id));
-          break;
-
-        case 'i|a|u|d':
-          this.roles
-              .filter(role => role.role.includes('index') || role.role.includes('show') || role.role.includes('add') || role.role.includes('update') || role.role.includes('delete'))
-              .forEach(role => rolesGroup.push(role.id));
-          break;
-
-        default: null
-      }
-
-      this.user.roles_format = rolesGroup;
     },
     async _load(){
       this.loading = true;
       await axios.get(`/api/user/${this.idByRoute}`).then(response => {
         if(response.data.success){
-          this.user = {
-            roles_format: [],
-            ...response.data.data
-          };
-
-          response.data.data.roles.forEach(role => {
-            this.user.roles_format.push(role.id);
-          });
+          this.user =response.data.data;
+          this.user.roles = this.user.roles.map(role => role.id);
           return;
         }
 
-        this.$refs.fireDialog.error({ title: 'Error ao carregar dados do usuário' })
-        this.$refs.fireDialog.hide(1500);
+        this.$refs.fireDialog.error({ title: 'Error ao carregar dados do usuário', time: 1500 })
       });
       this.loading = false;
     },
-    async _loadRoles(){
+     async _loadRolesGroupByTag(){
       this.loadingRole = true;
-      await axios.get(`/api/role`).then(response => {
+      await axios.get(`/api/role/group-by-tag`).then(response => {
         if(response.data.success){
-          return this.roles = response.data.data;
+          return this.rolesGroupByTag = response.data.data;
         }
         this.$refs.fireDialog.error({ title: 'Error ao carregar permissões' })
       });
@@ -265,11 +222,7 @@ export default {
 
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
 
-      this.user.roles = this.user.roles_format;
-
       const response = !this.idByRoute ? await axios.post('/api/user', this.user) : await axios.put(`/api/user/${this.idByRoute}`, this.user);
-
-      this.user.roles_format = this.user.roles;
 
       this.loading = false;
 
@@ -280,8 +233,21 @@ export default {
 
       this.$refs.fireDialog.error({ title: 'Error aos salvar usuário' })
     },
+    selectAllTag(tag) {
+      let group = this.rolesGroupByTag.filter(group => group.tag === tag);
 
+      let roles = group[0].roles.map(role => role.id);
+
+      roles.forEach(role => {
+        let exists = this.user.roles.filter(userRole => userRole == role)
+
+        if(exists.length === 0){
+          this.user.roles.push(role);
+        }
+      });
+    }
   }
+
 
 }
 </script>

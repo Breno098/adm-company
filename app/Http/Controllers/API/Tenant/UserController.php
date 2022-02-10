@@ -78,9 +78,9 @@ class UserController extends BaseApiController
     {
         $this->authorize('user_update');
 
-        if($user->id === $updateUserRequest->user()->id){
-            return $this->sendError('Action not allowed', [], 403);
-        }
+        // if($user->id === $updateUserRequest->user()->id){
+        //     return $this->sendError('Action not allowed', [], 403);
+        // }
 
         $data = $updateUserRequest->validated();
 

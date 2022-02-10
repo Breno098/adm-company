@@ -88,6 +88,9 @@ Route::middleware('auth:api')->group( function () {
 
         Route::get('report/finance/by-year', [ReportFinanceController::class, 'byYear']);
         Route::get('report/finance/by-month-and-year', [ReportFinanceController::class, 'byMonthAndYear']);
+
+        Route::get('role/group-by-tag', [RoleController::class, 'indexGroupByTag']);
+
     });
 });
 

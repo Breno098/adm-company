@@ -33,10 +33,6 @@ class RolesSeeder extends Seeder
                 'module' => 'service'
             ],
             [
-                'tag' => 'Categoria',
-                'module' => 'category'
-            ],
-            [
                 'tag' => 'Custos/Despesa',
                 'module' => 'expense'
             ],
@@ -53,9 +49,22 @@ class RolesSeeder extends Seeder
                 'module' => 'employee_receipt'
             ],
             [
-                'tag' => 'Parcela',
-                'module' => 'installment',
-                'only' => ['add', 'delete', 'update']
+                'tag' => 'Pedido',
+                'module' => 'order_installment',
+                'only' => ['add', 'delete', 'update'],
+                'name' => 'Parcelas do Pedido'
+            ],
+            [
+                'tag' => 'Pedido',
+                'module' => 'order_product',
+                'only' => ['add', 'delete', 'update'],
+                'name' => 'Produtos do Pedido'
+            ],
+            [
+                'tag' => 'Pedido',
+                'module' => 'order_service',
+                'only' => ['add', 'delete', 'update'],
+                'name' => 'Serviços do Pedido'
             ],
         ];
     }
@@ -65,14 +74,16 @@ class RolesSeeder extends Seeder
         return ['index', 'add', 'show', 'delete', 'update'];
     }
 
-    public function name($operation, $tag): string
+    public function name($operation, $module): string
     {
+        $suffix = $module['name'] ?? $module['tag'];
+
         switch ($operation) {
-            case 'index': return "Ver {$tag}";
-            case "add": return "Adicionar {$tag}";
-            case "show": return "Visualizar {$tag}";
-            case "delete": return "Deletar {$tag}";
-            case "update": return "Atualizar {$tag}";
+            case 'index': return "Ver {$suffix}";
+            case "add": return "Adicionar {$suffix}";
+            case "show": return "Visualizar {$suffix}";
+            case "delete": return "Deletar {$suffix}";
+            case "update": return "Atualizar {$suffix}";
             default: return  "";
         }
     }
@@ -84,7 +95,7 @@ class RolesSeeder extends Seeder
                 Role::updateOrCreate([
                     'role' => "{$module['module']}_{$operation}",
                 ],[
-                    'name' => $this->name($operation, $module['tag']),
+                    'name' => $this->name($operation, $module),
                     'tag' => $module['tag'],
                 ]);
             }

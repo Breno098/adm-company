@@ -18,6 +18,12 @@ class Role extends Model
         'tag'
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
+
     public function scopeFilterByRole(Builder $builder, $role)
     {
         return $builder->when($role, function (Builder $builder, $role) {
