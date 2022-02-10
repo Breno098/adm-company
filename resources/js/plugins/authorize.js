@@ -79,6 +79,18 @@ const roles = {
     show: () => role('appointment_show'),
     update: () => role('appointment_update'),
   },
+  installment: {
+    add: () => role('installment_add'),
+    delete: () => role('installment_delete'),
+    update: () => role('installment_update'),
+  },
+  report: {
+    index: () => role('report_index'),
+    report_finance: () => role('report_finance_index'),
+  },
+  file: {
+    index: () => role('file_index'),
+  }
 };
 
 Vue.use({ install () { Vue.prototype.$role = { ...roles  } } })
