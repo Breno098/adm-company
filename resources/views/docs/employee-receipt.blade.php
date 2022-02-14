@@ -42,7 +42,7 @@
 
       <div style="text-align: justify; margin: 30px; line-height: 1.6;">
         <p>
-          Recebi de {{ $employeeReceipt->company->name }}, a quantia de <b>{{ $employeeReceipt->amount_to_currency }}</b> ({{ strtoupper($employeeReceipt->full_amount_in_full) }}),
+          Recebi de Desentupidora Crispim, a quantia de <b>{{ $employeeReceipt->amount_to_currency }}</b> ({{ strtoupper($employeeReceipt->full_amount_in_full) }}),
           referente ao trabalho executado entre <b>{{ $employeeReceipt->date_start_format }}</b> e <b>{{ $employeeReceipt->date_end_format }}</b>, dando-lhe por este recibo a devida quitação.
         </p>
       </div>
