@@ -71,7 +71,7 @@
               ></v-textarea>
             </v-col>
 
-            <v-col cols="12" md="6">
+            <v-col cols="12" v-if="expense.installments.length > 1">
               <v-text-field
                 type="number"
                 prefix="R$"
@@ -86,40 +86,11 @@
           </v-col>
         </v-row>
 
-        <v-row>
-          <v-col cols="12">
-            <div class="text-h6 blue--text"> Pagamento(s) </div>
-            <v-divider color="grey"/>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-text-field
-              label="PAGAMENTO"
-              outlined
-              dense
-              v-model="expense.type_payment"
-              readonly
-            >
-            </v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-text-field
-              label="QUANTIDADE PARCELAS"
-              outlined
-              dense
-              v-model="expense.number_of_installments"
-              readonly
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
-
         <v-row
           v-for="(installment, index) in expense.installments"
           :key="index"
         >
-          <v-col cols="12" md="2">
+          <v-col cols="12" :md="expense.installments.length > 1 ? 2 : 4">
             <v-text-field
               outlined
               prefix="R$"
@@ -130,17 +101,18 @@
             ></v-text-field>
           </v-col>
 
-          <v-col cols="12" md="3">
+          <v-col cols="12" :md="expense.installments.length > 1 ? 3 : 4">
               <v-select
               :items="payments"
               label="FORMA DE PAGAMENTO"
               outlined
               dense
               v-model="installment.payment_method"
+              clearable
             ></v-select>
           </v-col>
 
-          <v-col cols="12" md="2">
+          <v-col cols="12" :md="expense.installments.length > 1 ? 2 : 4">
             <v-dialog
               v-model="menu_date_installments_pay_day[index]"
               :close-on-content-click="false"
@@ -172,7 +144,7 @@
             </v-dialog>
           </v-col>
 
-          <v-col cols="12" md="2">
+          <v-col cols="12" md="2" v-if="expense.installments.length > 1">
             <v-dialog
               v-model="menu_date_installments_due_date[index]"
               :close-on-content-click="false"
@@ -204,7 +176,7 @@
             </v-dialog>
           </v-col>
 
-          <v-col cols="12" md="3">
+          <v-col cols="12" md="3" v-if="expense.installments.length > 1">
               <v-select
               :items="['PAGO', 'EM ABERTO', 'CANCELADO', 'INADIMPLENTE']"
               label="STATUS"
@@ -225,7 +197,7 @@
               :loading="loading"
               small
               rounded
-              v-if="expense.installments.length > 0"
+              v-if="expense.installments.length > 1"
             >
               Apagar ultima parcela <v-icon color="red darken-4">mdi-delete</v-icon>
             </v-btn>
@@ -243,7 +215,8 @@
                 value: null
               })"
             >
-              Adicionar parcela <v-icon>mdi-plus</v-icon>
+              {{ expense.installments.length > 1 ? 'Adicionar parcela' : 'Pagamento parcelado' }}
+              <v-icon>{{ expense.installments.length > 1 ? 'mdi-plus' : '' }}</v-icon>
             </v-btn>
           </v-col>
         </v-row>
@@ -280,15 +253,9 @@ export default {
     'expense.installments': {
       deep: true,
       handler() {
-        this.expense.number_of_installments = this.expense.installments.length;
-
-        if(this.expense.number_of_installments === 0){
-          this.expense.type_payment = null;
-          this.expense.number_of_installments = null;
-        } else if(this.expense.number_of_installments === 1){
-          this.expense.type_payment = 'A VISTA';
-        } else {
-          this.expense.type_payment = 'PARCELADO';
+        if(this.expense.installments.length < 2){
+          this.expense.installments[0].status = 'PAGO';
+          this.expense.installments[0].due_date = moment().format('YYYY-MM-DD');
         }
 
         this.expense.value = 0;
@@ -317,9 +284,15 @@ export default {
       quantity: null,
       value: null,
       categories: [],
-      installments: [],
-      number_of_installments: null,
-      type_payment: null
+      installments: [{
+          number: 1,
+          payment_method: null,
+          status: 'PAGO',
+          due_date: moment().format('YYYY-MM-DD'),
+          pay_day: moment().format('YYYY-MM-DD'),
+          value: null
+      }],
+      number_of_installments: null
     },
     categories: [],
     payments: [

@@ -14,6 +14,7 @@ use Carbon\Carbon;
  *
  * @property int $number
  * @property int $order_id
+ * @property int $expense_id
  * @property string $payment_method
  * @property string $status
  * @property Carbon $due_date
@@ -31,6 +32,7 @@ class Installment extends Model
     protected $fillable = [
         'number',
         'order_id',
+        'expense_id',
         'payment_method',
         'status',
         'due_date',
@@ -41,6 +43,7 @@ class Installment extends Model
     protected $casts = [
         'pay_day' => 'date:Y-m-d',
         'due_date' => 'date:Y-m-d',
+        'value' => 'float'
     ];
 
     protected $hidden = [
@@ -58,8 +61,26 @@ class Installment extends Model
     }
 
     /**
+     * @return BelongsTo
+     */
+    public function expense(): BelongsTo
+    {
+        return $this->belongsTo(Expense::class);
+    }
+
+    /**
      * Scopes
      */
+    public function scopeTypeOrder(Builder $builder)
+    {
+        return $builder->whereNotNull('order_id');
+    }
+
+    public function scopeTypeExpense(Builder $builder)
+    {
+        return $builder->whereNotNull('expense_id');
+    }
+
     public function scopeOrderId(Builder $builder, $order_id)
     {
         return $builder->when(
@@ -132,7 +153,7 @@ class Installment extends Model
         );
     }
 
-    public function scopeToReceiveAnnually(Builder $builder, $year)
+    public function scopeToPendingAnnually(Builder $builder, $year)
     {
         return $builder->when(
             $year,
@@ -148,7 +169,7 @@ class Installment extends Model
         );
     }
 
-    public function scopeToReceiveMonthly(Builder $builder, $year, $month)
+    public function scopeToPendingMonthly(Builder $builder, $year, $month)
     {
         return $builder->when(
             $year && $month,

@@ -15,17 +15,30 @@ class ReportFinanceByMonthAndYearService
      */
     public function run(int $month, int $year): array
     {
-        $with = [
+        $withOrder = [
             'order:id,client_id,number_of_installments',
-            'order.client:id,name'
+            'order.client:id,name',
         ];
 
-        $installmentsPaid = Installment::paidMonthly($year, $month)->with($with)->get();
-        $installmentsUnpaid = Installment::unpaidMonthly($year, $month)->with($with)->get();
-        $installmentsToReceive = Installment::toReceiveMonthly($year, $month)->with($with)->get();
-        $amountPaid = Installment::paidMonthly($year, $month)->sum('value');
-        $amountUnpaid = Installment::unpaidMonthly($year, $month)->sum('value');
-        $amountToReceive = Installment::toReceiveMonthly($year, $month)->sum('value');
+        $withExpense = [
+            'expense:id,title',
+        ];
+
+        $installmentsPaid = Installment::typeOrder()->paidMonthly($year, $month)->with($withOrder)->get();
+        $installmentsUnpaid = Installment::typeOrder()->unpaidMonthly($year, $month)->with($withOrder)->get();
+        $installmentsToReceive = Installment::typeOrder()->toPendingMonthly($year, $month)->with($withOrder)->get();
+
+        $installmentsExpensePaid = Installment::typeExpense()->paidMonthly($year, $month)->with($withExpense)->get();
+
+        $amountPaid = (float) Installment::typeOrder()->paidMonthly($year, $month)->sum('value');
+        $amountUnpaid = (float) Installment::typeOrder()->unpaidMonthly($year, $month)->sum('value');
+        $amountToReceive = (float) Installment::typeOrder()->toPendingMonthly($year, $month)->sum('value');
+
+        $expensePaid = (float) Installment::typeExpense()->paidMonthly($year, $month)->sum('value');
+        // $expenseUnpaid = Installment::typeExpense()->unpaidMonthly($year, $month)->sum('value');
+        // $expenseToPay = Installment::typeExpense()->toPendingMonthly($year, $month)->sum('value');
+
+        $profit = (float) number_format($amountPaid - $expensePaid, 2);
 
         return  [
             'month' => $month,
@@ -34,9 +47,12 @@ class ReportFinanceByMonthAndYearService
             'installments_paid' => $installmentsPaid,
             'installments_unpaid' => $installmentsUnpaid,
             'installments_to_receive' => $installmentsToReceive,
+            'installments_expense_paid' => $installmentsExpensePaid,
             'amount_paid' => $amountPaid,
             'amount_unpaid' => $amountUnpaid,
-            'amount_to_receive' => $amountToReceive
+            'amount_to_receive' => $amountToReceive,
+            'expense_paid' => $expensePaid,
+            'profit' => $profit
         ];
     }
 }

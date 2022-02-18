@@ -16,7 +16,7 @@
     </v-card>
 
     <v-row>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-card>
           <v-card-title>
             Faturamento
@@ -26,7 +26,7 @@
             <v-virtual-scroll
               :items="report.installments_paid"
               :item-height="90"
-              height="400"
+              height="200"
             >
               <template v-slot:default="{ item: installment }">
                 <router-link :to="{ name: 'order.show', params: { id: installment.order.id } }" style="text-decoration: none">
@@ -50,6 +50,8 @@
             </v-virtual-scroll>
           </v-card-text>
 
+          <v-divider color="black"></v-divider>
+
           <v-card-actions class="d-flex flex-row justify-space-between align-center px-5">
             <div>
               Total
@@ -61,7 +63,63 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
+        <v-card>
+          <v-card-title>
+            Custos
+          </v-card-title>
+
+          <v-card-text>
+            <v-virtual-scroll
+              :items="report.installments_expense_paid"
+              :item-height="90"
+              height="200"
+            >
+              <template v-slot:default="{ item: installment }">
+                <router-link :to="{ name: 'expense.show', params: { id: installment.expense.id } }" style="text-decoration: none">
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ installment.pay_day | formatDate }} - {{ installment.expense.title }}</v-list-item-title>
+                      <v-list-item-subtitle class="mt-3 d-flex flex-row justify-space-between align-center">
+                        <div>
+                        </div>
+                        <h2 class="red--text">
+                          {{ installment.value | formatMoney }}
+                        </h2>
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </router-link>
+
+                <v-divider color="grey" class="mx-5"></v-divider>
+              </template>
+            </v-virtual-scroll>
+          </v-card-text>
+
+          <v-divider color="black"></v-divider>
+
+          <v-card-actions class="d-flex flex-row justify-space-between align-center px-5">
+            <div>
+              Total
+            </div>
+            <h2 class="red--text">
+              {{ report.expense_paid | formatMoney }}
+            </h2>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12">
+        <v-card>
+          <v-card-text class="d-flex flex-column justify-space-around align-center">
+            <h2 class="mb-2">Lucro</h2>
+            <h1 :class="report.profit >= 0 ? 'green--text' : 'red--text'">{{ report.profit | formatMoney }}</h1>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+
+      <v-col cols="12" md="6">
         <v-card>
           <v-card-title>
             A receber
@@ -71,7 +129,7 @@
             <v-virtual-scroll
               :items="report.installments_to_receive"
               :item-height="90"
-              height="400"
+              height="200"
             >
               <template v-slot:default="{ item: installment }">
                 <router-link :to="{ name: 'order.show', params: { id: installment.order.id } }" style="text-decoration: none">
@@ -106,7 +164,7 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-card>
           <v-card-title>
             Não recebido
@@ -116,7 +174,7 @@
             <v-virtual-scroll
               :items="report.installments_unpaid"
               :item-height="90"
-              height="400"
+              height="200"
             >
               <template v-slot:default="{ item: installment }">
                 <router-link :to="{ name: 'order.show', params: { id: installment.order.id } }" style="text-decoration: none">
@@ -175,9 +233,12 @@ export default {
       installments_paid: [],
       installments_unpaid: [],
       installments_to_receive: [],
+      installments_expense_paid: [],
       amount_paid: 0,
       amount_unpaid: 0,
-      amount_to_receive: 0
+      amount_to_receive: 0,
+      expense_paid: 0,
+      profit: 0
     },
   }),
   computed: {
@@ -195,8 +256,8 @@ export default {
     formatDate(date) {
       return date ? moment(date).format('DD/MM/YYYY') : '';
     },
-    formatMoney(money) {
-      return money ? 'R$ ' + money.replace('.', ',') : 'R$ 0,00';
+    formatMoney(money){
+      return money ? 'R$ ' + money.toFixed(2).toString().replace('.', ',') : 'R$ 0,00';
     },
     stringInstallment(installment) {
       return installment.order.number_of_installments > 1 ? `parcela ${installment.number}/${installment.order.number_of_installments}` : 'á vista';
@@ -218,6 +279,9 @@ export default {
         this.report.amount_paid = response.data.data.amount_paid;
         this.report.amount_unpaid = response.data.data.amount_unpaid;
         this.report.amount_to_receive = response.data.data.amount_to_receive;
+        this.report.installments_expense_paid = response.data.data.installments_expense_paid;
+        this.report.expense_paid = response.data.data.expense_paid;
+        this.report.profit = response.data.data.profit;
       }).catch(error => {
         this.$refs.fireDialog.error({ title: 'Erro ao carregar relatório' });
       })

@@ -22,47 +22,36 @@
 
       <v-card-text>
         <v-row>
-          <v-col cols="12" md="3" v-if="report.monthly">
-            <v-card height="100%" class="d-flex flex-column justify-space-around align-center">
-                <v-btn text color="primary" block @click="addYear" class="mb-2">
-                  <v-icon color="primary">mdi-arrow-up-drop-circle-outline</v-icon>
-                </v-btn>
-
-                <v-progress-circular
-                  :size="90"
-                  :width="8"
-                  color="primary"
-                  :indeterminate="loading"
-                >
-                  {{ filter.year }}
-                </v-progress-circular>
-
-                <v-btn text color="primary" block @click="subYear" class="mt-2">
-                  <v-icon color="primary">mdi-arrow-down-drop-circle-outline</v-icon>
-                </v-btn>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12" md="9" v-if="report.monthly">
+          <v-col cols="12" v-if="report.monthly">
             <v-card>
-              <v-card-text class="text-center">
-                <div class="text-subtitle-1">Faturamento</div>
-                <h1 class="green--text">{{ report.annually.amount_paid | formatMoney }}</h1>
-
-                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
-
-                <div class="text-subtitle-1">A receber</div>
-                <h1 class="blue--text">{{ report.annually.amount_to_receive | formatMoney }}</h1>
-
-                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
-
-                <div class="text-subtitle-1">Não recebido</div>
-                <h1 class="orange--text">{{ report.annually.amount_unpaid | formatMoney }}</h1>
+              <v-card-text>
+                <v-row>
+                  <v-col cols="2" class="d-flex flex-column justify-space-around align-center">
+                    <v-btn text color="primary" block @click="subYear" class="mb-2">
+                      <v-icon color="primary">mdi-minus-circle-outline</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="8" class="d-flex flex-column justify-center align-center">
+                    <v-progress-circular
+                      :size="130"
+                      :width="10"
+                      color="primary"
+                      :indeterminate="loading"
+                    >
+                      {{ filter.year }}
+                    </v-progress-circular>
+                  </v-col>
+                  <v-col cols="2" class="d-flex flex-column justify-space-around align-center">
+                    <v-btn text color="primary" block @click="addYear" class="mt-2">
+                      <v-icon color="primary">mdi-plus-circle-outline</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </v-card-text>
             </v-card>
           </v-col>
 
-          <v-col cols="12" md="3" v-for="month in report.monthly" :key="month.month">
+          <v-col cols="12" md="4" v-for="month in report.monthly" :key="month.month">
             <v-hover v-slot="{ hover }">
               <router-link :to="{ name: 'report.finance.details', params: { year: filter.year, month: month.month } }" style="text-decoration: none">
                 <v-card
@@ -77,6 +66,17 @@
                     <div class="text-subtitle-1">Faturamento</div>
                     <h1 class="green--text">{{ month.amount_paid | formatMoney }}</h1>
 
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                    <div class="text-subtitle-1">Custos</div>
+                    <h1 class="red--text">{{ month.expense_paid | formatMoney }}</h1>
+
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                    <div class="text-subtitle-1">Lucro</div>
+                    <h1 :class="month.profit >= 0 ? 'green--text' : 'red--text'">{{ month.profit | formatMoney }}</h1>
+
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
                     <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
 
                     <div class="text-subtitle-1">A receber</div>
@@ -97,6 +97,42 @@
                 </v-card>
               </router-link>
             </v-hover>
+          </v-col>
+
+           <v-col cols="12" v-if="report.monthly">
+            <v-card>
+                <v-app-bar color="primary" dense>
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title>{{ report.annually.year }}</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                </v-app-bar>
+
+              <v-card-text class="text-center">
+                <div class="text-subtitle-1">Faturamento</div>
+                <h1 class="green--text">{{ report.annually.amount_paid | formatMoney }}</h1>
+
+                 <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">Custos</div>
+                <h1 class="red--text">{{ report.annually.expense_paid | formatMoney }}</h1>
+
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">Lucro</div>
+                <h1 :class="report.annually.profit >= 0 ? 'green--text' : 'red--text'">{{ report.annually.profit | formatMoney }}</h1>
+
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">A receber</div>
+                <h1 class="blue--text">{{ report.annually.amount_to_receive | formatMoney }}</h1>
+
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">Não recebido</div>
+                <h1 class="orange--text">{{ report.annually.amount_unpaid | formatMoney }}</h1>
+              </v-card-text>
+            </v-card>
           </v-col>
         </v-row>
       </v-card-text>
@@ -134,8 +170,8 @@ export default {
       return date ? moment(date).format('DD/MM/YYYY') : '';
     },
     formatMoney(money){
-      return money ? 'R$ ' + money.replace('.', ',') : 'R$ 0,00';
-    }
+      return money ? 'R$ ' + money.toFixed(2).toString().replace('.', ',') : 'R$ 0,00';
+    },
   },
   methods: {
     addYear() {

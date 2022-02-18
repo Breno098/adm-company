@@ -18,20 +18,38 @@ class ReportFinanceByYearService
     {
         $report = [];
         foreach (self::MONTHS_NUMBER as $month) {
+            $amountPaid = (float) Installment::typeOrder()->paidMonthly($year, $month)->sum('value');
+            $amountUnpaid = (float) Installment::typeOrder()->unpaidMonthly($year, $month)->sum('value');
+            $amountToReceive = (float) Installment::typeOrder()->toPendingMonthly($year, $month)->sum('value');
+            $expensePaid = (float) Installment::typeExpense()->paidMonthly($year, $month)->sum('value');
+
+            $profit = (float) number_format($amountPaid - $expensePaid, 2);
+
             $report['monthly'][] = [
                 'month' => $month,
                 'month_name' => mb_strtoupper(Carbon::create($year, $month)->locale('pt-Br')->monthName, 'UTF-8'),
-                'amount_paid' => Installment::paidMonthly($year, $month)->sum('value'),
-                'amount_unpaid' => Installment::unpaidMonthly($year, $month)->sum('value'),
-                'amount_to_receive' => Installment::toReceiveMonthly($year, $month)->sum('value'),
+                'amount_paid' => $amountPaid,
+                'amount_unpaid' => $amountUnpaid,
+                'amount_to_receive' => $amountToReceive,
+                'expense_paid' => $expensePaid,
+                'profit' => $profit
             ];
         }
 
+        $amountPaid = (float) Installment::typeOrder()->paidAnnually($year)->sum('value');
+        $amountUnpaid = (float) Installment::typeOrder()->unpaidAnnually($year)->sum('value');
+        $amountToReceive = (float) Installment::typeOrder()->toPendingAnnually($year)->sum('value');
+        $expensePaid = (float) Installment::typeExpense()->paidAnnually($year)->sum('value');
+
+        $profit = (float) number_format($amountPaid - $expensePaid, 2);
+
         $report['annually'] =  [
             'year' => $year,
-            'amount_paid' => Installment::paidAnnually($year)->sum('value'),
-            'amount_unpaid' => Installment::unpaidAnnually($year)->sum('value'),
-            'amount_to_receive' => Installment::toReceiveAnnually($year)->sum('value'),
+            'amount_paid' => $amountPaid,
+            'amount_unpaid' => $amountUnpaid,
+            'amount_to_receive' => $amountToReceive,
+            'expense_paid' => $expensePaid,
+            'profit' => $profit
         ];
 
         return $report;

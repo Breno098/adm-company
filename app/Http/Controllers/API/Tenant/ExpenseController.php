@@ -95,6 +95,8 @@ class ExpenseController extends BaseApiController
     {
         $this->authorize('expense_delete');
 
+        $expense->installments()->delete();
+
         $expense->delete();
 
         return $this->sendResponse([], 'Expense deleted successfully.');
