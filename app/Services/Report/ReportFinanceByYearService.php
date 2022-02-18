@@ -23,7 +23,7 @@ class ReportFinanceByYearService
             $amountToReceive = (float) Installment::typeOrder()->toPendingMonthly($year, $month)->sum('value');
             $expensePaid = (float) Installment::typeExpense()->paidMonthly($year, $month)->sum('value');
 
-            $profit = (float) number_format($amountPaid - $expensePaid, 2);
+            $profit = $amountPaid - $expensePaid;
 
             $report['monthly'][] = [
                 'month' => $month,
@@ -41,7 +41,7 @@ class ReportFinanceByYearService
         $amountToReceive = (float) Installment::typeOrder()->toPendingAnnually($year)->sum('value');
         $expensePaid = (float) Installment::typeExpense()->paidAnnually($year)->sum('value');
 
-        $profit = (float) number_format($amountPaid - $expensePaid, 2);
+        $profit = $amountPaid - $expensePaid;
 
         $report['annually'] =  [
             'year' => $year,

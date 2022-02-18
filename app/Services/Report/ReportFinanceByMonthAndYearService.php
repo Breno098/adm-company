@@ -38,7 +38,7 @@ class ReportFinanceByMonthAndYearService
         // $expenseUnpaid = Installment::typeExpense()->unpaidMonthly($year, $month)->sum('value');
         // $expenseToPay = Installment::typeExpense()->toPendingMonthly($year, $month)->sum('value');
 
-        $profit = (float) number_format($amountPaid - $expensePaid, 2);
+        $profit = $amountPaid - $expensePaid;
 
         return  [
             'month' => $month,
