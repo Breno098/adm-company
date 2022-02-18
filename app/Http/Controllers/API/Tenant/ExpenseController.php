@@ -57,7 +57,9 @@ class ExpenseController extends BaseApiController
      */
     public function show(Expense $expense)
     {
-        $this->authorize('expense_show');
+        // $this->authorize('expense_show');
+
+        $expense->load(['installments']);
 
         return $this->sendResponse($expense, 'Expense retrieved successfully.');
     }

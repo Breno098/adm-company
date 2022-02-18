@@ -19,7 +19,7 @@ class CategoryController extends BaseApiController
      */
     public function index(Request $request)
     {
-        $this->authorize('category_index');
+        // $this->authorize('category_index');
 
         $categories = IndexService::run(
             $request->query(),
@@ -38,7 +38,7 @@ class CategoryController extends BaseApiController
      */
     public function store(CategoryRequest $request)
     {
-        $this->authorize('category_add');
+        // $this->authorize('category_add');
 
         $data = $request->validated();
 
@@ -55,7 +55,7 @@ class CategoryController extends BaseApiController
      */
     public function show(Category $category)
     {
-        $this->authorize('category_show');
+        // $this->authorize('category_show');
 
         return $this->sendResponse($category, 'Category retrieved successfully.');
     }
@@ -69,7 +69,7 @@ class CategoryController extends BaseApiController
      */
     public function update(CategoryRequest $request, Category $category)
     {
-        $this->authorize('category_update');
+        // $this->authorize('category_update');
 
         $data = $request->validated();
 
@@ -86,7 +86,7 @@ class CategoryController extends BaseApiController
      */
     public function destroy(Category $category)
     {
-        $this->authorize('category_delete');
+        // $this->authorize('category_delete');
 
         $category->delete();
 

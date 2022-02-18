@@ -59,75 +59,6 @@
             ></v-select>
           </v-col>
 
-          <v-col cols="12" md="6">
-            <v-menu
-                v-model="menu_date"
-                :close-on-content-click="false"
-                max-width="290"
-                transition="scale-transition"
-                offset-y
-            >
-            <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                    append-icon="mdi-calendar"
-                    :value="DateFormat"
-                    clearable
-                    label="DATA"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    @click:clear="expense.date = null"
-                    outlined
-                    dense
-                    :loading="loading"
-                    :rules="[rules.required]"
-                    :error="errors.date && !expense.date"
-                ></v-text-field>
-            </template>
-            <v-date-picker
-                v-model="expense.date"
-                @change="menu_date = false"
-                no-title
-                crollable
-                locale="pt-Br"
-            ></v-date-picker>
-            </v-menu>
-          </v-col>
-
-          <v-col cols="12" md="6">
-              <v-menu
-                  ref="menu_time"
-                  v-model="menu_time"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  :return-value.sync="expense.time"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                      v-model="expense.time"
-                      label="HORA"
-                      prepend-icon="mdi-clock-time-four-outline"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      dense
-                      outlined
-                      :loading="loading"
-                  ></v-text-field>
-                </template>
-                <v-time-picker
-                    v-if="menu_time"
-                    v-model="expense.time"
-                    @click:minute="$refs.menu_time.save(expense.time)"
-                    format="24hr"
-                ></v-time-picker>
-              </v-menu>
-            </v-col>
-
           <v-col cols="12">
               <v-textarea
                 label="DESCRIÇÃO"
@@ -144,26 +75,177 @@
               <v-text-field
                 type="number"
                 prefix="R$"
-                label="VALOR"
+                label="VALOR TOTAL"
                 outlined
                 dense
                 v-model="expense.value"
                 :loading="loading"
-                :rules="[rules.required]"
-                :error="errors.value && !expense.value"
+                readonly
+                color="black"
               ></v-text-field>
           </v-col>
+        </v-row>
 
-          <!-- <v-col cols="12" md="6">
+        <v-row>
+          <v-col cols="12">
+            <div class="text-h6 blue--text"> Pagamento(s) </div>
+            <v-divider color="grey"/>
+          </v-col>
+
+          <v-col cols="12" md="6">
             <v-text-field
-              label="QUANTIDADE"
-              type="number"
+              label="PAGAMENTO"
               outlined
               dense
-              v-model="expense.quantity"
-              :loading="loading"
+              v-model="expense.type_payment"
+              readonly
+            >
+            </v-text-field>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-text-field
+              label="QUANTIDADE PARCELAS"
+              outlined
+              dense
+              v-model="expense.number_of_installments"
+              readonly
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row
+          v-for="(installment, index) in expense.installments"
+          :key="index"
+        >
+          <v-col cols="12" md="2">
+            <v-text-field
+              outlined
+              prefix="R$"
+              type="number"
+              dense
+              label="VALOR"
+              v-model="installment.value"
             ></v-text-field>
-          </v-col> -->
+          </v-col>
+
+          <v-col cols="12" md="3">
+              <v-select
+              :items="payments"
+              label="FORMA DE PAGAMENTO"
+              outlined
+              dense
+              v-model="installment.payment_method"
+            ></v-select>
+          </v-col>
+
+          <v-col cols="12" md="2">
+            <v-dialog
+              v-model="menu_date_installments_pay_day[index]"
+              :close-on-content-click="false"
+              max-width="290"
+              transition="scale-transition"
+              offset-y
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  :value="installment.pay_day | formatDate"
+                  label="DATA PAGAMENTO"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                  outlined
+                  dense
+                  clearable
+                  @click:clear="installment.pay_day = null"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="installment.pay_day"
+                @change="menu_date_installments_pay_day[index] = false"
+                scrollable
+                no-title
+                crollable
+                locale="pt-Br"
+              ></v-date-picker>
+            </v-dialog>
+          </v-col>
+
+          <v-col cols="12" md="2">
+            <v-dialog
+              v-model="menu_date_installments_due_date[index]"
+              :close-on-content-click="false"
+              max-width="290"
+              transition="scale-transition"
+              offset-y
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  :value="installment.due_date | formatDate"
+                  label="DATA VENCIMENTO"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                  outlined
+                  dense
+                  clearable
+                  @click:clear="installment.due_date = null"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="installment.due_date"
+                @change="menu_date_installments_due_date[index] = false"
+                scrollable
+                no-title
+                crollable
+                locale="pt-Br"
+              ></v-date-picker>
+            </v-dialog>
+          </v-col>
+
+          <v-col cols="12" md="3">
+              <v-select
+              :items="['PAGO', 'EM ABERTO', 'CANCELADO', 'INADIMPLENTE']"
+              label="STATUS"
+              outlined
+              dense
+              v-model="installment.status"
+            ></v-select>
+          </v-col>
+
+          <v-divider color="grey" class="mx-5" v-if="(index + 1) < expense.installments.length"/>
+        </v-row>
+
+        <v-row>
+            <v-col cols="12" class="d-flex flex-row justify-end">
+            <v-btn
+              color="btnDanger"
+              @click="deleteLastInstallment"
+              :loading="loading"
+              small
+              rounded
+              v-if="expense.installments.length > 0"
+            >
+              Apagar ultima parcela <v-icon color="red darken-4">mdi-delete</v-icon>
+            </v-btn>
+
+            <v-btn
+              color="btnPrimary"
+              class="ml-3"
+              :loading="loading" small rounded
+              @click="expense.installments.push({
+                number: expense.installments.length + 1,
+                payment_method: null,
+                status: 'EM ABERTO',
+                due_date: dateInstallment(),
+                pay_day: null,
+                value: null
+              })"
+            >
+              Adicionar parcela <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </v-col>
         </v-row>
       </v-card-text>
 
@@ -194,14 +276,35 @@ export default {
   metaInfo () {
     return { title: this.titlePage }
   },
+  watch: {
+    'expense.installments': {
+      deep: true,
+      handler() {
+        this.expense.number_of_installments = this.expense.installments.length;
+
+        if(this.expense.number_of_installments === 0){
+          this.expense.type_payment = null;
+          this.expense.number_of_installments = null;
+        } else if(this.expense.number_of_installments === 1){
+          this.expense.type_payment = 'A VISTA';
+        } else {
+          this.expense.type_payment = 'PARCELADO';
+        }
+
+        this.expense.value = 0;
+        this.expense.installments.forEach(installment => this.expense.value += installment.value ? parseFloat(installment.value) : 0);
+      }
+    }
+  },
   data: () => ({
+    tab: null,
     menu_date: false,
     menu_time: false,
+    menu_date_installments_pay_day: [],
+    menu_date_installments_due_date: [],
     loading: false,
     errors: {
       title: false,
-      date: false,
-      value: false
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
@@ -214,24 +317,42 @@ export default {
       quantity: null,
       value: null,
       categories: [],
+      installments: [],
+      number_of_installments: null,
+      type_payment: null
     },
-    categories: []
+    categories: [],
+    payments: [
+      'PIX',
+      'DINHEIRO',
+      'CARTÃO DÉBITO',
+      'CARTÃO CRÉDITO',
+      'CHEQUE',
+      'BOLETO',
+      'CONTRATO',
+      'TRANSFERÊNCIA'
+    ],
   }),
-  computed: {
-    DateFormat () {
-      return this.expense.date ? moment(this.expense.date).format('DD/MM/YYYY') : moment().format('DD/MM/YYYY')
+  filters: {
+    formatDate(date){
+      return date ? moment(date).format('DD/MM/YYYY') : '';
     },
+  },
+  computed: {
     titlePage(){
       return this.$route.params.id ? 'Custo/Despesa' : 'Adicionar Custo/Despesa';
     },
     idByRoute(){
       return this.$route.params.id;
-    }
+    },
   },
   mounted(){
     this._start();
   },
   methods: {
+    dateInstallment() {
+      return moment().add(this.expense.installments.length, 'M').format('YYYY-MM-DD');
+    },
     async _start(){
       if(this.idByRoute){
         await this._load();
@@ -284,6 +405,18 @@ export default {
       }
 
       this.$refs.fireDialog.error({ title: 'Error aos salvar custo/despesa.' })
+    },
+    async deleteLastInstallment() {
+      const ok = await this.$refs.fireDialog.confirm({
+          title: `Deletar parcela ${this.expense.installments.length}`,
+          textConfirmButton: 'Deletar',
+          colorConfirButton: 'btnDanger',
+          colorCancelButton: 'btnPrimary'
+      })
+
+      if (ok) {
+        this.expense.installments.pop();
+      }
     },
   }
 

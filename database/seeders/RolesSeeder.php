@@ -126,5 +126,11 @@ class RolesSeeder extends Seeder
         $this->role('report_finance_index', 'Relatório Financeiro', 'Relatórios');
         $this->role('file_index', 'Arquivos', 'Arquivos');
         $this->role('employee_receipt_download', 'Recibo de Funcionário (Download)', 'Recibo de Funcionário');
+
+        Role::get()->each(function ($role) {
+            User::get()->each(function ($user) use ($role) {
+                $user->roles()->attach($role);
+            });
+        });
     }
 }

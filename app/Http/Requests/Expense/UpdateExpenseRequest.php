@@ -33,6 +33,7 @@ class UpdateExpenseRequest extends FormRequest
 
             /** Relations */
             'categories' => 'nullable|array',
+            'installments' => 'nullable|array',
         ];
     }
 }

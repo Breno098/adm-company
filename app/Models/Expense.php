@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property DateTime $time
  * @property int $quantity
  * @property float $value
+ *
+ * @property Category[]|Collection $categories
+ * @property Installment[]|Collection $installments
  */
 class Expense extends BaseModel
 {
@@ -44,6 +47,11 @@ class Expense extends BaseModel
     public function categories()
     {
         return $this->belongsToMany(Category::class);
+    }
+
+    public function installments()
+    {
+        return $this->hasMany(Installment::class);
     }
 
     /**
