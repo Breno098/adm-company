@@ -241,7 +241,7 @@ export default {
       if (ok) {
         this.$refs.fireDialog.loading({ title: 'Deletando' });
 
-        await axios.delete(`/api/item/${service.id}`).then(response => {
+        await axios.delete(`/api/service/${service.id}`).then(response => {
           if(response.data.success){
             this._load();
             this.$refs.fireDialog.hide();

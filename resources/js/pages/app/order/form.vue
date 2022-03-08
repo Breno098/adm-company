@@ -990,7 +990,7 @@ export default {
     calculeAmoutPaid() {
       let amountPaid = 0;
       this.order.installments.forEach(installment => amountPaid += installment.status === 'PAGO' ? parseFloat(installment.value) : 0);
-      this.order.amount_paid = amountPaid.toFixed(2);
+      this.order.amount_paid = isNaN(amountPaid) ? (0).toFixed(2) : amountPaid.toFixed(2);
     },
     async deleteLastInstallment() {
       const ok = await this.$refs.fireDialog.confirm({
@@ -1105,14 +1105,21 @@ export default {
       this.order.services[index].total_value = this.order.services[index].value * this.order.services[index].quantity;
     },
     async _store(backRoute = false){
-      this.tab = null;
-
       /* Validations */
       for (const field in this.errors) {
         if(!this.order[field]){
           this.errors[field] = true;
+          this.tab = null;
           return false;
         }
+      }
+
+      let installmentWithoutValue = this.order.installments.filter(installment => !installment.value);
+      if(installmentWithoutValue.length > 0) {
+        return this.$refs.fireDialog.warning({
+          title: 'Parcelas',
+          message: 'Existem parcelas no pedido sem valor. Adicione o valor antes de salvar.'
+        })
       }
 
       let id = this.order.id;
