@@ -13,19 +13,16 @@ class IndexOrderService
      * @param  array  $relations
      * @param  bool|string $orderBy
      * @param  bool|int  $itemsPerPage
-     * @param  bool $authorized
+     *
      *
      * @return mixed
      */
-    public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false, bool $authorized = true)
+    public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false)
     {
         return Order::filterByNameClient(Arr::get($filters, 'client_name'))
             ->filterByAddress(Arr::get($filters, 'address'))
             ->filterByStatus(Arr::get($filters, 'status'))
             ->with($relations)
-            ->when($authorized, function (Builder $builder) {
-                return $builder->authorizedTenant();
-            })
             ->when($orderBy, function (Builder $builder, $orderBy) {
                 $orderBy = explode(':', $orderBy);
                 return $builder->orderby($orderBy[0], $orderBy[1] ?? 'asc');

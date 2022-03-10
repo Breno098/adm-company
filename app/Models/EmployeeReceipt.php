@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
-class EmployeeReceipt extends BaseModel
+class EmployeeReceipt extends TenantModel
 {
     use HasFactory, SoftDeletes;
 

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Scopes\ServiceScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Service extends BaseModel
+class Service extends TenantModel
 {
     use HasFactory, SoftDeletes;
 
@@ -33,17 +34,10 @@ class Service extends BaseModel
 
     protected static function booted()
     {
-        static::saving(function ($model) {
-            $model->type = "service";
-        });
-
-        static::addGlobalScope('service_type', function (Builder $builder) {
-            $builder->where('type', 'service');
-        });
-
+        static::addGlobalScope(new ServiceScope);
         parent::booted();
     }
- 
+
     public function scopeFilterByName(Builder $builder, $name)
     {
         return $builder->when($name, function (Builder $builder, $name) {

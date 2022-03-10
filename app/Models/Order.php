@@ -46,7 +46,7 @@ use Illuminate\Support\Carbon;
  * @method Order filterByNameClient(null|string $client_name)
  * @method Order filterByAddress(null|string $address)
  */
-class Order extends BaseModel
+class Order extends TenantModel
 {
     use HasFactory, SoftDeletes;
 

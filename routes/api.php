@@ -41,7 +41,7 @@ Route::group(['middleware' => 'guest:api'], function () {
     Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
     Route::post('password/reset', [ResetPasswordController::class, 'reset']);
 
-    Route::post('email/verify/{user}', [VerificationController::class, 'verify'])->name('verification.verify');
+    // Route::post('email/verify/{user}', [VerificationController::class, 'verify'])->name('verification.verify');
     Route::post('email/resend', [VerificationController::class, 'resend']);
 
     Route::post('oauth/{driver}', [OAuthController::class, 'redirect']);

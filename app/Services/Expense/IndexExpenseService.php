@@ -13,16 +13,13 @@ class IndexExpenseService
      * @param  array  $relations
      * @param  bool|string $orderBy
      * @param  bool|int  $itemsPerPage
-     * @param  bool $authorized
+     *
      *
      * @return mixed
      */
-    public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false, bool $authorized = true)
+    public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false)
     {
         return Expense::with($relations)
-            ->when($authorized, function (Builder $builder) {
-                return $builder->authorizedTenant();
-            })
             ->when(Arr::get($filters, 'title'), function (Builder $builder, $title) {
                 return $builder->where('title', 'like', "%{$title}%");
             })

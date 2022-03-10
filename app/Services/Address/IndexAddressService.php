@@ -13,11 +13,11 @@ class IndexAddressService
      * @param  array  $relations
      * @param  bool|string $orderBy
      * @param  bool|int  $itemsPerPage
-     * @param  bool $authorized
+     *
      *
      * @return mixed
      */
-    public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false, bool $authorized = true)
+    public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false)
     {
         return Address::with($relations)
             ->filterClientId(Arr::get($filters, 'client_id'))

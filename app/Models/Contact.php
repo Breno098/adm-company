@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Contact extends BaseModel
+class Contact extends TenantModel
 {
     use HasFactory, SoftDeletes;
 

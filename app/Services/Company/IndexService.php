@@ -12,16 +12,13 @@ class IndexService
      * @param  array  $filters
      * @param  array  $relations
      * @param  bool|int  $itemsPerPage
-     * @param  bool $authorized
+     *
      *
      * @return mixed
      */
-    static public function run(array $filters = [], array $relations = [], $itemsPerPage = false, bool $authorized = true)
+    static public function run(array $filters = [], array $relations = [], $itemsPerPage = false)
     {
         return Company::with($relations)
-            ->when($authorized, function (Builder $builder) {
-                return $builder->authorizedTenant();
-            })
             ->filterByName(Arr::get($filters, 'name'))
             ->filterByCpf(Arr::get($filters, 'cpf'))
             ->filterByCnpj(Arr::get($filters, 'cnpj'))

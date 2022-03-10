@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Category[]|Collection $categories
  * @property Installment[]|Collection $installments
  */
-class Expense extends BaseModel
+class Expense extends TenantModel
 {
      use HasFactory, SoftDeletes;
 

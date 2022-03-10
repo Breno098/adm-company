@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Scopes\ProductScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends BaseModel
+class Product extends TenantModel
 {
     use HasFactory, SoftDeletes;
 
@@ -33,14 +34,7 @@ class Product extends BaseModel
 
     protected static function booted()
     {
-        static::saving(function ($model) {
-            $model->type = "product";
-        });
-
-        static::addGlobalScope('product_type', function (Builder $builder) {
-            $builder->where('type', 'product');
-        });
-
+        static::addGlobalScope(new ProductScope);
         parent::booted();
     }
 
