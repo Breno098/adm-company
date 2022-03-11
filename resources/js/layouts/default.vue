@@ -1,11 +1,11 @@
 <template>
   <v-app :style="{ background: '#FAFAFA' }">
-      <v-navigation-drawer v-model="drawer" fixed app class="elevation-0" :mini-variant="miniVariant" color="sideBar">
+      <v-navigation-drawer v-model="drawer" fixed app class="elevation-0" :mini-variant="miniVariant" color="side-bar">
         <v-list dense two-line>
           <v-list-item link class="py-4" @click="_homeRoute">
               <v-list-item-content>
-                <v-list-item-title class="black--text font-weight-bold text-subtitle-2"> {{ !miniVariant ? appName : variantAppName }} </v-list-item-title>
-                <v-list-item-subtitle v-show="!miniVariant"> {{ hour }} </v-list-item-subtitle>
+                <v-list-item-title class="white--text font-weight-bold text-subtitle-2"> {{ !miniVariant ? appName : variantAppName }} </v-list-item-title>
+                <v-list-item-subtitle v-show="!miniVariant" class="white--text"> {{ hour }} </v-list-item-subtitle>
               </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -13,14 +13,14 @@
         <v-list dense shaped>
           <v-list-item-group v-model="selectedItem">
             <router-link :to="{ name: item.route }" style="text-decoration: none" v-for="(item, index) in menuItems" :key="index">
-              <v-list-item class="py-1" :color="selectedItem == index ? 'sidebarActive' : ''">
+              <v-list-item class="py-1" :color="selectedItem == index ? 'side-bar-menu-active' : ''">
 
                 <v-list-item-icon>
                   <v-icon
                     v-text="item.icon"
                     :class="{
-                      'white--text' : selectedItem == index,
-                      'mr-4': true
+                      'white--text': true,
+                      'mr-4': true,
                     }">
                   </v-icon>
                 </v-list-item-icon>
@@ -29,9 +29,8 @@
                   <v-list-item-title>
                       <span
                         :class="{
-                          'white--text' : selectedItem == index ,
-                          'font-weight-bold': selectedItem == index,
-                          'font-weight-medium': !(selectedItem == index),
+                          'white--text': true ,
+                          'font-weight-bold': true,
                         }">
                         {{ item.title }}
                       </span>

@@ -67,7 +67,7 @@
                               v-if="$role.category.show()"
                             >
                               <v-list-item-icon>
-                                  <v-icon outlined color="btnPrimary">mdi-eye</v-icon>
+                                  <v-icon outlined color="btn-primary">mdi-eye</v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
                                   <v-list-item-title> Visualizar </v-list-item-title>
@@ -78,7 +78,7 @@
                               v-if="$role.category.delete()"
                             >
                               <v-list-item-icon>
-                                  <v-icon outlined color="btnDanger">mdi-delete</v-icon>
+                                  <v-icon outlined color="btn-delete">mdi-delete</v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
                                   <v-list-item-title> Deletar </v-list-item-title>
@@ -166,8 +166,8 @@ export default {
           title: 'Deletar Categoria',
           message: 'Deseja realmente deletar a categorias?',
           textConfirmButton: 'Deletar',
-          colorConfirButton: 'btnDanger',
-        colorCancelButton: 'btnPrimary'
+          colorConfirButton: 'btn-delete',
+        colorCancelButton: 'btn-primary'
       })
 
       if (ok) {

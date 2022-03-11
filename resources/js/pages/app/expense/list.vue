@@ -88,7 +88,7 @@
           <v-card-actions class="pb-4">
             <v-spacer></v-spacer>
             <v-btn
-              color="btnPrimary"
+              color="btn-primary"
               @click="_load"
               class="px-5"
               rounded
@@ -148,7 +148,7 @@
                             v-if="$role.expense.show()"
                           >
                               <v-list-item-icon>
-                                  <v-icon outlined color="btnPrimary">mdi-eye</v-icon>
+                                  <v-icon outlined color="btn-primary">mdi-eye</v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
                                   <v-list-item-title> Visualizar </v-list-item-title>
@@ -159,7 +159,7 @@
                             v-if="$role.expense.delete()"
                           >
                               <v-list-item-icon>
-                                  <v-icon outlined color="btnDanger">mdi-delete</v-icon>
+                                  <v-icon outlined color="btn-delete">mdi-delete</v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
                                   <v-list-item-title> Deletar </v-list-item-title>
@@ -274,8 +274,8 @@ export default {
       const ok = await this.$refs.fireDialog.confirm({
           title: 'Deletar Custo',
           textConfirmButton: 'Deletar',
-          colorConfirButton: 'btnDanger',
-        colorCancelButton: 'btnPrimary'
+          colorConfirButton: 'btn-delete',
+        colorCancelButton: 'btn-primary'
       })
 
       if (ok) {

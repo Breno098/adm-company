@@ -18,14 +18,14 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn color="btnPrimary" @click="_store" :loading="loading" rounded dark small>
+            <v-btn color="btn-primary" @click="_store" :loading="loading" rounded dark small>
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
           </v-toolbar>
 
           <v-row>
             <v-col cols="12" v-if="appointment.concluded == 'N'">
-              <v-btn color="btnPrimary" @click="_conclude" :loading="loading" small>
+              <v-btn color="btn-primary" @click="_conclude" :loading="loading" small>
                 Concluír Compromisso <v-icon dark class="ml-3">mdi-check</v-icon>
               </v-btn>
             </v-col>
@@ -253,11 +253,11 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="btnPrimary" @click="_store" :loading="loading" rounded dark>
+            <v-btn color="btn-primary" @click="_store" :loading="loading" rounded dark>
               Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="btnDanger" @click="_delete" :loading="loading" rounded dark v-if="idByRoute">
+            <v-btn color="btn-delete" @click="_delete" :loading="loading" rounded dark v-if="idByRoute">
               Deletar <v-icon dark class="ml-2">mdi-delete</v-icon>
             </v-btn>
           </v-card-actions>
@@ -421,8 +421,8 @@ export default {
       const ok = await this.$refs.fireDialog.confirm({
           title: 'Deletar Compromisso?',
           textConfirmButton: 'Deletar',
-          colorConfirButton: 'btnDanger',
-        colorCancelButton: 'btnPrimary'
+          colorConfirButton: 'btn-delete',
+        colorCancelButton: 'btn-primary'
       })
 
       if (ok) {

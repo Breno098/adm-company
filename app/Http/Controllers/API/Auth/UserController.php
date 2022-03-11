@@ -18,4 +18,15 @@ class UserController extends Controller
     {
         return response()->json($request->user()->load('roles'));
     }
+
+     /**
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function can(Request $request)
+    {
+        return response()->json([
+            'can' => $request->get('can') ? $request->user()->can($request->get('can')) : false
+        ]);
+    }
 }

@@ -25,26 +25,17 @@ axios.interceptors.request.use(request => {
 axios.interceptors.response.use(response => response, error => {
   const { status } = error.response
 
-  if (status == 403) {
-    Swal.fire({
-      title: 'Permissão negada',
-      timer: 2000
-    }).then(() => {
-      router.push({ name: 'home' })
-    })
+  if (status == 403 || status == 404) {
+    router.push({ name: 'home' })
   }
 
   if (status === 401 && store.getters['auth/check']) {
     Swal.fire({
       icon: 'warning',
-      title: i18n.t('token_expired_alert_title'),
-      text: i18n.t('token_expired_alert_text'),
-      reverseButtons: true,
-      confirmButtonText: i18n.t('ok'),
-      cancelButtonText: i18n.t('cancel')
+      title: 'Sessão expirada!',
+      confirmButtonText: 'OK',
     }).then(() => {
       store.commit('auth/LOGOUT')
-
       router.push({ name: 'login' })
     })
   }

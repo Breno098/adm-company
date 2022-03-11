@@ -1,5 +1,6 @@
 import './axios'
-import './fontawesome'
-import 'bootstrap'
+// import './fontawesome'
+// import 'bootstrap'
 import './mask'
 import './authorize'
+import './can'

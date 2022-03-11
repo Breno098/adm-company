@@ -17,7 +17,7 @@
 
         <v-btn
           v-if="(!idByRoute && $role.user.add()) || (idByRoute && $role.user.update()) "
-          color="btnPrimary"
+          color="btn-primary"
           @click="_store"
           :loading="loading"
           rounded
@@ -78,7 +78,7 @@
             </v-col>
 
             <v-col cols="12" md="2" v-if="!idByRoute">
-              <v-btn color="btnPrimary" @click="_generateRandomPass" dark block>
+              <v-btn color="btn-primary" @click="_generateRandomPass" dark block>
                 Gerar senha
               </v-btn>
             </v-col>
@@ -94,7 +94,7 @@
 
                    <v-tooltip left>
                     <template v-slot:activator="{ on, attrs }">
-                      <v-btn color="btnPrimary" @click="selectAllTag(group.tag)" text v-bind="attrs" v-on="on">
+                      <v-btn color="btn-primary" @click="selectAllTag(group.tag)" text v-bind="attrs" v-on="on">
                         <v-icon>mdi-checkbox-multiple-marked-circle-outline</v-icon>
                       </v-btn>
                     </template>
@@ -124,7 +124,7 @@
         <v-spacer></v-spacer>
         <v-btn
           v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
-          color="btnPrimary"
+          color="btn-primary"
           @click="_store"
           :loading="loading"
           rounded

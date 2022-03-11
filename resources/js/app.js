@@ -12,6 +12,8 @@ import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
+Vue.filter("formatMoney", value => !value ? null : (parseFloat(value)).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'}) );
+
 /* eslint-disable no-new */
 new Vue({
   vuetify,

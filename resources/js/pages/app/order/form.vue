@@ -2,105 +2,106 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-card class="mb-4">
-      <v-toolbar elevation="0">
-        <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
-        <v-progress-linear
-          indeterminate
-          height="4"
-          bottom
-          absolute
-          :active="loading"
-        ></v-progress-linear>
+    <p class="font-weight-regular mb-5 text-h5">
+      {{ titlePage }}
+    </p>
 
-        <v-spacer></v-spacer>
-
+    <v-row class="mb-2">
+      <v-col cols="6" offset="6" md="2" offset-md="10">
         <v-btn
-          color="btnPrimary"
-          @click="_store(true)"
-          :loading="loading"
-          rounded
+          color="btn-primary"
+          class="rounded-lg"
+          block
           small
+          dark
+          @click="_store(true)"
+          v-if="canSave"
+          :loading="loading"
         >
           Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
         </v-btn>
-      </v-toolbar>
-    </v-card>
+      </v-col>
+    </v-row>
 
-    <v-card class="my-3">
-      <v-card-text class="d-flex flex-row justify-center">
+    <v-row class="mb-2">
+      <v-col cols="2" offset="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              color="grey"
               @click="budgetDownload"
-              :loading="loading"
               v-bind="attrs"
               v-on="on"
-              class="mx-3"
-              rounded
-              dark
+              color="btn-primary"
+              class="rounded-lg"
+              block
               small
+              dark
             >
               <v-icon>mdi-file-document</v-icon>
             </v-btn>
           </template>
           <span>Gerar Orçamento</span>
         </v-tooltip>
+      </v-col>
+      <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              color="grey lighten-1"
               @click="serviceOrderDownload"
-              :loading="loading"
               v-bind="attrs"
               v-on="on"
-              class="mx-3"
-              rounded
+              color="btn-primary"
+              class="rounded-lg"
+              block
               small
+              dark
             >
               <v-icon>mdi-file-export</v-icon>
             </v-btn>
           </template>
           <span>Gerar Ordem de Serviço</span>
         </v-tooltip>
+      </v-col>
+      <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              color="green lighten-2"
               @click="receiptDownload"
-              :loading="loading"
               v-bind="attrs"
               v-on="on"
-              class="mx-3"
-              rounded
-              dark
+              color="btn-primary"
+              class="rounded-lg"
+              block
               small
+              dark
             >
               <v-icon>mdi-file-check</v-icon>
             </v-btn>
           </template>
           <span>Gerar Recibo</span>
         </v-tooltip>
+      </v-col>
+      <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              color="orange"
               @click="_generateAppointment"
-              :loading="loading"
               v-bind="attrs"
               v-on="on"
-              class="mx-3"
-              rounded
+              color="btn-primary"
+              class="rounded-lg"
+              block
               small
+              dark
             >
               <v-icon dark>mdi-calendar-today</v-icon>
             </v-btn>
           </template>
           <span>Agendar Compromisso</span>
         </v-tooltip>
-      </v-card-text>
-    </v-card>
+
+      </v-col>
+    </v-row>
 
     <v-card>
       <v-tabs v-model="tab">
@@ -125,7 +126,7 @@
                 label="CLIENTE"
                 v-on:change="_loadAddresses"
                 :loading="loadingClients"
-                outlined
+                filled
                 dense
                 :rules="[rules.required]"
                 :error="errors.client_id"
@@ -137,7 +138,7 @@
                 v-model="order.status"
                 :items="statuses"
                 label="STATUS"
-                outlined
+                filled
                 dense
               ></v-select>
             </v-col>
@@ -149,7 +150,7 @@
                 item-value="id"
                 label="ENDEREÇO"
                 :loading="loadingAddresses"
-                outlined
+                filled
                 dense
                 no-data-text="Nenhum endereço cadastrado para o cliente selecionado"
               >
@@ -178,7 +179,7 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    outlined
+                    filled
                     dense
                     clearable
                     @click:clear="order.technical_visit_date = null"
@@ -222,7 +223,7 @@
                     v-bind="attrs"
                     v-on="on"
                     dense
-                    outlined
+                    filled
                   ></v-text-field>
                 </template>
                 <v-time-picker
@@ -237,7 +238,7 @@
             <v-col cols="12">
               <v-textarea
                 label="PROBLEMA RECLAMADO"
-                outlined
+                filled
                 dense
                 v-model="order.complaint"
                 :loading="loading"
@@ -249,7 +250,7 @@
             <v-col cols="12">
               <v-textarea
                 label="COMENTARIOS INTERNOS"
-                outlined
+                filled
                 dense
                 v-model="order.comments"
                 :loading="loading"
@@ -261,7 +262,7 @@
             <v-col cols="12">
               <v-textarea
                 label="SERVIÇO NECESSÁRIO"
-                outlined
+                filled
                 dense
                 v-model="order.work_found"
                 :loading="loading"
@@ -273,7 +274,7 @@
             <v-col cols="12">
               <v-textarea
                 label="SERVIÇO REALIZADO"
-                outlined
+                filled
                 dense
                 v-model="order.work_done"
                 :loading="loading"
@@ -288,15 +289,22 @@
         <v-tab-item>
           <v-row>
             <v-col cols="12">
-              <div class="text-h6 blue--text"> Produtos </div>
-              <v-divider color="grey"/>
+              <div class="text-h6 font-weight-bold"> Produtos </div>
+              <v-divider color="primary"/>
             </v-col>
 
             <v-col cols="12" v-for="(product, index) in order.products" :key="product.id">
               <v-row>
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn color="btnDanger" @click="order.products.splice(index, 1);" :loading="loading" small rounded>
-                    <v-icon color="red darken-4">mdi-delete</v-icon>
+                  <v-btn
+                    color="btn-delete"
+                    @click="order.products.splice(index, 1);"
+                    :loading="loading"
+                    x-small
+                    class="rounded-lg"
+                    dark
+                  >
+                    <v-icon small>mdi-close</v-icon>
                   </v-btn>
                 </v-col>
 
@@ -307,7 +315,7 @@
                     item-value="id"
                     item-text="name"
                     label="PRODUTO"
-                    outlined
+                    filled
                     dense
                     :loading="loadingProducts"
                     no-data-text="Nenhum produto encontrado"
@@ -322,7 +330,7 @@
                       <v-text-field
                         prefix="R$"
                         label="PREÇO PADRÃO"
-                        outlined
+                        filled
                         dense
                         :value="product.default_value"
                         :loading="loading"
@@ -339,7 +347,7 @@
                 <v-col cols="12" md="2">
                   <v-text-field
                     label="QUANTIDADE"
-                    outlined
+                    filled
                     type="number"
                     dense
                     v-model="product.quantity"
@@ -356,7 +364,7 @@
                         prefix="R$"
                         type="number"
                         label="VALOR"
-                        outlined
+                        filled
                         dense
                         v-model="product.value"
                         :loading="loading"
@@ -375,7 +383,7 @@
                     prefix="R$"
                     label="VALOR TOTAL"
                     readonly
-                    outlined
+                    filled
                     dense
                     :value="product.total_value.toFixed(2)"
                     :loading="loading"
@@ -384,21 +392,22 @@
                 </v-col>
               </v-row>
 
-              <v-divider color="grey" class="mx-5" v-if="(index + 1) < order.products.length"/>
+              <v-divider color="primary" class="mx-5" v-if="(index + 1) < order.products.length"/>
             </v-col>
 
             <v-col cols="12" class="d-flex flex-row justify-end">
               <v-btn
-                color="btnPrimary"
+                color="btn-primary"
+                :loading="loading"
+                small
+                dark
+                class="rounded-lg"
                 @click="order.products.push({
                   quantity: 1,
                   value: 0,
                   default_value: 0,
                   total_value: 0
                 })"
-                :loading="loading"
-                small
-                rounded
               >
                 Adicionar produto <v-icon>mdi-plus</v-icon>
               </v-btn>
@@ -407,15 +416,22 @@
 
           <v-row>
             <v-col cols="12">
-              <div class="text-h6 blue--text"> Serviços </div>
-              <v-divider color="grey"/>
+              <div class="text-h6 font-weight-bold"> Serviços </div>
+              <v-divider color="primary"/>
             </v-col>
 
             <v-col cols="12" v-for="(service, index) in order.services" :key="service.id">
               <v-row>
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn color="btnDanger" @click="order.services.splice(index, 1);" :loading="loading" small rounded>
-                    <v-icon color="red darken-4">mdi-delete</v-icon>
+                  <v-btn
+                    color="btn-delete"
+                    @click="order.services.splice(index, 1);"
+                    :loading="loading"
+                    x-small
+                    class="rounded-lg"
+                    dark
+                  >
+                    <v-icon small>mdi-close</v-icon>
                   </v-btn>
                 </v-col>
 
@@ -426,7 +442,7 @@
                     item-value="id"
                     item-text="name"
                     label="SERVIÇO"
-                    outlined
+                    filled
                     dense
                     :loading="loadingServices"
                     no-data-text="Nenhum serviço encontrado"
@@ -441,7 +457,7 @@
                       <v-text-field
                         prefix="R$"
                         label="PREÇO PADRÃO"
-                        outlined
+                        filled
                         dense
                         :value="service.default_value"
                         :loading="loading"
@@ -458,7 +474,7 @@
                 <v-col cols="12" md="2">
                   <v-text-field
                     label="QUANTIDADE"
-                    outlined
+                    filled
                     type="number"
                     dense
                     v-model="service.quantity"
@@ -475,7 +491,7 @@
                         prefix="R$"
                         type="number"
                         label="VALOR"
-                        outlined
+                        filled
                         dense
                         v-model="service.value"
                         :loading="loading"
@@ -494,7 +510,7 @@
                     prefix="R$"
                     label="VALOR TOTAL"
                     readonly
-                    outlined
+                    filled
                     dense
                     :value="service.total_value.toFixed(2)"
                     :loading="loading"
@@ -503,21 +519,22 @@
                 </v-col>
               </v-row>
 
-              <v-divider color="grey" class="mx-5" v-if="(index + 1) < order.services.length"/>
+              <v-divider color="primary" class="mx-5" v-if="(index + 1) < order.services.length"/>
             </v-col>
 
             <v-col cols="12" class="d-flex flex-row justify-end">
               <v-btn
-                color="btnPrimary"
+                color="btn-primary"
+                :loading="loading"
+                small
+                dark
+                class="rounded-lg"
                 @click="order.services.push({
                   quantity: 1,
                   value: 0,
                   default_value: 0,
                   total_value: 0
                 })"
-                :loading="loading"
-                small
-                rounded
               >
                 Adicionar serviço <v-icon>mdi-plus</v-icon>
               </v-btn>
@@ -527,7 +544,7 @@
           <v-row>
             <v-col cols="12" md="6" offset-md="6">
               <v-text-field
-                outlined
+                filled
                 prefix="R$"
                 type="number"
                 :value="valueTotal"
@@ -544,7 +561,7 @@
 
         <!-- Pagamentos  -->
         <v-tab-item>
-          <v-card-title>
+          <v-card-title class="font-weight-bold">
             Formas de pagamento aceitas
           </v-card-title>
 
@@ -570,13 +587,13 @@
         <v-tab-item>
           <v-row>
             <v-col cols="12">
-              <div class="text-h6 blue--text"> Valor </div>
-              <v-divider color="grey"/>
+              <div class="text-h6 font-weight-bold"> Valor </div>
+              <v-divider color="primary"/>
             </v-col>
 
             <v-col cols="12" md="4">
               <v-text-field
-                outlined
+                filled
                 prefix="R$"
                 :value="valueTotal"
                 dense
@@ -592,7 +609,7 @@
                 prefix="R$"
                 label="VALOR DESCONTO"
                 type="number"
-                outlined
+                filled
                 dense
                 v-model="order.discount_amount"
                 :loading="loading"
@@ -602,7 +619,7 @@
 
             <v-col cols="12" md="4">
               <v-text-field
-                outlined
+                filled
                 prefix="R$"
                 :value="valueTotalWithDiscont"
                 dense
@@ -615,7 +632,7 @@
 
             <v-col cols="12" md="4">
               <v-text-field
-                outlined
+                filled
                 prefix="R$"
                 :value="order.amount_paid"
                 dense
@@ -627,7 +644,7 @@
 
             <v-col cols="12" md="4">
               <v-text-field
-                outlined
+                filled
                 prefix="R$"
                 :value="(valueTotalWithDiscont - order.amount_paid).toFixed(2)"
                 dense
@@ -638,18 +655,18 @@
             </v-col>
           </v-row>
 
-          <v-divider color="grey" class="my-5"></v-divider>
+          <v-divider color="primary" class="my-5"></v-divider>
 
           <v-row>
             <v-col cols="12">
-              <div class="text-h6 blue--text"> Pagamento(s) </div>
-              <v-divider color="grey"/>
+              <div class="text-h6 font-weight-bold"> Pagamento(s) </div>
+              <v-divider color="primary"/>
             </v-col>
 
             <v-col cols="12" md="6">
               <v-text-field
                 label="PAGAMENTO"
-                outlined
+                filled
                 dense
                 v-model="order.type_payment"
                 readonly
@@ -660,7 +677,7 @@
             <v-col cols="12" md="6">
               <v-text-field
                 label="QUANTIDADE PARCELAS"
-                outlined
+                filled
                 dense
                 v-model="order.number_of_installments"
                 readonly
@@ -675,7 +692,7 @@
           >
             <v-col cols="12" md="2">
               <v-text-field
-                outlined
+                filled
                 prefix="R$"
                 type="number"
                 dense
@@ -688,7 +705,7 @@
                <v-select
                 :items="payments"
                 label="FORMA DE PAGAMENTO"
-                outlined
+                filled
                 dense
                 v-model="installment.payment_method"
               ></v-select>
@@ -709,7 +726,7 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    outlined
+                    filled
                     dense
                     clearable
                     @click:clear="installment.pay_day = null"
@@ -741,7 +758,7 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    outlined
+                    filled
                     dense
                     clearable
                     @click:clear="installment.due_date = null"
@@ -762,32 +779,35 @@
                <v-select
                 :items="['PAGO', 'EM ABERTO', 'CANCELADO', 'INADIMPLENTE']"
                 label="STATUS"
-                outlined
+                filled
                 dense
                 v-model="installment.status"
               ></v-select>
             </v-col>
 
-            <v-divider color="grey" class="mx-5" v-if="(index + 1) < order.installments.length"/>
+            <v-divider color="primary" class="mx-5" v-if="(index + 1) < order.installments.length"/>
           </v-row>
 
           <v-row>
              <v-col cols="12" class="d-flex flex-row justify-end">
               <v-btn
-                color="btnDanger"
+                color="btn-delete"
                 @click="deleteLastInstallment"
                 :loading="loading"
                 small
-                rounded
+                class="rounded-lg"
+                dark
                 v-if="order.installments.length > 0"
               >
-                Apagar ultima parcela <v-icon color="red darken-4">mdi-delete</v-icon>
+                Apagar ultima parcela <v-icon small>mdi-close</v-icon>
               </v-btn>
 
               <v-btn
-                color="btnPrimary"
-                class="ml-3"
-                :loading="loading" small rounded
+                color="btn-primary"
+                small
+                dark
+                class="rounded-lg ml-3"
+                :loading="loading"
                 @click="order.installments.push({
                   number: order.installments.length + 1,
                   payment_method: null,
@@ -810,7 +830,7 @@
               <v-text-field
                 label="DIAS GARANTIA"
                 type="number"
-                outlined
+                filled
                 dense
                 v-model="order.warranty_days"
                 :loading="loading"
@@ -820,7 +840,7 @@
             <v-col cols="12" md="10">
               <v-textarea
                 label="CONDIÇÃO DE GARANTIA"
-                outlined
+                filled
                 dense
                 v-model="order.warranty_conditions"
                 :loading="loading"
@@ -833,17 +853,17 @@
       </v-tabs-items>
 
       <v-card-actions>
-        <v-spacer></v-spacer>
         <v-btn
-          v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
-          color="btnPrimary"
+          color="btn-primary"
+          class="rounded-lg"
+          small
+          dark
           @click="_store(true)"
+          v-if="canSave"
           :loading="loading"
-          rounded
         >
           Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
         </v-btn>
-        <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
   </div>
@@ -952,6 +972,9 @@ export default {
     idByRoute(){
       return this.$route.params.id;
     },
+    canSave(){
+      return this.$can('order_add') && !this.idByRoute || this.$can('order_update') && this.idByRoute;
+    },
     paymentMethods: {
       get: function() {
         return this.order.accepted_payment_methods ? this.order.accepted_payment_methods.split(',') : [];
@@ -996,8 +1019,8 @@ export default {
       const ok = await this.$refs.fireDialog.confirm({
           title: `Deletar parcela ${this.order.installments.length}`,
           textConfirmButton: 'Deletar',
-          colorConfirButton: 'btnDanger',
-          colorCancelButton: 'btnPrimary'
+          colorConfirButton: 'btn-delete',
+          colorCancelButton: 'btn-primary'
       })
 
       if (ok) {

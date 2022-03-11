@@ -14,7 +14,7 @@ export default new Vuetify({
   theme: {
     themes: {
       light: {
-        primary: '#00B8D4',
+        primary: '#311B92',
         secondary: '#e2e7f1',
         error: '#F44336',
         success: '#00BCD4',
@@ -23,10 +23,18 @@ export default new Vuetify({
         sideBar: '#00B8D4',
         sidebarActive: '#000',
 
-        btnPrimary: '#00BCD4',
         btnSecondary: '#00838F',
         btnDanger: "#F44336",
-        btnCleanFilter: '#E0E0E0'
+        btnCleanFilter: '#E0E0E0',
+
+        "btn-primary": '#311B92',
+        "btn-delete": "#F44336",
+        "btn-save": "#1B5E20",
+
+        "side-bar": "#311B92",
+        "side-bar-menu-active": "#651FFF",
+
+        "icon-delete": "#B71C1C"
       },
     },
   },

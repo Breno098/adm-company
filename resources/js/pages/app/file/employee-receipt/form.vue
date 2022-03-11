@@ -17,7 +17,7 @@
 
           <v-btn
             v-if="!idByRoute && $role.employee_receipt.add() && !employee_receipt.id"
-            color="btnPrimary"
+            color="btn-primary"
             @click="_store"
             :loading="loading"
             rounded
@@ -155,7 +155,7 @@
           <v-spacer></v-spacer>
           <v-btn
             v-if="!idByRoute && $role.employee_receipt.add && !employee_receipt.id"
-            color="btnPrimary"
+            color="btn-primary"
             @click="_store"
             :loading="loading"
             rounded

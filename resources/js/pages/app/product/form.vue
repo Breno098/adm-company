@@ -2,31 +2,26 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-card class="mb-4">
-      <v-toolbar elevation="0">
-        <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
-        <v-progress-linear
-          indeterminate
-          height="4"
-          bottom
-          absolute
-          :active="loading"
-        ></v-progress-linear>
+    <p class="font-weight-regular mb-5 text-h5">
+      {{ titlePage }}
+    </p>
 
-        <v-spacer></v-spacer>
-
+    <v-row class="mb-2">
+      <v-col cols="6" offset="6" md="2" offset-md="10">
         <v-btn
-          v-if="(!idByRoute && $role.product.add()) || (idByRoute && $role.product.update()) "
-          color="btnPrimary"
-          @click="_store"
-          :loading="loading"
-          rounded
+          color="btn-primary"
+          class="rounded-lg"
+          block
           small
+          dark
+          @click="_store"
+          v-if="canSave"
+          :loading="loading"
         >
           Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
         </v-btn>
-      </v-toolbar>
-    </v-card>
+      </v-col>
+    </v-row>
 
     <v-card>
       <v-card-text>
@@ -34,7 +29,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               label="NOME"
-              outlined
+              filled
               dense
               v-model="product.name"
               :loading="loading"
@@ -52,7 +47,7 @@
               item-text="name"
               item-value="id"
               label="CATEGORIAS"
-              outlined
+              filled
               dense
               :loading="loading"
               multiple
@@ -63,7 +58,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               label="MARCA"
-              outlined
+              filled
               dense
               v-model="product.brand"
               :loading="loading"
@@ -78,7 +73,7 @@
               item-text="label"
               item-value="value"
               label="UN. MEDIDA"
-              outlined
+              filled
               dense
               :loading="loading"
             ></v-select>
@@ -87,7 +82,7 @@
           <v-col cols="12">
             <v-textarea
               label="DESCRIÇÃO"
-              outlined
+              filled
               dense
               v-model="product.description"
               :loading="loading"
@@ -101,7 +96,7 @@
               type="number"
               prefix="R$"
               label="VALOR"
-              outlined
+              filled
               dense
               v-model="product.default_value"
               :loading="loading"
@@ -114,7 +109,7 @@
               type="number"
               prefix="R$"
               label="CUSTO"
-              outlined
+              filled
               dense
               v-model="product.cost"
               :loading="loading"
@@ -126,7 +121,7 @@
               type="number"
               prefix="R$"
               label="LUCRO"
-              outlined
+              filled
               dense
               :value="(product.default_value - product.cost).toFixed(2)"
               :loading="loading"
@@ -139,7 +134,7 @@
             <v-text-field
               label="DIAS GARANTIA"
               type="number"
-              outlined
+              filled
               dense
               v-model="product.warranty_days"
               :loading="loading"
@@ -149,7 +144,7 @@
           <v-col cols="12" md="10">
             <v-textarea
               label="CONDIÇÃO DE GARANTIA"
-              outlined
+              filled
               dense
               v-model="product.warranty_conditions"
               :loading="loading"
@@ -161,17 +156,17 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-spacer></v-spacer>
         <v-btn
-          v-if="(!idByRoute && $role.product.add()) || (idByRoute && $role.product.update()) "
-          color="btnPrimary"
+          color="btn-primary"
+          class="rounded-lg"
+          small
+          dark
           @click="_store"
+          v-if="canSave"
           :loading="loading"
-          rounded
         >
           Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
         </v-btn>
-        <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
   </div>
@@ -234,6 +229,9 @@ export default {
     },
     idByRoute(){
       return this.$route.params.id;
+    },
+    canSave(){
+      return this.$can('product_add') && !this.idByRoute || this.$can('product_update') && this.idByRoute;
     }
   },
   mounted(){

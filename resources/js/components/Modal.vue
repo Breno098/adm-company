@@ -16,8 +16,8 @@
             indeterminate
           ></v-progress-circular>
 
-          <v-icon :size="70" color="btnPrimary" v-if="status === 'success'"> mdi-check</v-icon>
-          <v-icon :size="70" color="btnDanger" v-if="status === 'error'"> mdi-alert-decagram</v-icon>
+          <v-icon :size="70" color="btn-primary" v-if="status === 'success'"> mdi-check</v-icon>
+          <v-icon :size="70" color="btn-delete" v-if="status === 'error'"> mdi-alert-decagram</v-icon>
         </v-card-text>
     </v-card>
   </v-dialog>

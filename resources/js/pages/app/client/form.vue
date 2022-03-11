@@ -2,31 +2,26 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-card class="mb-4">
-      <v-toolbar elevation="0">
-        <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
-        <v-progress-linear
-          indeterminate
-          height="4"
-          bottom
-          absolute
-          :active="loading"
-        ></v-progress-linear>
+    <p class="font-weight-regular mb-5 text-h5">
+      {{ titlePage }}
+    </p>
 
-        <v-spacer></v-spacer>
-
+    <v-row class="mb-2">
+      <v-col cols="6" offset="6" md="2" offset-md="10">
         <v-btn
-          v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
-          color="btnPrimary"
-          @click="_store"
-          :loading="loading"
-          rounded
+          color="btn-primary"
+          class="rounded-lg"
+          block
           small
+          dark
+          @click="_store"
+          v-if="canSave"
+          :loading="loading"
         >
           Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
         </v-btn>
-      </v-toolbar>
-    </v-card>
+      </v-col>
+    </v-row>
 
     <v-card>
       <v-tabs v-model="tab">
@@ -43,7 +38,7 @@
             <v-col cols="12" md="6">
               <v-text-field
                 label="NOME"
-                outlined
+                filled
                 dense
                 v-model="client.name"
                 :loading="loading"
@@ -56,7 +51,7 @@
             <v-col cols="12" md="6">
               <v-text-field
                 label="NOME FANTASIA"
-                outlined
+                filled
                 dense
                 v-model="client.fantasy_name"
                 :loading="loading"
@@ -71,7 +66,7 @@
                 item-text="name"
                 item-value="id"
                 label="TIPO DE CLIENTE"
-                outlined
+                filled
                 dense
                 :loading="loading"
               ></v-select>
@@ -81,7 +76,7 @@
               <v-text-field
                 label="CNPJ"
                 v-mask="'##.###.###/####-##'"
-                outlined
+                filled
                 dense
                 v-model="client.cnpj"
                 :loading="loading"
@@ -92,7 +87,7 @@
               <v-text-field
                 label="CPF"
                 v-mask="'###.###.###-##'"
-                outlined
+                filled
                 dense
                 v-model="client.cpf"
                 :loading="loading"
@@ -107,7 +102,7 @@
                 max-width="290"
                 transition="scale-transition"
                 offset-y
-                outlined
+                filled
                 dense
               >
                 <template v-slot:activator="{ on, attrs }">
@@ -120,7 +115,7 @@
                     v-bind="attrs"
                     v-on="on"
                     @click:clear="client.birth_date = null"
-                    outlined
+                    filled
                     dense
                   ></v-text-field>
                 </template>
@@ -142,8 +137,14 @@
             <v-col cols="12" v-for="(contact, index) in client.contacts" :key="contact.id">
               <v-row>
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn color="btnDanger" @click="client.contacts.splice(index, 1);" :loading="loading" small rounded>
-                    <v-icon color="btnDanger darken-4">mdi-delete</v-icon>
+                  <v-btn
+                    color="btn-delete"
+                    @click="client.contacts.splice(index, 1);"
+                    :loading="loading"
+                    small
+                    class="rounded-lg"
+                  >
+                    <v-icon small>mdi-close</v-icon>
                   </v-btn>
                 </v-col>
 
@@ -152,7 +153,7 @@
                     v-model="contact.type"
                     :items="contact_types"
                     label="TIPO"
-                    outlined
+                    filled
                     dense
                     :loading="loading"
                   ></v-select>
@@ -161,7 +162,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     label="CONTATO"
-                    outlined
+                    filled
                     dense
                     v-model="contact.contact"
                     :loading="loading"
@@ -172,7 +173,7 @@
                   <v-text-field
                     @input="contact.contact = contact.contact.toUpperCase()"
                     label="CONTATO"
-                    outlined
+                    filled
                     dense
                     v-model="contact.contact"
                     :loading="loading"
@@ -183,7 +184,7 @@
                   <v-text-field
                     @input="contact.contact = contact.contact.toUpperCase()"
                     label="CONTATO"
-                    outlined
+                    filled
                     dense
                     v-model="contact.contact"
                     :loading="loading"
@@ -196,7 +197,14 @@
             </v-col>
 
             <v-col cols="12" class="d-flex flex-row justify-end">
-              <v-btn color="btnPrimary" @click="client.contacts.push({})" :loading="loading" small rounded>
+              <v-btn
+                color="btn-primary"
+                @click="client.contacts.push({})"
+                :loading="loading"
+                small
+                class="rounded-lg"
+                dark
+              >
                 Adicionar contato <v-icon>mdi-plus</v-icon>
               </v-btn>
             </v-col>
@@ -209,8 +217,15 @@
             <v-col cols="12" v-for="(address, index) in client.addresses" :key="address.id">
               <v-row>
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn color="btnDanger" @click="client.addresses.splice(index, 1);" :loading="loading" small rounded>
-                    <v-icon color="btnDanger darken-4">mdi-delete</v-icon>
+                  <v-btn
+                    color="btn-delete"
+                    @click="client.addresses.splice(index, 1);"
+                    :loading="loading"
+                    small
+                    class="rounded-lg"
+                    dark
+                  >
+                    <v-icon small>mdi-close</v-icon>
                   </v-btn>
                 </v-col>
 
@@ -218,7 +233,7 @@
                   <v-text-field
                     label="CEP"
                     v-mask="'#####-###'"
-                    outlined
+                    filled
                     dense
                     v-model="address.cep"
                     :loading="loading"
@@ -230,7 +245,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     label="RUA"
-                    outlined
+                    filled
                     dense
                     v-model="address.street"
                     :loading="loading"
@@ -241,7 +256,7 @@
                 <v-col cols="12" md="3">
                   <v-text-field
                     label="NÚMERO"
-                    outlined
+                    filled
                     dense
                     v-model="address.number"
                     :loading="loading"
@@ -251,7 +266,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     label="BAIRRO"
-                    outlined
+                    filled
                     dense
                     v-model="address.district"
                     :loading="loading"
@@ -262,7 +277,7 @@
                 <v-col cols="12" md="4">
                   <v-text-field
                     label="CIDADE"
-                    outlined
+                    filled
                     dense
                     v-model="address.city"
                     :loading="loading"
@@ -273,7 +288,7 @@
                 <v-col cols="12" md="2">
                   <v-text-field
                     label="ESTADO"
-                    outlined
+                    filled
                     dense
                     v-model="address.state"
                     :loading="loading"
@@ -284,7 +299,7 @@
                 <v-col cols="6" md="2">
                   <v-text-field
                     label="APARTAMENTO"
-                    outlined
+                    filled
                     dense
                     v-model="address.apartment"
                     :loading="loading"
@@ -295,7 +310,7 @@
                 <v-col cols="6" md="2">
                   <v-text-field
                     label="BLOCO"
-                    outlined
+                    filled
                     dense
                     v-model="address.block"
                     :loading="loading"
@@ -306,7 +321,7 @@
                 <v-col cols="6" md="2">
                   <v-text-field
                     label="ANDAR"
-                    outlined
+                    filled
                     dense
                     v-model="address.floor"
                     :loading="loading"
@@ -317,7 +332,7 @@
                 <v-col cols="6" md="2">
                   <v-text-field
                     label="TORRE"
-                    outlined
+                    filled
                     dense
                     v-model="address.tower"
                     :loading="loading"
@@ -328,7 +343,7 @@
                 <v-col cols="6" md="2">
                   <v-text-field
                     label="CASA"
-                    outlined
+                    filled
                     dense
                     v-model="address.house"
                     :loading="loading"
@@ -339,7 +354,7 @@
                 <v-col cols="12">
                   <v-text-field
                     label="COMPLEMENTO"
-                    outlined
+                    filled
                     dense
                     v-model="address.complement"
                     :loading="loading"
@@ -353,13 +368,14 @@
 
             <v-col cols="12" class="d-flex flex-row justify-end">
               <v-btn
-                color="btnPrimary"
+                color="btn-primary"
+                :loading="loading"
+                small
+                dark
+                class="rounded-lg"
                 @click="client.addresses.push({
                   cep: null
                 })"
-                :loading="loading"
-                small
-                rounded
               >
                 Adicionar endereço <v-icon>mdi-plus</v-icon>
               </v-btn>
@@ -369,17 +385,17 @@
       </v-tabs-items>
 
       <v-card-actions>
-        <v-spacer></v-spacer>
         <v-btn
-          v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
-          color="btnPrimary"
+          color="btn-primary"
+          class="rounded-lg"
+          small
+          dark
           @click="_store"
+          v-if="canSave"
           :loading="loading"
-          rounded
         >
           Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
         </v-btn>
-        <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
   </div>
@@ -435,6 +451,9 @@ export default {
     },
     idByRoute(){
       return this.$route.params.id;
+    },
+    canSave(){
+      return this.$can('client_add') && !this.idByRoute || this.$can('client_update') && this.idByRoute;
     }
   },
   mounted(){

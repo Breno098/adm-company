@@ -63,6 +63,7 @@ Route::middleware('auth:api')->group( function () {
         Route::patch('profile/first-access', [ProfileController::class, 'firstAccess']);
 
         Route::get('user/current', [AuthUserController::class, 'current']);
+        Route::get('user/can', [AuthUserController::class, 'can']);
 
         Route::get('employee-receipt/{employeeReceipt}/download', [EmployeeReceiptController::class, 'download']);
 

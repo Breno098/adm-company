@@ -17,7 +17,7 @@
 
           <v-btn
           v-if="(!idByRoute && $role.expense.add()) || (idByRoute && $role.expense.update()) "
-          color="btnPrimary"
+          color="btn-primary"
           @click="_store"
           :loading="loading"
           rounded
@@ -192,7 +192,7 @@
         <v-row>
             <v-col cols="12" class="d-flex flex-row justify-end">
             <v-btn
-              color="btnDanger"
+              color="btn-delete"
               @click="deleteLastInstallment"
               :loading="loading"
               small
@@ -203,7 +203,7 @@
             </v-btn>
 
             <v-btn
-              color="btnPrimary"
+              color="btn-primary"
               class="ml-3"
               :loading="loading" small rounded
               @click="expense.installments.push({
@@ -226,7 +226,7 @@
         <v-spacer></v-spacer>
         <v-btn
           v-if="(!idByRoute && $role.expense.add()) || (idByRoute && $role.expense.update()) "
-          color="btnPrimary"
+          color="btn-primary"
           @click="_store"
           :loading="loading"
           rounded
@@ -383,8 +383,8 @@ export default {
       const ok = await this.$refs.fireDialog.confirm({
           title: `Deletar parcela ${this.expense.installments.length}`,
           textConfirmButton: 'Deletar',
-          colorConfirButton: 'btnDanger',
-          colorCancelButton: 'btnPrimary'
+          colorConfirButton: 'btn-delete',
+          colorCancelButton: 'btn-primary'
       })
 
       if (ok) {

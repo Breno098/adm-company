@@ -2,88 +2,97 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-     <v-card class="mb-4">
-      <v-toolbar elevation="0">
-        <v-toolbar-title> Produtos/Peças </v-toolbar-title>
-        <v-progress-linear
-          color="primary"
-          indeterminate
-          height="4"
-          bottom
-          absolute
-          :active="table.loading"
-        ></v-progress-linear>
+    <p class="font-weight-regular mb-5 text-h5">
+      Produtos
+    </p>
 
-        <v-spacer></v-spacer>
-
-        <v-btn
-          dark
-          color="primary"
-          @click="_add"
-          rounded
-          small
-          v-if="$role.product.add()"
+    <v-row class="mb-2">
+      <v-col cols="6" md="10">
+        <v-menu
+          :close-on-content-click="false"
+          :nudge-width="200"
+          offset-y
+          v-model="menuFilter"
         >
-          Adicionar <v-icon dark>mdi-plus</v-icon>
+          <template v-slot:activator="{ on, attrs }">
+              <v-btn text small v-bind="attrs" v-on="on">
+                  Filtros
+                  <v-icon color="primary">mdi-chevron-down</v-icon>
+              </v-btn>
+          </template>
+
+          <v-card width="800">
+              <v-card-text>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-text-field
+                        label="NOME"
+                        v-model="table.filters.name"
+                        @input="table.filters.name = table.filters.name.toUpperCase()"
+                        v-on:keyup.enter="_load"
+                        dense
+                        outlined
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+
+                <v-btn
+                  color="deep-purple lighten-5"
+                  small
+                  class="rounded-lg mr-2"
+                  elevation="0"
+                  @click="_eraser"
+                >
+                    Limpar <v-icon class="ml-2" small>mdi-eraser</v-icon>
+                </v-btn>
+
+                <v-btn
+                  color="primary"
+                  small
+                  class="rounded-lg"
+                  elevation="0"
+                  @click="_load"
+                >
+                    Buscar <v-icon class="ml-2" small>mdi-magnify</v-icon>
+                </v-btn>
+              </v-card-actions>
+          </v-card>
+        </v-menu>
+      </v-col>
+
+      <v-col cols="6" md="2">
+        <v-btn
+            color="btn-primary"
+            class="rounded-lg"
+            block
+            small
+            dark
+            @click="_add"
+            v-if="$can('product_add')"
+        >
+            Criar produto <v-icon>mdi-plus</v-icon>
         </v-btn>
-      </v-toolbar>
-    </v-card>
-
-     <v-expansion-panels class="mb-4">
-      <v-expansion-panel>
-        <v-expansion-panel-header>
-          <span>
-            <v-icon :size="15">mdi-magnify</v-icon>
-            Filtros
-          </span>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field
-                label="NOME"
-                outlined
-                dense
-                v-model="table.filters.name"
-                :loading="table.loading"
-                @input="table.filters.name = table.filters.name.toUpperCase()"
-                v-on:keyup.enter="_load"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-card-actions class="pb-4">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="btnPrimary"
-              @click="_load"
-              class="px-5"
-              rounded
-            >
-              Buscar <v-icon dark class="ml-2">mdi-magnify</v-icon>
-            </v-btn>
-            <v-btn
-              color="btnCleanFilter"
-              @click="_eraser"
-              class="px-5"
-              rounded
-            >
-              Limpar <v-icon dark class="ml-2">mdi-eraser</v-icon>
-            </v-btn>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+      </v-col>
+    </v-row>
 
     <v-card>
+      <v-progress-linear
+        indeterminate
+        top
+        :active="table.loading"
+      ></v-progress-linear>
+
       <v-card-text>
           <v-simple-table dense>
             <template v-slot:default>
               <thead>
                 <tr>
-                  <th class="text-left">NOME</th>
-                  <th class="text-left">VALOR</th>
+                  <th class="text-left" style="width: 45%">NOME</th>
+                  <th class="text-left" style="width: 45%">VALOR</th>
                   <th></th>
                 </tr>
               </thead>
@@ -91,15 +100,15 @@
                 <tr
                   v-for="item in table.items"
                   :key="item.id"
-                  v-on:click="$role.product.show() ? _edit(item.id) : null"
+                  v-on:click="_edit(item.id)"
                 >
                   <td>{{ item.name }}</td>
-                  <td>{{ item.default_value }}</td>
+                  <td>{{ item.default_value | formatMoney }}</td>
                   <td>
                     <v-menu
                       transition="slide-y-transition"
                       bottom
-                      v-if="$role.product.show() || $role.product.delete()"
+                      v-if="$can('product_show') || $can('product_delete')"
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn text block v-bind="attrs" v-on="on">
@@ -110,21 +119,22 @@
                         <v-list nav dense>
                             <v-list-item
                               v-on:click="_edit(item.id)"
-                              v-if="$role.product.show()"
+                              v-if="$can('product_show')"
                             >
                               <v-list-item-icon>
-                                  <v-icon outlined color="btnPrimary">mdi-eye</v-icon>
+                                  <v-icon outlined color="btn-primary">mdi-eye</v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
                                   <v-list-item-title> Visualizar </v-list-item-title>
                               </v-list-item-content>
                             </v-list-item>
+
                             <v-list-item
                               v-on:click="_delete(item)"
-                              v-if="$role.client.delete()"
+                              v-if="$can('product_delete')"
                             >
                               <v-list-item-icon>
-                                  <v-icon outlined color="btnDanger">mdi-delete</v-icon>
+                                  <v-icon outlined color="btn-delete">mdi-delete</v-icon>
                               </v-list-item-icon>
                               <v-list-item-content>
                                   <v-list-item-title> Deletar </v-list-item-title>
@@ -179,6 +189,7 @@ export default {
     return { title: 'Produtos' }
   },
   data: () => ({
+    menuFilter: false,
     table: {
       filters: {
         name: '',
@@ -201,6 +212,8 @@ export default {
       this._load();
     },
     async _load(){
+      this.menuFilter = false;
+
       let params = {
         page: this.table.page,
         itemsPerPage: this.table.itemsPerPage,
@@ -234,8 +247,8 @@ export default {
           title: 'Deletar Produto',
           message: 'Deseja realmente deletar o produto?',
           textConfirmButton: 'Deletar',
-          colorConfirButton: 'btnDanger',
-        colorCancelButton: 'btnPrimary'
+          colorConfirButton: 'btn-delete',
+        colorCancelButton: 'btn-primary'
       })
 
       if (ok) {
@@ -250,10 +263,11 @@ export default {
       }
     },
     _edit(id){
-      this.$router.push({
-          name: 'product.show',
-          params: { id }
-      })
+      this.$can('product_show')
+        ? this.$router.push({
+            name: 'product.show',
+            params: { id }
+        }) : null
     },
     _add(){
       this.$router.push({ name: 'product.create' })

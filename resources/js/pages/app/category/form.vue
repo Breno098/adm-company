@@ -19,8 +19,8 @@
             <v-spacer></v-spacer>
 
             <v-btn
-              v-if="(!idByRoute && $role.category.add()) || (idByRoute && $role.category.update()) "
-              color="btnPrimary"
+              v-if="(!idByRoute && btn-primary.category.add()) || (idByRoute && btn-primary.category.update()) "
+              color="btn-primary"
               @click="_store"
               :loading="loading"
               rounded
@@ -86,8 +86,8 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-              v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
-              color="btnPrimary"
+              v-if="(!idByRoute && btn-primary.client.add()) || (idByRoute && btn-primary.client.update()) "
+              color="btn-primary"
               @click="_store"
               :loading="loading"
               rounded

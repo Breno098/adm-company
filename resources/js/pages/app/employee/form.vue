@@ -17,7 +17,7 @@
 
         <v-btn
           v-if="(!idByRoute && $role.employee.add()) || (idByRoute && $role.employee.update()) "
-          color="btnPrimary"
+          color="btn-primary"
           @click="_store"
           :loading="loading"
           rounded
@@ -178,8 +178,8 @@
             <v-col cols="12" v-for="(contact, index) in employee.contacts" :key="contact.id">
               <v-row>
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn color="btnDanger" @click="client.contacts.splice(index, 1);" :loading="loading" small rounded>
-                    <v-icon color="btnDanger darken-4">mdi-delete</v-icon>
+                  <v-btn color="btn-delete" @click="client.contacts.splice(index, 1);" :loading="loading" small rounded>
+                    <v-icon >mdi-delete</v-icon>
                   </v-btn>
                 </v-col>
 
@@ -232,7 +232,7 @@
             </v-col>
 
             <v-col cols="12" class="d-flex flex-row justify-end">
-              <v-btn color="btnPrimary" @click="employee.contacts.push({})" :loading="loading" small rounded>
+              <v-btn color="btn-primary" @click="employee.contacts.push({})" :loading="loading" small rounded>
                 Adicionar contato <v-icon>mdi-plus</v-icon>
               </v-btn>
             </v-col>
@@ -245,8 +245,8 @@
             <v-col cols="12" v-for="(address, index) in employee.addresses" :key="address.id">
               <v-row>
                 <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn color="btnDanger" @click="employee.addresses.splice(index, 1);" :loading="loading" small rounded>
-                    <v-icon color="btnDanger darken-4">mdi-delete</v-icon>
+                  <v-btn color="btn-delete" @click="employee.addresses.splice(index, 1);" :loading="loading" small rounded>
+                    <v-icon >mdi-delete</v-icon>
                   </v-btn>
                 </v-col>
 
@@ -389,7 +389,7 @@
 
             <v-col cols="12" class="d-flex flex-row justify-end">
               <v-btn
-                color="btnPrimary"
+                color="btn-primary"
                 @click="employee.addresses.push({
                   cep: null
                 })"
@@ -408,7 +408,7 @@
         <v-spacer></v-spacer>
         <v-btn
           v-if="(!idByRoute && $role.employee.add()) || (idByRoute && $role.employee.update()) "
-          color="btnPrimary"
+          color="btn-primary"
           @click="_store"
           :loading="loading"
           rounded

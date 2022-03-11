@@ -2,156 +2,150 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-      <v-card class="mb-4">
-        <v-toolbar elevation="0">
-          <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
-          <v-progress-linear
-            indeterminate
-            height="4"
-            bottom
-            absolute
-            :active="loading"
-          ></v-progress-linear>
+    <p class="font-weight-regular mb-5 text-h5">
+      {{ titlePage }}
+    </p>
 
-          <v-spacer></v-spacer>
+    <v-row class="mb-2">
+      <v-col cols="6" offset="6" md="2" offset-md="10">
+        <v-btn
+          color="btn-primary"
+          class="rounded-lg"
+          block
+          small
+          dark
+          @click="_store"
+          v-if="canSave"
+          :loading="loading"
+        >
+          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
 
-          <v-btn
-            v-if="(!idByRoute && $role.service.add()) || (idByRoute && $role.service.update()) "
-            color="btnPrimary"
-            @click="_store"
-            :loading="loading"
-            rounded
-            dark
-            small
-          >
-            Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-          </v-btn>
-        </v-toolbar>
-      </v-card>
 
-      <v-card>
-        <v-card-text>
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field
-                label="NOME"
-                outlined
-                dense
-                v-model="service.name"
-                :loading="loading"
-                :rules="[rules.required]"
-                :error="errors.name && !service.name"
-                @input="service.name = service.name.toUpperCase()"
-              ></v-text-field>
-            </v-col>
+    <v-card>
+      <v-card-text>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              label="NOME"
+              filled
+              dense
+              v-model="service.name"
+              :loading="loading"
+              :rules="[rules.required]"
+              :error="errors.name && !service.name"
+              @input="service.name = service.name.toUpperCase()"
+            ></v-text-field>
+          </v-col>
 
-            <v-col cols="12" md="6">
-              <v-select
-                v-model="service.categories"
-                vali
-                :items="categories"
-                item-text="name"
-                item-value="id"
-                label="CATEGORIAS"
-                outlined
-                dense
-                :loading="loading"
-                multiple
-                no-data-text="Nenhuma categoria encontrada"
-              ></v-select>
-            </v-col>
+          <v-col cols="12" md="6">
+            <v-select
+              v-model="service.categories"
+              vali
+              :items="categories"
+              item-text="name"
+              item-value="id"
+              label="CATEGORIAS"
+              filled
+              dense
+              :loading="loading"
+              multiple
+              no-data-text="Nenhuma categoria encontrada"
+            ></v-select>
+          </v-col>
 
-            <v-col cols="12">
-              <v-textarea
-                label="DESCRIÇÃO"
-                outlined
-                dense
-                v-model="service.description"
-                :loading="loading"
-                hint="Detalhes"
-                @input="service.description = service.description.toUpperCase()"
-              ></v-textarea>
-            </v-col>
+          <v-col cols="12">
+            <v-textarea
+              label="DESCRIÇÃO"
+              filled
+              dense
+              v-model="service.description"
+              :loading="loading"
+              hint="Detalhes"
+              @input="service.description = service.description.toUpperCase()"
+            ></v-textarea>
+          </v-col>
 
-            <v-col cols="12" md="4">
-              <v-text-field
-                type="number"
-                prefix="R$"
-                label="VALOR"
-                outlined
-                dense
-                v-model="service.default_value"
-                :loading="loading"
-                hint="Valor padrão"
-              ></v-text-field>
-            </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              type="number"
+              prefix="R$"
+              label="VALOR"
+              filled
+              dense
+              v-model="service.default_value"
+              :loading="loading"
+              hint="Valor padrão"
+            ></v-text-field>
+          </v-col>
 
-            <v-col cols="12" md="4">
-              <v-text-field
-                type="number"
-                prefix="R$"
-                label="CUSTO"
-                outlined
-                dense
-                v-model="service.cost"
-                :loading="loading"
-              ></v-text-field>
-            </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              type="number"
+              prefix="R$"
+              label="CUSTO"
+              filled
+              dense
+              v-model="service.cost"
+              :loading="loading"
+            ></v-text-field>
+          </v-col>
 
-            <v-col cols="12" md="4">
-              <v-text-field
-                type="number"
-                prefix="R$"
-                label="LUCRO"
-                outlined
-                dense
-                :value="(service.default_value - service.cost).toFixed(2)"
-                :loading="loading"
-                color="black"
-                readonly
-              ></v-text-field>
-            </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              type="number"
+              prefix="R$"
+              label="LUCRO"
+              filled
+              dense
+              :value="(service.default_value - service.cost).toFixed(2)"
+              :loading="loading"
+              color="black"
+              readonly
+            ></v-text-field>
+          </v-col>
 
-            <v-col cols="12" md="2">
-              <v-text-field
-                label="DIAS GARANTIA"
-                type="number"
-                outlined
-                dense
-                v-model="service.warranty_days"
-                :loading="loading"
-              ></v-text-field>
-            </v-col>
+          <v-col cols="12" md="2">
+            <v-text-field
+              label="DIAS GARANTIA"
+              type="number"
+              filled
+              dense
+              v-model="service.warranty_days"
+              :loading="loading"
+            ></v-text-field>
+          </v-col>
 
-            <v-col cols="12" md="10">
-              <v-textarea
-                label="CONDIÇÃO DE GARANTIA"
-                outlined
-                dense
-                v-model="service.warranty_conditions"
-                :loading="loading"
-                hint="Termos de garantia"
-                @input="service.warranty_conditions = service.warranty_conditions.toUpperCase()"
-              ></v-textarea>
-            </v-col>
-          </v-row>
-        </v-card-text>
+          <v-col cols="12" md="10">
+            <v-textarea
+              label="CONDIÇÃO DE GARANTIA"
+              filled
+              dense
+              v-model="service.warranty_conditions"
+              :loading="loading"
+              hint="Termos de garantia"
+              @input="service.warranty_conditions = service.warranty_conditions.toUpperCase()"
+            ></v-textarea>
+          </v-col>
+        </v-row>
+      </v-card-text>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            v-if="(!idByRoute && $role.service.add()) || (idByRoute && $role.service.update()) "
-            color="btnPrimary"
-            @click="_store"
-            :loading="loading"
-            rounded
-            dark
-          >
-            Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-          </v-btn>
-          <v-spacer></v-spacer>
-        </v-card-actions>
-      </v-card>
+      <v-card-actions>
+        <v-btn
+          color="btn-primary"
+          class="rounded-lg"
+          small
+          dark
+          @click="_store"
+          v-if="canSave"
+          :loading="loading"
+        >
+          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </div>
 </template>
 
@@ -191,6 +185,9 @@ export default {
     },
     idByRoute(){
       return this.$route.params.id;
+    },
+    canSave(){
+      return this.$can('service_add') && !this.idByRoute || this.$can('service_update') && this.idByRoute;
     }
   },
   mounted(){

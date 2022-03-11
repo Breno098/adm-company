@@ -31,7 +31,7 @@
             </v-btn>
 
             <v-btn
-              color="btnPrimary"
+              color="btn-primary"
               @click="_store"
               :loading="loading"
               rounded
@@ -70,7 +70,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
-              color="btnPrimary"
+              color="btn-primary"
               @click="_store"
               :loading="loading"
               rounded
