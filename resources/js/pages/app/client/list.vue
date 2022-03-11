@@ -3,6 +3,7 @@
     <fire-dialog ref="fireDialog"></fire-dialog>
 
     <p class="font-weight-bold mb-5 text-h5">
+      <v-icon color="primary">mdi-account</v-icon>
       Clientes
     </p>
 
@@ -113,7 +114,7 @@
             @click="_add"
             v-if="$can('client_add')"
         >
-            Criar cliente <v-icon>mdi-plus</v-icon>
+            Adicionar <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -153,7 +154,7 @@
                   <v-menu
                     transition="slide-y-transition"
                     bottom
-                    v-if="$role.client.show() || $role.client.delete()"
+                    v-if="$can('client_show') || $can('client_delete')"
                   >
                       <template v-slot:activator="{ on, attrs }">
                           <v-btn text block v-bind="attrs" v-on="on">

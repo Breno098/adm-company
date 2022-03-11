@@ -3,6 +3,7 @@
     <fire-dialog ref="fireDialog"></fire-dialog>
 
     <p class="font-weight-bold mb-5 text-h5">
+      <v-icon color="primary">mdi-wrench</v-icon>
       Serviços
     </p>
 
@@ -74,7 +75,7 @@
             @click="_add"
             v-if="$can('service_add')"
         >
-            Criar serviço <v-icon>mdi-plus</v-icon>
+          Adicionar <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-col>
     </v-row>

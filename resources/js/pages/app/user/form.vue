@@ -2,31 +2,27 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-card class="mb-4">
-      <v-toolbar elevation="0" class="mb-2">
-        <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
-        <v-progress-linear
-          indeterminate
-          height="4"
-          bottom
-          absolute
-          :active="loading"
-        ></v-progress-linear>
+    <p class="font-weight-bold mb-5 text-h5">
+      <v-icon color="primary">mdi-account</v-icon>
+      {{ titlePage }}
+    </p>
 
-        <v-spacer></v-spacer>
-
+    <v-row class="mb-2">
+      <v-col cols="6" offset="6" md="2" offset-md="10">
         <v-btn
-          v-if="(!idByRoute && $role.user.add()) || (idByRoute && $role.user.update()) "
           color="btn-primary"
-          @click="_store"
-          :loading="loading"
-          rounded
+          class="rounded-lg"
+          block
           small
+          dark
+          @click="_store(true)"
+          v-if="canSave"
+          :loading="loading"
         >
-          Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
+          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
         </v-btn>
-      </v-toolbar>
-    </v-card>
+      </v-col>
+    </v-row>
 
     <v-card>
       <v-tabs v-model="tab">
@@ -41,8 +37,7 @@
             <v-col cols="12" md="6">
               <v-text-field
                 label="NOME"
-                color="primary"
-                outlined
+                filled
                 dense
                 v-model="user.name"
                 :loading="loading"
@@ -54,8 +49,7 @@
             <v-col cols="12" md="6">
               <v-text-field
                 label="EMAIL"
-                color="primary"
-                outlined
+                filled
                 dense
                 v-model="user.email"
                 :loading="loading"
@@ -67,8 +61,7 @@
             <v-col cols="12" md="10" v-if="!idByRoute">
               <v-text-field
                 label="SENHA INICIAL"
-                color="primary"
-                outlined
+                filled
                 dense
                 v-model="user.password"
                 :loading="loading"
@@ -121,17 +114,17 @@
       </v-tabs-items>
 
       <v-card-actions>
-        <v-spacer></v-spacer>
         <v-btn
-          v-if="(!idByRoute && $role.client.add()) || (idByRoute && $role.client.update()) "
           color="btn-primary"
+          class="rounded-lg"
+          small
+          dark
           @click="_store"
+          v-if="canSave"
           :loading="loading"
-          rounded
         >
-          Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
+          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
         </v-btn>
-        <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
   </div>
@@ -172,6 +165,9 @@ export default {
     idByRoute(){
       return this.$route.params.id;
     },
+    canSave(){
+      return this.$can('user_add') && !this.idByRoute || this.$can('user_update') && this.idByRoute;
+    }
   },
   mounted(){
     this._start();
@@ -247,7 +243,5 @@ export default {
       });
     }
   }
-
-
 }
 </script>

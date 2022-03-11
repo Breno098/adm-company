@@ -3,6 +3,7 @@
     <fire-dialog ref="fireDialog"></fire-dialog>
 
     <p class="font-weight-bold mb-5 text-h5">
+      <v-icon color="primary">mdi-database-minus</v-icon>
       {{ titlePage }}
     </p>
 

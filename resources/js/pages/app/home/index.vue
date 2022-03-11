@@ -219,7 +219,7 @@ export default {
               client_name: appointment.client_id ? appointment.client.name : '',
               start: date_start,
               end: date_end,
-              color: appointment.concluded ? 'blue' : 'orange',
+              color: appointment.concluded === 'N' ? 'primary' : 'orange',
             })
           })
         }

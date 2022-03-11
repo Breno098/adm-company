@@ -2,92 +2,104 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-card class="mb-4">
-      <v-toolbar elevation="0">
-        <v-toolbar-title> Funcionários </v-toolbar-title>
-        <v-progress-linear
-          indeterminate
-          height="4"
-          bottom
-          absolute
-          :active="table.loading"
-        ></v-progress-linear>
+    <p class="font-weight-bold mb-5 text-h5">
+      <v-icon color="primary">mdi-account</v-icon>
+      Funcionários
+    </p>
 
-        <v-spacer></v-spacer>
-
-        <v-btn
-          dark
-          color="primary"
-          @click="_add"
-          rounded
-          small
-          v-if="$can('client_add')"
+    <v-row class="mb-2">
+      <v-col cols="6" md="10">
+        <v-menu
+          :close-on-content-click="false"
+          :nudge-width="200"
+          offset-y
+          v-model="menuFilter"
         >
-          Adicionar <v-icon dark>mdi-plus</v-icon>
+          <template v-slot:activator="{ on, attrs }">
+              <v-btn text small v-bind="attrs" v-on="on">
+                  Filtros
+                  <v-icon color="primary">mdi-chevron-down</v-icon>
+              </v-btn>
+          </template>
+
+          <v-card width="800">
+              <v-card-text>
+                  <v-row>
+                   <v-col cols="12" md="6">
+                    <v-text-field
+                      label="NOME"
+                      filled
+                      dense
+                      v-model="table.filters.name"
+                      :loading="table.loading"
+                      @input="table.filters.name = table.filters.name.toUpperCase()"
+                      v-on:keyup.enter="_load"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-text-field
+                      label="CPF"
+                      v-mask="'###.###.###-##'"
+                      filled
+                      dense
+                      v-model="table.filters.cpf"
+                      :loading="table.loading"
+                      v-on:keyup.enter="_load"
+                    ></v-text-field>
+                  </v-col>
+                  </v-row>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+
+                <v-btn
+                  color="deep-purple lighten-5"
+                  small
+                  class="rounded-lg mr-2"
+                  elevation="0"
+                  @click="_eraser"
+                >
+                    Limpar <v-icon class="ml-2" small>mdi-eraser</v-icon>
+                </v-btn>
+
+                <v-btn
+                  color="primary"
+                  small
+                  class="rounded-lg"
+                  elevation="0"
+                  @click="_load"
+                >
+                    Buscar <v-icon class="ml-2" small>mdi-magnify</v-icon>
+                </v-btn>
+              </v-card-actions>
+          </v-card>
+        </v-menu>
+      </v-col>
+
+      <v-col cols="6" md="2">
+        <v-btn
+            color="btn-primary"
+            class="rounded-lg"
+            block
+            small
+            dark
+            @click="_add"
+            v-if="$can('employee_add')"
+        >
+            Adicionar <v-icon>mdi-plus</v-icon>
         </v-btn>
-      </v-toolbar>
-    </v-card>
-
-    <v-expansion-panels class="mb-4">
-      <v-expansion-panel>
-        <v-expansion-panel-header>
-          <span>
-            <v-icon :size="15">mdi-magnify</v-icon>
-            Filtros
-          </span>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field
-                label="NOME"
-                outlined
-                dense
-                v-model="table.filters.name"
-                :loading="table.loading"
-                @input="table.filters.name = table.filters.name.toUpperCase()"
-                v-on:keyup.enter="_load"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="6">
-              <v-text-field
-                label="CPF"
-                v-mask="'###.###.###-##'"
-                outlined
-                dense
-                v-model="table.filters.cpf"
-                :loading="table.loading"
-                v-on:keyup.enter="_load"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-card-actions class="pb-4">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="btn-primary"
-              @click="_load"
-              class="px-5"
-              rounded
-            >
-              Buscar <v-icon dark class="ml-2">mdi-magnify</v-icon>
-            </v-btn>
-            <v-btn
-              color="btnCleanFilter"
-              @click="_eraser"
-              class="px-5"
-              rounded
-            >
-              Limpar <v-icon dark class="ml-2">mdi-eraser</v-icon>
-            </v-btn>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+      </v-col>
+    </v-row>
 
     <v-card>
+      <v-progress-linear
+        indeterminate
+        top
+        :active="table.loading"
+      ></v-progress-linear>
+
       <v-card-text>
         <v-simple-table dense>
           <template v-slot:default>
@@ -104,17 +116,17 @@
               <tr
                 v-for="employee in table.employees"
                 :key="employee.id"
-                v-on:click="$role.employee.show() ? _edit(employee.id) : null"
+                v-on:click="_edit(employee.id)"
               >
                 <td>{{ employee.name }}</td>
-                <td>{{ employee.admission_date | formatDate }}</td>
+                <td>{{ employee.admission_date | formatDMY }}</td>
                 <td>{{ employee.cpf  }}</td>
                 <td>{{ employee.rg }}</td>
                 <td>
                   <v-menu
                     transition="slide-y-transition"
                     bottom
-                    v-if="$role.employee.show() || $role.employee.delete()"
+                    v-if="$can('employee_show') || $can('employee_delete')"
                   >
                       <template v-slot:activator="{ on, attrs }">
                           <v-btn text block v-bind="attrs" v-on="on">
@@ -125,7 +137,7 @@
                       <v-list nav dense>
                           <v-list-item
                             v-on:click="_edit(employee.id)"
-                            v-if="$role.employee.show()"
+                            v-if="$can('employee_show')"
                           >
                               <v-list-item-icon>
                                   <v-icon outlined color="btn-primary">mdi-eye</v-icon>
@@ -136,7 +148,7 @@
                           </v-list-item>
                           <v-list-item
                             v-on:click="_delete(employee)"
-                            v-if="$role.employee.delete()"
+                            v-if="$can('employee_delete')"
                           >
                               <v-list-item-icon>
                                   <v-icon outlined color="btn-delete">mdi-delete</v-icon>
@@ -182,7 +194,7 @@
         </v-row>
       </v-card-actions>
     </v-card>
-</div>
+  </div>
 </template>
 
 <script>
@@ -197,10 +209,10 @@ export default {
     return { title: 'Funcionários' }
   },
   data: () => ({
+    menuFilter: false,
     table: {
       filters: {
         name: '',
-        rg: '',
         cpf: '',
       },
       orderBy: 'name',
@@ -212,18 +224,13 @@ export default {
     },
     categories: []
   }),
-  computed: {
-  },
   mounted() {
     this._load();
   },
-  filters: {
-    formatDate(date){
-      return date ? moment(date).format('DD/MM/YYYY HH:mm') : '';
-    },
-  },
   methods: {
     async _load(){
+      this.menuFilter = false;
+
       let params = {
         page: this.table.page,
         itemsPerPage: this.table.itemsPerPage,
@@ -273,10 +280,11 @@ export default {
       }
     },
     _edit(id){
-      this.$router.push({
-          name: 'employee.show',
-          params: { id }
-      })
+      this.$can('employee_show')
+        ? this.$router.push({
+            name: 'employee.show',
+            params: { id }
+        }) : null
     },
     _add(){
       this.$router.push({ name: 'employee.create' })
@@ -291,20 +299,6 @@ export default {
     _orderBy(field = ''){
       this.table.orderBy = field;
       this._load();
-    },
-    async _loadCategories(){
-      this.table.loading = true;
-      await axios.get(`/api/category?type=employee`).then(response => {
-        if(response.data.success){
-          this.categories = [
-            { id: null, name: 'TODOS' },
-            ...response.data.data
-          ];
-          return;
-        }
-        this.$refs.fireDialog.error({ title: 'Error ao carregar tipos' })
-      });
-      this.table.loading = false;
     },
   }
 }

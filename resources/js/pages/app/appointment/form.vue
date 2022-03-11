@@ -3,6 +3,7 @@
     <fire-dialog ref="fireDialog"></fire-dialog>
 
     <p class="font-weight-bold mb-5 text-h5">
+      <v-icon color="primary">mdi-calendar-today</v-icon>
       {{ titlePage }}
     </p>
 
@@ -71,7 +72,7 @@
               v-on:change="_loadAddresses"
               filled
               dense
-              :color="CreateByOrder ? 'black' : 'blue'"
+              :color="CreateByOrder ? 'black' : 'primary'"
             ></v-autocomplete>
           </v-col>
 
@@ -85,7 +86,7 @@
               :loading="loadingAddresses"
               filled
               dense
-              :color="CreateByOrder ? 'black' : 'blue'"
+              :color="CreateByOrder ? 'black' : 'primary'"
             >
               <template slot="selection" slot-scope="data">
                 {{ data.item.street }} {{ data.item.number ? `n° ${data.item.number}` : '' }}, {{ data.item.district }} - {{ data.item.city }}

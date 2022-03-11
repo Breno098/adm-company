@@ -145,7 +145,7 @@ export default {
           role: this.$role.appointment.index()
         },
         {
-          title: 'Custos/Despesas',
+          title: 'Custos',
           route: 'expense.index',
           icon: 'mdi-database-minus',
           role: this.$role.expense.index()

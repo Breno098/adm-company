@@ -1,11 +1,12 @@
 <template>
   <div>
     <p class="font-weight-bold mb-5 text-h5">
+      <v-icon color="primary">mdi-calendar-today</v-icon>
       Agenda
     </p>
 
     <v-row class="mb-2">
-      <v-col cols="6" md="9">
+      <v-col cols="6" md="10">
         <v-menu
           :close-on-content-click="false"
           :nudge-width="200"
@@ -88,7 +89,7 @@
         </v-menu>
       </v-col>
 
-      <v-col cols="6" md="3">
+      <v-col cols="6" md="2">
         <v-btn
             color="btn-primary"
             class="rounded-lg"
@@ -98,7 +99,7 @@
             @click="_add"
             v-if="$can('appointment_add')"
         >
-            Criar compromisso <v-icon>mdi-plus</v-icon>
+            Adicionar <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-col>
     </v-row>
