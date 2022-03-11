@@ -48,6 +48,27 @@ class Appointment extends TenantModel
         });
     }
 
+    public function scopeFilterByAddress(Builder $builder, $address)
+    {
+        return $builder->when($address, function (Builder $builder, $address) {
+            return $builder->whereHas('address', function (Builder $builder) use ($address) {
+                    return $builder->where('street', 'LIKE', "%{$address}%")
+                            ->orWhere('district', 'LIKE', "%{$address}%")
+                            ->orWhere('city', 'LIKE', "%{$address}%")
+                            ->orWhere('cep', 'LIKE', "%{$address}%");
+                });
+        });
+    }
+
+    public function scopeFilterByClientName(Builder $builder, $clientName)
+    {
+        return $builder->when($clientName, function (Builder $builder, $clientName) {
+            return $builder->whereHas('client', function (Builder $builder) use ($clientName) {
+                    return $builder->where('name', 'LIKE', "%{$clientName}%");
+                });
+        });
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);

@@ -2,25 +2,18 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-card class="mb-4">
-      <v-toolbar elevation="0">
-        <v-toolbar-title> {{ report.month_name }} / {{ report.year }} </v-toolbar-title>
-        <v-progress-linear
-          indeterminate
-          height="4"
-          bottom
-          absolute
-          :active="loading"
-        ></v-progress-linear>
-      </v-toolbar>
-    </v-card>
+    <p class="font-weight-bold mb-5 text-h5">
+      {{ report.month_name }} / {{ report.year }}
+    </p>
 
     <v-row>
       <v-col cols="12" md="6">
         <v-card>
-          <v-card-title>
-            Faturamento
-          </v-card-title>
+          <v-toolbar color="primary" dense>
+            <v-toolbar-title class="white--text">
+              FATURAMENTO
+            </v-toolbar-title>
+          </v-toolbar>
 
           <v-card-text>
             <v-virtual-scroll
@@ -65,9 +58,11 @@
 
       <v-col cols="12" md="6">
         <v-card>
-          <v-card-title>
-            Custos
-          </v-card-title>
+          <v-toolbar color="primary" dense>
+            <v-toolbar-title class="white--text">
+              CUSTOS
+            </v-toolbar-title>
+          </v-toolbar>
 
           <v-card-text>
             <v-virtual-scroll
@@ -121,9 +116,11 @@
 
       <v-col cols="12" md="6">
         <v-card>
-          <v-card-title>
-            A receber
-          </v-card-title>
+          <v-toolbar color="primary" dense>
+            <v-toolbar-title class="white--text">
+              A RECEBER
+            </v-toolbar-title>
+          </v-toolbar>
 
           <v-card-text>
             <v-virtual-scroll
@@ -153,6 +150,8 @@
             </v-virtual-scroll>
           </v-card-text>
 
+          <v-divider color="black"></v-divider>
+
           <v-card-actions class="d-flex flex-row justify-space-between align-center px-5">
             <div>
               Total
@@ -166,9 +165,11 @@
 
       <v-col cols="12" md="6">
         <v-card>
-          <v-card-title>
-            Não recebido
-          </v-card-title>
+          <v-toolbar color="primary" dense>
+            <v-toolbar-title class="white--text">
+              NÃO RECEBIDO
+            </v-toolbar-title>
+          </v-toolbar>
 
           <v-card-text>
             <v-virtual-scroll
@@ -198,7 +199,9 @@
             </v-virtual-scroll>
           </v-card-text>
 
-           <v-card-actions class="d-flex flex-row justify-space-between align-center px-5">
+          <v-divider color="black"></v-divider>
+
+          <v-card-actions class="d-flex flex-row justify-space-between align-center px-5">
             <div>
               Total
             </div>

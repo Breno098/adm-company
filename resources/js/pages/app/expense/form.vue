@@ -2,31 +2,26 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-card class="mb-4">
-      <v-toolbar elevation="0">
-        <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
-        <v-progress-linear
-          indeterminate
-          height="4"
-          bottom
-          absolute
-          :active="loading"
-        ></v-progress-linear>
+    <p class="font-weight-bold mb-5 text-h5">
+      {{ titlePage }}
+    </p>
 
-        <v-spacer></v-spacer>
-
-          <v-btn
-          v-if="(!idByRoute && $role.expense.add()) || (idByRoute && $role.expense.update()) "
+    <v-row class="mb-2">
+      <v-col cols="6" offset="6" md="2" offset-md="10">
+        <v-btn
           color="btn-primary"
-          @click="_store"
-          :loading="loading"
-          rounded
+          class="rounded-lg"
+          block
           small
+          dark
+          @click="_store"
+          v-if="canSave"
+          :loading="loading"
         >
-          Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
+          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
         </v-btn>
-      </v-toolbar>
-    </v-card>
+      </v-col>
+    </v-row>
 
     <v-card>
       <v-card-text>
@@ -34,7 +29,7 @@
           <v-col cols="12" md="6">
             <v-text-field
               label="TITULO"
-              outlined
+              filled
               dense
               v-model="expense.title"
               :loading="loading"
@@ -52,7 +47,7 @@
               item-text="name"
               item-value="id"
               label="CATEGORIAS"
-              outlined
+              filled
               dense
               :loading="loading"
               multiple
@@ -62,7 +57,7 @@
           <v-col cols="12">
               <v-textarea
                 label="DESCRIÇÃO"
-                outlined
+                filled
                 dense
                 v-model="expense.description"
                 :loading="loading"
@@ -76,7 +71,7 @@
                 type="number"
                 prefix="R$"
                 label="VALOR TOTAL"
-                outlined
+                filled
                 dense
                 v-model="expense.value"
                 :loading="loading"
@@ -92,7 +87,7 @@
         >
           <v-col cols="12" :md="expense.installments.length > 1 ? 2 : 4">
             <v-text-field
-              outlined
+              filled
               prefix="R$"
               type="number"
               dense
@@ -105,7 +100,7 @@
               <v-select
               :items="payments"
               label="FORMA DE PAGAMENTO"
-              outlined
+              filled
               dense
               v-model="installment.payment_method"
               clearable
@@ -122,12 +117,12 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                  :value="installment.pay_day | formatDate"
+                  :value="installment.pay_day | formatDMY"
                   label="DATA PAGAMENTO"
                   readonly
                   v-bind="attrs"
                   v-on="on"
-                  outlined
+                  filled
                   dense
                   clearable
                   @click:clear="installment.pay_day = null"
@@ -154,12 +149,12 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                  :value="installment.due_date | formatDate"
+                  :value="installment.due_date | formatDMY"
                   label="DATA VENCIMENTO"
                   readonly
                   v-bind="attrs"
                   v-on="on"
-                  outlined
+                  filled
                   dense
                   clearable
                   @click:clear="installment.due_date = null"
@@ -180,7 +175,7 @@
               <v-select
               :items="['PAGO', 'EM ABERTO', 'CANCELADO', 'INADIMPLENTE']"
               label="STATUS"
-              outlined
+              filled
               dense
               v-model="installment.status"
             ></v-select>
@@ -204,8 +199,10 @@
 
             <v-btn
               color="btn-primary"
-              class="ml-3"
-              :loading="loading" small rounded
+              small
+              dark
+              class="ml-3 rounded-lg"
+              :loading="loading"
               @click="expense.installments.push({
                 number: expense.installments.length + 1,
                 payment_method: null,
@@ -223,17 +220,17 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-spacer></v-spacer>
         <v-btn
-          v-if="(!idByRoute && $role.expense.add()) || (idByRoute && $role.expense.update()) "
           color="btn-primary"
+          class="rounded-lg"
+          small
+          dark
           @click="_store"
+          v-if="canSave"
           :loading="loading"
-          rounded
         >
           Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
         </v-btn>
-        <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
   </div>
@@ -306,18 +303,16 @@ export default {
       'TRANSFERÊNCIA'
     ],
   }),
-  filters: {
-    formatDate(date){
-      return date ? moment(date).format('DD/MM/YYYY') : '';
-    },
-  },
   computed: {
     titlePage(){
-      return this.$route.params.id ? 'Custo/Despesa' : 'Adicionar Custo/Despesa';
+      return this.$route.params.id ? 'Custo' : 'Adicionar Custo';
     },
     idByRoute(){
       return this.$route.params.id;
     },
+    canSave(){
+      return this.$can('expense_add') && !this.idByRoute || this.$can('expense_update') && this.idByRoute;
+    }
   },
   mounted(){
     this._start();

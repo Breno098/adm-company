@@ -2,7 +2,7 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <p class="font-weight-regular mb-5 text-h5">
+    <p class="font-weight-bold mb-5 text-h5">
       Produtos
     </p>
 
@@ -31,7 +31,7 @@
                         @input="table.filters.name = table.filters.name.toUpperCase()"
                         v-on:keyup.enter="_load"
                         dense
-                        outlined
+                        filled
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -244,10 +244,10 @@ export default {
     },
     async _delete(product){
       const ok = await this.$refs.fireDialog.confirm({
-          title: 'Deletar Produto',
-          message: 'Deseja realmente deletar o produto?',
-          textConfirmButton: 'Deletar',
-          colorConfirButton: 'btn-delete',
+        title: 'Deletar Produto',
+        message: 'Deseja realmente deletar o produto?',
+        textConfirmButton: 'Deletar',
+        colorConfirButton: 'btn-delete',
         colorCancelButton: 'btn-primary'
       })
 

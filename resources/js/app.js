@@ -12,7 +12,10 @@ import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
+import moment from 'moment';
+
 Vue.filter("formatMoney", value => !value ? null : (parseFloat(value)).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'}) );
+Vue.filter("formatDMY", date =>  date ? moment(date).format('DD/MM/YYYY') : '');
 
 /* eslint-disable no-new */
 new Vue({

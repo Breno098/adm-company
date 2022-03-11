@@ -2,11 +2,11 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <p class="font-weight-regular mb-5 text-h5">
+    <p class="font-weight-bold mb-5 text-h5">
       Pedidos
     </p>
 
-      <v-row class="mb-2">
+    <v-row class="mb-2">
       <v-col cols="6" md="10">
         <v-menu
           :close-on-content-click="false"

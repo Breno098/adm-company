@@ -2,7 +2,7 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <p class="font-weight-regular mb-5 text-h5">
+    <p class="font-weight-bold mb-5 text-h5">
       {{ titlePage }}
     </p>
 

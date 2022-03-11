@@ -134,12 +134,12 @@ class Order extends TenantModel
     public function payments()
     {
         return $this->belongsToMany(Payment::class)
-                    ->select([
-                        'payments.id',
-                        'payments.name',
-                        'order_payment.value',
-                        'order_payment.date',
-                    ]);
+                ->select([
+                    'payments.id',
+                    'payments.name',
+                    'order_payment.value',
+                    'order_payment.date',
+                ]);
     }
 
     public function installments()

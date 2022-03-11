@@ -20,6 +20,8 @@ class IndexAppointmentService
         return Appointment::with($relations)
             ->filterByBetweenDate(Arr::get($filters, 'date_start'),Arr::get($filters, 'date_end'))
             ->filterByConcluded(Arr::get($filters, 'concluded'))
+            ->filterByClientName(Arr::get($filters, 'client_name'))
+            ->filterByAddress(Arr::get($filters, 'address'))
             ->orderby('date_start', 'desc')
             ->when(
                 $itemsPerPage,

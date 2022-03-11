@@ -2,268 +2,295 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-row>
-      <v-col cols="12">
-        <v-card elevation="0">
-          <v-toolbar elevation="0" class="mb-2">
-            <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
-            <v-progress-linear
-              color="primary"
-              indeterminate
-              height="4"
-              bottom
-              absolute
-              :active="loading"
-            ></v-progress-linear>
+    <p class="font-weight-bold mb-5 text-h5">
+      {{ titlePage }}
+    </p>
 
-            <v-spacer></v-spacer>
+    <v-row class="mb-2">
+      <v-col
+        cols="6"
+        md="4"
+        offset-md="6"
+      >
+          <v-btn
+            color="btn-primary"
+            class="rounded-lg"
+            block
+            small
+            dark
+            @click="_conclude"
+            :loading="loading"
+          >
+            {{ appointment.concluded == 'N' ? 'Concluír Compromisso' : 'Compromisso como Pendente'  }}
+            <v-icon class="ml-3">
+              {{ appointment.concluded == 'N' ? 'mdi-check' : 'mdi-backburger'  }}
+            </v-icon>
+          </v-btn>
+      </v-col>
 
-            <v-btn color="btn-primary" @click="_store" :loading="loading" rounded dark small>
-              Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-            </v-btn>
-          </v-toolbar>
+      <v-col cols="6" md="2">
+        <v-btn
+          color="btn-primary"
+          class="rounded-lg"
+          block
+          small
+          dark
+          @click="_store"
+          v-if="canSave"
+          :loading="loading"
+        >
+          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
 
-          <v-row>
-            <v-col cols="12" v-if="appointment.concluded == 'N'">
-              <v-btn color="btn-primary" @click="_conclude" :loading="loading" small>
-                Concluír Compromisso <v-icon dark class="ml-3">mdi-check</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col cols="12" md="6" v-if="appointment.concluded == 'S'">
-              <v-btn color="primary" @click="_unconclude" :loading="loading" small>
-                Voltar Compromisso como Pendente <v-icon dark class="ml-3">mdi-backburger</v-icon>
-              </v-btn>
-            </v-col>
+    <v-card>
+      <v-card-text>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="appointment.title"
+              filled
+              dense
+              label="TITULO"
+              :loading="loading"
+              :rules="[rules.required]"
+              :error="errors.title && !appointment.title"
+            ></v-text-field>
+          </v-col>
 
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="appointment.title"
-                outlined
-                dense
-                label="TITULO"
-                :loading="loading"
-                :rules="[rules.required]"
-                :error="errors.title && !appointment.title"
-              ></v-text-field>
-            </v-col>
+          <v-col cols="12" md="6">
+            <v-autocomplete
+              :readonly="CreateByOrder"
+              v-model="appointment.client_id"
+              :items="clients"
+              item-text="name"
+              item-value="id"
+              label="CLIENTE"
+              :loading="loadingClients"
+              v-on:change="_loadAddresses"
+              filled
+              dense
+              :color="CreateByOrder ? 'black' : 'blue'"
+            ></v-autocomplete>
+          </v-col>
 
-             <v-col cols="12" md="6">
-              <v-autocomplete
-                :readonly="CreateByOrder"
-                v-model="appointment.client_id"
-                :items="clients"
-                item-text="name"
-                item-value="id"
-                label="CLIENTE"
-                :loading="loadingClients"
-                v-on:change="_loadAddresses"
-                outlined
-                dense
-                :color="CreateByOrder ? 'black' : 'blue'"
-              ></v-autocomplete>
-            </v-col>
-
-            <v-col cols="12">
-              <v-autocomplete
-                :readonly="CreateByOrder"
-                v-model="appointment.address_id"
-                :items="addresses"
-                item-value="id"
-                label="ENDEREÇO"
-                :loading="loadingAddresses"
-                outlined
-                dense
-                :color="CreateByOrder ? 'black' : 'blue'"
-              >
-                <template slot="selection" slot-scope="data">
+          <v-col cols="12">
+            <v-autocomplete
+              :readonly="CreateByOrder"
+              v-model="appointment.address_id"
+              :items="addresses"
+              item-value="id"
+              label="ENDEREÇO"
+              :loading="loadingAddresses"
+              filled
+              dense
+              :color="CreateByOrder ? 'black' : 'blue'"
+            >
+              <template slot="selection" slot-scope="data">
+                {{ data.item.street }} {{ data.item.number ? `n° ${data.item.number}` : '' }}, {{ data.item.district }} - {{ data.item.city }}
+              </template>
+              <template slot="item" slot-scope="data">
                   {{ data.item.street }} {{ data.item.number ? `n° ${data.item.number}` : '' }}, {{ data.item.district }} - {{ data.item.city }}
-                </template>
-                <template slot="item" slot-scope="data">
-                    {{ data.item.street }} {{ data.item.number ? `n° ${data.item.number}` : '' }}, {{ data.item.district }} - {{ data.item.city }}
-                </template>
-              </v-autocomplete>
-            </v-col>
-
-            <v-col cols="12" md="6">
-              <v-menu
-                  v-model="menu_date_start"
-                  :close-on-content-click="false"
-                  max-width="290"
-                  transition="scale-transition"
-                  offset-y
-              >
-              <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    append-icon="mdi-calendar"
-                    :value="DateStartFormat"
-                    clearable
-                    label="DATA INICIO"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    @click:clear="appointment.date_start = null"
-                    outlined
-                    dense
-                    :loading="loading"
-                    :rules="[rules.required]"
-                    :error="errors.date_start && !appointment.date_start"
-                  ></v-text-field>
               </template>
-              <v-date-picker
-                  v-model="appointment.date_start"
-                  @change="menu_date_start = false"
-                  no-title
-                  crollable
-                  locale="pt-Br"
-              ></v-date-picker>
-              </v-menu>
-            </v-col>
+            </v-autocomplete>
+          </v-col>
 
-            <v-col cols="12" md="6">
-              <v-menu
-                  ref="menu_time_start"
-                  v-model="menu_time_start"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  :return-value.sync="appointment.time_start"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                      v-model="appointment.time_start"
-                      clearable
-                      label="HORA INICIO"
-                      prepend-icon="mdi-clock-time-four-outline"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      dense
-                      outlined
-                      :loading="loading"
-                      :rules="[rules.required]"
-                      :error="errors.time_start && !appointment.time_start"
-                  ></v-text-field>
-                </template>
-                <v-time-picker
-                    v-if="menu_time_start"
+          <v-col cols="12" md="6">
+            <v-menu
+                v-model="menu_date_start"
+                :close-on-content-click="false"
+                max-width="290"
+                transition="scale-transition"
+                offset-y
+            >
+            <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  append-icon="mdi-calendar"
+                  :value="DateStartFormat"
+                  clearable
+                  label="DATA INICIO"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                  @click:clear="appointment.date_start = null"
+                  filled
+                  dense
+                  :loading="loading"
+                  :rules="[rules.required]"
+                  :error="errors.date_start && !appointment.date_start"
+                ></v-text-field>
+            </template>
+            <v-date-picker
+                v-model="appointment.date_start"
+                @change="menu_date_start = false"
+                no-title
+                crollable
+                locale="pt-Br"
+            ></v-date-picker>
+            </v-menu>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-menu
+                ref="menu_time_start"
+                v-model="menu_time_start"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="appointment.time_start"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
                     v-model="appointment.time_start"
-                    @click:minute="$refs.menu_time_start.save(appointment.time_start)"
-                    format="24hr"
-                ></v-time-picker>
-              </v-menu>
-            </v-col>
-
-            <v-col cols="12" md="6">
-              <v-menu
-                  v-model="menu_date_end"
-                  :close-on-content-click="false"
-                  max-width="290"
-                  transition="scale-transition"
-                  offset-y
-              >
-              <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    append-icon="mdi-calendar"
-                    :value="DateEndFormat"
                     clearable
-                    label="DATA FIM"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    @click:clear="appointment.date_end = null"
-                    outlined
-                    dense
-                    :loading="loading"
-                    :rules="[rules.required]"
-                    :error="errors.date_end && !appointment.date_end"
-                  ></v-text-field>
-              </template>
-              <v-date-picker
-                  v-model="appointment.date_end"
-                  @change="menu_date_end = false"
-                  no-title
-                  crollable
-                  locale="pt-Br"
-              ></v-date-picker>
-              </v-menu>
-            </v-col>
-
-            <v-col cols="12" md="6">
-              <v-menu
-                  ref="menu_time_end"
-                  v-model="menu_time_end"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  :return-value.sync="appointment.time_end"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="appointment.time_end"
-                    clearable
-                    label="HORA FIM"
+                    label="HORA INICIO"
                     prepend-icon="mdi-clock-time-four-outline"
                     readonly
                     v-bind="attrs"
                     v-on="on"
                     dense
-                    outlined
+                    filled
                     :loading="loading"
                     :rules="[rules.required]"
-                    :error="errors.time_end && !appointment.time_end"
-                  ></v-text-field>
-                </template>
-                <v-time-picker
-                    v-if="menu_time_end"
-                    v-model="appointment.time_end"
-                    @click:minute="$refs.menu_time_end.save(appointment.time_end)"
-                    format="24hr"
-                ></v-time-picker>
-              </v-menu>
-            </v-col>
+                    :error="errors.time_start && !appointment.time_start"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                  v-if="menu_time_start"
+                  v-model="appointment.time_start"
+                  @click:minute="$refs.menu_time_start.save(appointment.time_start)"
+                  format="24hr"
+              ></v-time-picker>
+            </v-menu>
+          </v-col>
 
-            <v-col cols="12">
-              <v-textarea
-                label="DESCRIÇÃO"
-                outlined
-                dense
-                v-model="appointment.description"
-                :loading="loading"
-              ></v-textarea>
-            </v-col>
+          <v-col cols="12" md="6">
+            <v-menu
+                v-model="menu_date_end"
+                :close-on-content-click="false"
+                max-width="290"
+                transition="scale-transition"
+                offset-y
+            >
+            <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  append-icon="mdi-calendar"
+                  :value="DateEndFormat"
+                  clearable
+                  label="DATA FIM"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                  @click:clear="appointment.date_end = null"
+                  filled
+                  dense
+                  :loading="loading"
+                  :rules="[rules.required]"
+                  :error="errors.date_end && !appointment.date_end"
+                ></v-text-field>
+            </template>
+            <v-date-picker
+                v-model="appointment.date_end"
+                @change="menu_date_end = false"
+                no-title
+                crollable
+                locale="pt-Br"
+                color="primary"
+            ></v-date-picker>
+            </v-menu>
+          </v-col>
 
-            <v-col cols="12" v-if="CreateByOrder">
-              <v-text-field
-                v-model="appointment.order_id"
-                outlined
-                dense
-                label="Nº ORDEM"
-                readonly
-                color="black"
-                :loading="loading"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+          <v-col cols="12" md="6">
+            <v-menu
+                ref="menu_time_end"
+                v-model="menu_time_end"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="appointment.time_end"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="appointment.time_end"
+                  clearable
+                  label="HORA FIM"
+                  prepend-icon="mdi-clock-time-four-outline"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                  dense
+                  filled
+                  :loading="loading"
+                  :rules="[rules.required]"
+                  :error="errors.time_end && !appointment.time_end"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                v-if="menu_time_end"
+                v-model="appointment.time_end"
+                @click:minute="$refs.menu_time_end.save(appointment.time_end)"
+                format="24hr"
+                color="primary"
+              ></v-time-picker>
+            </v-menu>
+          </v-col>
 
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="btn-primary" @click="_store" :loading="loading" rounded dark>
-              Salvar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn color="btn-delete" @click="_delete" :loading="loading" rounded dark v-if="idByRoute">
-              Deletar <v-icon dark class="ml-2">mdi-delete</v-icon>
-            </v-btn>
-          </v-card-actions>
-         </v-card>
-      </v-col>
-    </v-row>
+          <v-col cols="12">
+            <v-textarea
+              label="DESCRIÇÃO"
+              filled
+              dense
+              v-model="appointment.description"
+              :loading="loading"
+            ></v-textarea>
+          </v-col>
+
+          <v-col cols="12" v-if="CreateByOrder">
+            <v-text-field
+              v-model="appointment.order_id"
+              filled
+              dense
+              label="Nº ORDEM"
+              readonly
+              color="black"
+              :loading="loading"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-btn
+          color="btn-primary"
+          class="rounded-lg"
+          small
+          dark
+          @click="_store"
+          v-if="canSave"
+          :loading="loading"
+        >
+          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+        </v-btn>
+        <v-btn
+          color="btn-delete"
+          class="rounded-lg"
+          small
+          dark
+          @click="_delete"
+          :loading="loading"
+          v-if="canDelete"
+        >
+          Deletar <v-icon class="ml-2">mdi-delete</v-icon>
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </div>
 </template>
 
@@ -315,6 +342,12 @@ export default {
     },
     idByRoute(){
       return this.$route.params.id;
+    },
+    canSave(){
+      return this.$can('appointment_add') && !this.idByRoute || this.$can('appointment_update') && this.idByRoute;
+    },
+    canDelete(){
+      return this.$can('appointment_delete') && this.idByRoute;
     },
     DateStartFormat () {
       return this.appointment.date_start ? moment(this.appointment.date_start).format('DD/MM/YYYY') : ''
@@ -385,12 +418,8 @@ export default {
       });
       this.loadingAddresses = false;
     },
-    _unconclude(){
-      this.appointment.concluded = 'N';
-      this._store();
-    },
     _conclude(){
-      this.appointment.concluded = 'S';
+      this.appointment.concluded = this.appointment.concluded == 'N' ? 'S' : 'N';
       this._store();
     },
     async _store(){
