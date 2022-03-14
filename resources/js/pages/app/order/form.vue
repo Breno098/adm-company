@@ -36,7 +36,7 @@
     </v-row>
 
     <v-row class="mb-2">
-      <v-col cols="2" offset="2">
+      <v-col cols="2" offset="1">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -55,6 +55,7 @@
           <span>Gerar Orçamento</span>
         </v-tooltip>
       </v-col>
+
       <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -74,6 +75,7 @@
           <span>Gerar Ordem de Serviço</span>
         </v-tooltip>
       </v-col>
+
       <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -93,6 +95,27 @@
           <span>Gerar Recibo</span>
         </v-tooltip>
       </v-col>
+
+      <v-col cols="2">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              @click="warrantyOrderDownload"
+              v-bind="attrs"
+              v-on="on"
+              color="btn-primary"
+              class="rounded-lg"
+              block
+              small
+              dark
+            >
+              <v-icon>mdi-format-align-center</v-icon>
+            </v-btn>
+          </template>
+          <span>Gerar Order de Garantia</span>
+        </v-tooltip>
+      </v-col>
+
       <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -185,7 +208,7 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    :value="technicalVisitDateFormat"
+                    :value="order.technical_visit_date | formatDMY"
                     label="DATA VISITA TÉCNICA"
                     prepend-icon="mdi-calendar"
                     readonly
@@ -1008,12 +1031,6 @@ export default {
       valueTotal -= this.order.discount_amount;
       return valueTotal.toFixed(2);
     },
-    nowFormat () {
-      return moment().format('DD/MM/YYYY')
-    },
-    technicalVisitDateFormat () {
-        return this.order.technical_visit_date ? moment(this.order.technical_visit_date).format('DD/MM/YYYY') : ''
-    },
   },
   mounted(){
     this._start();
@@ -1188,6 +1205,11 @@ export default {
       await this._store();
 
       window.open(`/api/docs/service-order/${this.order.id}/download`);
+    },
+    async warrantyOrderDownload(){
+      await this._store();
+
+      window.open(`/api/docs/warranty-order/${this.order.id}/download`);
     },
     async budgetDownload(){
       await this._store();

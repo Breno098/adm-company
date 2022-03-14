@@ -45,20 +45,4 @@ class DownloadPdfReceiptService
 
         return $this->pdf->download("recibo_{$order->id}_{$now}.pdf");
     }
-
-    /**
-     * @param string|null $name
-     *
-     * @return string|null
-     */
-    private function pathFile(EmployeeReceipt $employeeReceipt)
-    {
-        $now = now()->format('d_m_Y_H_i_s');
-
-        $nameWithoutSpaces = str_replace(' ', '_', $employeeReceipt->employee->name);
-
-        $company_id = $employeeReceipt->company->id ?? '';
-
-        return "receipts/recibo_pagamento_{$company_id}_{$nameWithoutSpaces}_{$now}.pdf";
-    }
 }

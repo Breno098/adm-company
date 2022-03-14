@@ -160,49 +160,30 @@
                 </v-row>
             </v-card-text>
 
-          <v-expand-transition>
-            <v-card v-show="hover && (order.products.length || order.services.length)">
-              <v-card-text>
-                <v-row>
-                  <v-col cols="6" v-if="order.products.length">
-                    <v-list dense class="mx-2">
-                      <div class="font-weight-bold">
-                        PRODUTOS
-                      </div>
+            <v-expand-transition>
+              <v-card
+                v-show="hover && (order.technical_visit_date || order.complaint || order.work_done)"
+              >
+                <v-card-text>
+                  <div v-if="order.technical_visit_date">
+                    <v-icon small>mdi-calendar</v-icon>
+                    <b>DATA VISITA TÉCNICA:</b> {{ order.technical_visit_date | formatDMY }} {{ order.technical_visit_time }}
+                    <v-divider color="primary" class="mx-2 my-1"/>
+                  </div>
 
-                      <template v-for="(product, index) in order.products">
-                        <v-divider :key="`divider-product-${index}`"></v-divider>
+                  <div v-if="order.complaint">
+                    <v-icon small>mdi-comment-alert-outline</v-icon>
+                    <b>PROBLEMA RECLAMADO:</b> {{ order.complaint }}
+                    <v-divider color="primary" class="mx-2 my-1"/>
+                  </div>
 
-                        <v-list-item :key="`list-item-product-${index}`">
-                          <v-list-item-content>
-                            <v-list-item-title v-text="product.name"></v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </template>
-                    </v-list>
-                  </v-col>
-
-                  <v-col cols="6" v-if="order.services.length">
-                    <v-list dense class="mx-2">
-                      <div class="font-weight-bold">
-                        SERVIÇOS
-                      </div>
-
-                      <template v-for="(service, index) in order.services">
-                        <v-divider :key="`divider-service-${index}`"></v-divider>
-
-                        <v-list-item :key="`list-item-service-${index}`">
-                          <v-list-item-content>
-                            <v-list-item-title v-text="service.name"></v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </template>
-                    </v-list>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-expand-transition>
+                  <div v-if="order.work_done">
+                    <v-icon small>mdi-comment-check</v-icon>
+                    <b>SERVIÇO REALIZADO:</b> {{ order.work_done }}
+                  </div>
+                </v-card-text>
+              </v-card>
+            </v-expand-transition>
 
           </v-card>
         </v-hover>
@@ -288,12 +269,7 @@ export default {
         page: this.table.page,
         itemsPerPage: this.table.itemsPerPage,
         orderBy: this.table.orderBy,
-        relations: [
-          'client',
-          'address',
-          'products',
-          'services'
-        ],
+        relations: [ 'client', 'address' ],
         ...this.table.filters
       }
 

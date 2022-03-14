@@ -250,4 +250,9 @@ class Order extends TenantModel
     {
         return $this->discount_amount ? 'R$ ' . number_format($this->discount_amount,2,",",".") : 'R$ 0,00';
     }
+
+    public function getWorkFoundMinAttribute()
+    {
+        return substr($this->work_found, 0, 111);
+    }
 }

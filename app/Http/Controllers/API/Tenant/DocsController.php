@@ -5,19 +5,19 @@ namespace App\Http\Controllers\API\Tenant;
 use App\Http\Controllers\API\Bases\BaseApiController;
 use App\Models\Order;
 use App\Services\Docs\DownloadPdfBudgetService;
-use App\Services\Docs\DownloadPdfOrderServiceService;
+use App\Services\Docs\DownloadPdfServiceOrderService;
 use App\Services\Docs\DownloadPdfReceiptService;
-use App\Services\Image\LogoBase64;
+use App\Services\Docs\DownloadPdfWarrantyOrderService;
 
 class DocsController extends BaseApiController
 {
     /**
      * @param Order $order
-     * @param DownloadPdfOrderServiceService $downloadPdfOrderServiceService
+     * @param DownloadPdfServiceOrderService $downloadPdfServiceOrderService
      */
-    public function downloadOrderService(Order $order, DownloadPdfOrderServiceService $downloadPdfOrderServiceService)
+    public function downloadServiceOrder(Order $order, DownloadPdfServiceOrderService $downloadPdfServiceOrderService)
     {
-        return $downloadPdfOrderServiceService->run($order);
+        return $downloadPdfServiceOrderService->run($order);
     }
 
     /**
@@ -36,5 +36,14 @@ class DocsController extends BaseApiController
     public function downloadReceipt(Order $order, DownloadPdfReceiptService $downloadPdfReceiptService)
     {
         return $downloadPdfReceiptService->run($order);
+    }
+
+     /**
+     * @param Order $order
+     * @param DownloadPdfWarrantyOrderService $downloadPdfWarrantyOrderService
+     */
+    public function downloadWarrantyOrder(Order $order, DownloadPdfWarrantyOrderService $downloadPdfWarrantyOrderService)
+    {
+        return $downloadPdfWarrantyOrderService->run($order);
     }
 }

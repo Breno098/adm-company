@@ -83,9 +83,10 @@ Route::middleware('auth:api')->group( function () {
         Route::apiResource('position', PositionController::class)->only(['index']);
         Route::apiResource('employee-receipt', EmployeeReceiptController::class);
 
-        Route::get('docs/service-order/{order}/download', [DocsController::class, 'downloadOrderService']);
+        Route::get('docs/service-order/{order}/download', [DocsController::class, 'downloadServiceOrder']);
         Route::get('docs/budget/{order}/download', [DocsController::class, 'downloadBudget']);
         Route::get('docs/receipt/{order}/download', [DocsController::class, 'downloadReceipt']);
+        Route::get('docs/warranty-order/{order}/download', [DocsController::class, 'downloadWarrantyOrder']);
 
         Route::get('report/finance/by-year', [ReportFinanceController::class, 'byYear']);
         Route::get('report/finance/by-month-and-year', [ReportFinanceController::class, 'byMonthAndYear']);

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ordem de Serviço {{ $order->id }}</title>
+    <title>Ordem de Garantia {{ $order->id }}</title>
 
     <style>
        * {
@@ -46,14 +46,6 @@
         padding: 30px 5px 5px
       }
 
-      .text-write{
-        padding: 0px;
-        width: 100%;
-        margin: 0;
-        text-decoration: underline;
-        line-height: 21px
-      }
-
     </style>
   </head>
   <body>
@@ -86,7 +78,7 @@
         </tr>
         <tr>
           <td colspan="6" style="font-size: 16px; font-weight: bold">
-            NÚMERO DA ORDEM DE SERVIÇO: {{ $order->id }}
+            NÚMERO DA ORDEM DE GARANTIA: {{ $order->id }}
           </td>
         </tr>
         <tr>
@@ -139,40 +131,11 @@
         <tr>
           <td colspan="6"><strong>LOCALIZAÇÃO E DESCRIÇÃO DO PROBLEMA CONSTATADO E SUA CAUSA:</strong></td>
         </tr>
-
-        @php
-          $words = explode(' ', $order->work_found);
-          $countLine = 0;
-          $countLength = 0;
-        @endphp
-
-        @for($i = 0; $i < count($words); $i++)
-          @if($countLine <= 5)
-            @if($countLength === 0)
-              <tr> <td colspan="6">
-            @endif
-
-            @if($countLength + strlen($words[$i]) >= 89)
-              @php $countLength = 0; $countLine++; $i--; @endphp
-
-              </td> </tr>
-            @else
-              @php $countLength += strlen($words[$i]); @endphp
-
-              {{ $words[$i] }}
-            @endif
-          @endif
-        @endfor
-
-        @if(6 - $countLine > 0)
-          @foreach (range(0, 6 - $countLine) as $line)
-            <tr>
-              <td colspan="6" class="line-write"> </td>
-            </tr>
-          @endforeach
-        @endif
-
-
+        @foreach (range(0,4) as $line)
+          <tr>
+            <td colspan="6" class="line-write"> </td>
+          </tr>
+        @endforeach
 
         <tr>
           <td colspan="3" rowspan="2">
@@ -187,11 +150,7 @@
         </tr>
 
         <tr>
-          <td colspan="6"><strong> DESCRIÇÃO DO SERVIÇO EXECUTADO (PARA CONHECIMENTO E AVAL DO RESPONSÁVEL)</strong></td>
-        </tr>
-
-        <tr>
-          <td colspan="6">{{ $order->work_done }}</td>
+          <td colspan="6"> DESCRIÇÃO DO SERVIÇO EXECUTADO (PARA CONHECIMENTO E AVAL DO RESPONSÁVEL) </td>
         </tr>
 
         @foreach (range(0,7) as $line)
