@@ -105,6 +105,7 @@
       </v-col>
     </v-row>
 
+
     <v-row>
       <v-col cols="12" v-if="table.loading">
         <v-row>
@@ -121,32 +122,88 @@
             :class="{ 'on-hover': hover }"
             :elevation="hover ? 12 : 2"
           >
-            <v-list-item three-line>
-              <v-list-item-content v-if="order.client">
-                <div class="text-overline mb-4 d-flex justify-space-between">
-                  {{ order.client.name }}
-                  <v-chip
-                    v-if="order.status"
-                    class="py-2"
-                    label
-                    :color="order.status | statusColor"
-                  >
-                    {{ order.status }}
-                    <v-icon color="black" class="ml-2">{{ order.status | statusIcon }}</v-icon>
-                  </v-chip>
-                </div>
-                <v-list-item-subtitle v-if="order.address">
-                  {{ order.address.street }} {{ order.address.number ? `n° ${order.address.number}` : '' }}, {{ order.address.district }} - {{ order.address.city }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
+            <v-card-text>
+                <v-row>
+                  <v-col cols="12" md="9">
+                    <div class="font-weight-bold text-h6">
+                      {{ order.id }}
+                    </div>
+                  </v-col>
+                  <v-col cols="12" md="3" class="d-flex justify-center">
+                    <v-chip
+                      v-if="order.status"
+                      class="d-flex justify-center"
+                      label
+                      :color="order.status | statusColor"
+                      style="width: 100%;"
+                      small
+                    >
+                      {{ order.status }}
+                      <v-icon class="ml-2">{{ order.status | statusIcon }}</v-icon>
+                    </v-chip>
+                  </v-col>
 
-            <v-card-actions>
-              <v-spacer/>
-              <v-btn text color="btn-primary" v-on:click="_edit(order.id)" small>
-                Ver informações
-              </v-btn>
-            </v-card-actions>
+                  <v-col cols="12" md="9">
+                    <div>
+                      {{ order.client.name }}
+                    </div>
+                    <div v-if="order.address">
+                      {{ order.address.street }} {{ order.address.number ? `n° ${order.address.number}` : '' }}, {{ order.address.district }} - {{ order.address.city }}
+                    </div>
+                  </v-col>
+
+                  <v-col cols="12" md="3" class="d-flex align-end">
+                    <v-btn text color="btn-primary" v-on:click="_edit(order.id)" small block>
+                      Ver informações
+                    </v-btn>
+                  </v-col>
+                </v-row>
+            </v-card-text>
+
+          <v-expand-transition>
+            <v-card v-show="hover && (order.products.length || order.services.length)">
+              <v-card-text>
+                <v-row>
+                  <v-col cols="6" v-if="order.products.length">
+                    <v-list dense class="mx-2">
+                      <div class="font-weight-bold">
+                        PRODUTOS
+                      </div>
+
+                      <template v-for="(product, index) in order.products">
+                        <v-divider :key="`divider-product-${index}`"></v-divider>
+
+                        <v-list-item :key="`list-item-product-${index}`">
+                          <v-list-item-content>
+                            <v-list-item-title v-text="product.name"></v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </template>
+                    </v-list>
+                  </v-col>
+
+                  <v-col cols="6" v-if="order.services.length">
+                    <v-list dense class="mx-2">
+                      <div class="font-weight-bold">
+                        SERVIÇOS
+                      </div>
+
+                      <template v-for="(service, index) in order.services">
+                        <v-divider :key="`divider-service-${index}`"></v-divider>
+
+                        <v-list-item :key="`list-item-service-${index}`">
+                          <v-list-item-content>
+                            <v-list-item-title v-text="service.name"></v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </template>
+                    </v-list>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-expand-transition>
+
           </v-card>
         </v-hover>
       </v-col>
@@ -202,7 +259,7 @@ export default {
       switch (value) {
         case 'CANCELADO': return 'orange accent-3';
         case 'AGUARDANDO APROVAÇÃO': return 'yellow accent-2';
-        case 'EM ANDAMENTO': return 'indigo';
+        case 'EM ANDAMENTO': return 'primary';
         case 'CONCLUÍDO': return 'green';
         default: return '';
       }
@@ -231,7 +288,12 @@ export default {
         page: this.table.page,
         itemsPerPage: this.table.itemsPerPage,
         orderBy: this.table.orderBy,
-        relations: ['client','address'],
+        relations: [
+          'client',
+          'address',
+          'products',
+          'services'
+        ],
         ...this.table.filters
       }
 

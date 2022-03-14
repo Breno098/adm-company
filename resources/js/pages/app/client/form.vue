@@ -8,7 +8,19 @@
     </p>
 
     <v-row class="mb-2">
-      <v-col cols="6" offset="6" md="2" offset-md="10">
+      <v-col cols="6" md="2">
+        <v-btn
+          color="btn-primary"
+          small
+          text
+          @click="$router.go(-1)"
+          block
+        >
+          Voltar <v-icon>mdi-chevron-double-left</v-icon>
+        </v-btn>
+      </v-col>
+
+      <v-col cols="6" md="2" offset-md="8">
         <v-btn
           color="btn-primary"
           class="rounded-lg"
