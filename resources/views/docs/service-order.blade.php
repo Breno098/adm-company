@@ -172,8 +172,6 @@
           @endforeach
         @endif
 
-
-
         <tr>
           <td colspan="3" rowspan="2">
             AUTORIZAÇÃO PRÉVIA: DECLARO TER ACEITO AS INFORMAÇÕES ACIMA DESCRITAS, AUTORIZO PREVIAMENTE O PRESTADOR DE SERVIÇOS
@@ -190,15 +188,37 @@
           <td colspan="6"><strong> DESCRIÇÃO DO SERVIÇO EXECUTADO (PARA CONHECIMENTO E AVAL DO RESPONSÁVEL)</strong></td>
         </tr>
 
-        <tr>
-          <td colspan="6">{{ $order->work_done }}</td>
-        </tr>
+        @php
+          $words = explode(' ', $order->work_done);
+          $countLine = 0;
+          $countLength = 0;
+        @endphp
 
-        @foreach (range(0,7) as $line)
-          <tr>
-            <td colspan="6" class="line-write"> </td>
-          </tr>
-        @endforeach
+        @for($i = 0; $i < count($words); $i++)
+          @if($countLine <= 6)
+            @if($countLength === 0)
+              <tr> <td colspan="6">
+            @endif
+
+            @if($countLength + strlen($words[$i]) >= 89)
+              @php $countLength = 0; $countLine++; $i--; @endphp
+
+              </td> </tr>
+            @else
+              @php $countLength += strlen($words[$i]); @endphp
+
+              {{ $words[$i] }}
+            @endif
+          @endif
+        @endfor
+
+        @if(7 - $countLine > 0)
+          @foreach (range(0, 7 - $countLine) as $line)
+            <tr>
+              <td colspan="6" class="line-write"> </td>
+            </tr>
+          @endforeach
+        @endif
 
         <tr>
           <td colspan="1" class="line-money"> <strong> MÃO DE OBRA </strong> </td>
