@@ -62,7 +62,7 @@ export default {
 
   .v-application ::-webkit-scrollbar {
     height: 8px;
-    width: 13px;
+    width: 10px;
   }
 
   .v-application ::-webkit-scrollbar-corner {
@@ -70,7 +70,7 @@ export default {
   }
 
   .v-application ::-webkit-scrollbar-thumb {
-    background: #00BCD4;
-    border-radius: 8px;
+    background: #7E57C2;
+    border-radius: 4px;
   }
 </style>
