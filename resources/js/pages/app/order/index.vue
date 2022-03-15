@@ -118,11 +118,10 @@
       <v-col cols="12" v-for="order in table.items" :key="order.id" v-else>
         <v-hover v-slot="{ hover }">
           <v-card
-            v-on:click="_edit(order.id)"
             :class="{ 'on-hover': hover }"
             :elevation="hover ? 12 : 2"
           >
-            <v-card-text>
+            <v-card-text v-on:click="_edit(order.id)">
                 <v-row>
                   <v-col cols="12" md="9">
                     <div class="font-weight-bold text-h6">
@@ -152,15 +151,44 @@
                     </div>
                   </v-col>
 
-                  <v-col cols="12" md="3" class="d-flex align-end">
-                    <v-btn text color="btn-primary" v-on:click="_edit(order.id)" small block>
+                  <!-- <v-col cols="12" md="3" class="d-flex align-end">
+                    <v-btn text color="btn-primary" v-on:click="_edit(order.id)" small block @click="expand = !expand">
                       Ver informações
                     </v-btn>
-                  </v-col>
+                  </v-col> -->
                 </v-row>
             </v-card-text>
 
-            <v-expand-transition>
+            <v-expansion-panels flat>
+              <v-expansion-panel>
+                <v-expansion-panel-header class="primary--text">
+                  <template v-slot:actions>
+                    <v-btn text color="btn-primary" small block>
+                      Informações rapidas
+                      <v-icon color="primary" small>
+                        mdi-chevron-down
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="caption">
+                  <v-icon small color="primary">mdi-calendar</v-icon>
+                  <b>DATA VISITA TÉCNICA:</b> {{ order.technical_visit_date | formatDMY }} {{ order.technical_visit_time }}
+
+                  <v-divider color="primary" class="mx-2 my-1"/>
+
+                  <v-icon small color="btn-delete">mdi-comment-alert-outline</v-icon>
+                  <b>PROBLEMA RECLAMADO:</b> {{ order.complaint }}
+
+                  <v-divider color="primary" class="mx-2 my-1"/>
+
+                  <v-icon small color="green">mdi-comment-check-outline</v-icon>
+                  <b>SERVIÇO REALIZADO:</b> {{ order.work_done }}
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+
+            <!-- <v-expand-transition>
               <v-card
                 v-show="hover && (order.technical_visit_date || order.complaint || order.work_done)"
               >
@@ -183,7 +211,7 @@
                   </div>
                 </v-card-text>
               </v-card>
-            </v-expand-transition>
+            </v-expand-transition> -->
 
           </v-card>
         </v-hover>
