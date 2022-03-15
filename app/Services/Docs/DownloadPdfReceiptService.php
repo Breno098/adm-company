@@ -43,6 +43,6 @@ class DownloadPdfReceiptService
 
         $now = now()->format('d_m_Y_H_i_s');
 
-        return $this->pdf->download("recibo_{$order->id}_{$now}.pdf");
+        return config('app.docs_order_type') === 'stream' ? $this->pdf->stream(): $this->pdf->download("recibo_{$order->id}_{$now}.pdf");
     }
 }

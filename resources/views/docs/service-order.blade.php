@@ -121,17 +121,45 @@
           <td colspan="6"> <strong> VISTORIA PRÉVIA DO LOCAL </strong> </td>
         </tr>
 
-        @if($order->complaint)
-          <tr>
-            <td colspan="6"><strong>PROBLEMA RECLAMADO:</strong>{{ $order->complaint }} </td>
-          </tr>
-        @else
-          <tr>
-            <td colspan="6"><strong>PROBLEMA RECLAMADO:</strong></td>
-          </tr>
-          @foreach (range(0,2) as $line)
+        @php
+          $words = explode(' ', $order->complaint);
+          $countLength = 0;
+          $countLine = 1;
+          $maxLines = 4;
+          $count = 0;
+        @endphp
+
+        @while ($count < count($words) && $countLine <= $maxLines && $order->complaint)
+          @if($countLength === 0)
+            <tr><td colspan="6">
+            @if($countLine === 1)
+              <strong>PROBLEMA RECLAMADO:</strong>
+              @php $countLength = strlen('PROBLEMA RECLAMADO:'); @endphp
+            @endif
+          @endif
+
+          @if($countLength + strlen($words[$count]) >= 89)
+              </td></tr>
+            @php $countLength = 0; $countLine++; $count--; @endphp
+          @else
+            @php $countLength += strlen($words[$count]); @endphp
+            {{ $words[$count] }}
+          @endif
+
+          @php $count++; @endphp
+        @endwhile
+
+        @if(($maxLines - $countLine) > 0)
+          @foreach (range(1, $order->complaint ? $maxLines - $countLine : $maxLines) as $line)
             <tr>
-              <td colspan="6" class="line-write"> </td>
+              @if(!$order->complaint && $loop->first)
+                <td colspan="6">
+                  <strong>PROBLEMA RECLAMADO:</strong>
+                </td>
+              @else
+                <td colspan="6" class="line-write">
+                </td>
+              @endif
             </tr>
           @endforeach
         @endif
@@ -142,32 +170,32 @@
 
         @php
           $words = explode(' ', $order->work_found);
-          $countLine = 0;
           $countLength = 0;
+          $countLine = 1;
+          $maxLines = 6;
+          $count = 0;
         @endphp
 
-        @for($i = 0; $i < count($words); $i++)
-          @if($countLine <= 5)
-            @if($countLength === 0)
-              <tr> <td colspan="6">
-            @endif
-
-            @if($countLength + strlen($words[$i]) >= 89)
-              @php $countLength = 0; $countLine++; $i--; @endphp
-
-              </td> </tr>
-            @else
-              @php $countLength += strlen($words[$i]); @endphp
-
-              {{ $words[$i] }}
-            @endif
+        @while ($count < count($words) && $countLine <= $maxLines && $order->work_found)
+          @if($countLength === 0)
+            <tr><td colspan="6">
           @endif
-        @endfor
 
-        @if(6 - $countLine > 0)
-          @foreach (range(0, 6 - $countLine) as $line)
+          @if($countLength + strlen($words[$count]) >= 89)
+              </td></tr>
+            @php $countLength = 0; $countLine++; $count--; @endphp
+          @else
+            @php $countLength += strlen($words[$count]); @endphp
+            {{ $words[$count] }}
+          @endif
+
+          @php $count++; @endphp
+        @endwhile
+
+        @if(($maxLines - $countLine) > 0)
+          @foreach (range(1, $order->work_found ? $maxLines - $countLine : $maxLines) as $line)
             <tr>
-              <td colspan="6" class="line-write"> </td>
+              <td colspan="6" class="line-write"></td>
             </tr>
           @endforeach
         @endif
@@ -190,32 +218,32 @@
 
         @php
           $words = explode(' ', $order->work_done);
-          $countLine = 0;
           $countLength = 0;
+          $countLine = 1;
+          $maxLines = 6;
+          $count = 0;
         @endphp
 
-        @for($i = 0; $i < count($words); $i++)
-          @if($countLine <= 6)
-            @if($countLength === 0)
-              <tr> <td colspan="6">
-            @endif
-
-            @if($countLength + strlen($words[$i]) >= 89)
-              @php $countLength = 0; $countLine++; $i--; @endphp
-
-              </td> </tr>
-            @else
-              @php $countLength += strlen($words[$i]); @endphp
-
-              {{ $words[$i] }}
-            @endif
+        @while ($count < count($words) && $countLine <= $maxLines && $order->work_done)
+          @if($countLength === 0)
+            <tr><td colspan="6">
           @endif
-        @endfor
 
-        @if(7 - $countLine > 0)
-          @foreach (range(0, 7 - $countLine) as $line)
+          @if($countLength + strlen($words[$count]) >= 89)
+              </td></tr>
+            @php $countLength = 0; $countLine++; $count--; @endphp
+          @else
+            @php $countLength += strlen($words[$count]); @endphp
+            {{ $words[$count] }}
+          @endif
+
+          @php $count++; @endphp
+        @endwhile
+
+        @if(($maxLines - $countLine) > 0)
+          @foreach (range(1, $order->work_done ? $maxLines - $countLine : $maxLines) as $line)
             <tr>
-              <td colspan="6" class="line-write"> </td>
+              <td colspan="6" class="line-write"></td>
             </tr>
           @endforeach
         @endif
