@@ -30,7 +30,7 @@
           v-if="canSave"
           :loading="loading"
         >
-          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+          Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -200,13 +200,14 @@
             <v-col cols="12" class="d-flex flex-row justify-end">
             <v-btn
               color="btn-delete"
-              @click="deleteLastInstallment"
-              :loading="loading"
+              dark
               small
-              rounded
+              class="rounded-lg"
+              :loading="loading"
               v-if="expense.installments.length > 1"
+               @click="deleteLastInstallment"
             >
-              Apagar ultima parcela <v-icon color="red darken-4">mdi-delete</v-icon>
+              Apagar ultima parcela <v-icon small class="ml-2">mdi-close</v-icon>
             </v-btn>
 
             <v-btn
@@ -225,7 +226,7 @@
               })"
             >
               {{ expense.installments.length > 1 ? 'Adicionar parcela' : 'Pagamento parcelado' }}
-              <v-icon>{{ expense.installments.length > 1 ? 'mdi-plus' : '' }}</v-icon>
+              <v-icon small class="ml-2">{{ expense.installments.length > 1 ? 'mdi-plus' : '' }}</v-icon>
             </v-btn>
           </v-col>
         </v-row>
@@ -241,7 +242,7 @@
           v-if="canSave"
           :loading="loading"
         >
-          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+          Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -359,7 +360,7 @@ export default {
           return this.expense.categories = response.data.data.categories_id;
         }
 
-        this.$refs.fireDialog.error({ title: 'Error ao carregar dados do custo/despesa' });
+        this.$refs.fireDialog.error({ title: 'Error ao carregar dados do custo' });
         this.$refs.fireDialog.hide(1500);
       });
       this.loading = false;
@@ -380,11 +381,11 @@ export default {
       this.loading = false;
 
       if(response.data.success){
-        this.$refs.fireDialog.success({ title: 'Custo/Despesa salvo com sucesso' })
+        this.$refs.fireDialog.success({ title: 'Custo salvo com sucesso' })
         return setTimeout(() => this.$router.push({ name: 'expense.index' }), 1500);
       }
 
-      this.$refs.fireDialog.error({ title: 'Error aos salvar custo/despesa.' })
+      this.$refs.fireDialog.error({ title: 'Error aos salvar custo.' })
     },
     async deleteLastInstallment() {
       const ok = await this.$refs.fireDialog.confirm({

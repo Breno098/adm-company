@@ -3,7 +3,7 @@
     <fire-dialog ref="fireDialog"></fire-dialog>
 
     <p class="font-weight-bold mb-5 text-h5">
-      <v-icon color="primary">mdi-account</v-icon>
+      <v-icon color="primary">mdi-account-outline</v-icon>
       {{ titlePage }}
     </p>
 
@@ -30,7 +30,7 @@
           v-if="canSave"
           :loading="loading"
         >
-          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+          Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -443,7 +443,7 @@
           v-if="canSave"
           :loading="loading"
         >
-          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+          Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
         </v-btn>
       </v-card-actions>
     </v-card>

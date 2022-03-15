@@ -2,87 +2,100 @@
   <div>
     <fire-dialog ref="fireDialog"></fire-dialog>
 
-    <v-row>
-      <v-col cols="12">
-        <v-card elevation="0">
-          <v-toolbar elevation="0" class="mb-2">
-            <v-toolbar-title> {{ titlePage }} </v-toolbar-title>
-            <v-progress-linear
-              color="primary"
-              indeterminate
-              height="4"
-              bottom
-              absolute
-              :active="loading"
-            ></v-progress-linear>
+    <p class="font-weight-bold mb-5 text-h5">
+      <v-icon color="primary">mdi-account</v-icon>
+      {{ titlePage }}
+    </p>
 
-            <v-spacer></v-spacer>
+     <v-row class="mb-2">
+      <v-col cols="6" md="8">
+        <v-btn
+          color="btn-primary"
+          small
+          text
+          @click="$router.go(-1)"
+        >
+          Voltar <v-icon>mdi-chevron-double-left</v-icon>
+        </v-btn>
+      </v-col>
 
-            <v-btn
-              color="primary"
-              @click="_goUpdatePass"
-              :loading="loading"
-              rounded
-              dark
-              small
-              class="mr-3"
-            >
-              Senhas <v-icon dark class="ml-2" small>mdi-lock</v-icon>
-            </v-btn>
+      <v-col cols="6" md="2">
+        <v-btn
+          color="btn-primary"
+          class="rounded-lg"
+          block
+          small
+          dark
+          @click="_goUpdatePass"
+          :loading="loading"
+        >
+          Senhas <v-icon class="ml-2" small>mdi-lock</v-icon>
+        </v-btn>
+      </v-col>
 
-            <v-btn
-              color="btn-primary"
-              @click="_store"
-              :loading="loading"
-              rounded
-              dark
-              small
-            >
-              Atualizar <v-icon dark class="ml-2" small>mdi-content-save</v-icon>
-            </v-btn>
-          </v-toolbar>
-
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                label="NOME"
-                color="primary"
-                outlined
-                dense
-                v-model="form.name"
-                :rules="[rules.required]"
-                :error="errors.name"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12">
-              <v-text-field
-                label="EMAIL"
-                outlined
-                dense
-                v-model="form.email"
-                :rules="[rules.required]"
-                :error="errors.email"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="btn-primary"
-              @click="_store"
-              :loading="loading"
-              rounded
-              dark
-            >
-              Atualizar <v-icon dark class="ml-2">mdi-content-save</v-icon>
-            </v-btn>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-         </v-card>
+      <v-col cols="6" md="2">
+        <v-btn
+          color="btn-primary"
+          class="rounded-lg"
+          block
+          small
+          dark
+          @click="_store"
+          :loading="loading"
+        >
+          Salvar <v-icon class="ml-2" small>mdi-content-save</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
+
+    <v-card>
+       <v-progress-linear
+        indeterminate
+        top
+        absolute
+        :active="loading"
+      ></v-progress-linear>
+
+      <v-card-text>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field
+              label="NOME"
+              color="primary"
+              filled
+              dense
+              v-model="form.name"
+              :rules="[rules.required]"
+              :error="errors.name"
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="12">
+            <v-text-field
+              label="EMAIL"
+              filled
+              dense
+              v-model="form.email"
+              :rules="[rules.required]"
+              :error="errors.email"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-btn
+          color="btn-primary"
+          class="rounded-lg"
+          small
+          dark
+          @click="_store"
+          :loading="loading"
+        >
+          Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </div>
 </template>
 

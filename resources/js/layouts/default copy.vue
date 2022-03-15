@@ -10,60 +10,7 @@
           </v-list-item>
         </v-list>
 
-         <v-list dense shaped>
-          <v-list-item-group>
-            <div v-for="(item, index) in menuItems" :key="index">
-              <router-link
-                :to="{ name: item.route, params: { ...item.params } }"
-                style="text-decoration: none"
-                v-if="!item.list"
-              >
-                <v-list-item color="white">
-                  <v-list-item-icon>
-                    <v-icon v-text="item.icon" class="white--text mr-4" small></v-icon>
-                  </v-list-item-icon>
-
-                  <v-list-item-title class="white--text font-weight-bold">
-                      {{ item.title }}
-                  </v-list-item-title>
-                </v-list-item>
-              </router-link>
-
-              <v-list-group v-else>
-                <template v-slot:prependIcon>
-                  <v-icon v-text="item.icon" class="white--text mr-4" small></v-icon>
-                </template>
-
-                <template v-slot:activator>
-                  <v-list-item-title class="white--text font-weight-bold">{{item.title}}</v-list-item-title>
-                </template>
-
-                 <template v-slot:appendIcon>
-                  <v-icon class="white--text" small>mdi-chevron-down</v-icon>
-                </template>
-
-                <router-link
-                  v-for="(listItem, i) in item.list"
-                  :key="i"
-                  :to="{ name: listItem.route, params: { ...listItem.params } }"
-                  style="text-decoration: none"
-                >
-                  <v-list-item class="pl-6" color="white">
-                    <v-list-item-icon>
-                      <v-icon size="20" class="white--text">{{ listItem.icon }}</v-icon>
-                    </v-list-item-icon>
-
-                    <v-list-item-title class="caption white--text font-weight-bold">
-                        {{ listItem.title }}
-                    </v-list-item-title>
-                  </v-list-item>
-                </router-link>
-              </v-list-group>
-            </div>
-          </v-list-item-group>
-        </v-list>
-
-        <!-- <v-list dense shaped>
+        <v-list dense shaped>
           <v-list-item-group v-model="selectedItem">
             <router-link :to="{ name: item.route }" style="text-decoration: none" v-for="(item, index) in menuItems" :key="index">
               <v-list-item class="py-1" :color="selectedItem == index ? 'side-bar-menu-active' : ''">
@@ -92,7 +39,7 @@
               </v-list-item>
             </router-link>
           </v-list-item-group>
-        </v-list> -->
+        </v-list>
       </v-navigation-drawer>
 
       <v-main>
@@ -177,99 +124,71 @@ export default {
           title: 'Inicio',
           route: 'home',
           icon: 'mdi-home',
-          can: true
-        },
-        {
-          title: 'Agenda',
-          route: 'appointment.index',
-          icon: 'mdi-calendar-today',
-          can: this.$can('appointment_index')
+          role: true
         },
         {
           title: 'Pedidos' ,
           route: 'order.index',
           icon: 'mdi-format-list-checks',
-          can: this.$can('order_index')
-        },
-        {
-          title: 'Cadastros',
-          icon: 'mdi-pencil',
-          can: true,
-          list: [
-            {
-            title: 'Custos',
-            route: 'expense.index',
-            icon: 'mdi-database-minus',
-            can: this.$can('expense_index')
-            },
-            {
-              title: 'Clientes',
-              route: 'client.index',
-              icon: 'mdi-account',
-              can: this.$can('client_index')
-            },
-            {
-              title: 'Produtos',
-              route: 'product.index',
-              icon: 'mdi-barcode',
-              can: this.$can('product_index')
-            },
-            {
-              title: 'Serviços',
-              route: 'service.index',
-              icon: 'mdi-wrench',
-              can: this.$can('service_index')
-            },
-            {
-              title: 'Usuários',
-              route: 'user.index',
-              icon: 'mdi-account',
-              can: this.$can('user_index'),
-            },
-            {
-              title: 'Funcionáros',
-              route: 'employee.index',
-              icon: 'mdi-account-outline',
-              can: this.$can('employee_index'),
-            },
-          ]
+          role: this.$role.order.index()
         },
         {
           title: 'Relatórios',
           route: 'report.index',
           icon: 'mdi-chart-bar',
-          can: true,
-          list: [
-            {
-              title: 'Relatório Financeiro',
-              route: 'report.finance.index',
-              icon: 'mdi-cash-usd',
-              can: true
-            }
-          ]
+          role: true,
+        },
+        {
+          title: 'Agenda',
+          route: 'appointment.index',
+          icon: 'mdi-calendar-today',
+          role: this.$role.appointment.index()
+        },
+        {
+          title: 'Custos',
+          route: 'expense.index',
+          icon: 'mdi-database-minus',
+          role: this.$role.expense.index()
+        },
+        {
+          title: 'Clientes',
+          route: 'client.index',
+          icon: 'mdi-account',
+          role: this.$role.client.index()
+        },
+        {
+          title: 'Produtos',
+          route: 'product.index',
+          icon: 'mdi-barcode',
+          role: this.$role.product.index()
+        },
+        {
+          title: 'Serviços',
+          route: 'service.index',
+          icon: 'mdi-wrench',
+          role: this.$role.service.index()
+        },
+        {
+          title: 'Usuários',
+          route: 'user.index',
+          icon: 'mdi-account',
+          role: this.$role.user.index(),
+        },
+        {
+          title: 'Funcionáros',
+          route: 'employee.index',
+          icon: 'mdi-account',
+          role: true,
         },
         {
           title: 'Arquivos',
+          route: 'file.index',
           icon: 'mdi-file',
-          can: true,
-          list: [{
-            title: 'Recibo de funcionários',
-            route: 'file.employee-receipt.index',
-            icon: 'mdi-file-account',
-            can: true
-          }]
+          role: true,
         }
       ];
 
-      let items = menu.filter(item => item.can);
-
-      items.map(can => {
-        if(can.list){
-          can.list = can.list.filter(item => item.can);
-        }
-      });
-
-      return items;
+      return menu.filter(item => item.role)
     },
     variantAppName(){
       let splitName = this.appName.split(' ');

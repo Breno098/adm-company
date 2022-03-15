@@ -1,8 +1,6 @@
 <template>
     <base-modal ref="basemodal">
         <v-card
-            transparent
-            elevation="0"
             width="400"
             :class="{ 'py-2': !confirmButton && !cancelButton }"
         >
@@ -14,15 +12,34 @@
                 {{ message }}
             </v-card-text>
 
-            <v-card-text class="text-center py-2" v-if="!confirmeByType">
-                <v-progress-circular v-if="loadingByType" :width="5" color="primary" :size="70" indeterminate></v-progress-circular>
-                <v-icon :size="70" :color="colorByType"> {{ iconByType }} </v-icon>
+            <v-card-text class="text-center" v-if="!confirmeByType">
+                <v-progress-circular v-if="loadingByType" :width="5" color="primary" :size="60" indeterminate></v-progress-circular>
+                <v-icon :size="60" :color="colorByType"> {{ iconByType }} </v-icon>
             </v-card-text>
 
             <v-card-actions v-if="confirmButton || cancelButton">
-                <v-spacer></v-spacer>
-                <v-btn :color="colorCancelButton" dark @click="_cancel" v-if="cancelButton"> {{ textCancelButton }} </v-btn>
-                <v-btn :color="colorConfirButton" dark @click="_confirm" v-if="confirmButton"> {{ textConfirmButton }} </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                dark
+                small
+                class="rounded-lg"
+                :color="colorCancelButton"
+                @click="_cancel"
+                v-if="cancelButton"
+              >
+                {{ textCancelButton }}
+              </v-btn>
+              <v-btn
+                dark
+                small
+                class="rounded-lg"
+                :color="colorConfirButton"
+                @click="_confirm"
+                v-if="confirmButton"
+              >
+                {{ textConfirmButton }}
+              </v-btn>
+              <v-spacer></v-spacer>
             </v-card-actions>
         </v-card>
     </base-modal>
@@ -41,7 +58,7 @@ export default {
         textConfirmButton: 'Aceitar',
         colorConfirButton: 'btn-primary',
         cancelButton: false,
-        textCancelButton: 'Fechar',
+        textCancelButton: 'Cancelar',
         colorCancelButton: 'btn-delete',
         resolvePromise: undefined,
         rejectPromise: undefined,

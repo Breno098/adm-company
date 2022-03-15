@@ -30,7 +30,7 @@
           v-if="canSave"
           :loading="loading"
         >
-          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+          Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -49,7 +49,7 @@
               small
               dark
             >
-              <v-icon>mdi-file-document</v-icon>
+              <v-icon small>mdi-file-document</v-icon>
             </v-btn>
           </template>
           <span>Gerar Orçamento</span>
@@ -69,7 +69,7 @@
               small
               dark
             >
-              <v-icon>mdi-file-export</v-icon>
+              <v-icon small>mdi-file-export</v-icon>
             </v-btn>
           </template>
           <span>Gerar Ordem de Serviço</span>
@@ -89,7 +89,7 @@
               small
               dark
             >
-              <v-icon>mdi-file-check</v-icon>
+              <v-icon small>mdi-file-check</v-icon>
             </v-btn>
           </template>
           <span>Gerar Recibo</span>
@@ -129,7 +129,7 @@
               small
               dark
             >
-              <v-icon dark>mdi-calendar-today</v-icon>
+              <v-icon small>mdi-calendar-today</v-icon>
             </v-btn>
           </template>
           <span>Agendar Compromisso</span>
@@ -141,11 +141,11 @@
     <v-card>
       <v-tabs v-model="tab">
         <v-tabs-slider color="primary"></v-tabs-slider>
-        <v-tab>Informações <v-icon class="ml-2">mdi-information</v-icon></v-tab>
-        <v-tab>Produtos e Serviços <v-icon class="ml-2">mdi-wrench</v-icon></v-tab>
-        <v-tab>Pagamento <v-icon class="ml-2">mdi-cash</v-icon></v-tab>
-        <v-tab>Financeiro <v-icon class="ml-2">mdi-cash</v-icon></v-tab>
-        <v-tab>Garantia <v-icon class="ml-2">mdi-format-align-center</v-icon></v-tab>
+        <v-tab>Informações <v-icon small class="ml-2">mdi-information</v-icon></v-tab>
+        <v-tab>Produtos e Serviços <v-icon small class="ml-2">mdi-wrench</v-icon></v-tab>
+        <v-tab>Pagamento <v-icon small class="ml-2">mdi-cash</v-icon></v-tab>
+        <v-tab>Financeiro <v-icon small class="ml-2">mdi-cash</v-icon></v-tab>
+        <v-tab>Garantia <v-icon small class="ml-2">mdi-format-align-center</v-icon></v-tab>
       </v-tabs>
 
       <v-tabs-items v-model="tab" class="pt-5 px-3">
@@ -444,7 +444,7 @@
                   total_value: 0
                 })"
               >
-                Adicionar produto <v-icon>mdi-plus</v-icon>
+                Adicionar produto <v-icon small>mdi-plus</v-icon>
               </v-btn>
             </v-col>
           </v-row>
@@ -571,7 +571,7 @@
                   total_value: 0
                 })"
               >
-                Adicionar serviço <v-icon>mdi-plus</v-icon>
+                Adicionar serviço <v-icon small>mdi-plus</v-icon>
               </v-btn>
             </v-col>
           </v-row>
@@ -852,7 +852,7 @@
                   value: null
                 })"
               >
-                Adicionar parcela <v-icon>mdi-plus</v-icon>
+                Adicionar parcela <v-icon small>mdi-plus</v-icon>
               </v-btn>
             </v-col>
           </v-row>
@@ -897,7 +897,7 @@
           v-if="canSave"
           :loading="loading"
         >
-          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+          Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
         </v-btn>
       </v-card-actions>
     </v-card>

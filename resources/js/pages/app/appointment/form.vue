@@ -51,7 +51,7 @@
           v-if="canSave"
           :loading="loading"
         >
-          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+          Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -288,7 +288,7 @@
           v-if="canSave"
           :loading="loading"
         >
-          Salvar <v-icon class="ml-2">mdi-content-save</v-icon>
+          Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
         </v-btn>
         <v-btn
           color="btn-delete"

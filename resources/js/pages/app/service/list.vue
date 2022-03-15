@@ -75,7 +75,7 @@
             @click="_add"
             v-if="$can('service_add')"
         >
-          Adicionar <v-icon>mdi-plus</v-icon>
+          Adicionar <v-icon small class="ml-2">mdi-plus</v-icon>
         </v-btn>
       </v-col>
     </v-row>
