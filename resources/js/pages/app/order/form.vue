@@ -36,7 +36,7 @@
     </v-row>
 
     <v-row class="mb-2">
-      <v-col cols="2" offset="1">
+      <v-col cols="2" offset="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -96,7 +96,7 @@
         </v-tooltip>
       </v-col>
 
-      <v-col cols="2">
+      <!-- <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -114,7 +114,7 @@
           </template>
           <span>Gerar Order de Garantia</span>
         </v-tooltip>
-      </v-col>
+      </v-col> -->
 
       <v-col cols="2">
         <v-tooltip bottom>

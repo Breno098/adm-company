@@ -1,13 +1,13 @@
 <template>
-     <v-container fluid fill-height style="background: #7986CB; background: linear-gradient(to bottom, #2196F3, #90CAF9, #E3F2FD);">
+     <v-container fluid fill-height style="background: linear-gradient(to bottom, #311B92, #9575CD, #D1C4E9);">
          <fire-dialog ref="fireDialog"></fire-dialog>
 
         <v-layout flex align-center justify-center>
             <v-flex xs12 sm8 elevation-6>
               <v-card >
                 <v-toolbar class="d-flex flex-row justify-center" color="primary">
-                  <v-toolbar-title>
-                    <v-icon color="black">mdi-wrench</v-icon>
+                  <v-toolbar-title class="white--text">
+                    <v-icon>mdi-wrench</v-icon>
                     {{ appName }} | ENTRAR
                   </v-toolbar-title>
                 </v-toolbar>
@@ -18,7 +18,7 @@
                         color="primary"
                         required
                         v-on:keyup.enter="login"
-                        outlined
+                        filled
                         dense
                         prepend-inner-icon="mdi-email"
                     ></v-text-field>
@@ -29,7 +29,7 @@
                         color="primary"
                         required
                         v-on:keyup.enter="login"
-                        outlined
+                        filled
                         dense
                         prepend-inner-icon="mdi-lock-open"
                         :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -37,7 +37,7 @@
                         @click:append="showPassword = !showPassword"
                     ></v-text-field>
 
-                    <v-btn color="blue white--text" v-on:click="login" large>
+                    <v-btn color="primary" v-on:click="login" large>
                         Entrar
                     </v-btn>
                 </v-card-text>

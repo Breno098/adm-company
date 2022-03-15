@@ -59,7 +59,7 @@ export default {
                    this.type == 'warning' ? 'mdi-alert-circle-outline' : '';
         },
         colorByType(){
-            return this.type == 'success' ? 'success' :
+            return this.type == 'success' ? 'primary' :
                    this.type == 'error' ? 'error' :
                    this.type == 'warning' ? 'warning' : '';
         },

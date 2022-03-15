@@ -10,11 +10,11 @@ class TenantModel extends Model
 {
     protected static function booted()
     {
-        static::addGlobalScope(new TenantScope);
+        // static::addGlobalScope(new TenantScope);
 
-        static::saving(function ($model) {
-            $model->company_id = auth()->user()->company_id;
-        });
+        // static::saving(function ($model) {
+        //     $model->company_id = auth()->user()->company_id;
+        // });
     }
 
     public function scopeAuthorizedTenant(Builder $builder)
