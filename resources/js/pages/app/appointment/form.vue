@@ -68,6 +68,7 @@
               :loading="loading"
               :rules="[rules.required]"
               :error="errors.title && !appointment.title"
+              @input="appointment.title = appointment.title.toUpperCase()"
             ></v-text-field>
           </v-col>
 
@@ -261,6 +262,7 @@
               dense
               v-model="appointment.description"
               :loading="loading"
+              @input="appointment.description = appointment.description.toUpperCase()"
             ></v-textarea>
           </v-col>
 
