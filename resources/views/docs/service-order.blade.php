@@ -16,7 +16,7 @@
 
       body {
         padding: 0;
-        margin: 0;
+        margin: 10px;
       }
 
       table, th, td {
@@ -117,52 +117,21 @@
           <td colspan="3"> <strong> TELEFONE(S): </strong> {{ $order->phones }} </td>
         </tr>
 
-        <tr>
+        {{-- <tr>
           <td colspan="6"> <strong> VISTORIA PRÉVIA DO LOCAL </strong> </td>
+        </tr> --}}
+
+        <tr>
+          <td colspan="6">
+            <span>VIS. TÉCNICA (&nbsp;&nbsp;&nbsp;)</span>
+            <span>EXECUÇÃO (&nbsp;&nbsp;&nbsp;)</span>
+            <span>GARANTIA (&nbsp;&nbsp;&nbsp;)</span>
+          </td>
         </tr>
 
-        @php
-          $words = explode(' ', $order->complaint);
-          $countLength = 0;
-          $countLine = 1;
-          $maxLines = 4;
-          $count = 0;
-        @endphp
-
-        @while ($count < count($words) && $countLine <= $maxLines && $order->complaint)
-          @if($countLength === 0)
-            <tr><td colspan="6">
-            @if($countLine === 1)
-              <strong>PROBLEMA RECLAMADO:</strong>
-              @php $countLength = strlen('PROBLEMA RECLAMADO:'); @endphp
-            @endif
-          @endif
-
-          @if($countLength + strlen($words[$count]) >= 89)
-              </td></tr>
-            @php $countLength = 0; $countLine++; $count--; @endphp
-          @else
-            @php $countLength += strlen($words[$count]); @endphp
-            {{ $words[$count] }}
-          @endif
-
-          @php $count++; @endphp
-        @endwhile
-
-        @if(($maxLines - $countLine) > 0)
-          @foreach (range(1, $order->complaint ? $maxLines - $countLine : $maxLines) as $line)
-            <tr>
-              @if(!$order->complaint && $loop->first)
-                <td colspan="6">
-                  <strong>PROBLEMA RECLAMADO:</strong>
-                </td>
-              @else
-                <td colspan="6" class="line-write">
-                </td>
-              @endif
-            </tr>
-          @endforeach
-        @endif
+        <tr>
+          <td colspan="6"> <strong> PROBLEMA RECLAMADO: </strong> {{ $order->complaint }}</td>
+        </tr>
 
         <tr>
           <td colspan="6"><strong>LOCALIZAÇÃO E DESCRIÇÃO DO PROBLEMA CONSTATADO E SUA CAUSA:</strong></td>

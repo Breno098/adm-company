@@ -38,7 +38,7 @@
 
                     <v-col cols="12" md="6">
                       <v-menu
-                        v-model="menu_date"
+                        v-model="menuDate"
                         :close-on-content-click="false"
                         max-width="290"
                         transition="scale-transition"
@@ -47,7 +47,7 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           append-icon="mdi-calendar"
-                          :value="table.filters.date | formatDate"
+                          :value="table.filters.date | formatDMY"
                           clearable
                           label="DATA"
                           readonly
@@ -61,7 +61,7 @@
                       </template>
                       <v-date-picker
                           v-model="table.filters.date"
-                          @change="menu_date = false"
+                          @change="menuDate = false"
                           no-title
                           crollable
                           locale="pt-Br"
@@ -224,7 +224,8 @@ export default {
     return { title: 'Custos/Despesas' }
   },
   data: () => ({
-    menu_date: false,
+    menuDate: false,
+    menuFilter: false,
     table: {
       filters: {
         title: '',

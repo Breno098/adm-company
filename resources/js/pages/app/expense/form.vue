@@ -147,6 +147,7 @@
                 no-title
                 crollable
                 locale="pt-Br"
+                color="primary"
               ></v-date-picker>
             </v-dialog>
           </v-col>

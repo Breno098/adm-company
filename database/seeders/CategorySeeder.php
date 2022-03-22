@@ -14,79 +14,99 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        Category::create([
+        Category::updateOrCreate([
             'name' => 'RESIDÊNCIA',
             'icon' => 'mdi-home-circle',
             'type' => 'client'
         ]);
 
-        Category::create([
+        Category::updateOrCreate([
             'name' => 'EMPRESA',
             'icon' => 'mdi-home-modern',
             'type' => 'client'
         ]);
 
-        Category::create([
+        Category::updateOrCreate([
             'name' => 'CONDOMÍNIO',
             'icon' => 'mdi-wall',
             'type' => 'client'
         ]);
 
-        Category::create([
+        Category::updateOrCreate([
             'name' => 'OUTROS',
             'icon' => 'mdi-format-list-bulleted',
             'type' => 'client'
         ]);
 
-        Category::create([
+        Category::updateOrCreate([
             'name' => 'PERIFÉRICOS',
             'icon' => 'mdi-wrench',
             'type' => 'product'
         ]);
 
-        Category::create([
+        Category::updateOrCreate([
             'name' => 'INSTALAÇÃO',
             'icon' => 'mdi-pipe-disconnected',
             'type' => 'service'
         ]);
 
-        Category::create([
+        //
+        Category::updateOrCreate([
+            'name' => 'MANUTENÇÃO',
+            'icon' => 'mdi-wrench',
+            'type' => 'service'
+        ]);
+
+        Category::updateOrCreate([
+            'name' => 'REPARO',
+            'icon' => 'mdi-wrench',
+            'type' => 'service'
+        ]);
+
+        Category::updateOrCreate([
+            'name' => 'HIGIENIZAÇÃO',
+            'icon' => 'mdi-alert-octagram',
+            'type' => 'service'
+        ]);
+        //
+
+        Category::updateOrCreate([
             'name' => 'AJUDANTES',
             'icon' => 'mdi-account-multiple',
             'type' => 'expense'
         ]);
 
-        Category::create([
+        Category::updateOrCreate([
             'name' => 'ALIMENTAÇÃO',
             'icon' => 'mdi-food',
             'type' => 'expense'
         ]);
 
-        Category::create([
+        Category::updateOrCreate([
             'name' => 'FERRAMENTAS',
             'icon' => 'mdi-wrench',
             'type' => 'expense'
         ]);
 
-        Category::create([
+        Category::updateOrCreate([
             'name' => 'IMPOSTOS',
             'icon' => 'mdi-cash-multiple',
             'type' => 'expense'
         ]);
 
-        Category::create([
+        Category::updateOrCreate([
             'name' => 'MATERIAIS',
             'icon' => 'mdi-format-paint',
             'type' => 'expense'
         ]);
 
-        Category::create([
+        Category::updateOrCreate([
             'name' => 'TRANSPORTE',
             'icon' => 'mdi-bus-side',
             'type' => 'expense'
         ]);
 
-         Category::create([
+         Category::updateOrCreate([
             'name' => 'OUTROS',
             'icon' => 'mdi-format-list-bulleted',
             'type' => 'expense'
