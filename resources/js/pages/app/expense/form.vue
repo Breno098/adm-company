@@ -301,7 +301,7 @@ export default {
           status: 'PAGO',
           due_date: moment().format('YYYY-MM-DD'),
           pay_day: moment().format('YYYY-MM-DD'),
-          value: null
+          value: 0
       }],
       number_of_installments: null
     },
