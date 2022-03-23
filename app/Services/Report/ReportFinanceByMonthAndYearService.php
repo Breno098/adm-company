@@ -24,17 +24,17 @@ class ReportFinanceByMonthAndYearService
             'expense:id,title',
         ];
 
-        $installmentsPaid = Installment::typeOrder()->paidMonthly($year, $month)->with($withOrder)->get();
-        $installmentsUnpaid = Installment::typeOrder()->unpaidMonthly($year, $month)->with($withOrder)->get();
-        $installmentsToReceive = Installment::typeOrder()->toPendingMonthly($year, $month)->with($withOrder)->get();
+        $installmentsPaid = Installment::typeOrder()->paidMonthly($year, $month)->orderBy('pay_day')->with($withOrder)->get();
+        $installmentsUnpaid = Installment::typeOrder()->unpaidMonthly($year, $month)->orderBy('due_date')->with($withOrder)->get();
+        $installmentsToReceive = Installment::typeOrder()->toPendingMonthly($year, $month)->orderBy('due_date')->with($withOrder)->get();
 
         $installmentsExpensePaid = Installment::typeExpense()->paidMonthly($year, $month)->with($withExpense)->get();
 
-        $amountPaid = (float) Installment::typeOrder()->paidMonthly($year, $month)->sum('value');
-        $amountUnpaid = (float) Installment::typeOrder()->unpaidMonthly($year, $month)->sum('value');
-        $amountToReceive = (float) Installment::typeOrder()->toPendingMonthly($year, $month)->sum('value');
+        $amountPaid = (float) $installmentsPaid->sum('value');
+        $amountUnpaid = (float) $installmentsUnpaid->sum('value');
+        $amountToReceive = (float) $installmentsToReceive->sum('value');
 
-        $expensePaid = (float) Installment::typeExpense()->paidMonthly($year, $month)->sum('value');
+        $expensePaid = (float) $installmentsExpensePaid->sum('value');
         // $expenseUnpaid = Installment::typeExpense()->unpaidMonthly($year, $month)->sum('value');
         // $expenseToPay = Installment::typeExpense()->toPendingMonthly($year, $month)->sum('value');
 

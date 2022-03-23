@@ -325,7 +325,7 @@
           <v-row>
             <v-col cols="12">
               <div class="text-h6 font-weight-bold"> Produtos </div>
-              <v-divider color="primary"/>
+              <v-divider class="mx-4 my-3"></v-divider>
             </v-col>
 
             <v-col cols="12" v-for="(product, index) in order.products" :key="product.id">
@@ -427,7 +427,7 @@
                 </v-col>
               </v-row>
 
-              <v-divider color="primary" class="mx-5" v-if="(index + 1) < order.products.length"/>
+              <v-divider class="mx-4 my-3" v-if="(index + 1) < order.products.length"/>
             </v-col>
 
             <v-col cols="12" class="d-flex flex-row justify-end">
@@ -452,7 +452,7 @@
           <v-row>
             <v-col cols="12">
               <div class="text-h6 font-weight-bold"> Serviços </div>
-              <v-divider color="primary"/>
+              <v-divider class="mx-4 my-3"></v-divider>
             </v-col>
 
             <v-col cols="12" v-for="(service, index) in order.services" :key="service.id">
@@ -554,7 +554,7 @@
                 </v-col>
               </v-row>
 
-              <v-divider color="primary" class="mx-5" v-if="(index + 1) < order.services.length"/>
+              <v-divider class="mx-4 my-3" v-if="(index + 1) < order.services.length"/>
             </v-col>
 
             <v-col cols="12" class="d-flex flex-row justify-end">
@@ -623,7 +623,7 @@
           <v-row>
             <v-col cols="12">
               <div class="text-h6 font-weight-bold"> Valor </div>
-              <v-divider color="primary"/>
+              <v-divider class="mx-4 my-3"></v-divider>
             </v-col>
 
             <v-col cols="12" md="4">
@@ -690,12 +690,12 @@
             </v-col>
           </v-row>
 
-          <v-divider color="primary" class="my-5"></v-divider>
+          <v-divider class="mx-4 my-3"></v-divider>
 
           <v-row>
             <v-col cols="12">
               <div class="text-h6 font-weight-bold"> Pagamento(s) </div>
-              <v-divider color="primary"/>
+              <v-divider class="mx-4 my-3"></v-divider>
             </v-col>
 
             <v-col cols="12" md="6">
@@ -774,6 +774,7 @@
                   no-title
                   crollable
                   locale="pt-Br"
+                  color="primary"
                 ></v-date-picker>
               </v-dialog>
             </v-col>
@@ -806,6 +807,7 @@
                   no-title
                   crollable
                   locale="pt-Br"
+                  color="primary"
                 ></v-date-picker>
               </v-dialog>
             </v-col>
@@ -820,7 +822,7 @@
               ></v-select>
             </v-col>
 
-            <v-divider color="primary" class="mx-5" v-if="(index + 1) < order.installments.length"/>
+            <v-divider class="mx-4 my-3" v-if="(index + 1) < order.installments.length"/>
           </v-row>
 
           <v-row>

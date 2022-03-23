@@ -22,6 +22,17 @@ use Carbon\Carbon;
  * @property float $value
  *
  * @property Order $order
+ * @property Expense $expense
+ *
+ * @method Installment typeOrder()
+ * @method Installment typeExpense()
+ * @method Installment orderId(null|int $order_id)
+ * @method Installment paidAnnually(null|int $year)
+ * @method Installment paidMonthly(null|int $year, null|int $month)
+ * @method Installment unpaidAnnually(null|int $year)
+ * @method Installment unpaidMonthly(null|int $year, null|int $month)
+ * @method Installment toPendingAnnually(null|int $year)
+ * @method Installment toPendingMonthly(null|int $year, null|int $month)
  *
  * @mixin Builder
  */
