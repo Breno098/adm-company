@@ -22,6 +22,8 @@ class IndexOrderService
         return Order::filterByNameClient(Arr::get($filters, 'client_name'))
             ->filterByAddress(Arr::get($filters, 'address'))
             ->filterByStatus(Arr::get($filters, 'status'))
+            ->filterByTechnicalVisitDateFrom(Arr::get($filters, 'technical_visit_date_from'))
+            ->filterByTechnicalVisitDateTo(Arr::get($filters, 'technical_visit_date_to'))
             ->with($relations)
             ->when($orderBy, function (Builder $builder, $orderBy) {
                 $orderBy = explode(':', $orderBy);

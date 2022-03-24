@@ -102,6 +102,15 @@
               </v-card-actions>
           </v-card>
         </v-menu>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn text small @click="_eraser" v-bind="attrs" v-on="on">
+               <v-icon small>mdi-eraser</v-icon>
+            </v-btn>
+          </template>
+          <span>Limpar filtros</span>
+        </v-tooltip>
       </v-col>
 
       <v-col cols="6" md="2">

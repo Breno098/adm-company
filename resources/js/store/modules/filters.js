@@ -2,24 +2,24 @@ import * as types from '../mutation-types'
 
 // state
 export const state = {
-  orders: null,
+  order: null,
 }
 
 // getters
 export const getters = {
-  orders: state => state.order,
+  order: state => state.order,
 }
 
 // mutations
 export const mutations = {
-  [types.SET_FILTER] (state, { order }) {
-    state.order = order
+  [types.SET_FILTER] (state, { filter }) {
+    state.order = filter
   },
 }
 
 // actions
 export const actions = {
-  setData ({ commit }, { order }) {
-    commit(types.SET_FILTER, { order })
+  setFilterOrder ({ commit }, { filter }) {
+    commit(types.SET_FILTER, { filter })
   },
 }

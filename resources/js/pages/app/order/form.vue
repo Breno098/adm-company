@@ -225,6 +225,7 @@
                   scrollable
                   no-title
                   locale="pt-Br"
+                  color="primary"
                 >
                   <v-spacer></v-spacer>
                   <v-btn text @click="menu_technical_visit_date = false">
@@ -266,6 +267,7 @@
                   v-model="order.technical_visit_time"
                   @click:minute="$refs.menu_time.save(order.technical_visit_time)"
                   format="24hr"
+                  color="primary"
                 ></v-time-picker>
               </v-menu>
             </v-col>

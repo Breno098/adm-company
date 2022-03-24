@@ -8,7 +8,7 @@
     </p>
 
     <v-row class="mb-2">
-      <v-col cols="6" md="10">
+      <v-col cols="6" md="10" class="d-flex">
         <v-menu
           :close-on-content-click="false"
           :nudge-width="200"
@@ -60,6 +60,74 @@
                       v-on:keyup.enter="_load"
                     ></v-text-field>
                   </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-menu
+                      v-model="menuTechnicalVisitDateFrom"
+                      :close-on-content-click="false"
+                      max-width="290"
+                      transition="scale-transition"
+                      offset-y
+                    >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        append-icon="mdi-calendar"
+                        :value="table.filters.technical_visit_date_from | formatDMY"
+                        clearable
+                        label="VISITA TÉCNICA DE"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        @click:clear="table.filters.technical_visit_date_from = null"
+                        filled
+                        dense
+                        :loading="table.loading"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                        v-model="table.filters.technical_visit_date_from"
+                        @change="menuTechnicalVisitDateFrom = false"
+                        no-title
+                        crollable
+                        locale="pt-Br"
+                        color="primary"
+                    ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
+                    <v-menu
+                      v-model="menuTechnicalVisitDateTo"
+                      :close-on-content-click="false"
+                      max-width="290"
+                      transition="scale-transition"
+                      offset-y
+                    >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        append-icon="mdi-calendar"
+                        :value="table.filters.technical_visit_date_to | formatDMY"
+                        clearable
+                        label="VISITA TÉCNICA ATÉ"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        @click:clear="table.filters.technical_visit_date_to = null"
+                        filled
+                        dense
+                        :loading="table.loading"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                        v-model="table.filters.technical_visit_date_to"
+                        @change="menuTechnicalVisitDateTo = false"
+                        no-title
+                        crollable
+                        locale="pt-Br"
+                        color="primary"
+                    ></v-date-picker>
+                    </v-menu>
+                  </v-col>
                 </v-row>
               </v-card-text>
 
@@ -88,6 +156,15 @@
               </v-card-actions>
           </v-card>
         </v-menu>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn text small @click="_eraser" v-bind="attrs" v-on="on">
+               <v-icon small>mdi-eraser</v-icon>
+            </v-btn>
+          </template>
+          <span>Limpar filtros</span>
+        </v-tooltip>
       </v-col>
 
       <v-col cols="6" md="2">
@@ -187,32 +264,6 @@
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
-
-            <!-- <v-expand-transition>
-              <v-card
-                v-show="hover && (order.technical_visit_date || order.complaint || order.work_done)"
-              >
-                <v-card-text>
-                  <div v-if="order.technical_visit_date">
-                    <v-icon small>mdi-calendar</v-icon>
-                    <b>DATA VISITA TÉCNICA:</b> {{ order.technical_visit_date | formatDMY }} {{ order.technical_visit_time }}
-                    <v-divider color="primary" class="mx-2 my-1"/>
-                  </div>
-
-                  <div v-if="order.complaint">
-                    <v-icon small>mdi-comment-alert-outline</v-icon>
-                    <b>PROBLEMA RECLAMADO:</b> {{ order.complaint }}
-                    <v-divider color="primary" class="mx-2 my-1"/>
-                  </div>
-
-                  <div v-if="order.work_done">
-                    <v-icon small>mdi-comment-check</v-icon>
-                    <b>SERVIÇO REALIZADO:</b> {{ order.work_done }}
-                  </div>
-                </v-card-text>
-              </v-card>
-            </v-expand-transition> -->
-
           </v-card>
         </v-hover>
       </v-col>
@@ -243,11 +294,15 @@ export default {
   },
   data: () => ({
     menuFilter: false,
+    menuTechnicalVisitDateFrom: false,
+    menuTechnicalVisitDateTo: false,
     table: {
       filters: {
         client_name: '',
         address: '',
-        status: []
+        status: [],
+        technical_visit_date_from: null,
+        technical_visit_date_to: null
       },
       orderBy: 'created_at:desc',
       page: 1,
@@ -288,7 +343,17 @@ export default {
   },
   methods: {
     async _start(){
-      this._load();
+      this._loadWithStorageFilters();
+    },
+    async _loadWithStorageFilters()
+    {
+      let filter = localStorage.getItem('filter-order');
+
+      if(filter !== 'null' && filter) {
+        this.table.filters = JSON.parse(filter);
+      }
+
+      await this._load();
     },
     async _load(){
       this.menuFilter = false;
@@ -313,9 +378,12 @@ export default {
         if(response.data.success){
           this.table.items = response.data.data.data;
           this.table.pageCount = response.data.data.last_page;
+
+          localStorage.setItem('filter-order', JSON.stringify(this.table.filters))
         } else {
           this.$refs.fireDialog.error({ title: 'Erro ao carregar pedidos'});
         }
+
       });
     },
     _edit(id){

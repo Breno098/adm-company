@@ -24,51 +24,52 @@
 
           <v-card width="800">
               <v-card-text>
-                  <v-row>
-                    <v-col cols="12" md="6">
-                      <v-text-field
-                        label="NOME"
-                        v-model="table.filters.title"
-                        @input="table.filters.title = table.filters.title.toUpperCase()"
-                        v-on:keyup.enter="_load"
-                        dense
-                        filled
-                      ></v-text-field>
-                    </v-col>
+                <v-row>
+                  <v-col cols="12" md="6">
+                    <v-text-field
+                      label="NOME"
+                      v-model="table.filters.title"
+                      @input="table.filters.title = table.filters.title.toUpperCase()"
+                      v-on:keyup.enter="_load"
+                      dense
+                      filled
+                    ></v-text-field>
+                  </v-col>
 
-                    <v-col cols="12" md="6">
-                      <v-menu
-                        v-model="menuDate"
-                        :close-on-content-click="false"
-                        max-width="290"
-                        transition="scale-transition"
-                        offset-y
-                      >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          append-icon="mdi-calendar"
-                          :value="table.filters.date | formatDMY"
-                          clearable
-                          label="DATA"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          @click:clear="table.filters.date = null"
-                          filled
-                          dense
-                          :loading="table.loading"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                          v-model="table.filters.date"
-                          @change="menuDate = false"
-                          no-title
-                          crollable
-                          locale="pt-Br"
-                      ></v-date-picker>
-                      </v-menu>
-                    </v-col>
-                  </v-row>
+                  <v-col cols="12" md="6">
+                    <v-menu
+                      v-model="menuDate"
+                      :close-on-content-click="false"
+                      max-width="290"
+                      transition="scale-transition"
+                      offset-y
+                    >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        append-icon="mdi-calendar"
+                        :value="table.filters.date | formatDMY"
+                        clearable
+                        label="DATA"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        @click:clear="table.filters.date = null"
+                        filled
+                        dense
+                        :loading="table.loading"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                        v-model="table.filters.date"
+                        @change="menuDate = false"
+                        no-title
+                        crollable
+                        locale="pt-Br"
+                        color="primary"
+                    ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+                </v-row>
               </v-card-text>
 
               <v-card-actions>
@@ -96,6 +97,15 @@
               </v-card-actions>
           </v-card>
         </v-menu>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn text small @click="_eraser" v-bind="attrs" v-on="on">
+               <v-icon small>mdi-eraser</v-icon>
+            </v-btn>
+          </template>
+          <span>Limpar filtros</span>
+        </v-tooltip>
       </v-col>
 
       <v-col cols="6" md="2">

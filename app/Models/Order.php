@@ -45,6 +45,8 @@ use Illuminate\Support\Carbon;
  * @method Order filterByStatus(null|array|int $status)
  * @method Order filterByNameClient(null|string $client_name)
  * @method Order filterByAddress(null|string $address)
+ * @method Order filterByTechnicalVisitDateFrom(null|string|Carbon $technicalVisitDateFrom)
+ * @method Order filterByTechnicalVisitDateTo(null|string|Carbon $technicalVisitDateTo)
  */
 class Order extends TenantModel
 {
@@ -179,6 +181,20 @@ class Order extends TenantModel
                                 ->orWhere('city', 'LIKE', "%{$address}%")
                                 ->orWhere('cep', 'LIKE', "%{$address}%");
                 });
+        });
+    }
+
+    public function scopeFilterByTechnicalVisitDateFrom(Builder $query, $technicalVisitDateFrom)
+    {
+        return $query->when($technicalVisitDateFrom, function (Builder $query, $technicalVisitDateFrom) {
+            return $query->where('technical_visit_date', '>=', $technicalVisitDateFrom);
+        });
+    }
+
+    public function scopeFilterByTechnicalVisitDateTo(Builder $query, $technicalVisitDateTo)
+    {
+        return $query->when($technicalVisitDateTo, function (Builder $query, $technicalVisitDateTo) {
+            return $query->where('technical_visit_date', '<=', $technicalVisitDateTo);
         });
     }
 

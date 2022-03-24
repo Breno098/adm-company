@@ -293,7 +293,7 @@ export default {
       date: format( parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
       time: null,
       quantity: null,
-      value: null,
+      value: 0,
       categories: [],
       installments: [{
           number: 1,

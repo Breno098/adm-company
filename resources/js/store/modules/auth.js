@@ -35,6 +35,8 @@ export const mutations = {
     state.user = null
     state.token = null
 
+    localStorage.clear();
+
     Cookies.remove('token')
   },
 
