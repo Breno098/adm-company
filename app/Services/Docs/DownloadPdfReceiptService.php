@@ -2,6 +2,7 @@
 
 namespace App\Services\Docs;
 
+use App\Models\Company;
 use App\Models\EmployeeReceipt;
 use App\Models\Order;
 use App\Services\Image\LogoBase64;
@@ -37,7 +38,8 @@ class DownloadPdfReceiptService
     public function run(Order $order)
     {
         $this->pdf->loadView('docs.receipt', [
-            'url' => $this->logoBase64->run(),
+            'urlLogo' => $this->logoBase64->run(),
+            'company' => Company::first(),
             'order' => $order
         ]);
 

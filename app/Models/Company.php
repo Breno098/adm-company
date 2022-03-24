@@ -67,6 +67,11 @@ class Company extends Model
         return $this->hasMany(User::class);
     }
 
+    public function addressMain()
+    {
+        return $this->hasOne(Address::class)->oldestOfMany();
+    }
+
     public function addresses()
     {
         return $this->hasMany(Address::class);
@@ -108,6 +113,20 @@ class Company extends Model
     public function getSignatureAttribute()
     {
         return $this->images()->where('tag', 'signature')->first();
+    }
+
+    public function getPhonesLabelAttribute()
+    {
+        $phones = $this->contacts()->phones()->get()->pluck('contact')->toArray();
+
+        return implode(' | ', $phones);
+    }
+
+    public function getEmailsLabelAttribute()
+    {
+        $emails = $this->contacts()->emails()->get()->pluck('contact')->toArray();
+
+        return implode(' | ', $emails);
     }
 
     /**
