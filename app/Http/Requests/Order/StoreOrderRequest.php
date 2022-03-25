@@ -45,7 +45,7 @@ class StoreOrderRequest extends FormRequest
             /** Relations */
             'client_id' => 'required',
             'order_id' => 'nullable',
-            'address_id' => 'nullable',
+            'address' => 'required',
             'installments' => 'nullable|array',
             'products' => 'nullable|array',
             'services' => 'nullable|array',

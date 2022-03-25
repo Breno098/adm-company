@@ -28,10 +28,12 @@
           dark
           @click="_store(true)"
           v-if="canSave"
-          :loading="loading"
         >
           Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
         </v-btn>
+
+          <!-- :loading="loading" -->
+
       </v-col>
     </v-row>
 
@@ -178,24 +180,24 @@
               ></v-select>
             </v-col>
 
-            <v-col cols="12">
-              <v-autocomplete
-                v-model="order.address_id"
-                :items="addresses"
-                item-value="id"
-                label="ENDEREÇO"
-                :loading="loadingAddresses"
-                filled
-                dense
-                no-data-text="Nenhum endereço cadastrado para o cliente selecionado"
-              >
-                <template slot="selection" slot-scope="data">
-                  {{ data.item.street }} {{ data.item.number ? `n° ${data.item.number}` : '' }}, {{ data.item.district }} - {{ data.item.city }}
-                </template>
-                <template slot="item" slot-scope="data">
-                  {{ data.item.street }} {{ data.item.number ? `n° ${data.item.number}` : '' }}, {{ data.item.district }} - {{ data.item.city }}
-                </template>
-              </v-autocomplete>
+            <v-col cols="12" class="pt-0">
+              <v-hover v-slot="{ hover }">
+                <v-card
+                  @click="modalAddress = true"
+                  :color="hover ? 'primary' : null"
+                  :elevation="hover ? 12 : 0"
+                  outlined
+                >
+                  <v-card-text class="d-flex flex-row">
+                    <v-icon :color="hover ? 'white' :'primary'">mdi-map-marker-radius</v-icon>
+                    <div class="ml-3" :class="hover ? 'white--text' :'primary--text'">
+                      <div>{{ order.address | addressStringParteOne }}</div>
+                      <div>{{ order.address | addressStringParteTwo }}</div>
+                      <div>{{ order.address | addressStringParteThree }}</div>
+                    </div>
+                  </v-card-text>
+                </v-card>
+              </v-hover>
             </v-col>
 
             <v-col cols="12" md="6">
@@ -905,6 +907,209 @@
         </v-btn>
       </v-card-actions>
     </v-card>
+
+    <v-dialog v-model="modalAddress" max-width="800px">
+      <v-card>
+        <v-card-title>
+          <v-icon color="primary" small>mdi-map-marker-radius</v-icon>
+          <span class="font-weight-bold text-h5 ml-3">Localização</span>
+        </v-card-title>
+        <v-card-text>
+          <v-hover
+            v-slot="{ hover }"
+            v-for="address, index in addresses"
+            :key="`address-${index}`"
+            class="mb-2"
+          >
+            <v-card
+              @click="chooseAddress(address)"
+              :color="hover ? 'primary' : null"
+              :elevation="hover ? 12 : 0"
+              outlined
+            >
+              <v-card-text class="d-flex flex-row">
+                <v-icon :color="hover ? 'white' :'primary'" class="mr-2">mdi-map-marker-radius</v-icon>
+                <div class="ml-3" :class="hover ? 'white--text' :'primary--text'">
+                  <div>{{ address | addressStringParteOne }}</div>
+                  <div>{{ address | addressStringParteTwo }}</div>
+                  <div>{{ address | addressStringParteThree }}</div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-hover>
+
+          <v-divider class="my-4 mx-3"></v-divider>
+
+          <v-row>
+            <v-col cols="12" md="3">
+              <v-text-field
+                label="CEP"
+                v-mask="'#####-###'"
+                filled
+                dense
+                v-model="order.address.cep"
+                :loading="loading"
+                v-on:keyup.enter="searchCep()"
+                v-on:keyup="searchCep()"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-text-field
+                label="RUA"
+                filled
+                dense
+                v-model="order.address.street"
+                :loading="loading"
+                @input="order.address.street = order.address.street.toUpperCase()"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="3">
+              <v-text-field
+                label="NÚMERO"
+                filled
+                dense
+                v-model="order.address.number"
+                :loading="loading"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-text-field
+                label="BAIRRO"
+                filled
+                dense
+                v-model="order.address.district"
+                :loading="loading"
+                @input="order.address.district = order.address.district.toUpperCase()"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <v-text-field
+                label="CIDADE"
+                filled
+                dense
+                v-model="order.address.city"
+                :loading="loading"
+                @input="order.address.city = order.address.city.toUpperCase()"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="2">
+              <v-text-field
+                label="ESTADO"
+                filled
+                dense
+                v-model="order.address.state"
+                :loading="loading"
+                @input="order.address.state = order.address.state.toUpperCase()"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="6" md="4">
+              <v-text-field
+                label="APARTAMENTO"
+                filled
+                dense
+                v-model="order.address.apartment"
+                :loading="loading"
+                @input="order.address.apartment = order.address.apartment.toUpperCase()"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="6" md="2">
+              <v-text-field
+                label="BLOCO"
+                filled
+                dense
+                v-model="order.address.block"
+                :loading="loading"
+                @input="order.address.block = order.address.block.toUpperCase()"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="6" md="2">
+              <v-text-field
+                label="ANDAR"
+                filled
+                dense
+                v-model="order.address.floor"
+                :loading="loading"
+                @input="order.address.floor = order.address.floor.toUpperCase()"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="6" md="2">
+              <v-text-field
+                label="TORRE"
+                filled
+                dense
+                v-model="order.address.tower"
+                :loading="loading"
+                @input="order.address.tower = order.address.tower.toUpperCase()"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="6" md="2">
+              <v-text-field
+                label="CASA"
+                filled
+                dense
+                v-model="order.address.house"
+                :loading="loading"
+                @input="order.address.house = order.address.house.toUpperCase()"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12">
+              <v-text-field
+                label="COMPLEMENTO"
+                filled
+                dense
+                v-model="order.address.complement"
+                :loading="loading"
+                @input="order.address.complement = order.address.complement.toUpperCase()"
+                clearable
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="btn-primary"
+            class="rounded-lg"
+            small
+            text
+            @click="order.address = {}"
+          >
+            Limpar
+          </v-btn>
+          <v-btn
+            color="btn-primary"
+            class="rounded-lg"
+            small
+            dark
+            @click="modalAddress = false"
+          >
+            Ok
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -942,6 +1147,8 @@ export default {
     },
   },
   data: () => ({
+    modalAddress: false,
+    addressDetails: false,
     tab: null,
     loading: false,
     loadingClients: false,
@@ -956,7 +1163,6 @@ export default {
     menu_date_installments_due_date: [],
     errors: {
       client_id: false,
-      address_id: false,
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
@@ -981,6 +1187,22 @@ export default {
       status: 'AGUARDANDO APROVAÇÃO',
       address_id: null,
       accepted_payment_methods: 'PIX,DINHEIRO,CARTÃO DÉBITO,CARTÃO CRÉDITO',
+      address: {
+        number: null,
+        district: null,
+        city: null,
+        state: null,
+        street: null,
+        cep: null,
+        complement: null,
+        apartment: null,
+        floor: null,
+        description: null,
+        main: null,
+        block: null,
+        house: null,
+        tower: null,
+      }
     },
     clients: [],
     products: [],
@@ -1035,6 +1257,36 @@ export default {
       valueTotal -= this.order.discount_amount;
       return valueTotal.toFixed(2);
     },
+
+  },
+  filters: {
+    addressStringParteOne(address) {
+      let stringReturn = '';
+
+      stringReturn += address.street ? `R. ${address.street} ` : '';
+      stringReturn += address.number ? ` n° ${address.number} ` : '';
+      stringReturn += address.district ? address.district : '';
+      stringReturn += address.cep ? ` - ${address.cep}` : '';
+      stringReturn += address.city ? ` | ${address.city}` : '';
+      stringReturn += address.state ? ` - ${address.state}` : '';
+
+      return stringReturn ? stringReturn : 'Escolha uma localização.';
+    },
+    addressStringParteTwo(address) {
+      let stringReturn = '';
+
+      stringReturn += address.block ? ` BLOCO ${address.block} ` : '';
+      stringReturn += address.tower ? ` TORRE ${address.tower} ` : '';
+      stringReturn += address.floor ? ` ANDAR ${address.floor} ` : '';
+      stringReturn += address.apartment ? ` AP.: ${address.apartment} ` : '';
+      stringReturn += address.house ? ` CASA: ${address.house} ` : '';
+
+      return stringReturn;
+    },
+    addressStringParteThree(address) {
+      return address.complement;
+    }
+
   },
   mounted(){
     this._start();
@@ -1075,6 +1327,11 @@ export default {
       await axios.get(`/api/order/${id}`).then(response => {
         if(response.data.success){
           this.order = response.data.data;
+
+          if(!response.data.data.address) {
+             this.order.address = {};
+          }
+
           return;
         }
 
@@ -1103,9 +1360,9 @@ export default {
       this.loadingAddresses = true;
       await axios.get(`/api/address`, { params }).then(response => {
         if(response.data.success){
-          this.order.address_id = response.data.data.length > 0 ? response.data.data[0].id : null;
           return this.addresses = response.data.data;
         }
+
         this.$refs.fireDialog.error({ title: 'Error ao carregar endereços' })
       });
       this.loadingAddresses = false;
@@ -1205,6 +1462,9 @@ export default {
 
       return response.data.success;
     },
+    async searchCep() {
+      alert('cep');
+    },
     async serviceOrderDownload(){
       await this._store();
 
@@ -1237,6 +1497,10 @@ export default {
         })
       }
     },
+    chooseAddress(address) {
+      this.order.address = { ...address };
+      // this.addressDetails = true;
+    }
   }
 
 }

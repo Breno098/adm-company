@@ -20,7 +20,7 @@ class IndexAddressService
     public function run(array $filters = [], array $relations = [], $orderBy = false, $itemsPerPage = false)
     {
         return Address::with($relations)
-            ->filterClientId(Arr::get($filters, 'client_id'))
+            ->filterClient(Arr::get($filters, 'client_id'))
             ->when(
                 $itemsPerPage,
                 function (Builder $builder) use ($itemsPerPage) {

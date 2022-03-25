@@ -4,20 +4,27 @@ namespace App\Services\Order;
 
 use App\Models\Item;
 use App\Models\Order;
+use App\Services\Address\StoreAddressByRelationService;
 use App\Services\Installment\StoreInstallmentByOrderService;
 use Illuminate\Support\Arr;
-use App\Services\Installment\StoreInstallmentService;
 
 class StoreOrderService
 {
     protected StoreInstallmentByOrderService $storeInstallmentByOrderService;
 
+    protected StoreAddressByRelationService $storeAddressByRelationService;
+
     /**
      * @param StoreInstallmentByOrderService $storeInstallmentByOrderService
+     * @param StoreAddressByRelationService $storeAddressByRelationService
      */
-    public function __construct(StoreInstallmentByOrderService $storeInstallmentByOrderService)
+    public function __construct(
+        StoreInstallmentByOrderService $storeInstallmentByOrderService,
+        StoreAddressByRelationService $storeAddressByRelationService
+    )
     {
         $this->storeInstallmentByOrderService = $storeInstallmentByOrderService;
+        $this->storeAddressByRelationService = $storeAddressByRelationService;
     }
 
     /**
@@ -30,18 +37,30 @@ class StoreOrderService
         $order = Order::create($data);
 
         $order->client()->associate(Arr::get($data, 'client_id'));
-        $order->address()->associate(Arr::get($data, 'address_id'));
 
-        $this->insertProducts($data['products'] ?? [], $order);
-        $this->insertServices($data['services'] ?? [], $order);
+        $this->storeAddressByRelationService->run($data['address'], $order);
 
-        $order->save();
+        $this->insertItems($data, $order);
 
         foreach ($data['installments'] ?? [] as $installment) {
             $this->storeInstallmentByOrderService->run($installment, $order);
         }
 
         return $order;
+    }
+
+    /**
+     * @param array $data
+     * @param Order $order
+     *
+     * @return bool
+     */
+    private function insertItems(array $data = [], Order $order)
+    {
+        $this->insertProducts($data['products'] ?? [], $order);
+        $this->insertServices($data['services'] ?? [], $order);
+
+        return $order->save();
     }
 
     private function insertProducts($products, Order $order){

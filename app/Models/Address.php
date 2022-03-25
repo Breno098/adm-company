@@ -21,8 +21,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $block
  * @property string $house
  * @property string $tower
+ * @property int $owner_id
+ * @property string $owner_type
  *
- * @method Address filterClientId(null|string|int $clientId)
+ * @method Address filterClient(null|int|Client $client)
  */
 class Address extends TenantModel
 {
@@ -42,7 +44,12 @@ class Address extends TenantModel
         'main',
         'block',
         'house',
-        'tower'
+        'tower',
+        'company_id',
+        'employee_id',
+        'client_id',
+        'owner_id',
+        'owner_type',
     ];
 
     protected $casts = [
@@ -52,22 +59,30 @@ class Address extends TenantModel
     protected $hidden = [
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'owner_id',
+        'owner_type',
     ];
+
+    public function owner()
+    {
+        return $this->morphTo();
+    }
 
     /**
      * Scopes
      */
 
-    /**
-     * @param Builder $builder
-     * @param int|string|null $clientId
-     */
-    public function scopeFilterClientId(Builder $builder, $clientId)
+    public function scopeFilterClient(Builder $builder, $client)
     {
-        return $builder->when($clientId, function (Builder $builder, $clientId) {
-            return $builder->where('client_id', $clientId);
-        });
+        return $builder->when(
+            $client,
+            function (Builder $builder, $client) {
+                return $builder
+                        ->where('owner_id', $client instanceof Client ? $client->id : $client)
+                        ->where('owner_type', 'Client');
+            }
+        );
     }
 
     /**

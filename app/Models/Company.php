@@ -8,6 +8,32 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @package App\Models
+ *
+ * @property string $name
+ * @property string $cpf
+ * @property string $cnpj
+ * @property string $fantasy_name
+ * @property Carbon $deadline
+ *
+ * @property-read string $phones_label
+ * @property-read string $emails_label
+ * @property-read string $path_storage
+ *
+ * @property User[]|Collection $users
+ * @property Address[]|Collection $addresses
+ * @property Address $addressMain
+ * @property Contact[]|Collection $contacts
+ * @property BankAccount[]|Collection $bankAccount
+ * @property Image[]|Collection $images
+ *
+ * @method Company filterByName(null|string $name)
+ * @method Company filterByCpf(null|string $cpf)
+ * @method Company filterByCnpj(null|string $cnpj)
+ *
+ * @method bool makeDirectory()
+ */
 class Company extends Model
 {
     use HasFactory, SoftDeletes;
@@ -36,10 +62,7 @@ class Company extends Model
     ];
 
     /**
-     * @param Builder $builder
-     * @param string $name
-     *
-     * @return
+     * Scopes
      */
     public function scopeFilterByName(Builder $builder, $name)
     {
@@ -62,6 +85,9 @@ class Company extends Model
         });
     }
 
+    /**
+     * Relationships
+     */
     public function users()
     {
         return $this->hasMany(User::class);
@@ -74,7 +100,7 @@ class Company extends Model
 
     public function addresses()
     {
-        return $this->hasMany(Address::class);
+        return $this->morphMany(Address::class, 'owner');
     }
 
     public function contacts()

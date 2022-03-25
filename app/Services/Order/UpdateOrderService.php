@@ -4,20 +4,27 @@ namespace App\Services\Order;
 
 use App\Models\Item;
 use App\Models\Order;
+use App\Services\Address\UpdateOrStoreAddressByRelationService;
 use App\Services\Installment\StoreInstallmentByOrderService;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 
 class UpdateOrderService
 {
     protected StoreInstallmentByOrderService $storeInstallmentByOrderService;
 
+    protected UpdateOrStoreAddressByRelationService $updateOrStoreAddressByRelationService;
+
     /**
      * @param StoreInstallmentByOrderService $storeInstallmentByOrderService
+     * @param UpdateOrStoreAddressByRelationService $updateOrStoreAddressByRelationService
      */
-    public function __construct(StoreInstallmentByOrderService $storeInstallmentByOrderService)
+    public function __construct(
+        StoreInstallmentByOrderService $storeInstallmentByOrderService,
+        UpdateOrStoreAddressByRelationService $updateOrStoreAddressByRelationService
+    )
     {
         $this->storeInstallmentByOrderService = $storeInstallmentByOrderService;
+        $this->updateOrStoreAddressByRelationService = $updateOrStoreAddressByRelationService;
     }
 
     /**
@@ -31,14 +38,10 @@ class UpdateOrderService
         $order->update($data);
 
         $order->client()->associate(Arr::get($data, 'client_id'));
-        $order->address()->associate(Arr::get($data, 'address_id'));
 
-        $order->items()->sync([]);
+        $this->updateOrStoreAddressByRelationService->run($data['address'], $order);
 
-        $this->updateProducts($data['products'], $order);
-        $this->updateSevices($data['services'], $order);
-
-        $order->save();
+        $this->syncItems($data, $order);
 
         $order->installments()->delete();
 
@@ -47,6 +50,22 @@ class UpdateOrderService
         }
 
         return $order;
+    }
+
+    /**
+     * @param array $data
+     * @param Order $order
+     *
+     * @return bool
+     */
+    private function syncItems(array $data = [], Order $order)
+    {
+        $order->items()->sync([]);
+
+        $this->updateProducts($data['products'], $order);
+        $this->updateSevices($data['services'], $order);
+
+        return $order->save();
     }
 
     private function updateProducts($products, Order $order)

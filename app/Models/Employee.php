@@ -54,7 +54,7 @@ class Employee extends TenantModel
      */
     public function addresses()
     {
-        return $this->hasMany(Address::class);
+        return $this->morphMany(Address::class, 'owner');
     }
 
     public function contacts()
