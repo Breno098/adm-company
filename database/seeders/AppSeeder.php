@@ -39,15 +39,15 @@ class AppSeeder extends Seeder
         //     }
         // });
 
-        Order::all()->map(function(Order $order){
-            if($order->address){
-                $data = array_merge($order->address->toArray(), [
-                    'owner_id' => $order->id,
-                    'owner_type' => 'Order'
-                ]);
+        // Order::all()->map(function(Order $order){
+        //     if($order->address){
+        //         $data = array_merge($order->address->toArray(), [
+        //             'owner_id' => $order->id,
+        //             'owner_type' => 'Order'
+        //         ]);
 
-                Address::create(Arr::except($data, ['id']));
-            }
-        });
+        //         Address::create(Arr::except($data, ['id']));
+        //     }
+        // });
     }
 }
