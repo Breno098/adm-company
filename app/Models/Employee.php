@@ -4,7 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
+/**
+ * @package App\Models
+ *
+ * @property string $name
+ * @property string $cpf
+ * @property string $rg
+ * @property Carbon $birth_date
+ * @property float $salary
+ * @property Carbon $admission_date
+ * @property Carbon $resignation_date
+ * @property bool $active
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $deleted_at
+ *
+ * @property Position $position
+ * @property Address[]|Collection $addresses
+ * @property Contact[]|Collection $contacts
+ * @property Company $company
+ */
 class Employee extends TenantModel
 {
     use HasFactory, SoftDeletes;

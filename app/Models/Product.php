@@ -8,6 +8,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @package App\Models
+ *
+ * @property string $name
+ * @property string $description
+ * @property float $default_value
+ * @property string $type
+ * @property string $unit_measure
+ * @property string $brand
+ * @property float $cost
+ * @property string $bar_code
+ * @property int $warranty_days
+ * @property string $warranty_conditions
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $deleted_at
+ *
+ * @property Category[]|Collection $categories
+ * @property Image[]|Collection $images
+ *
+ * @method Product filterByName(null|string $name)
+ */
 class Product extends TenantModel
 {
     use HasFactory, SoftDeletes;
@@ -38,6 +60,19 @@ class Product extends TenantModel
         parent::booted();
     }
 
+     /**
+     * Scopes
+     */
+    public function scopeFilterByName(Builder $builder, $name)
+    {
+        return $builder->when($name, function (Builder $builder, $name) {
+            return $builder->where('name', 'like', "%{$name}%");
+        });
+    }
+
+    /**
+     * Relationships
+     */
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_item', 'category_id', 'item_id');

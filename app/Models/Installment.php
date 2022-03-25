@@ -20,6 +20,9 @@ use Carbon\Carbon;
  * @property Carbon $due_date
  * @property Carbon $pay_day
  * @property float $value
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $deleted_at
  *
  * @property Order $order
  * @property Expense $expense

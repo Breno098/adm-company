@@ -4,9 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @package App\Models
+ *
+ * @property string $number
+ * @property string $district
+ * @property string $city
+ * @property string $state
+ * @property string $cep
+ * @property string $complement
+ * @property string $apartment
+ * @property string $description
+ * @property bool $main
+ * @property string $block
+ * @property string $house
+ * @property string $tower
+ *
+ * @method Address filterClientId(null|string|int $clientId)
+ */
 class Address extends TenantModel
 {
     use HasFactory, SoftDeletes;
@@ -44,12 +61,12 @@ class Address extends TenantModel
 
     /**
      * @param Builder $builder
-     * @param int $client_id
+     * @param int|string|null $clientId
      */
-    public function scopeFilterClientId(Builder $builder, $cliente_id)
+    public function scopeFilterClientId(Builder $builder, $clientId)
     {
-        return $builder->when($cliente_id, function (Builder $builder, $cliente_id) {
-            return $builder->where('client_id', $cliente_id);
+        return $builder->when($clientId, function (Builder $builder, $clientId) {
+            return $builder->where('client_id', $clientId);
         });
     }
 
