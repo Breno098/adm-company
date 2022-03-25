@@ -1463,7 +1463,30 @@ export default {
       return response.data.success;
     },
     async searchCep() {
-      alert('cep');
+      let cep = this.order.address.cep.replace('-', '');
+
+      if(cep.length != 8)
+        return;
+
+      this.$refs.fireDialog.loading({ title: 'Buscando endereço' })
+
+      let params = { cep };
+      await axios.get(`/api/address/searchCep`, { params }).then(response => {
+        if(response.data.data.erro){
+          return this.$refs.fireDialog.error({ title: 'Error ao carregar endereço' })
+        }
+
+        let { logradouro, bairro, localidade, uf } = response.data.data;
+
+        this.order.address.street = logradouro.toUpperCase();
+        this.order.address.district = bairro.toUpperCase();
+        this.order.address.city = localidade.toUpperCase();
+        this.order.address.state = uf.toUpperCase();
+
+        this.$refs.fireDialog.hide();
+      }).catch(error => {
+        this.$refs.fireDialog.error({ title: 'Error ao carregar endereço' })
+      })
     },
     async serviceOrderDownload(){
       await this._store();
