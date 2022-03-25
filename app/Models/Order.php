@@ -92,7 +92,8 @@ class Order extends TenantModel
 
     public function address()
     {
-        return $this->morphOne(Address::class, 'owner');
+        return $this->belongsTo(Address::class);
+        // return $this->morphOne(Address::class, 'owner');
     }
 
     public function items()
