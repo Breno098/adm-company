@@ -259,7 +259,7 @@ class Order extends TenantModel
 
     public function getAmountToCurrencyExtensiveAttribute(): string
     {
-        return $this->amount ? (new NumberExtensive($this->amount))->toCurrency() : '';
+        return $this->amount ? (new NumberExtensive($this->amount))->toCurrency() : 'zero reais';
     }
 
     public function getDiscountAmountToCurrencyAttribute(): string

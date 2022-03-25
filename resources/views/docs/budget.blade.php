@@ -55,40 +55,36 @@
           <td colspan="6"> <strong> CLIENTE: </strong> {{ $order->client->name }} </td>
         </tr>
 
-        @if($order->address_id)
-          <tr>
-            <td colspan="6">
-              <strong> ENDEREÇO: </strong>
+        <tr>
+          <td colspan="6">
+            <strong> ENDEREÇO: </strong>
+            @if($order->address)
               {{ $order->address->street ? "R. {$order->address->street} nº {$order->address->number}" : '' }}
               {{ $order->address->block ? "| BLOCO: {$order->address->block}" : '' }}
               {{ $order->address->tower ? "| TORRE: {$order->address->tower}" : '' }}
               {{ $order->address->floor ? "| ANDAR: {$order->address->floor}" : '' }}
               {{ $order->address->apartment ? "| AP.: {$order->address->apartment}" : '' }}
               {{ $order->address->house ? "| CASA: {$order->address->house}" : '' }}
-            </td>
-          </tr>
+            @endif
+          </td>
+        </tr>
 
-          <tr>
-            <td colspan="3"> <strong> BAIRRO:  </strong> {{ $order->address->district }} </td>
-            <td colspan="3"> <strong> CIDADE:  </strong> {{ $order->address->city }} </td>
-          </tr>
-        @endif
+        <tr>
+          <td colspan="3"> <strong> BAIRRO:  </strong> {{ optional($order->address)->district }} </td>
+          <td colspan="3"> <strong> CIDADE:  </strong> {{ optional($order->address)->city }} </td>
+        </tr>
 
-        @if($order->phones)
-          <tr>
-            <td colspan="6">
-              <strong> TELEFONE(S): </strong> {{ $order->phones }}
-            </td>
-          </tr>
-        @endif
+        <tr>
+          <td colspan="6">
+            <strong> TELEFONE(S): </strong> {{ $order->phones }}
+          </td>
+        </tr>
 
-        @if($order->emails)
-          <tr>
-            <td colspan="6">
-              <strong> EMAIL(S): </strong> {{ $order->emails }}
-            </td>
-          </tr>
-        @endif
+        <tr>
+          <td colspan="6">
+            <strong> EMAIL(S): </strong> {{ $order->emails }}
+          </td>
+        </tr>
 
         <tr>
           <td colspan="6">
