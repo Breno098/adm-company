@@ -7,9 +7,11 @@ use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Services\Product\DeleteProductService;
 use App\Services\Product\IndexProductService;
 use App\Services\Product\StoreProductService;
 use App\Services\Product\UpdateProductService;
+use Exception;
 
 class ProductController extends BaseApiController
 {
@@ -87,17 +89,22 @@ class ProductController extends BaseApiController
     }
 
     /**
+     * @param DeleteProductService $deleteProductService
      * @param Product $product
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(DeleteProductService $deleteProductService, Product $product)
     {
-        $this->authorize('product_delete');
+        try {
+            $this->authorize('product_delete');
 
-        $product->delete();
+            $deleteProductService->run($product);
 
-        return $this->sendResponse([], 'Product deleted successfully.');
+            return $this->sendResponse([], 'Product deleted successfully.');
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
     }
 
 }

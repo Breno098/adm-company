@@ -7,6 +7,17 @@ use App\Models\Service;
 class ServiceObserver
 {
     /**
+     * Handle the Product "creating" event.
+     *
+     * @param  \App\Models\Service  $service
+     * @return void
+     */
+    public function creating(Service $service)
+    {
+        $service->type = "service";
+    }
+
+    /**
      * Handle the Service "created" event.
      *
      * @param  \App\Models\Service  $service

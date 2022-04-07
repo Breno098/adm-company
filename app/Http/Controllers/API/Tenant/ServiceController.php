@@ -7,9 +7,11 @@ use App\Http\Requests\Service\StoreServiceRequest;
 use App\Http\Requests\Service\UpdateServiceRequest;
 use Illuminate\Http\Request;
 use App\Models\Service;
+use App\Services\Service\DeleteServiceService;
 use App\Services\Service\IndexServiceService;
 use App\Services\Service\StoreServiceService;
 use App\Services\Service\UpdateServiceService;
+use Exception;
 
 class ServiceController extends BaseApiController
 {
@@ -87,16 +89,21 @@ class ServiceController extends BaseApiController
     /**
      * Remove the specified resource from storage.
      *
+     * @param DeleteServiceService $deleteServiceService
      * @param  Service $service
+     *
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Service $service)
+    public function destroy(DeleteServiceService $deleteServiceService, Service $service)
     {
-        $this->authorize('service_delete');
+        try {
+            $this->authorize('service_delete');
 
-        $service->delete();
+            $deleteServiceService->run($service);
 
-        return $this->sendResponse([], 'Service deleted successfully.');
+            return $this->sendResponse([], 'Service deleted successfully.');
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
     }
-
 }

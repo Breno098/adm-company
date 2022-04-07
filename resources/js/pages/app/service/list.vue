@@ -263,12 +263,19 @@ export default {
       if (ok) {
         this.$refs.fireDialog.loading({ title: 'Deletando' });
 
-        await axios.delete(`/api/service/${service.id}`).then(response => {
-          if(response.data.success){
-            this._load();
-            this.$refs.fireDialog.hide();
-          }
-        });
+        await axios
+          .delete(`/api/service/${service.id}`)
+          .then(response => {
+            if(response.data.success){
+              this._load();
+              this.$refs.fireDialog.hide();
+            }
+          })
+          .catch(error => {
+            this.$refs.fireDialog.error({
+              message: error.response.data.message ?? ''
+            });
+          });;
       }
     },
     _edit(id){
