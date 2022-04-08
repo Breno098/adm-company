@@ -51,9 +51,9 @@ class Company extends Model
     ];
 
     protected $appends = [
-        'path_storage',
-        'logo',
-        'signature'
+        // 'path_storage',
+        // 'logo',
+        // 'signature'
     ];
 
     protected $hidden = [

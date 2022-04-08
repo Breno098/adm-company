@@ -51,13 +51,13 @@ Route::group(['middleware' => 'guest:api'], function () {
 /**
  * Tenant routes
  */
-Route::middleware('auth:api')->group( function () {
+Route::middleware(['auth:api', 'company.tenant'])->group( function () {
     Route::post('logout', [LoginController::class, 'logout']);
 
     Route::get('address/searchCep', [AddressController::class, 'searchCep']);
     Route::get('client/count', [ClientController::class, 'count']);
 
-    Route::middleware('deadline')->group( function () {
+    Route::middleware('company.tenant')->group( function () {
         Route::patch('profile/update', [ProfileController::class, 'update']);
         Route::patch('profile/password', [ProfileController::class, 'password']);
         Route::patch('profile/first-access', [ProfileController::class, 'firstAccess']);

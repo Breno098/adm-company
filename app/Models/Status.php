@@ -29,21 +29,21 @@ class Status extends Model
 
     public function orders()
     {
-        return $this->hasMany(Order::class)->authorizedTenant();
+        return $this->hasMany(Order::class);
     }
 
     public function client()
     {
-        return $this->belongsToMany(Client::class)->authorizedTenant();
+        return $this->belongsToMany(Client::class);
     }
 
     public function appointment()
     {
-        return $this->belongsToMany(Appointment::class)->authorizedTenant();
+        return $this->belongsToMany(Appointment::class);
     }
 
     public function item()
     {
-        return $this->belongsToMany(Item::class)->authorizedTenant();
+        return $this->belongsToMany(Item::class);
     }
 }
