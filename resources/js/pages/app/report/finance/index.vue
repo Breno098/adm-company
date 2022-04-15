@@ -49,87 +49,107 @@
         v-for="month in report.monthly"
         :key="month.month"
       >
-        <v-hover v-slot="{ hover }">
-          <router-link :to="{ name: 'report.finance.details', params: { year: filter.year, month: month.month } }" style="text-decoration: none">
-            <v-card
-              :class="{ 'on-hover': hover }"
-              :elevation="hover ? 12 : 2"
-            >
-              <v-app-bar color="primary" dense>
-                <v-toolbar-title class="white--text">{{ month.month_name }}</v-toolbar-title>
-              </v-app-bar>
+        <v-expansion-panels >
+          <v-expansion-panel>
+            <v-expansion-panel-header class="white--text" color="primary">
+              {{ month.month_name }}
 
-              <v-card-text>
-                <div class="text-subtitle-1">Faturamento</div>
-                <h1 class="green--text">{{ month.amount_paid | formatMoney }}</h1>
+              <template v-slot:actions class="d-flex justify-center">
+                  <v-icon color="white" small>
+                    mdi-chevron-down
+                  </v-icon>
+              </template>
+            </v-expansion-panel-header>
 
-                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+            <v-expansion-panel-content>
+              <router-link
+                :to="{ name: 'report.finance.details', params: { year: filter.year, month: month.month } }"
+                style="text-decoration: none"
+              >
+                <v-card elevation="0">
+                  <v-card-text>
+                    <div class="text-subtitle-1">Faturamento</div>
+                    <h1 class="green--text">{{ month.amount_paid | formatMoney }}</h1>
 
-                <div class="text-subtitle-1">Custos</div>
-                <h1 class="red--text">{{ month.expense_paid | formatMoney }}</h1>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
 
-                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                    <div class="text-subtitle-1">Custos</div>
+                    <h1 class="red--text">{{ month.expense_paid | formatMoney }}</h1>
 
-                <div class="text-subtitle-1">Lucro</div>
-                <h1 :class="month.profit >= 0 ? 'green--text' : 'red--text'">{{ month.profit | formatMoney }}</h1>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
 
-                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
-                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                    <div class="text-subtitle-1">Lucro</div>
+                    <h1 :class="month.profit >= 0 ? 'green--text' : 'red--text'">{{ month.profit | formatMoney }}</h1>
 
-                <div class="text-subtitle-1">A receber</div>
-                <h1 class="blue--text">{{ month.amount_to_receive | formatMoney }}</h1>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
 
-                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                    <div class="text-subtitle-1">A receber</div>
+                    <h1 class="blue--text">{{ month.amount_to_receive | formatMoney }}</h1>
 
-                <div class="text-subtitle-1">Não recebido</div>
-                <h1 class="orange--text">{{ month.amount_unpaid | formatMoney }}</h1>
-              </v-card-text>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
 
-              <v-card-actions>
-                <v-spacer/>
-                <v-btn color="primary" small>
-                  Resumo
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </router-link>
-        </v-hover>
+                    <div class="text-subtitle-1">Não recebido</div>
+                    <h1 class="orange--text">{{ month.amount_unpaid | formatMoney }}</h1>
+                  </v-card-text>
+
+                  <v-card-actions>
+                    <v-spacer/>
+                    <v-btn color="primary" small>
+                      Resumo
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </router-link>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-col>
 
       <v-col cols="12" v-if="report.monthly">
-        <v-card>
-          <v-app-bar color="primary" dense>
-            <v-spacer></v-spacer>
-            <v-toolbar-title class="white--text">{{ report.annually.year }}</v-toolbar-title>
-            <v-spacer></v-spacer>
-          </v-app-bar>
+        <v-expansion-panels >
+          <v-expansion-panel>
+            <v-expansion-panel-header class="white--text" color="primary">
+              {{ report.annually.year }}
 
-          <v-card-text class="text-center">
-            <div class="text-subtitle-1">Faturamento</div>
-            <h1 class="green--text">{{ report.annually.amount_paid | formatMoney }}</h1>
+              <template v-slot:actions class="d-flex justify-center">
+                  <v-icon color="white" small>
+                    mdi-chevron-down
+                  </v-icon>
+              </template>
+            </v-expansion-panel-header>
 
-              <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+             <v-expansion-panel-content>
+               <v-card elevation="0">
+                  <v-card-text>
+                    <div class="text-subtitle-1">Faturamento</div>
+                    <h1 class="green--text">{{ report.annually.amount_paid | formatMoney }}</h1>
 
-            <div class="text-subtitle-1">Custos</div>
-            <h1 class="red--text">{{ report.annually.expense_paid | formatMoney }}</h1>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
 
-            <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                    <div class="text-subtitle-1">Custos</div>
+                    <h1 class="red--text">{{ report.annually.expense_paid | formatMoney }}</h1>
 
-            <div class="text-subtitle-1">Lucro</div>
-            <h1 :class="report.annually.profit >= 0 ? 'green--text' : 'red--text'">{{ report.annually.profit | formatMoney }}</h1>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
 
-            <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
-            <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                    <div class="text-subtitle-1">Lucro</div>
+                    <h1 :class="report.annually.profit >= 0 ? 'green--text' : 'red--text'">{{ report.annually.profit | formatMoney }}</h1>
 
-            <div class="text-subtitle-1">A receber</div>
-            <h1 class="blue--text">{{ report.annually.amount_to_receive | formatMoney }}</h1>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
 
-            <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+                    <div class="text-subtitle-1">A receber</div>
+                    <h1 class="blue--text">{{ report.annually.amount_to_receive | formatMoney }}</h1>
 
-            <div class="text-subtitle-1">Não recebido</div>
-            <h1 class="orange--text">{{ report.annually.amount_unpaid | formatMoney }}</h1>
-          </v-card-text>
-        </v-card>
+                    <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                    <div class="text-subtitle-1">Não recebido</div>
+                    <h1 class="orange--text">{{ report.annually.amount_unpaid | formatMoney }}</h1>
+                  </v-card-text>
+                </v-card>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-col>
     </v-row>
   </div>
@@ -159,14 +179,6 @@ export default {
   },
   mounted() {
     this._loadReport();
-  },
-  filters: {
-    formatDate(date){
-      return date ? moment(date).format('DD/MM/YYYY') : '';
-    },
-    formatMoney(money){
-      return money ? 'R$ ' + money.toFixed(2).toString().replace('.', ',') : 'R$ 0,00';
-    },
   },
   methods: {
     addYear() {

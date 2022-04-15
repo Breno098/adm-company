@@ -66,7 +66,7 @@ class Order extends TenantModel
         'warranty_conditions',
         'comments',
         'status',
-        'payment_status',
+        // 'payment_status',
         'number_of_installments',
         'accepted_payment_methods',
         'work_found',
@@ -80,6 +80,10 @@ class Order extends TenantModel
         'amount_paid' => 'float',
         'discount_amount' => 'float',
         'discount_percentage' => 'float',
+    ];
+
+    protected $appends = [
+        'payment_status'
     ];
 
     /**
@@ -201,6 +205,26 @@ class Order extends TenantModel
     /**
      * Acessors
      */
+
+    public function getPaymentStatusAttribute()
+    {
+        $year = now()->format('Y');
+        $month = now()->format('m');
+
+        $installmentsUnpaid = $this->installments()->unpaidMonthly($year, $month)->get();
+
+        if($installmentsUnpaid->count()){
+            return 'INADIMPLENTE';
+        }
+
+        $installmentsPaid = $this->installments()->paidMonthly($year, $month)->get();
+
+        if($this->installments->count() == $installmentsPaid->count()){
+            return 'PAGO TOTAL';
+        }
+
+        return 'EM ABERTO';
+    }
 
     public function getAcceptedPaymentMethodsExplodeAttribute()
     {

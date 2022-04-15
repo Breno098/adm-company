@@ -136,8 +136,7 @@
             <thead>
               <tr>
                 <th class="text-left" style="width: 45%">TITULO</th>
-                <th class="text-left" style="width: 20%">VALOR</th>
-                <th class="text-left" style="width: 25%">DATA</th>
+                <th class="text-left" style="width: 45%">VALOR</th>
                 <th></th>
               </tr>
             </thead>
@@ -149,7 +148,6 @@
               >
                 <td>{{ item.title }}</td>
                 <td>{{ item.value | formatMoney }}</td>
-                <td>{{ item.date | formatDMY }}</td>
                 <td>
                   <v-menu
                     transition="slide-y-transition"

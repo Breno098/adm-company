@@ -193,19 +193,19 @@
       </v-col>
 
       <v-col cols="12" v-for="order in table.items" :key="order.id" v-else>
-        <v-hover v-slot="{ hover }">
+        <v-hover v-slot="{ hover }" style="cursor: pointer;">
           <v-card
             :class="{ 'on-hover': hover }"
             :elevation="hover ? 12 : 2"
           >
             <v-card-text v-on:click="_edit(order.id)">
                 <v-row>
-                  <v-col cols="12" md="9">
+                  <v-col cols="12" md="6">
                     <div class="font-weight-bold text-h6">
                       {{ order.id }}
                     </div>
                   </v-col>
-                  <v-col cols="12" md="3" class="d-flex justify-center">
+                  <v-col cols="12" md="3">
                     <v-chip
                       v-if="order.status"
                       class="d-flex justify-center"
@@ -218,6 +218,19 @@
                       <v-icon class="ml-2">{{ order.status | statusIcon }}</v-icon>
                     </v-chip>
                   </v-col>
+                  <v-col cols="12" md="3">
+                    <v-chip
+                      v-if="order.payment_status"
+                      class="d-flex justify-center"
+                      label
+                      :color="order.payment_status | paymentStatusColor"
+                      style="width: 100%;"
+                      small
+                    >
+                      {{ order.payment_status }}
+                      <v-icon class="ml-2">{{ order.payment_status | paymentStatusIcon }}</v-icon>
+                    </v-chip>
+                  </v-col>
 
                   <v-col cols="12" md="9">
                     <div>
@@ -227,12 +240,6 @@
                       {{ order.address.street }} {{ order.address.number ? `n° ${order.address.number}` : '' }}, {{ order.address.district }} - {{ order.address.city }}
                     </div>
                   </v-col>
-
-                  <!-- <v-col cols="12" md="3" class="d-flex align-end">
-                    <v-btn text color="btn-primary" v-on:click="_edit(order.id)" small block @click="expand = !expand">
-                      Ver informações
-                    </v-btn>
-                  </v-col> -->
                 </v-row>
             </v-card-text>
 
@@ -318,26 +325,6 @@ export default {
       'CONCLUÍDO'
     ]
   }),
-  filters: {
-    statusColor(value){
-      switch (value) {
-        case 'CANCELADO': return 'orange accent-3';
-        case 'AGUARDANDO APROVAÇÃO': return 'yellow accent-2';
-        case 'EM ANDAMENTO': return 'primary';
-        case 'CONCLUÍDO': return 'green';
-        default: return '';
-      }
-    },
-    statusIcon(value){
-      switch (value) {
-        case 'CANCELADO': return 'mdi-close';
-        case 'AGUARDANDO APROVAÇÃO': return 'mdi-thumb-up';
-        case 'EM ANDAMENTO': return 'mdi-dots-horizontal';
-        case 'CONCLUÍDO': return 'mdi-check';
-        default: return '';
-      }
-    }
-  },
   mounted() {
     this._start();
   },

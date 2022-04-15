@@ -28,12 +28,10 @@
           dark
           @click="_store(true)"
           v-if="canSave"
+          :loading="loading"
         >
           Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
         </v-btn>
-
-          <!-- :loading="loading" -->
-
       </v-col>
     </v-row>
 
@@ -697,9 +695,25 @@
           <v-divider class="mx-4 my-3"></v-divider>
 
           <v-row>
-            <v-col cols="12">
+            <v-col cols="12" md="9">
               <div class="text-h6 font-weight-bold"> Pagamento(s) </div>
-              <v-divider class="mx-4 my-3"></v-divider>
+            </v-col>
+
+            <v-col cols="12" md="3">
+              <v-chip
+                v-if="order.payment_status"
+                class="d-flex justify-center mt-2"
+                label
+                :color="order.payment_status | paymentStatusColor"
+                small
+              >
+                {{ order.payment_status }}
+                <v-icon class="ml-2">{{ order.payment_status | paymentStatusIcon }}</v-icon>
+              </v-chip>
+            </v-col>
+
+            <v-col cols="12">
+              <v-divider class="mx-4"></v-divider>
             </v-col>
 
             <v-col cols="12" md="6">
@@ -737,6 +751,7 @@
                 dense
                 label="VALOR"
                 v-model="installment.value"
+                clearable
               ></v-text-field>
             </v-col>
 
@@ -747,6 +762,7 @@
                 filled
                 dense
                 v-model="installment.payment_method"
+                clearable
               ></v-select>
             </v-col>
 
@@ -1285,8 +1301,7 @@ export default {
     },
     addressStringParteThree(address) {
       return address.complement;
-    }
-
+    },
   },
   mounted(){
     this._start();
