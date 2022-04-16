@@ -39,6 +39,8 @@ class UpdateOrderService
 
         $order->client()->associate(Arr::get($data, 'client_id'));
 
+        $order->technician()->associate(Arr::get($data, 'technician_id'));
+
         $this->updateOrStoreAddressByRelationService->run($data['address'], $order);
 
         $this->syncItems($data, $order);

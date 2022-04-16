@@ -70,7 +70,7 @@ class Order extends TenantModel
         'number_of_installments',
         'accepted_payment_methods',
         'work_found',
-        'work_done'
+        'work_done',
     ];
 
     protected $casts = [
@@ -89,6 +89,11 @@ class Order extends TenantModel
     /**
      * Relationships
      */
+    public function technician()
+    {
+        return $this->belongsTo(Employee::class, 'technician_id', 'id');
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);

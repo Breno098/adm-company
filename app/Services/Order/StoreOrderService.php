@@ -38,6 +38,8 @@ class StoreOrderService
 
         $order->client()->associate(Arr::get($data, 'client_id'));
 
+        $order->technician()->associate(Arr::get($data, 'technician_id'));
+
         $this->storeAddressByRelationService->run($data['address'], $order);
 
         $this->insertItems($data, $order);

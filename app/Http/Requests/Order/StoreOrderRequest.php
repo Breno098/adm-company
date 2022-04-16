@@ -43,8 +43,9 @@ class StoreOrderRequest extends FormRequest
             'work_done' => 'nullable|string',
 
             /** Relations */
-            'client_id' => 'required',
-            'order_id' => 'nullable',
+            'client_id' => 'required|integer',
+            'technician_id' => 'nullable|integer',
+            // 'order_id' => 'nullable',
             'address' => 'required',
             'installments' => 'nullable|array',
             'products' => 'nullable|array',

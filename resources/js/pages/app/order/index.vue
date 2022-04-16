@@ -236,7 +236,7 @@
                     <div>
                       {{ order.client.name }}
                     </div>
-                    <div v-if="order.address">
+                    <div v-if="order.address.street">
                       {{ order.address.street }} {{ order.address.number ? `n° ${order.address.number}` : '' }}, {{ order.address.district }} - {{ order.address.city }}
                     </div>
                   </v-col>
@@ -259,15 +259,20 @@
                   <v-icon small color="primary">mdi-calendar</v-icon>
                   <b>DATA VISITA TÉCNICA:</b> {{ order.technical_visit_date | formatDMY }} {{ order.technical_visit_time }}
 
-                  <v-divider color="primary" class="mx-2 my-1"/>
+                  <v-divider class="mx-2 my-1"/>
 
                   <v-icon small color="btn-delete">mdi-comment-alert-outline</v-icon>
                   <b>PROBLEMA RECLAMADO:</b> {{ order.complaint }}
 
-                  <v-divider color="primary" class="mx-2 my-1"/>
+                  <v-divider class="mx-2 my-1"/>
 
                   <v-icon small color="green">mdi-comment-check-outline</v-icon>
                   <b>SERVIÇO REALIZADO:</b> {{ order.work_done }}
+
+                  <v-divider class="mx-2 my-1"/>
+
+                  <v-icon small color="primary">mdi-account-outline</v-icon>
+                  <b>RESPONSÁVEL TÉCNICO:</b> {{ order.technician.name }}
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -317,6 +322,7 @@ export default {
       itemsPerPage: 10,
       items: [],
       loading: false,
+      relations: [ 'client', 'address', 'technician' ],
     },
     statuses: [
       'CANCELADO',
@@ -332,8 +338,7 @@ export default {
     async _start(){
       this._loadWithStorageFilters();
     },
-    async _loadWithStorageFilters()
-    {
+    async _loadWithStorageFilters() {
       let filter = localStorage.getItem('filter-order');
 
       if(filter !== 'null' && filter) {
@@ -349,7 +354,7 @@ export default {
         page: this.table.page,
         itemsPerPage: this.table.itemsPerPage,
         orderBy: this.table.orderBy,
-        relations: [ 'client', 'address' ],
+        relations: this.table.relations,
         ...this.table.filters
       }
 

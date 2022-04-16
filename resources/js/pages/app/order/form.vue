@@ -96,26 +96,6 @@
         </v-tooltip>
       </v-col>
 
-      <!-- <v-col cols="2">
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              @click="warrantyOrderDownload"
-              v-bind="attrs"
-              v-on="on"
-              color="btn-primary"
-              class="rounded-lg"
-              block
-              small
-              dark
-            >
-              <v-icon>mdi-format-align-center</v-icon>
-            </v-btn>
-          </template>
-          <span>Gerar Order de Garantia</span>
-        </v-tooltip>
-      </v-col> -->
-
       <v-col cols="2">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -198,6 +178,36 @@
               </v-hover>
             </v-col>
 
+            <v-col cols="12">
+              <v-autocomplete
+                v-model="order.technician_id"
+                :items="employees"
+                item-value="id"
+                item-text="name"
+                label="RESPONSÁVEL TÉCNICO"
+                :loading="loadingEmployees"
+                filled
+                dense
+                no-data-text="Nenhum técnico encontrado"
+              >
+                <template v-slot:selection="data">
+                  {{ data.item.name }}
+                  <small v-if="data.item.position_id" class="ml-3">
+                    ({{ data.item.position.name }})
+                  </small>
+                </template>
+                <template v-slot:item="data">
+                    <v-list-item-content>
+                      <v-list-item-title v-html="data.item.name"></v-list-item-title>
+                      <v-list-item-subtitle
+                        v-if="data.item.position_id"
+                        v-html="data.item.position.name"
+                      ></v-list-item-subtitle>
+                    </v-list-item-content>
+                </template>
+              </v-autocomplete>
+            </v-col>
+
             <v-col cols="12" md="6">
               <v-dialog
                 ref="dialog"
@@ -210,7 +220,7 @@
                   <v-text-field
                     :value="order.technical_visit_date | formatDMY"
                     label="DATA VISITA TÉCNICA"
-                    prepend-icon="mdi-calendar"
+                    prepend-inner-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
                     v-on="on"
@@ -254,7 +264,7 @@
                   <v-text-field
                     v-model="order.technical_visit_time"
                     label="HORÁRIO VISITA TÉCNICA"
-                    prepend-icon="mdi-clock-time-four-outline"
+                    prepend-inner-icon="mdi-clock-time-four-outline"
                     readonly
                     v-bind="attrs"
                     v-on="on"
@@ -776,7 +786,7 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    :value="installment.pay_day | formatDate"
+                    :value="installment.pay_day | formatDMY"
                     label="DATA PAGAMENTO"
                     readonly
                     v-bind="attrs"
@@ -809,7 +819,7 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    :value="installment.due_date | formatDate"
+                    :value="installment.due_date | formatDMY"
                     label="DATA VENCIMENTO"
                     readonly
                     v-bind="attrs"
@@ -1157,11 +1167,6 @@ export default {
       }
     }
   },
-  filters: {
-    formatDate(date){
-      return date ? moment(date).format('DD/MM/YYYY') : '';
-    },
-  },
   data: () => ({
     modalAddress: false,
     addressDetails: false,
@@ -1172,6 +1177,7 @@ export default {
     loadingServices: false,
     loadingAddresses: false,
     loadingPayment: false,
+    loadingEmployees: false,
     menu_technical_visit_date: false,
     menu_time: false,
     menu_date_payments: [],
@@ -1202,6 +1208,7 @@ export default {
       client_id: null,
       status: 'AGUARDANDO APROVAÇÃO',
       address_id: null,
+      technician_id: null,
       accepted_payment_methods: 'PIX,DINHEIRO,CARTÃO DÉBITO,CARTÃO CRÉDITO',
       address: {
         number: null,
@@ -1225,6 +1232,7 @@ export default {
     services: [],
     addresses: [],
     accepted_payment_methods: [],
+    employees: [],
     payments: [
       'PIX',
       'DINHEIRO',
@@ -1307,6 +1315,15 @@ export default {
     this._start();
   },
   methods: {
+    async _start(){
+      if(this.idByRoute){
+        await this._load();
+      }
+      await this._loadClients();
+      await this._loadEmployees();
+      await this._loadProducts();
+      await this._loadServices();
+    },
     dateInstallment() {
       return moment().add(this.order.installments.length, 'M').format('YYYY-MM-DD');
     },
@@ -1326,14 +1343,6 @@ export default {
       if (ok) {
         this.order.installments.pop();
       }
-    },
-    async _start(){
-      if(this.idByRoute){
-        await this._load();
-      }
-      await this._loadClients();
-      await this._loadProducts();
-      await this._loadServices();
     },
     async _load(){
       let id = this.$route.params.id ? this.$route.params.id : this.order.id ? this.order.id : null;
@@ -1401,6 +1410,18 @@ export default {
         this.$refs.fireDialog.error({ title: 'Error ao carregar serviços' })
       });
       this.loadingServices = false;
+    },
+     async _loadEmployees(){
+      let params = { relations: ['position'] };
+
+      this.loadingEmployees = true;
+      await axios.get(`/api/employee`, { params }).then(response => {
+        if(response.data.success){
+          return this.employees = response.data.data;
+        }
+        this.$refs.fireDialog.error({ title: 'Error ao carregar técnicos' })
+      });
+      this.loadingEmployees = false;
     },
     _addDefaultValueProduct(index){
       let filterProduct = this.products.filter(prod => prod.id === this.order.products[index].id);
