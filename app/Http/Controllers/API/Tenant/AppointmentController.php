@@ -9,6 +9,7 @@ use App\Services\Appointment\UpdateAppointmentService;
 use App\Http\Requests\Appointment\StoreAppointmentRequest;
 use App\Http\Requests\Appointment\UpdateAppointmentRequest;
 use App\Models\Appointment;
+use App\Services\Appointment\CheckSchedulesAppointmentService;
 use Illuminate\Http\Request;
 
 class AppointmentController extends BaseApiController
@@ -87,6 +88,18 @@ class AppointmentController extends BaseApiController
     public function destroy(Appointment $appointment)
     {
         $appointment->delete();
+
+        return $this->sendResponse([], 'Appointment deleted successfully.');
+    }
+
+     /**
+     * @return \Illuminate\Http\Response
+     */
+    public function checkSchedules(
+        CheckSchedulesAppointmentService $checkSchedulesAppointmentService
+    )
+    {
+        $checkSchedulesAppointmentService->run();
 
         return $this->sendResponse([], 'Appointment deleted successfully.');
     }
