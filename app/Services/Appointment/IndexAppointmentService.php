@@ -19,9 +19,13 @@ class IndexAppointmentService
     {
         return Appointment::with($relations)
             ->filterByBetweenDate(Arr::get($filters, 'date_start'),Arr::get($filters, 'date_end'))
+            ->filterByBetweenTime(Arr::get($filters, 'time_start'),Arr::get($filters, 'time_end'))
             ->filterByConcluded(Arr::get($filters, 'concluded'))
             ->filterByClientName(Arr::get($filters, 'client_name'))
             ->filterByAddress(Arr::get($filters, 'address'))
+            ->filterByEmployee(Arr::get($filters, 'employee_id'))
+            ->filterById(Arr::get($filters, 'id'))
+            ->filterByNotId(Arr::get($filters, 'not_id'))
             ->orderby('date_start', 'desc')
             ->when(
                 $itemsPerPage,

@@ -15,6 +15,8 @@ class UpdateAppointmentService
      */
     public function run(Appointment $appointment, array $data = [])
     {
+        Arr::set($data, 'date_end', Arr::get($data, 'date_start'));
+
         $appointment->update($data);
 
         $appointment->order()->associate(Arr::get($data, 'order_id'));
@@ -22,6 +24,8 @@ class UpdateAppointmentService
         $appointment->client()->associate(Arr::get($data, 'client_id'));
 
         $appointment->address()->associate(Arr::get($data, 'address_id'));
+
+        $appointment->employee()->associate(Arr::get($data, 'employee_id'));
 
         $appointment->save();
 

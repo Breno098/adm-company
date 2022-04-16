@@ -34,9 +34,10 @@ class StoreAppointmentRequest extends FormRequest
             'concluded' => 'nullable|string|in:S,N',
 
             /** Relations */
-            'order_id' => 'nullable',
-            'client_id' => 'nullable',
-            'address_id' => 'nullable',
+            'order_id' => 'nullable|integer',
+            'client_id' => 'nullable|integer',
+            'address_id' => 'nullable|integer',
+            'employee_id' => 'nullable|integer',
         ];
     }
 }

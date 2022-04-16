@@ -109,7 +109,40 @@
             </v-autocomplete>
           </v-col>
 
-          <v-col cols="12" md="6">
+          <v-col cols="12">
+            <v-autocomplete
+              v-model="appointment.employee_id"
+              :items="employees"
+              item-value="id"
+              item-text="name"
+              label="FUNCIONÁRIO"
+              :loading="loadingEmployees"
+              filled
+              dense
+              no-data-text="Nenhum técnico encontrado"
+              clearable
+              :rules="[rules.required]"
+              :error="errors.employee_id && !appointment.employee_id"
+            >
+              <template v-slot:selection="data">
+                {{ data.item.name }}
+                <small v-if="data.item.position_id" class="ml-3">
+                  ({{ data.item.position.name }})
+                </small>
+              </template>
+              <template v-slot:item="data">
+                  <v-list-item-content>
+                    <v-list-item-title v-html="data.item.name"></v-list-item-title>
+                    <v-list-item-subtitle
+                      v-if="data.item.position_id"
+                      v-html="data.item.position.name"
+                    ></v-list-item-subtitle>
+                  </v-list-item-content>
+              </template>
+            </v-autocomplete>
+          </v-col>
+
+          <v-col cols="12" md="4">
             <v-menu
                 v-model="menu_date_start"
                 :close-on-content-click="false"
@@ -119,10 +152,10 @@
             >
             <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                  append-icon="mdi-calendar"
+                  prepend-inner-icon="mdi-calendar"
                   :value="DateStartFormat"
                   clearable
-                  label="DATA INICIO"
+                  label="DATA"
                   readonly
                   v-bind="attrs"
                   v-on="on"
@@ -140,11 +173,12 @@
                 no-title
                 crollable
                 locale="pt-Br"
+                color="primary"
             ></v-date-picker>
             </v-menu>
           </v-col>
 
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="4">
             <v-menu
                 ref="menu_time_start"
                 v-model="menu_time_start"
@@ -161,7 +195,7 @@
                     v-model="appointment.time_start"
                     clearable
                     label="HORA INICIO"
-                    prepend-icon="mdi-clock-time-four-outline"
+                    prepend-inner-icon="mdi-clock-time-four-outline"
                     readonly
                     v-bind="attrs"
                     v-on="on"
@@ -177,11 +211,12 @@
                   v-model="appointment.time_start"
                   @click:minute="$refs.menu_time_start.save(appointment.time_start)"
                   format="24hr"
+                  color="primary"
               ></v-time-picker>
             </v-menu>
           </v-col>
 
-          <v-col cols="12" md="6">
+          <!-- <v-col cols="12" md="6">
             <v-menu
                 v-model="menu_date_end"
                 :close-on-content-click="false"
@@ -191,7 +226,7 @@
             >
             <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                  append-icon="mdi-calendar"
+                  prepend-inner-icon="mdi-calendar"
                   :value="DateEndFormat"
                   clearable
                   label="DATA FIM"
@@ -215,9 +250,9 @@
                 color="primary"
             ></v-date-picker>
             </v-menu>
-          </v-col>
+          </v-col> -->
 
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="4">
             <v-menu
                 ref="menu_time_end"
                 v-model="menu_time_end"
@@ -234,7 +269,7 @@
                   v-model="appointment.time_end"
                   clearable
                   label="HORA FIM"
-                  prepend-icon="mdi-clock-time-four-outline"
+                  prepend-inner-icon="mdi-clock-time-four-outline"
                   readonly
                   v-bind="attrs"
                   v-on="on"
@@ -333,18 +368,22 @@ export default {
       order_id: null,
       client_id: null,
       address_id: null,
+      employee_id: null,
     },
     clients: [],
     addresses: [],
+    employees: [],
     loading: false,
     loadingClients: false,
     loadingAddresses: false,
+    loadingEmployees: false,
     errors: {
       title: false,
       date_start: false,
-      date_end: false,
+      // date_end: false,
       time_start: false,
       time_end: false,
+      employee_id: false
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
@@ -396,6 +435,7 @@ export default {
       }
 
       await this._loadClients();
+      await this._loadEmployees();
     },
     async _load(){
       this.loading = true;
@@ -432,6 +472,18 @@ export default {
       });
       this.loadingAddresses = false;
     },
+    async _loadEmployees(){
+      let params = { relations: ['position'] };
+
+      this.loadingEmployees = true;
+      await axios.get(`/api/employee`, { params }).then(response => {
+        if(response.data.success){
+          return this.employees = response.data.data;
+        }
+        this.$refs.fireDialog.error({ title: 'Error ao carregar técnicos' })
+      });
+      this.loadingEmployees = false;
+    },
     _conclude(){
       this.appointment.concluded = this.appointment.concluded == 'N' ? 'S' : 'N';
       this._store();
@@ -444,6 +496,30 @@ export default {
 
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
 
+      // let params = {
+      //   employee_id: this.appointment.employee_id,
+      //   date_start: this.appointment.date_start,
+      //   date_end: this.appointment.date_start,
+      //   time_start: this.appointment.time_start,
+      //   time_end: this.appointment.time_end,
+      //   not_id: this.idByRoute
+      // };
+
+      // const employeeRequest = await axios.get(`/api/appointment`, { params });
+
+      // if(employeeRequest.data.data.length > 0) {
+      //   const ok = await this.$refs.fireDialog.confirm({
+      //       message: 'Já existe compromisso para esse funcioário nessa data e hora, agendar mesmo assim?',
+      //       textConfirmButton: 'Agendar',
+      //       colorConfirButton: 'btn-delete',
+      //       colorCancelButton: 'btn-primary'
+      //   })
+
+      //   if (!ok) {
+      //     return;
+      //   }
+      // }
+
       this.loading = true;
 
       const response = !this.idByRoute ? await axios.post('/api/appointment', this.appointment) : await axios.put(`/api/appointment/${this.idByRoute}`, this.appointment);
@@ -451,7 +527,7 @@ export default {
       this.loading = false;
 
       if(response.data.success){
-        this.$refs.fireDialog.success({ title: 'Compromisso salvo com sucesso' })
+        this.$refs.fireDialog.success({ title: 'Compromisso agendado' })
       } else {
         this.$refs.fireDialog.error({ title: 'Error ao salvar compromisso' });
       }

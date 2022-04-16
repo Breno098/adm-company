@@ -41,10 +41,37 @@ class Appointment extends TenantModel
         return $builder;
     }
 
+    public function scopeFilterByBetweenTime(Builder $builder, $timeStart, $timeEnd = null)
+    {
+        $builder->when($timeStart, function (Builder $builder, $timeStart) {
+            return $builder->where('time_start', '>=', $timeStart);
+        });
+
+        $builder->when($timeEnd, function (Builder $builder, $timeEnd) {
+            return $builder->where('time_end', '<=', $timeEnd);
+        });
+
+        return $builder;
+    }
+
     public function scopeFilterByConcluded(Builder $builder, $concluded)
     {
         return $builder->when($concluded, function (Builder $builder, $concluded) {
             return $builder->where('concluded', $concluded);
+        });
+    }
+
+    public function scopeFilterById(Builder $builder, $id)
+    {
+        return $builder->when($id, function (Builder $builder, $id) {
+            return $builder->where('id', $id);
+        });
+    }
+
+    public function scopeFilterByNotId(Builder $builder, $id)
+    {
+        return $builder->when($id, function (Builder $builder, $id) {
+            return $builder->where('id', '!=', $id);
         });
     }
 
@@ -69,9 +96,21 @@ class Appointment extends TenantModel
         });
     }
 
+    public function scopeFilterByEmployee(Builder $builder, $employee)
+    {
+        return $builder->when($employee, function (Builder $builder, $employee) {
+            return $builder->where('employee_id', $employee instanceof Employee ? $employee->id : $employee);
+        });
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
     }
 
     public function order()

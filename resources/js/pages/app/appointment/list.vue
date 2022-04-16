@@ -23,6 +23,36 @@
           <v-card width="800">
               <v-card-text>
                   <v-row>
+                    <v-col cols="12">
+                      <v-autocomplete
+                        v-model="table.filters.employee_id"
+                        :items="employees"
+                        item-value="id"
+                        item-text="name"
+                        label="FUNCIONÁRIO"
+                        filled
+                        dense
+                        no-data-text="Nenhum técnico encontrado"
+                        v-on:keyup.enter="_load"
+                      >
+                        <template v-slot:selection="data">
+                          {{ data.item.name }}
+                          <small v-if="data.item.position_id" class="ml-3">
+                            ({{ data.item.position.name }})
+                          </small>
+                        </template>
+                        <template v-slot:item="data">
+                            <v-list-item-content>
+                              <v-list-item-title v-html="data.item.name"></v-list-item-title>
+                              <v-list-item-subtitle
+                                v-if="data.item.position_id"
+                                v-html="data.item.position.name"
+                              ></v-list-item-subtitle>
+                            </v-list-item-content>
+                        </template>
+                      </v-autocomplete>
+                    </v-col>
+
                     <v-col cols="12" md="6">
                       <v-text-field
                         label="CLIENTE"
@@ -129,34 +159,54 @@
             :class="{ 'on-hover': hover }"
             :elevation="hover ? 12 : 2"
           >
-            <v-list-item three-line>
-              <v-list-item-content>
-                <div class="text-overline mb-4 d-flex justify-space-between">
-                  {{ appointment.client ? appointment.client.name : '' }}
-                  <v-chip
-                    color="primary"
-                    :outlined="appointment.concluded | concluded"
-                    label
-                    small
-                  >
-                    {{ appointment.concluded | statusLabel }}
-                  </v-chip>
-                </div>
-                <v-list-item-subtitle>
-                  {{ appointment.date }}
-                </v-list-item-subtitle>
-                <v-list-item-subtitle>
-                  {{ appointment.order_id ? `Pedido: ${appointment.order_id}` : '' }}
-                </v-list-item-subtitle>
-                <v-list-item-subtitle v-if="appointment.address">
-                  {{ `${appointment.address.street} n° ${appointment.address.number}, ${appointment.address.district } - ${ appointment.address.city}` }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
+            <v-card-text>
+              <v-row class="mb-3">
+                  <v-col cols="12" md="9">
+                    <div class="font-weight-bold text-h6">
+                      {{ appointment.id }}
+                    </div>
+                  </v-col>
+                  <v-col cols="12" md="3">
+                    <v-chip
+                      color="primary"
+                      :outlined="appointment.concluded | concluded"
+                      class="d-flex justify-center"
+                      label
+                      small
+                      style="width: 100%;"
+                    >
+                      {{ appointment.concluded | statusLabel }}
+                    </v-chip>
+                  </v-col>
+              </v-row>
+
+              <v-icon small color="primary">mdi-account-outline</v-icon>
+              <b>FUNCIONÁRIO:</b> {{ appointment.employee_id ? appointment.employee.name : '' }}
+
+              <v-divider class="mx-2 my-1"/>
+
+              <v-icon small color="primary">mdi-account</v-icon>
+              <b>CLIENTE:</b> {{ appointment.client_id ? appointment.client.name : '' }}
+
+              <v-divider class="mx-2 my-1"/>
+
+              <v-icon small color="primary">mdi-calendar</v-icon>
+              <b>DATA:</b> {{ appointment.date_start | formatDMY }} {{ appointment.time_start }} {{ appointment.time_end ? `- ${appointment.time_end}` : '' }}
+
+              <v-divider class="mx-2 my-1"/>
+
+              <v-icon small color="primary">mdi-home-map-marker</v-icon>
+              <b>ENDEREÇO:</b>
+                {{
+                    appointment.address
+                      ? `${appointment.address.street} n° ${appointment.address.number}, ${appointment.address.district } - ${ appointment.address.city}`
+                      : ''
+                }}
+            </v-card-text>
 
             <v-card-actions>
               <v-spacer/>
-              <v-btn text color="primary" v-on:click="_edit(appointment.id)">
+              <v-btn text color="primary" v-on:click="_edit(appointment.id)" small>
                 Ver informações
               </v-btn>
             </v-card-actions>
@@ -194,7 +244,8 @@ export default {
       filters: {
         client_name: '',
         address: '',
-        concluded: 'N'
+        concluded: 'N',
+        employee_id: null
       },
       orderBy: 'date_start',
       page: 1,
@@ -207,14 +258,12 @@ export default {
       value: 'N', text: 'NÃO CONCLUÍDOS'
     }, {
       value: 'S', text: 'CONCLUÍDOS'
-    }]
+    }],
+    employees: [],
   }),
   filters: {
     statusLabel(value){
       return value == 'S' ? 'CONCLUÍDO' : 'PENDENTE';
-    },
-    statusColor(value){
-      return value == 'S' ? 'green' : 'primary';
     },
     concluded(value){
       return value == 'S';
@@ -224,8 +273,10 @@ export default {
     this._start();
   },
   methods: {
-    _start(){
+    async _start(){
       this._load();
+
+      await this._loadEmployees();
     },
     async _load(){
       this.menuFilter = false;
@@ -234,7 +285,7 @@ export default {
         page: this.table.page,
         itemsPerPage: this.table.itemsPerPage,
         orderBy: this.table.orderBy,
-        relations: [ 'client', 'address', 'order' ],
+        relations: [ 'client', 'address', 'order', 'employee' ],
         ...this.table.filters
       }
 
@@ -269,7 +320,17 @@ export default {
       }
 
       this._load();
-    }
+    },
+    async _loadEmployees(){
+      let params = { relations: ['position'] };
+
+      await axios.get(`/api/employee`, { params }).then(response => {
+        if(response.data.success){
+          return this.employees = response.data.data;
+        }
+        this.$refs.fireDialog.error({ title: 'Error ao carregar técnicos' })
+      });
+    },
   }
 }
 </script>
