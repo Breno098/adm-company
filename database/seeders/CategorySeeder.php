@@ -39,7 +39,7 @@ class CategorySeeder extends Seeder
         ]);
 
         Category::updateOrCreate([
-            'name' => 'PERIFÉRICOS',
+            'name' => 'HIDRÁULICA',
             'icon' => 'mdi-wrench',
             'type' => 'product'
         ]);
