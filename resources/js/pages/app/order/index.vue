@@ -234,10 +234,13 @@
 
                   <v-col cols="12" md="9">
                     <div>
-                      {{ order.client.name }}
+                      {{ order.client && order.client.name ? order.client.name : '' }}
                     </div>
-                    <div v-if="order.address.street">
-                      {{ order.address.street }} {{ order.address.number ? `n° ${order.address.number}` : '' }}, {{ order.address.district }} - {{ order.address.city }}
+                    <div>
+                      {{ order.address && order.address.street ? order.address.street : '' }}
+                      {{ order.address && order.address.number ? `n° ${order.address.number}` : '' }},
+                      {{ order.address && order.address.district }}
+                      {{ order.address && order.address.city ? `- ${order.address.city}` : '' }}
                     </div>
                   </v-col>
                 </v-row>
