@@ -275,7 +275,7 @@
                   <v-divider class="mx-2 my-1"/>
 
                   <v-icon small color="primary">mdi-account-outline</v-icon>
-                  <b>RESPONSÁVEL TÉCNICO:</b> {{ order.technician.name }}
+                  <b>RESPONSÁVEL TÉCNICO:</b> {{ order.technician_id ? order.technician.name : '' }}
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
