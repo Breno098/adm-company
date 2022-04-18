@@ -121,8 +121,6 @@
               dense
               no-data-text="Nenhum técnico encontrado"
               clearable
-              :rules="[rules.required]"
-              :error="errors.employee_id && !appointment.employee_id"
             >
               <template v-slot:selection="data">
                 {{ data.item.name }}
@@ -380,10 +378,10 @@ export default {
     errors: {
       title: false,
       date_start: false,
-      // date_end: false,
+      date_end: false,
       time_start: false,
       time_end: false,
-      employee_id: false
+      // employee_id: false
     },
     rules: {
       required: value => !!value || 'Campo obrigatório.',
