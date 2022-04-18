@@ -142,7 +142,7 @@
             </v-autocomplete>
           </v-col>
 
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-menu
                 v-model="menu_date_start"
                 :close-on-content-click="false"
@@ -178,7 +178,7 @@
             </v-menu>
           </v-col>
 
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-menu
                 ref="menu_time_start"
                 v-model="menu_time_start"
@@ -216,7 +216,7 @@
             </v-menu>
           </v-col>
 
-          <!-- <v-col cols="12" md="6">
+          <v-col cols="12" md="6">
             <v-menu
                 v-model="menu_date_end"
                 :close-on-content-click="false"
@@ -250,9 +250,9 @@
                 color="primary"
             ></v-date-picker>
             </v-menu>
-          </v-col> -->
+          </v-col>
 
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-menu
                 ref="menu_time_end"
                 v-model="menu_time_end"

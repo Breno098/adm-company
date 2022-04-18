@@ -15,8 +15,6 @@ class UpdateAppointmentService
      */
     public function run(Appointment $appointment, array $data = [])
     {
-        Arr::set($data, 'date_end', Arr::get($data, 'date_start'));
-
         $appointment->update($data);
 
         $appointment->order()->associate(Arr::get($data, 'order_id'));

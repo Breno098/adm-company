@@ -14,8 +14,6 @@ class StoreAppointmentService
      */
     public function run(array $data = []): Appointment
     {
-        Arr::set($data, 'date_end', Arr::get($data, 'date_start'));
-
         $appointment = Appointment::create($data);
 
         $appointment->order()->associate(Arr::get($data, 'order_id'));
