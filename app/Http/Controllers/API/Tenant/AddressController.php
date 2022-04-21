@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API\Tenant;
 
 use App\Http\Controllers\API\Bases\BaseApiController;
-use App\Http\Requests\Tenant\Address\SeachCepRequest;
 use App\Services\Address\IndexAddressService;
 use App\Services\Address\SearchCepService;
 use Illuminate\Http\Request;
