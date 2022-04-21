@@ -243,16 +243,16 @@ export default {
       this.loading = true;
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
 
-      const response = !this.idByRoute ? await axios.post('/api/service', this.service) : await axios.put(`/api/service/${this.idByRoute}`, this.service);
+      try {
+        const response = !this.idByRoute ? await axios.post('/api/service', this.service) : await axios.put(`/api/service/${this.idByRoute}`, this.service);
 
-      this.loading = false;
-
-      if(response.data.success){
         this.$refs.fireDialog.success({ title: 'Serviço salvo com sucesso' })
-        return setTimeout(() => this.$router.push({ name: 'service.index' }), 1500);
+        setTimeout(() => this.$router.push({ name: 'service.index' }), 1500);
+      } catch (error) {
+        this.$refs.fireDialog.error({ title: 'Error aos salvar serviço' })
+      } finally {
+        this.loading = false;
       }
-
-      this.$refs.fireDialog.error({ title: 'Error aos salvar serviço' })
     },
   }
 

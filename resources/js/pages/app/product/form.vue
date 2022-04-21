@@ -288,16 +288,16 @@ export default {
       this.loading = true;
       this.$refs.fireDialog.loading({ title: this.idByRoute ? 'Atualizando...' : 'Salvando...' })
 
-      const response = !this.idByRoute ? await axios.post('/api/product', this.product) : await axios.put(`/api/product/${this.idByRoute}`, this.product);
+      try {
+        const response = !this.idByRoute ? await axios.post('/api/product', this.product) : await axios.put(`/api/product/${this.idByRoute}`, this.product);
 
-      this.loading = false;
-
-      if(response.data.success){
         this.$refs.fireDialog.success({ title: 'Produto salvo com sucesso' })
         return setTimeout(() => this.$router.push({ name: 'product.index' }), 1500);
+      } catch (error) {
+        this.$refs.fireDialog.error({ title: 'Error aos salvar produto' })
+      } finally {
+        this.loading = false;
       }
-
-      this.$refs.fireDialog.error({ title: 'Error aos salvar produto' })
     },
   }
 

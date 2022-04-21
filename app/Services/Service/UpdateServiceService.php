@@ -15,14 +15,18 @@ class UpdateServiceService
      */
     public function run(Service $service, array $data = []): Service
     {
-        $service->update($data);
+        try {
+            $service->update($data);
 
-        $service->categories()->sync(Arr::get($data, 'categories'));
+            $service->categories()->sync(normatizeRelationshipSync(Arr::get($data, 'categories')));
 
-        $service->status()->associate(Arr::get($data, 'status_id'));
+            $service->status()->associate(Arr::get($data, 'status_id'));
 
-        $service->save();
+            $service->save();
 
-        return $service;
+            return $service;
+        } catch (\Exception $e) {
+
+        }
     }
 }

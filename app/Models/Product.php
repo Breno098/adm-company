@@ -75,7 +75,7 @@ class Product extends TenantModel
      */
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'category_item', 'item_id', 'category_id');
+        return $this->belongsToMany(Category::class, 'category_item');
     }
 
     public function images()

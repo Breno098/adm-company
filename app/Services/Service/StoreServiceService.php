@@ -16,7 +16,7 @@ class StoreServiceService
     {
         $service = Service::create($data);
 
-        $service->categories()->sync(Arr::get($data, 'categories'));
+        $service->categories()->sync(normatizeRelationshipSync(Arr::get($data, 'categories')));
 
         $service->status()->associate(Arr::get($data, 'status_id'));
 

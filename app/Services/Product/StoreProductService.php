@@ -16,7 +16,7 @@ class StoreProductService
     {
         $product = Product::create($data);
 
-        $product->categories()->sync(Arr::get($data, 'categories'));
+        $product->categories()->sync(normatizeRelationshipSync(Arr::get($data, 'categories')));
 
         $product->status()->associate(Arr::get($data, 'status_id'));
 
