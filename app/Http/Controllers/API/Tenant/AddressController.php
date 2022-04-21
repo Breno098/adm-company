@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API\Tenant;
 use App\Http\Controllers\API\Bases\BaseApiController;
 use App\Http\Requests\Tenant\Address\SeachCepRequest;
 use App\Services\Address\IndexAddressService;
-use App\Services\Address\SearcheCepService;
+use App\Services\Address\SearchCepService;
 use Illuminate\Http\Request;
 
 class AddressController extends BaseApiController
@@ -29,15 +29,15 @@ class AddressController extends BaseApiController
 
     /**
      * @param Request $request
-     * @param SearcheCepService $searcheCepService
+     * @param SearchCepService $searchCepService
      *
      * @return \Illuminate\Http\Response
      */
-    public function searchCep(Request $request, SearcheCepService $searcheCepService)
+    public function searchCep(Request $request, SearchCepService $searchCepService)
     {
         $data = $request->all();
 
-        $cep = $searcheCepService->run($data['cep'] ?? null);
+        $cep = $searchCepService->run($data['cep'] ?? null);
 
         if(!$cep){
             return $this->sendError('CEP not found', []);

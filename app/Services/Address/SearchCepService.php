@@ -5,7 +5,7 @@ namespace App\Services\Address;
 use Illuminate\Support\Arr;
 use GuzzleHttp\Client;
 
-class SearcheCepService
+class SearchCepService
 {
     /**
      * @param  mixed  $cep
