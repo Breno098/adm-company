@@ -12,7 +12,7 @@ class TenantModel extends Model
         static::addGlobalScope(new TenantScope);
 
         static::saving(function ($model) {
-            $model->company_id = auth()->user()->company_id;
+            $model->company_id = auth()->user()->company_id ?? null;
         });
     }
 }

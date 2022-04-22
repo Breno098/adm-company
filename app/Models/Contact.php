@@ -18,6 +18,7 @@ class Contact extends TenantModel
         'type',
         'owner_id',
         'owner_type',
+        'company_id'
     ];
 
     protected $casts = [
