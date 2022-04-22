@@ -15,7 +15,9 @@ class Contact extends TenantModel
         'description',
         'contact',
         'main',
-        'type'
+        'type',
+        'owner_id',
+        'owner_type',
     ];
 
     protected $casts = [
@@ -27,6 +29,11 @@ class Contact extends TenantModel
         'updated_at',
         'deleted_at'
     ];
+
+    public function owner()
+    {
+        return $this->morphTo();
+    }
 
     /**
      * Scopes

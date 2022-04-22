@@ -59,7 +59,7 @@ class Employee extends TenantModel
 
     public function contacts()
     {
-        return $this->hasMany(Contact::class);
+        return $this->morphMany(Contact::class, 'owner');
     }
 
     public function position()
