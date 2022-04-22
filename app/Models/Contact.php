@@ -49,9 +49,16 @@ class Contact extends TenantModel
         return $builder->where('type', 'EMAIL');
     }
 
-    public function client()
+    public function scopeFilterClient(Builder $builder, $client)
     {
-        return $this->belongsTo(Client::class);
+        return $builder->when(
+            $client,
+            function (Builder $builder, $client) {
+                return $builder
+                        ->where('owner_id', $client instanceof Client ? $client->id : $client)
+                        ->where('owner_type', 'Client');
+            }
+        );
     }
 
     public function company()

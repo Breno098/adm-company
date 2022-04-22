@@ -95,7 +95,7 @@ class Company extends Model
 
     public function addressMain()
     {
-        return $this->hasOne(Address::class)->oldestOfMany();
+        return $this->morphOne(Address::class, 'owner')->oldestOfMany();
     }
 
     public function addresses()

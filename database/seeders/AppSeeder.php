@@ -19,28 +19,28 @@ class AppSeeder extends Seeder
      */
     public function run()
     {
-        Contact::all()->map(function(Contact $contact){
-            if($contact->company_id) {
-                $contact->update([
-                    'owner_id' => $contact->company_id,
-                    'owner_type' => 'Company'
-                ]);
-            }
+        // Contact::all()->map(function(Contact $contact){
+        //     if($contact->company_id) {
+        //         $contact->update([
+        //             'owner_id' => $contact->company_id,
+        //             'owner_type' => 'Company'
+        //         ]);
+        //     }
 
-            if($contact->employee_id) {
-                $contact->update([
-                    'owner_id' => $contact->employee_id,
-                    'owner_type' => 'Employee'
-                ]);
-            }
+        //     if($contact->employee_id) {
+        //         $contact->update([
+        //             'owner_id' => $contact->employee_id,
+        //             'owner_type' => 'Employee'
+        //         ]);
+        //     }
 
-            if($contact->client_id) {
-                $contact->update([
-                    'owner_id' => $contact->client_id,
-                    'owner_type' => 'Client'
-                ]);
-            }
-        });
+        //     if($contact->client_id) {
+        //         $contact->update([
+        //             'owner_id' => $contact->client_id,
+        //             'owner_type' => 'Client'
+        //         ]);
+        //     }
+        // });
 
 
     }
