@@ -4,7 +4,7 @@ function page (path) {
 
 export default [
   { path: '/order', name: 'order.index', component: page('app/order/index.vue') },
-  { path: '/order/create', name: 'order.create', component: page('app/order/form.vue') },
+  { path: '/order/create', name: 'order.create', component: page('app/order/create.vue') },
   { path: '/order/show/:id', name: 'order.show', component: page('app/order/form.vue') },
 
   { path: '/appointment', name: 'appointment.index', component: page('app/appointment/list.vue') },

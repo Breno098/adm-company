@@ -25,8 +25,8 @@ Vue.filter("paymentStatusIcon", (value) => {
 
 Vue.filter("statusColor", (value) => {
   switch (value) {
-    case 'CANCELADO': return 'orange accent-3';
-    case 'AGUARDANDO APROVAÇÃO': return 'yellow accent-2';
+    case 'CANCELADO': return 'red accent-3';
+    case 'AGUARDANDO APROVAÇÃO': return 'orange accent-3';
     case 'EM ANDAMENTO': return 'primary';
     case 'CONCLUÍDO': return 'green';
     default: return '';
@@ -39,6 +39,20 @@ Vue.filter("statusIcon", (value) => {
     case 'AGUARDANDO APROVAÇÃO': return 'mdi-thumb-up';
     case 'EM ANDAMENTO': return 'mdi-dots-horizontal';
     case 'CONCLUÍDO': return 'mdi-check';
+    default: return '';
+  }
+});
+
+Vue.filter("statusColorHover", (value, active, noHover = '') => {
+  if(!active) {
+    return noHover;
+  }
+
+  switch (value) {
+    case 'CANCELADO': return 'red accent-3';
+    case 'AGUARDANDO APROVAÇÃO': return 'orange accent-3';
+    case 'EM ANDAMENTO': return 'primary';
+    case 'CONCLUÍDO': return 'green';
     default: return '';
   }
 });
