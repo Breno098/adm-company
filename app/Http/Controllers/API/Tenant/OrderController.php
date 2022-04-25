@@ -72,7 +72,8 @@ class OrderController extends BaseApiController
             'products',
             'services',
             'payments',
-            'installments'
+            'installments',
+            'technician'
         ]);
 
         return $this->sendResponse($order, 'Order retrieved successfully.');
