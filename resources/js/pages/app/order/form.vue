@@ -1256,6 +1256,8 @@ export default {
       this.modalStatus = true;
     },
     async _store(){
+      this.modalStatus = false;
+
       this.loading = true;
 
       let id = this.order.id;
