@@ -30,6 +30,7 @@ export default new Vuetify({
         "btn-primary": '#311B92',
         "btn-delete": "#F44336",
         "btn-save": "#1B5E20",
+        "btn-edit": "#00C853",
 
         "side-bar": "#311B92",
         "side-bar-menu-active": "#651FFF",
