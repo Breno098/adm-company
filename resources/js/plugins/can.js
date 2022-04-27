@@ -3,8 +3,9 @@ import store from '~/store'
 
 const authorize = {
   can: (nameRole) => {
-    const user = store.getters['auth/user']
-    return user ? user.roles.find(role => role.role === nameRole) : false;
+    const user = store.getters['auth/user'];
+    const can = user.roles.find(role => role.role === nameRole);
+    return user && can ? true : false;
   }
 };
 

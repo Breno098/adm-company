@@ -26,7 +26,6 @@
           block
           small
           dark
-          @click="_edit"
           v-if="canSave"
           :loading="loading"
         >
@@ -53,7 +52,8 @@
     <v-card class="mx-1">
       <v-tabs v-model="tab">
         <v-tabs-slider color="primary"></v-tabs-slider>
-        <v-tab>Pedido <v-icon small class="ml-2">mdi-format-align-center</v-icon> </v-tab>
+        <v-tab>Pedido <v-icon small class="ml-2">mdi-file-document</v-icon> </v-tab>
+        <v-tab>Relatórios e garantias <v-icon small class="ml-2">mdi-format-align-center</v-icon></v-tab>
         <v-tab>Financeiro <v-icon small class="ml-2">mdi-cash</v-icon></v-tab>
       </v-tabs>
     </v-card>
@@ -61,7 +61,7 @@
     <v-tabs-items v-model="tab" class="pt-5 px-1" style="background-color: transparent !important;">
       <v-tab-item>
         <v-row class="mb-2">
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="8">
             <v-card>
               <v-card-text class="py-7">
                 <v-row>
@@ -82,8 +82,8 @@
                   class="rounded-lg mr-2"
                   small
                   dark
-                  :loading="loading"
                   @click="showModalClient"
+                  :disabled="!canSave"
                 >
                   <v-icon small>
                     {{ idByRoute ? 'mdi-pencil' : 'mdi-magnify'}}
@@ -93,19 +93,19 @@
             </v-card>
           </v-col>
 
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="4">
             <v-card class="fill-height d-flex flex-column align-center justify-center">
-              <v-card-text class="py-7">
+              <v-card-text class="py-4">
                 <v-row>
-                  <v-col cols="12" md="6">
+                  <v-col cols="12">
                     <div>
-                      <v-icon small color="primary">mdi-account</v-icon>
+                      <v-icon small color="primary">mdi-file-document</v-icon>
                       <b>Situação do pedido</b>
                     </div>
 
                     <v-chip
                       v-if="order.status"
-                      class="d-flex justify-center"
+                      class="d-flex justify-center mt-2"
                       label
                       :color="order.status | statusColor"
                       style="width: 100%;"
@@ -116,15 +116,15 @@
                     </v-chip>
                   </v-col>
 
-                  <v-col cols="12" md="6">
+                  <v-col cols="12">
                     <div>
-                      <v-icon small color="primary">mdi-account</v-icon>
+                      <v-icon small color="primary">mdi-cash-multiple</v-icon>
                       <b>Status Finaceiro</b>
                     </div>
 
                     <v-chip
                       v-if="order.payment_status"
-                      class="d-flex justify-center"
+                      class="d-flex justify-center mt-2"
                       label
                       :color="order.payment_status | paymentStatusColor"
                       style="width: 100%;"
@@ -140,17 +140,17 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-card class="mb-4">
+            <v-card>
               <v-card-text class="py-7">
                 <div class="mb-3 d-flex align-center">
                   <v-icon color="btn-delete">mdi-comment-alert-outline</v-icon>
                   <strong class="text-h6 font-weight-black ml-2 primary--text">
-                    Problema reclamado:
+                    Problema reclamado
                   </strong>
-                  {{ order.complaint }}
                 </div>
 
-
+                {{ order.complaint ? order.complaint.substring(0, 50) : '' }}
+                {{ order.complaint.length > 50 ? '...' : '' }}
               </v-card-text>
 
               <v-card-actions>
@@ -160,9 +160,38 @@
                   class="rounded-lg mr-2"
                   small
                   dark
-                  @click="showModalAddress"
+                  @click="modalComplaint.show = true"
                 >
-                  <v-icon small>mdi-pencil</v-icon>
+                  <v-icon small>mdi-comment-processing</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card>
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="primary">mdi-comment-text-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Anotações
+                  </strong>
+                </div>
+
+                {{ order.comments ? order.comments.substring(0, 50) : '' }}
+                {{ order.comments.length > 50 ? '...' : '' }}
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalComments.show = true"
+                >
+                  <v-icon small>mdi-comment-text-outline</v-icon>
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -211,14 +240,14 @@
                 </div>
 
                 <div class="text-h6 font-weight-black">
-                  {{ order.amount | formatMoney }}
+                  {{ valueTotal | formatMoney }}
                 </div>
               </v-card-text>
             </v-card>
           </v-col>
         </v-row>
 
-        <v-card class="mb-4" v-if="order.services.length > 0">
+        <v-card class="mb-4">
           <v-card-text class="py-7">
             <div class="mb-3 d-flex align-center">
                 <v-icon color="primary">mdi-wrench</v-icon>
@@ -244,6 +273,7 @@
                 class="elevation-0"
                 hide-default-footer
                 dense
+                no-data-text="Não há serviços para o pedido."
               >
                 <template v-slot:item.value="{ item }">
                   {{ item.value | formatMoney }}
@@ -264,7 +294,7 @@
           </v-card-text>
         </v-card>
 
-        <v-card class="mb-4" v-if="order.products.length > 0">
+        <v-card class="mb-4">
           <v-card-text class="py-7">
             <div class="mb-3 d-flex align-center">
                 <v-icon color="primary">mdi-barcode</v-icon>
@@ -284,11 +314,13 @@
               </div>
 
               <v-data-table
+               v-if="order.products.length > 0"
                 :headers="headersTablesItems"
                 :items="order.products"
                 class="elevation-0"
                 hide-default-footer
                 dense
+                no-data-text="Não há produtos para o pedido."
               >
                 <template v-slot:item.value="{ item }">
                   {{ item.value | formatMoney }}
@@ -328,6 +360,213 @@
             </v-row>
           </v-card-text>
         </v-card>
+      </v-tab-item>
+
+      <v-tab-item>
+        <v-row class="mb-2">
+          <v-col cols="12" md="6">
+            <v-card>
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="btn-delete">mdi-comment-alert-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Problema reclamado
+                  </strong>
+                </div>
+
+                {{ order.complaint ? order.complaint.substring(0, 50) : '' }}
+                {{ order.complaint.length > 50 ? '...' : '' }}
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalComplaint.show = true"
+                >
+                  <v-icon small>mdi-comment-processing</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card>
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="primary">mdi-comment-text-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Anotações
+                  </strong>
+                </div>
+
+                {{ order.comments ? order.comments.substring(0, 50) : '' }}
+                {{ order.comments.length > 50 ? '...' : '' }}
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalComments.show = true"
+                >
+                  <v-icon small>mdi-comment-text-outline</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12">
+            <v-card>
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="primary">mdi-comment-processing-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Problema constatado
+                  </strong>
+                </div>
+
+                {{ order.work_found }}
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalWorkFound.show = true"
+                >
+                  <v-icon small>mdi-pencil</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+           <v-col cols="12">
+            <v-card class="mb-4">
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="green">mdi-comment-check-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Trabalho realizado
+                  </strong>
+                </div>
+
+                {{ order.work_done }}
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalWorkDone.show = true"
+                >
+                  <v-icon small>mdi-pencil</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-tab-item>
+
+      <v-tab-item>
+        <v-row class="mb-2">
+          <v-col cols="12" md="6">
+            <v-card>
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="primary">mdi-calculator</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Descontos
+                  </strong>
+                </div>
+
+                <v-text-field
+                  prefix="%"
+                  label="PORCENTAGEM DESCONTO"
+                  type="number"
+                  filled
+                  dense
+                  v-model="order.discount_percentage"
+                  min="0"
+                  max="100"
+                  @keyup="calcDiscontAmount"
+                  @click="calcDiscontAmount"
+                ></v-text-field>
+
+                <v-text-field
+                  prefix="R$"
+                  label="VALOR DESCONTO"
+                  type="number"
+                  filled
+                  dense
+                  v-model="order.discount_amount"
+                  min="0"
+                  :max="valueTotal"
+                  @keyup="calcPercentageAmount"
+                  @click="calcPercentageAmount"
+                ></v-text-field>
+
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card class="fill-height d-flex flex-column align-center justify-center">
+              <v-card-text>
+                <div class="text-subtitle-1">Valor bruto</div>
+                <h1 class="primary--text">{{ valueTotal | formatMoney }}</h1>
+
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">Desconto</div>
+                <h1 class="orange--text">
+                  {{ order.discount_amount | formatMoney }}
+                  ({{ order.discount_percentage }} %)
+                </h1>
+
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">Valor liquido</div>
+                <h1 class="green--text">{{ valueTotalWithDiscont | formatMoney }}</h1>
+
+                <!-- <div class="text-h6 font-weight-black">
+
+                </div> -->
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <!-- <v-col cols="12" md="3">
+            <v-card class="fill-height d-flex flex-column align-center justify-center">
+              <v-card-text>
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="primary">mdi-cash-multiple</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">Valor liquido</strong>
+                </div>
+
+                <div class="text-h6 font-weight-black">
+                  {{ valueTotalWithDiscont | formatMoney }}
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col> -->
+        </v-row>
       </v-tab-item>
     </v-tabs-items>
 
@@ -733,6 +972,82 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Modal Complaint -->
+    <v-dialog v-model="modalComplaint.show" max-width="800px">
+      <v-card>
+        <v-card-title>
+          <v-icon color="btn-delete">mdi-comment-alert-outline</v-icon>
+          <strong class="text-h6 font-weight-black ml-2 primary--text">Problema reclamado</strong>
+        </v-card-title>
+        <v-card-text>
+          <v-textarea
+            :readonly="!canSave"
+            filled
+            dense
+            v-model="order.complaint"
+            @input="order.complaint = order.complaint.toUpperCase()"
+          ></v-textarea>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Modal Comments -->
+    <v-dialog v-model="modalComments.show" max-width="800px">
+      <v-card>
+        <v-card-title>
+          <v-icon color="primary">mdi-comment-text-outline</v-icon>
+          <strong class="text-h6 font-weight-black ml-2 primary--text">Anotações</strong>
+        </v-card-title>
+        <v-card-text>
+          <v-textarea
+            :readonly="!canSave"
+            filled
+            dense
+            v-model="order.comments"
+            @input="order.comments = order.comments.toUpperCase()"
+          ></v-textarea>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Modal Work Found -->
+    <v-dialog v-model="modalWorkFound.show" max-width="800px">
+      <v-card>
+        <v-card-title>
+          <v-icon color="primary">mdi-comment-processing-outline</v-icon>
+          <strong class="text-h6 font-weight-black ml-2 primary--text">Problema constatado</strong>
+        </v-card-title>
+        <v-card-text>
+          <v-textarea
+            :readonly="!canSave"
+            filled
+            dense
+            v-model="order.work_found"
+            @input="order.work_found = order.work_found.toUpperCase()"
+          ></v-textarea>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Modal Work Done -->
+    <v-dialog v-model="modalWorkDone.show" max-width="800px">
+      <v-card>
+        <v-card-title>
+          <v-icon color="green">mdi-comment-check-outline</v-icon>
+          <strong class="text-h6 font-weight-black ml-2 primary--text">Trabalho realizado</strong>
+        </v-card-title>
+        <v-card-text>
+          <v-textarea
+            :readonly="!canSave"
+            filled
+            dense
+            v-model="order.work_done"
+            @input="order.work_done = order.work_done.toUpperCase()"
+          ></v-textarea>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -782,8 +1097,21 @@ export default {
         total_value: 0
       }
     },
+    modalComplaint: {
+      show: false
+    },
+    modalComments: {
+      show: false
+    },
+    modalWorkFound: {
+      show: false
+    },
+    modalWorkDone: {
+      show: false
+    },
 
-    tab: null,
+    tab: 2,
+
     modalStatus: false,
     loading: false,
     loadingClients: false,
@@ -804,7 +1132,7 @@ export default {
     order: {
       id: null,
       description : null,
-      comments: null,
+      comments: '',
       amount : null,
       amount_paid: null,
       technical_visit_date: null,
@@ -823,6 +1151,7 @@ export default {
       address_id: null,
       technician_id: null,
       accepted_payment_methods: '',
+      complaint: '',
       address: {
         number: null,
         district: null,
@@ -884,7 +1213,7 @@ export default {
       return this.$route.params.id ? `Editar Pedido | nº ${this.$route.params.id}` : 'Adicionar Pedido';
     },
     canSave(){
-      return this.$can('order_add') && !this.idByRoute || this.$can('order_update') && this.idByRoute;
+      return this.$can('order_add') && !this.idByRoute || this.$can('order_update') && Boolean(this.idByRoute);
     },
     idByRoute(){
       return this.$route.params.id;
@@ -1110,12 +1439,21 @@ export default {
         this.$refs.fireDialog.error({ title: 'Error ao carregar endereço' })
       })
     },
-    _edit(){
-      this.$can('order_show')
-        ? this.$router.push({
-            name: 'order.edit',
-            params: { id: this.idByRoute }
-        }) : null
+    calcDiscontAmount() {
+      if(this.order.discount_percentage > 100) {
+        this.order.discount_percentage = 100;
+      }
+
+      let value = this.valueTotal * (this.order.discount_percentage / 100);
+      this.order.discount_amount = value.toFixed(2);
+    },
+    calcPercentageAmount() {
+      if(parseFloat(this.order.discount_amount) > this.valueTotal) {
+        this.order.discount_amount = this.valueTotal;
+      }
+
+      let value = (this.order.discount_amount * 100) / this.valueTotal;
+      this.order.discount_percentage = value.toFixed(2);
     },
 
     // Modal Client
