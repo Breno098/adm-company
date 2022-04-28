@@ -64,27 +64,31 @@
           <v-col cols="12">
             <v-card>
               <v-card-text>
-                <!-- <div class="d-flex align-center"> -->
-                  <v-icon color="btn-delete">mdi-comment-alert-outline</v-icon>
-                  <strong class="text-h6 font-weight-black ml-2 primary--text">
-                    Problema reclamado
-                  </strong>
-                <!-- </div> -->
+                <v-icon color="btn-delete">mdi-comment-alert-outline</v-icon>
+                <strong class="text-h6 font-weight-black ml-2 primary--text">
+                  Problema reclamado
+                </strong>
               </v-card-text>
 
-              <v-card-actions class="pb-4 px-3">
-                {{ order.complaint | textLimitChar(50) }}
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="btn-primary"
-                  class="rounded-lg mr-2"
-                  small
-                  dark
-                  @click="modalComplaint.show = true"
-                >
-                  <v-icon small>mdi-comment-processing</v-icon>
-                </v-btn>
-              </v-card-actions>
+              <v-card-text class="py-2 pr-2">
+                <v-row>
+                  <v-col cols="12" md="11">
+                    {{ order.complaint | textLimitChar(100) }}
+                  </v-col>
+
+                  <v-col cols="12" md="1" class="d-flex justify-end">
+                    <v-btn
+                      color="btn-primary"
+                      class="rounded-lg mr-2"
+                      small
+                      dark
+                      @click="modalComplaint.show = true"
+                    >
+                      <v-icon small>mdi-comment-processing</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card-text>
             </v-card>
           </v-col>
 
@@ -166,7 +170,7 @@
             </v-card>
           </v-col>
 
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="5">
             <v-card>
               <v-card-text class="py-7">
                 <div class="mb-3 d-flex align-center">
@@ -189,6 +193,38 @@
                   @click="modalComments.show = true"
                 >
                   <v-icon small>mdi-comment-text-outline</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="7">
+            <v-card>
+              <v-card-text class="py-7">
+                <v-row>
+                  <v-col cols="12">
+                    <div class="mb-3 d-flex align-center">
+                      <v-icon color="primary">mdi-account-outline</v-icon>
+                      <strong class="text-h6 font-weight-black ml-2 primary--text">Responsável técnico</strong>
+                    </div>
+                    {{ order.technician_id ? order.technician.name : '' }}
+                  </v-col>
+                </v-row>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="showModalClient"
+                  :disabled="!canSave"
+                >
+                  <v-icon small>
+                    {{ idByRoute ? 'mdi-pencil' : 'mdi-magnify'}}
+                  </v-icon>
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -816,6 +852,54 @@
           <v-expand-transition>
             <v-virtual-scroll
               v-show="modalClient.search"
+              height="250"
+              item-height="60"
+              :items="clientsSearch"
+            >
+              <template v-slot:default="{ item }">
+                <v-list-item :key="item.id" @click="chooseClient(item)">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                    <strong>{{ item.name }}</strong>
+                    </v-list-item-title>
+                  </v-list-item-content>
+
+                  <v-list-item-action>
+                    <v-icon color="primary">
+                      mdi-open-in-new
+                    </v-icon>
+                  </v-list-item-action>
+                </v-list-item>
+
+                <v-divider></v-divider>
+              </template>
+            </v-virtual-scroll>
+          </v-expand-transition>
+
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Modal Client -->
+    <v-dialog v-model="modalTechnician.show" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <v-icon color="primary">mdi-account</v-icon>
+          <strong class="text-h6 font-weight-black ml-2 primary--text">Cliente</strong>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="modalTechnician.search"
+            filled
+            prepend-inner-icon="mdi-magnify"
+            @input="modalTechnician.search = modalTechnician.search.toUpperCase()"
+            placeholder="Busca"
+            clearable
+          ></v-text-field>
+
+          <v-expand-transition>
+            <v-virtual-scroll
+              v-show="modalTechnician.search"
               height="250"
               item-height="60"
               :items="clientsSearch"
