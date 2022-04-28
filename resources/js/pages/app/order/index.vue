@@ -206,6 +206,11 @@
                     </div>
                   </v-col>
                   <v-col cols="12" md="3">
+                    <div>
+                      <v-icon small color="primary">mdi-file-document</v-icon>
+                      <b>Situação do pedido</b>
+                    </div>
+
                     <v-chip
                       v-if="order.status"
                       class="d-flex justify-center"
@@ -219,6 +224,11 @@
                     </v-chip>
                   </v-col>
                   <v-col cols="12" md="3">
+                    <div>
+                      <v-icon small color="primary">mdi-cash-multiple</v-icon>
+                      <b>Status Finaceiro</b>
+                    </div>
+
                     <v-chip
                       v-if="order.payment_status"
                       class="d-flex justify-center"

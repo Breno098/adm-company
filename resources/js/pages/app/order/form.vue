@@ -8,7 +8,7 @@
     </p>
 
     <v-row class="mb-2">
-      <v-col cols="6" md="10">
+      <v-col cols="6" md="9">
         <v-btn
           color="btn-primary"
           small
@@ -19,659 +19,838 @@
         </v-btn>
       </v-col>
 
-      <v-col cols="6" md="2">
+      <v-col cols="4" md="2">
         <v-btn
           color="btn-primary"
           class="rounded-lg"
           block
           small
           dark
+          v-if="canSave"
+          :loading="loading"
           @click="showModalStatus"
+        >
+          Salvar <v-icon small class="ml-2">mdi-pencil</v-icon>
+        </v-btn>
+      </v-col>
+
+      <v-col cols="2" md="1">
+        <v-btn
+          color="btn-delete"
+          class="rounded-lg"
+          block
+          small
+          dark
           v-if="canSave"
           :loading="loading"
         >
-          Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
+          <v-icon small>mdi-delete</v-icon>
         </v-btn>
       </v-col>
     </v-row>
 
-     <v-card>
-      <v-card-text>
-        <v-row>
-          <v-col cols="12" md="11">
-            <v-autocomplete
-              v-model="order.client_id"
-              :items="clients"
-              item-text="name"
-              item-value="id"
-              label="CLIENTE"
-              v-on:change="_loadAddresses"
-              :loading="loadingClients"
-              filled
-              dense
-              :rules="[rules.required]"
-              :error="errors.client_id && !order.client_id"
-              :no-data-text="loadingClients ? 'Carregando clientes...' : 'Nenhum cliente encontrado'"
-            ></v-autocomplete>
+    <v-card class="mx-1">
+      <v-tabs v-model="tab">
+        <v-tabs-slider color="primary"></v-tabs-slider>
+        <v-tab>Pedido <v-icon small class="ml-2">mdi-file-document</v-icon> </v-tab>
+        <v-tab>Relatórios e garantias <v-icon small class="ml-2">mdi-format-align-center</v-icon></v-tab>
+        <v-tab v-if="showFinanceTab">Financeiro <v-icon small class="ml-2">mdi-cash</v-icon></v-tab>
+      </v-tabs>
+    </v-card>
+
+    <v-tabs-items v-model="tab" class="pt-5 px-1" style="background-color: transparent !important;">
+      <v-tab-item>
+        <v-row class="mb-2">
+          <v-col cols="12" md="8">
+            <v-card>
+              <v-card-text class="py-7">
+                <v-row>
+                  <v-col cols="12">
+                    <div class="mb-3 d-flex align-center">
+                      <v-icon color="primary">mdi-account</v-icon>
+                      <strong class="text-h6 font-weight-black ml-2 primary--text">Cliente</strong>
+                    </div>
+                    {{ order.client ? order.client.name : '' }}
+                  </v-col>
+                </v-row>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="showModalClient"
+                  :disabled="!canSave"
+                >
+                  <v-icon small>
+                    {{ idByRoute ? 'mdi-pencil' : 'mdi-magnify'}}
+                  </v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
           </v-col>
 
-          <v-col cols="12" md="1">
-            <v-btn
-              color="btn-primary"
-              class="rounded-lg"
-              block
-              text
-              @click="modalAddress = true"
-            >
-              <v-icon>mdi-map-marker-radius</v-icon>
-            </v-btn>
+          <v-col cols="12" md="4">
+            <v-card class="fill-height d-flex flex-column align-center justify-center">
+              <v-card-text class="py-4">
+                <v-row>
+                  <v-col cols="12">
+                    <div>
+                      <v-icon small color="primary">mdi-file-document</v-icon>
+                      <b>Situação do pedido</b>
+                    </div>
+
+                    <v-chip
+                      v-if="order.status"
+                      class="d-flex justify-center mt-2"
+                      label
+                      :color="order.status | statusColor"
+                      style="width: 100%;"
+                      small
+                    >
+                      {{ order.status }}
+                      <v-icon class="ml-2">{{ order.status | statusIcon }}</v-icon>
+                    </v-chip>
+                  </v-col>
+
+                  <v-col cols="12">
+                    <div>
+                      <v-icon small color="primary">mdi-cash-multiple</v-icon>
+                      <b>Status Finaceiro</b>
+                    </div>
+
+                    <v-chip
+                      v-if="order.payment_status"
+                      class="d-flex justify-center mt-2"
+                      label
+                      :color="order.payment_status | paymentStatusColor"
+                      style="width: 100%;"
+                      small
+                    >
+                      {{ order.payment_status }}
+                      <v-icon class="ml-2">{{ order.payment_status | paymentStatusIcon }}</v-icon>
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card>
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="btn-delete">mdi-comment-alert-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Problema reclamado
+                  </strong>
+                </div>
+
+                {{ order.complaint | textLimitChar(50) }}
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalComplaint.show = true"
+                >
+                  <v-icon small>mdi-comment-processing</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card>
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="primary">mdi-comment-text-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Anotações
+                  </strong>
+                </div>
+
+                {{ order.comments | textLimitChar(50) }}
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalComments.show = true"
+                >
+                  <v-icon small>mdi-comment-text-outline</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="9">
+            <v-card>
+              <v-card-text class="py-7">
+                <v-row>
+                  <v-col cols="12">
+                    <div class="mb-3 d-flex align-center">
+                      <v-icon color="primary">mdi-map-marker-radius</v-icon>
+                      <strong class="text-h6 font-weight-black ml-2 primary--text">Local</strong>
+                    </div>
+                    {{ order.address && order.address.street ? order.address.street : '' }}
+                    {{ order.address && order.address.number ? `n° ${order.address.number}` : '' }}
+                    {{ order.address && order.address.district ? ` - ${order.address.district}` : '' }}
+                    {{ order.address && order.address.city ? `- ${order.address.city}` : '' }}
+                  </v-col>
+                </v-row>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  :loading="loading"
+                  @click="showModalAddress"
+                >
+                  <v-icon small>
+                    {{ idByRoute ? 'mdi-pencil' : 'mdi-magnify'}}
+                  </v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="3">
+            <v-card class="fill-height d-flex flex-column align-center justify-center">
+              <v-card-text>
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="primary">mdi-cash-multiple</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">Valor total</strong>
+                </div>
+
+                <div class="text-h6 font-weight-black">
+                  {{ valueTotal | formatMoney }}
+                </div>
+              </v-card-text>
+            </v-card>
           </v-col>
         </v-row>
 
-        <v-expansion-panels
-          flat
-          multiple
-          v-model="panels"
-        >
-          <!-- Basic Informations -->
-          <v-expansion-panel>
-            <v-divider class="mx-7 mt-2"></v-divider>
+        <v-card class="mb-4">
+          <v-card-text class="py-7">
+            <div class="mb-3 d-flex align-center">
+                <v-icon color="primary">mdi-wrench</v-icon>
+                <strong class="text-h6 font-weight-black ml-2 primary--text">Serviços</strong>
 
-            <v-expansion-panel-header class="px-2">
-              <div class="text-h6 font-weight-bold primary--text">
-                <v-icon small color="primary">mdi-information</v-icon>
-                Informações básicas
-              </div>
-            </v-expansion-panel-header>
-
-            <v-divider class="mx-7"></v-divider>
-
-            <v-expansion-panel-content class="pt-2">
-              <v-row>
-                <v-col cols="12" md="6">
-                  <v-dialog
-                      ref="dialog"
-                      v-model="menu_technical_visit_date"
-                      :return-value.sync="order.technical_visit_date"
-                      persistent
-                      width="290px"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          :value="order.technical_visit_date | formatDMY"
-                          label="DATA VISITA TÉCNICA"
-                          prepend-inner-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          filled
-                          dense
-                          clearable
-                          @click:clear="order.technical_visit_date = null"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="order.technical_visit_date"
-                        scrollable
-                        no-title
-                        locale="pt-Br"
-                        color="primary"
-                      >
-                        <v-spacer></v-spacer>
-                        <v-btn text @click="menu_technical_visit_date = false">
-                          Cancelar
-                        </v-btn>
-                        <v-btn text @click="$refs.dialog.save(order.technical_visit_date)">
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-dialog>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-menu
-                    ref="menu_time"
-                    v-model="menu_time"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    :return-value.sync="order.technical_visit_time"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="order.technical_visit_time"
-                        label="HORÁRIO VISITA TÉCNICA"
-                        prepend-inner-icon="mdi-clock-time-four-outline"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        dense
-                        filled
-                      ></v-text-field>
-                    </template>
-                    <v-time-picker
-                      v-if="menu_time"
-                      v-model="order.technical_visit_time"
-                      @click:minute="$refs.menu_time.save(order.technical_visit_time)"
-                      format="24hr"
-                      color="primary"
-                    ></v-time-picker>
-                  </v-menu>
-                </v-col>
-
-                <v-col cols="12">
-                  <v-autocomplete
-                    v-model="order.technician_id"
-                    :items="employees"
-                    item-value="id"
-                    item-text="name"
-                    label="RESPONSÁVEL TÉCNICO"
-                    :loading="loadingEmployees"
-                    filled
-                    dense
-                    no-data-text="Nenhum técnico encontrado"
-                  >
-                    <template v-slot:selection="data">
-                      {{ data.item.name }}
-                      <small v-if="data.item.position_id" class="ml-3">
-                        ({{ data.item.position.name }})
-                      </small>
-                    </template>
-                    <template v-slot:item="data">
-                        <v-list-item-content>
-                          <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                          <v-list-item-subtitle
-                            v-if="data.item.position_id"
-                            v-html="data.item.position.name"
-                          ></v-list-item-subtitle>
-                        </v-list-item-content>
-                    </template>
-                  </v-autocomplete>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-
-          <!-- Notes and comments -->
-          <v-expansion-panel>
-            <v-divider class="mx-7 mt-2"></v-divider>
-
-            <v-expansion-panel-header class="px-2">
-              <div class="text-h6 font-weight-bold primary--text">
-                <v-icon small color="primary">mdi-comment-text-outline</v-icon>
-                Anotações
-              </div>
-            </v-expansion-panel-header>
-
-            <v-divider class="mx-7"></v-divider>
-
-            <v-expansion-panel-content class="pt-2">
-              <v-textarea
-                label="COMENTÁRIOS E ANOTAÇÔES"
-                filled
-                dense
-                v-model="order.comments"
-                :loading="loading"
-                hint="COMENTÁRIOS E ANOTAÇÔES INTERNOS"
-                @input="order.comments = order.comments.toUpperCase()"
-              ></v-textarea>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-
-          <!-- Services -->
-          <v-expansion-panel>
-            <v-divider class="mx-7 mt-2"></v-divider>
-
-            <v-expansion-panel-header class="px-2">
-              <div class="text-h6 font-weight-bold primary--text">
-                <v-icon small color="primary">mdi-wrench</v-icon>
-
-                <v-badge
-                  color="primary"
-                  :content="order.services.length"
-                  :value="order.services.length"
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg"
+                  small
+                  dark
+                  :loading="loading"
+                  @click="showModalService()"
                 >
-                  Serviços
-                </v-badge>
+                  <v-icon small>mdi-plus</v-icon>
+                </v-btn>
               </div>
-            </v-expansion-panel-header>
 
-            <v-divider class="mx-7"></v-divider>
+              <v-data-table
+                v-if="order.services.length > 0"
+                :headers="headersTablesItems"
+                :items="order.services"
+                class="elevation-0"
+                hide-default-footer
+                no-data-text="Não há serviços para o pedido."
+              >
+                <template v-slot:item.value="{ item }">
+                  {{ item.value | formatMoney }}
+                </template>
+                <template v-slot:item.total_value="{ item }">
+                  {{ (item.quantity * item.value) | formatMoney }}
+                </template>
 
-            <v-expansion-panel-content class="pt-2">
-              <v-row v-for="(service, index) in order.services" :key="`service-${index}`">
-                <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn
-                    color="btn-delete"
-                    @click="order.services.splice(index, 1);"
-                    :loading="loading"
-                    x-small
-                    class="rounded-lg"
-                    dark
-                  >
-                    <v-icon small>mdi-close</v-icon>
-                  </v-btn>
-                </v-col>
+                <template v-slot:item.actions="{ item }">
+                  <v-icon small @click="showModalService(item)" color="primary">
+                    mdi-pencil
+                  </v-icon>
+                  <v-icon small @click="deleteService(item)" color="btn-delete">
+                    mdi-delete
+                  </v-icon>
+                </template>
+              </v-data-table>
+          </v-card-text>
+        </v-card>
 
-                <v-col cols="12" md="6">
-                  <v-autocomplete
-                    v-model="service.id"
-                    :items="services"
-                    item-value="id"
-                    item-text="name"
-                    label="SERVIÇO"
-                    filled
-                    dense
-                    :loading="loadingServices"
-                    no-data-text="Nenhum serviço encontrado"
-                    v-on:change="_addDefaultValueService(index)"
-                  >
-                  </v-autocomplete>
-                </v-col>
+        <v-card class="mb-4">
+          <v-card-text class="py-7">
+            <div class="mb-3 d-flex align-center">
+                <v-icon color="primary">mdi-barcode</v-icon>
+                <strong class="text-h6 font-weight-black ml-2 primary--text">Produtos</strong>
 
-                <v-col cols="12" md="2">
-                  <v-text-field
-                    label="QUANTIDADE"
-                    filled
-                    type="number"
-                    dense
-                    v-model="service.quantity"
-                    :loading="loading"
-                    v-on:click="_sumTotalValueService(index)"
-                    v-on:keyup="_sumTotalValueService(index)"
-                  ></v-text-field>
-                </v-col>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg"
+                  small
+                  dark
+                  :loading="loading"
+                  @click="showModalProduct()"
+                >
+                  <v-icon small>mdi-plus</v-icon>
+                </v-btn>
+              </div>
 
-                <v-col cols="12" md="2">
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        prefix="R$"
-                        type="number"
-                        label="VALOR"
-                        filled
-                        dense
-                        v-model="service.value"
-                        :loading="loading"
-                        v-on:click="_sumTotalValueService(index)"
-                        v-on:keyup="_sumTotalValueService(index)"
-                        v-bind="attrs"
-                        v-on="on"
-                      ></v-text-field>
-                    </template>
-                    <span> Para centavos, utilize ponto (.) ao invés de virgula (,) </span>
-                  </v-tooltip>
-                </v-col>
+              <v-data-table
+               v-if="order.products.length > 0"
+                :headers="headersTablesItems"
+                :items="order.products"
+                class="elevation-0"
+                hide-default-footer
+                no-data-text="Não há produtos para o pedido."
+              >
+                <template v-slot:item.value="{ item }">
+                  {{ item.value | formatMoney }}
+                </template>
+                <template v-slot:item.total_value="{ item }">
+                  {{ (item.quantity * item.value) | formatMoney }}
+                </template>
 
-                <v-col cols="12" md="2">
-                  <v-text-field
-                    prefix="R$"
-                    label="VALOR TOTAL"
-                    readonly
-                    filled
-                    dense
-                    :value="service.total_value.toFixed(2)"
-                    :loading="loading"
-                    color="black"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+                <template v-slot:item.actions="{ item }">
+                  <v-icon small @click="showModalProduct(item)" color="primary">
+                    mdi-pencil
+                  </v-icon>
+                  <v-icon small @click="deleteProduct(item)" color="btn-delete">
+                    mdi-delete
+                  </v-icon>
+                </template>
+              </v-data-table>
+          </v-card-text>
+        </v-card>
 
-              <v-row>
-                <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn
-                    color="btn-primary"
-                    :loading="loading"
+        <v-card class="mb-4">
+          <v-card-text class="py-7">
+            <div class="mb-3 d-flex align-center">
+              <v-icon color="primary">mdi-credit-card-multiple</v-icon>
+              <strong class="text-h6 font-weight-black ml-2 primary--text">Metodos pagamento aceitas</strong>
+            </div>
+
+            <v-row>
+              <v-col cols="6" md="3" v-for="(payment, index) in payments" :key="index">
+                <v-switch
+                  inset
+                  :label="payment"
+                  :value="payment"
+                  v-model="paymentMethods"
+                ></v-switch>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-tab-item>
+
+      <v-tab-item>
+        <v-row class="mb-2">
+          <v-col cols="12" md="6">
+            <v-card>
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="btn-delete">mdi-comment-alert-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Problema reclamado
+                  </strong>
+                </div>
+
+                {{ order.complaint | textLimitChar(50) }}
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalComplaint.show = true"
+                >
+                  <v-icon small>mdi-comment-processing</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card>
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="primary">mdi-comment-text-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Anotações
+                  </strong>
+                </div>
+
+                {{ order.comments | textLimitChar(50) }}
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalComments.show = true"
+                >
+                  <v-icon small>mdi-comment-text-outline</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12">
+            <v-card>
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="primary">mdi-comment-processing-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Problema constatado
+                  </strong>
+                </div>
+
+                {{ order.work_found }}
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalWorkFound.show = true"
+                >
+                  <v-icon small>mdi-pencil</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12">
+            <v-card class="mb-4">
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="green">mdi-comment-check-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Trabalho realizado
+                  </strong>
+                </div>
+
+                {{ order.work_done }}
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalWorkDone.show = true"
+                >
+                  <v-icon small>mdi-pencil</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-tab-item>
+
+      <v-tab-item>
+        <v-row class="mb-2">
+          <v-col cols="12" md="3">
+            <v-card class="fill-height d-flex flex-column align-center justify-center">
+              <v-card-text>
+                <div>
+                  <v-icon small color="primary">mdi-cash-multiple</v-icon>
+                  <b>Status Finaceiro</b>
+                </div>
+
+                <v-chip
+                  v-if="order.payment_status"
+                  class="d-flex justify-center mt-2"
+                  label
+                  :color="order.payment_status | paymentStatusColor"
+                  style="width: 100%;"
+                  small
+                >
+                  {{ order.payment_status }}
+                  <v-icon class="ml-2">{{ order.payment_status | paymentStatusIcon }}</v-icon>
+                </v-chip>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="9">
+            <v-card>
+              <v-card-text class="py-7">
+                <div class="mb-3 d-flex align-center">
+                  <v-icon color="primary">mdi-calculator</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Descontos
+                  </strong>
+                </div>
+
+                <v-row>
+                  <v-col cols="6">
+                    <v-text-field
+                      prefix="%"
+                      label="PORCENTAGEM DESCONTO"
+                      type="number"
+                      filled
+                      dense
+                      v-model="order.discount_percentage"
+                      min="0"
+                      max="100"
+                      @keyup="calcDiscontAmount"
+                      @click="calcDiscontAmount"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col cols="6">
+                    <v-text-field
+                      prefix="R$"
+                      label="VALOR DESCONTO"
+                      type="number"
+                      filled
+                      dense
+                      v-model="order.discount_amount"
+                      min="0"
+                      :max="valueTotal"
+                      @keyup="calcPercentageAmount"
+                      @click="calcPercentageAmount"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card class="fill-height d-flex flex-column align-center justify-center">
+              <v-card-text>
+                <div class="text-subtitle-1">Valor bruto</div>
+                <h1 class="primary--text">{{ valueTotal | formatMoney }}</h1>
+
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">Desconto</div>
+                <h3 class="orange--text">
+                  - {{ order.discount_amount | formatMoney }}
+                  ({{ order.discount_percentage ? order.discount_percentage : 0 }}%)
+                </h3>
+
+                <v-divider color="grey" class="mx-5 mt-3 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">Valor liquido</div>
+                <h1 class="green--text">{{ valueTotalWithDiscont | formatMoney }}</h1>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card class="fill-height d-flex flex-column align-center justify-center">
+              <v-card-text>
+                <div class="text-subtitle-1">Valor pago</div>
+                <h1 class="primary--text">{{ order.amount_paid | formatMoney }}</h1>
+
+                <v-divider color="grey" class="mx-5 mt-5 mb-2"></v-divider>
+
+                <div class="text-subtitle-1">Valor não pago</div>
+                <h1 class="orange--text">
+                  {{ (valueTotalWithDiscont - order.amount_paid) | formatMoney }}
+                </h1>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <v-card>
+          <v-card-text class="py-7">
+            <div class="mb-3 d-flex align-center">
+                <v-icon color="primary">mdi-cash-multiple</v-icon>
+                <strong class="text-h6 font-weight-black ml-2 primary--text">Pagamentos</strong>
+
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg"
+                  small
+                  dark
+                  @click="showModalInstallment()"
+                >
+                  <v-icon small>mdi-plus</v-icon>
+                </v-btn>
+              </div>
+
+              <v-data-table
+                v-if="order.installments.length > 0"
+                :headers="headersTablePayments"
+                :items="order.installments"
+                class="elevation-0"
+                hide-default-footer
+                no-data-text="Não há pagamentos para o pedido."
+                :items-per-page="order.installments.length"
+              >
+                <template v-slot:item.value="{ item }">
+                  {{ item.value | formatMoney }}
+                </template>
+                <template v-slot:item.pay_day="{ item }">
+                  {{ item.pay_day | formatDMY }}
+                </template>
+                <template v-slot:item.due_date="{ item }">
+                  {{ item.due_date | formatDMY }}
+                </template>
+                <template v-slot:item.status="{ item }">
+                  <v-chip
+                    v-if="item.status"
+                    class="d-flex justify-center mt-2"
+                    label
+                    :color="item.status | paymentInstallmentStatusColor"
                     small
-                    dark
-                    class="rounded-lg"
-                    @click="order.services.push({ quantity: 1, value: 0, default_value: 0, total_value: 0 })"
                   >
-                    Adicionar serviço <v-icon small>mdi-plus</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
+                    {{ item.status }}
+                    <v-icon class="ml-2">{{ item.status | paymentInstallmentStatusIcon }}</v-icon>
+                  </v-chip>
+                </template>
 
-          <!-- Products -->
-          <v-expansion-panel>
-            <v-divider class="mx-7 mt-2"></v-divider>
+                <template v-slot:item.actions="{ item }">
+                  <v-icon small @click="showModalInstallment(item)" color="primary">
+                    mdi-pencil
+                  </v-icon>
+                  <v-icon small @click="deleteInstallment(item)" color="btn-delete">
+                    mdi-delete
+                  </v-icon>
+                </template>
+              </v-data-table>
+          </v-card-text>
+        </v-card>
+      </v-tab-item>
+    </v-tabs-items>
 
-            <v-expansion-panel-header class="px-2">
-              <div class="text-h6 font-weight-bold primary--text">
-                <v-icon small color="primary">mdi-barcode</v-icon>
+    <!-- Modals -->
+    <!-- Modal Service -->
+    <v-dialog v-model="modalService.show" max-width="800">
+      <v-card>
+        <v-card-title>
+          <v-icon color="primary" small>mdi-wrench</v-icon>
+          <span class="font-weight-bold text-h5 ml-3">Serviço</span>
+        </v-card-title>
 
-                <v-badge
-                  color="primary"
-                  :content="order.products.length"
-                  :value="order.products.length"
-                >
-                  Produtos
-                </v-badge>
-
-              </div>
-            </v-expansion-panel-header>
-
-            <v-divider class="mx-7"></v-divider>
-
-            <v-expansion-panel-content class="pt-2">
-              <v-row v-for="(product, index) in order.products" :key="`product-${index}`">
-                <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn
-                    color="btn-delete"
-                    @click="order.products.splice(index, 1);"
-                    :loading="loading"
-                    x-small
-                    class="rounded-lg"
-                    dark
-                  >
-                    <v-icon small>mdi-close</v-icon>
-                  </v-btn>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-autocomplete
-                    v-model="product.id"
-                    :items="products"
-                    item-value="id"
-                    item-text="name"
-                    label="PRODUTO"
-                    filled
-                    dense
-                    :loading="loadingProducts"
-                    no-data-text="Nenhum produto encontrado"
-                    v-on:change="_addDefaultValueProduct(index)"
-                  >
-                  </v-autocomplete>
-                </v-col>
-
-                <v-col cols="12" md="2">
-                  <v-text-field
-                    label="QUANTIDADE"
-                    filled
-                    type="number"
-                    dense
-                    v-model="product.quantity"
-                    :loading="loading"
-                    v-on:click="_sumTotalValueProduct(index)"
-                    v-on:keyup="_sumTotalValueProduct(index)"
-                  ></v-text-field>
-                </v-col>
-
-                <v-col cols="12" md="2">
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        prefix="R$"
-                        type="number"
-                        label="VALOR"
-                        filled
-                        dense
-                        v-model="product.value"
-                        :loading="loading"
-                        v-on:click="_sumTotalValueProduct(index)"
-                        v-on:keyup="_sumTotalValueProduct(index)"
-                        v-bind="attrs"
-                        v-on="on"
-                      ></v-text-field>
-                    </template>
-                    <span> Para centavos, utilize ponto (.) ao invés de virgula (,) </span>
-                  </v-tooltip>
-                </v-col>
-
-                <v-col cols="12" md="2">
-                  <v-text-field
-                    prefix="R$"
-                    label="VALOR TOTAL"
-                    readonly
-                    filled
-                    dense
-                    :value="product.total_value.toFixed(2)"
-                    :loading="loading"
-                    color="black"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col cols="12" class="d-flex flex-row justify-end">
-                  <v-btn
-                    color="btn-primary"
-                    :loading="loading"
-                    small
-                    dark
-                    class="rounded-lg"
-                    @click="order.products.push({ quantity: 1, value: 0, default_value: 0, total_value: 0 })"
-                  >
-                    Adicionar produto <v-icon small>mdi-plus</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-
-          <!-- Values and discont -->
-          <v-expansion-panel>
-            <v-divider class="mx-7 mt-2"></v-divider>
-
-            <v-expansion-panel-header class="px-2">
-              <div class="text-h6 font-weight-bold primary--text">
-                <v-icon small color="primary">mdi-calculator</v-icon>
-                Valores e desconto
-              </div>
-            </v-expansion-panel-header>
-
-            <v-divider class="mx-7"></v-divider>
-
-            <v-expansion-panel-content class="pt-2">
-              <v-row>
-                  <v-col cols="12" md="6">
-                  <v-text-field
-                    prefix="%"
-                    label="PORCENTAGEM DESCONTO"
-                    type="number"
-                    filled
-                    dense
-                    v-model="order.discount_percentage"
-                    :loading="loading"
-                    min="0"
-                    max="100"
-                    @keyup="calcDiscontAmount"
-                    @click="calcDiscontAmount"
-                  ></v-text-field>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    prefix="R$"
-                    label="VALOR DESCONTO"
-                    type="number"
-                    filled
-                    dense
-                    v-model="order.discount_amount"
-                    :loading="loading"
-                    min="0"
-                    :max="valueTotal"
-                    @keyup="calcPercentageAmount"
-                    @click="calcPercentageAmount"
-                  ></v-text-field>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    filled
-                    prefix="R$"
-                    :value="valueTotal"
-                    dense
-                    label="VALOR BRUTO"
-                    :loading="loading"
-                    readonly
-                    color="black"
-                  ></v-text-field>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    filled
-                    prefix="R$"
-                    :value="valueTotalWithDiscont"
-                    dense
-                    label="VALOR LIQUIDO"
-                    :loading="loading"
-                    readonly
-                    color="black"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-
-          <!-- Payment Methods -->
-          <v-expansion-panel>
-            <v-divider class="mx-7 mt-2"></v-divider>
-
-            <v-expansion-panel-header class="px-2">
-              <div class="text-h6 font-weight-bold primary--text">
-                <v-icon small color="primary">mdi-credit-card-multiple</v-icon>
-                Meios de pagamento aceitas
-              </div>
-            </v-expansion-panel-header>
-
-            <v-divider class="mx-7"></v-divider>
-
-            <v-expansion-panel-content class="pt-2">
-              <v-row>
-                <v-col
-                  cols="6"
-                  md="3"
-                  v-for="(payment, index) in payments"
-                  :key="`payment-method-${index}`"
-                >
-                  <v-switch
-                    :label="payment"
-                    :value="payment"
-                    v-model="paymentMethods"
-                  ></v-switch>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-
-          <!-- Reports -->
-          <v-expansion-panel>
-            <v-divider class="mx-7 mt-2"></v-divider>
-
-            <v-expansion-panel-header class="px-2">
-              <div class="text-h6 font-weight-bold primary--text">
-                <v-icon small color="primary">mdi-book-open</v-icon>
-                Relatórios
-              </div>
-            </v-expansion-panel-header>
-
-            <v-divider class="mx-7"></v-divider>
-
-            <v-expansion-panel-content class="pt-2">
-              <v-textarea
-                label="PROBLEMA RECLAMADO"
+        <v-card-text class="py-5">
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-autocomplete
+                v-model="modalService.editedItem.id"
+                :items="services"
+                item-value="id"
+                item-text="name"
+                label="SERVIÇO"
                 filled
                 dense
-                v-model="order.complaint"
-                :loading="loading"
-                hint="ORDEM DE SERVIÇO"
-                @input="order.complaint = order.complaint.toUpperCase()"
-              ></v-textarea>
+                no-data-text="Nenhum serviço encontrado"
+                v-on:change="addDefaultValueService"
+              >
+              </v-autocomplete>
+            </v-col>
 
-              <v-textarea
-                label="SERVIÇO NECESSÁRIO"
+            <v-col cols="12" md="3">
+              <v-text-field
+                label="QUANTIDADE"
                 filled
+                type="number"
                 dense
-                v-model="order.work_found"
+                v-model="modalService.editedItem.quantity"
                 :loading="loading"
-                hint="SERVIÇO NECESSÁRIO A SER FEITO"
-                @input="order.work_found = order.work_found.toUpperCase()"
-              ></v-textarea>
+              ></v-text-field>
+            </v-col>
 
-              <v-textarea
-                label="SERVIÇO REALIZADO"
-                filled
-                dense
-                v-model="order.work_done"
-                :loading="loading"
-                hint="SERVIÇO REALIZADO"
-                @input="order.work_done = order.work_done.toUpperCase()"
-              ></v-textarea>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-
-          <!-- Warranty -->
-          <v-expansion-panel>
-            <v-divider class="mx-7 mt-2"></v-divider>
-
-            <v-expansion-panel-header class="px-2">
-              <div class="text-h6 font-weight-bold primary--text">
-                <v-icon small color="primary">mdi-format-align-center</v-icon>
-                Garantia
-              </div>
-            </v-expansion-panel-header>
-
-            <v-divider class="mx-7"></v-divider>
-
-            <v-expansion-panel-content class="pt-2">
-              <v-row>
-                <v-col cols="12" md="2">
+            <v-col cols="12" md="3">
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    label="DIAS GARANTIA"
+                    prefix="R$"
                     type="number"
+                    label="VALOR"
                     filled
                     dense
-                    v-model="order.warranty_days"
+                    v-model="modalService.editedItem.value"
                     :loading="loading"
+                    v-bind="attrs"
+                    v-on="on"
                   ></v-text-field>
-                </v-col>
+                </template>
+                <span> Para centavos, utilize ponto (.) ao invés de virgula (,) </span>
+              </v-tooltip>
+            </v-col>
+          </v-row>
 
-                <v-col cols="12" md="10">
-                  <v-textarea
-                    label="CONDIÇÃO DE GARANTIA"
+          <v-divider class="mx-7 my-2"></v-divider>
+
+          <div class="text-h6 font-weight-bold text-center">
+            {{ (modalService.editedItem.quantity * modalService.editedItem.value) | formatMoney }}
+          </div>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="btn-primary" class="rounded-lg" small text @click="modalService.show = false">
+            Cancelar
+          </v-btn>
+          <v-btn color="btn-primary" class="rounded-lg" small dark @click="handleService">
+            Adicionar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Modal Product -->
+    <v-dialog v-model="modalProduct.show" max-width="800">
+      <v-card>
+        <v-card-title>
+          <v-icon color="primary" small>mdi-barcode</v-icon>
+          <span class="font-weight-bold text-h5 ml-3">Produto</span>
+        </v-card-title>
+
+        <v-card-text class="py-5">
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-autocomplete
+                v-model="modalProduct.editedItem.id"
+                :items="products"
+                item-value="id"
+                item-text="name"
+                label="PRODUTO"
+                filled
+                dense
+                no-data-text="Nenhum produto encontrado"
+                v-on:change="addDefaultValueProduct"
+              >
+              </v-autocomplete>
+            </v-col>
+
+            <v-col cols="12" md="3">
+              <v-text-field
+                label="QUANTIDADE"
+                filled
+                type="number"
+                dense
+                v-model="modalProduct.editedItem.quantity"
+                :loading="loading"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="3">
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    prefix="R$"
+                    type="number"
+                    label="VALOR"
                     filled
                     dense
-                    v-model="order.warranty_conditions"
+                    v-model="modalProduct.editedItem.value"
                     :loading="loading"
-                    hint="TERMOS DE GARANTIA"
-                    @input="order.warranty_conditions = order.warranty_conditions.toUpperCase()"
-                  ></v-textarea>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </v-card-text>
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <span> Para centavos, utilize ponto (.) ao invés de virgula (,) </span>
+              </v-tooltip>
+            </v-col>
+          </v-row>
 
-      <v-card-actions>
-        <v-btn
-          color="btn-primary"
-          class="rounded-lg"
-          small
-          dark
-          @click="showModalStatus"
-          v-if="canSave"
-          :loading="loading"
-          block
-        >
-          Salvar <v-icon small class="ml-2">mdi-content-save</v-icon>
-        </v-btn>
-      </v-card-actions>
-    </v-card>
+          <v-divider class="mx-7 my-2"></v-divider>
+
+          <div class="text-h6 font-weight-bold text-center">
+            {{ (modalProduct.editedItem.quantity * modalProduct.editedItem.value) | formatMoney }}
+          </div>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="btn-primary" class="rounded-lg" small text @click="modalProduct.show = false">
+            Cancelar
+          </v-btn>
+          <v-btn color="btn-primary" class="rounded-lg" small dark @click="handleProduct">
+            Adicionar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Modal Client -->
+    <v-dialog v-model="modalClient.show" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <v-icon color="primary">mdi-account</v-icon>
+          <strong class="text-h6 font-weight-black ml-2 primary--text">Cliente</strong>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="modalClient.search"
+            filled
+            prepend-inner-icon="mdi-magnify"
+            @input="modalClient.search = modalClient.search.toUpperCase()"
+            placeholder="Busca"
+            clearable
+          ></v-text-field>
+
+          <v-expand-transition>
+            <v-virtual-scroll
+              v-show="modalClient.search"
+              height="250"
+              item-height="60"
+              :items="clientsSearch"
+            >
+              <template v-slot:default="{ item }">
+                <v-list-item :key="item.id" @click="chooseClient(item)">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                    <strong>{{ item.name }}</strong>
+                    </v-list-item-title>
+                  </v-list-item-content>
+
+                  <v-list-item-action>
+                    <v-icon color="primary">
+                      mdi-open-in-new
+                    </v-icon>
+                  </v-list-item-action>
+                </v-list-item>
+
+                <v-divider></v-divider>
+              </template>
+            </v-virtual-scroll>
+          </v-expand-transition>
+
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
     <!-- Modal Address -->
-    <v-dialog v-model="modalAddress" max-width="800px">
+    <v-dialog v-model="modalAddress.show" max-width="800px">
       <v-card>
         <v-card-title>
           <v-icon color="primary" small>mdi-map-marker-radius</v-icon>
-          <span class="font-weight-bold text-h5 ml-3">Localização</span>
+           <strong class="text-h6 font-weight-black ml-2 primary--text">Localização</strong>
         </v-card-title>
         <v-card-text>
           <v-hover
@@ -862,9 +1041,211 @@
             class="rounded-lg"
             small
             dark
-            @click="modalAddress = false"
+            @click="modalAddress.show = false"
           >
             Ok
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Modal Complaint -->
+    <v-dialog v-model="modalComplaint.show" max-width="800px">
+      <v-card>
+        <v-card-title>
+          <v-icon color="btn-delete">mdi-comment-alert-outline</v-icon>
+          <strong class="text-h6 font-weight-black ml-2 primary--text">Problema reclamado</strong>
+        </v-card-title>
+        <v-card-text>
+          <v-textarea
+            :readonly="!canSave"
+            filled
+            dense
+            v-model="order.complaint"
+            @input="order.complaint = order.complaint.toUpperCase()"
+          ></v-textarea>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Modal Comments -->
+    <v-dialog v-model="modalComments.show" max-width="800px">
+      <v-card>
+        <v-card-title>
+          <v-icon color="primary">mdi-comment-text-outline</v-icon>
+          <strong class="text-h6 font-weight-black ml-2 primary--text">Anotações</strong>
+        </v-card-title>
+        <v-card-text>
+          <v-textarea
+            :readonly="!canSave"
+            filled
+            dense
+            v-model="order.comments"
+            @input="order.comments = order.comments.toUpperCase()"
+          ></v-textarea>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Modal Work Found -->
+    <v-dialog v-model="modalWorkFound.show" max-width="800px">
+      <v-card>
+        <v-card-title>
+          <v-icon color="primary">mdi-comment-processing-outline</v-icon>
+          <strong class="text-h6 font-weight-black ml-2 primary--text">Problema constatado</strong>
+        </v-card-title>
+        <v-card-text>
+          <v-textarea
+            :readonly="!canSave"
+            filled
+            dense
+            v-model="order.work_found"
+            @input="order.work_found = order.work_found.toUpperCase()"
+          ></v-textarea>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Modal Work Done -->
+    <v-dialog v-model="modalWorkDone.show" max-width="800px">
+      <v-card>
+        <v-card-title>
+          <v-icon color="green">mdi-comment-check-outline</v-icon>
+          <strong class="text-h6 font-weight-black ml-2 primary--text">Trabalho realizado</strong>
+        </v-card-title>
+        <v-card-text>
+          <v-textarea
+            :readonly="!canSave"
+            filled
+            dense
+            v-model="order.work_done"
+            @input="order.work_done = order.work_done.toUpperCase()"
+          ></v-textarea>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+   <!-- Modal Installment -->
+    <v-dialog v-model="modalInstallment.show" max-width="800">
+      <v-card>
+        <v-card-title>
+          <v-icon color="primary" small>mdi-cash-multiple</v-icon>
+          <span class="font-weight-bold text-h5 ml-3">Pagamento</span>
+
+          <v-spacer></v-spacer>
+
+          <v-chip
+            v-if="modalInstallment.editedItem.status"
+            class="d-flex justify-center mt-2"
+            label
+            :color="modalInstallment.editedItem.status | paymentInstallmentStatusColor"
+            small
+          >
+            {{ modalInstallment.editedItem.status }}
+            <v-icon class="ml-2">{{ modalInstallment.editedItem.status | paymentInstallmentStatusIcon }}</v-icon>
+          </v-chip>
+        </v-card-title>
+
+        <v-card-text class="py-5">
+          <v-row>
+            <v-col cols="12" md="6">
+               <v-text-field
+                filled
+                prefix="R$"
+                type="number"
+                dense
+                label="VALOR"
+                v-model="modalInstallment.editedItem.value"
+                clearable
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-select
+                :items="payments"
+                label="FORMA DE PAGAMENTO"
+                filled
+                dense
+                v-model="modalInstallment.editedItem.payment_method"
+                clearable
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-dialog
+                v-model="menu_date_installments_pay_day"
+                :close-on-content-click="false"
+                max-width="290"
+                transition="scale-transition"
+                offset-y
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    :value="modalInstallment.editedItem.pay_day | formatDMY"
+                    label="DATA PAGAMENTO"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    filled
+                    dense
+                    clearable
+                    @click:clear="modalInstallment.editedItem.pay_day = null"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="modalInstallment.editedItem.pay_day"
+                  @change="menu_date_installments_pay_day = false"
+                  scrollable
+                  no-title
+                  crollable
+                  locale="pt-Br"
+                  color="primary"
+                ></v-date-picker>
+              </v-dialog>
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-dialog
+                v-model="menu_date_installments_due_date"
+                :close-on-content-click="false"
+                max-width="290"
+                transition="scale-transition"
+                offset-y
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    :value="modalInstallment.editedItem.due_date | formatDMY"
+                    label="DATA VENCIMENTO"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    filled
+                    dense
+                    clearable
+                    @click:clear="modalInstallment.editedItem.due_date = null"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="modalInstallment.editedItem.due_date"
+                  @change="menu_date_installments_due_date = false"
+                  scrollable
+                  no-title
+                  crollable
+                  locale="pt-Br"
+                  color="primary"
+                ></v-date-picker>
+              </v-dialog>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="btn-primary" class="rounded-lg" small text @click="modalInstallment.show = false">
+            Cancelar
+          </v-btn>
+          <v-btn color="btn-primary" class="rounded-lg" small dark @click="handleInstallment">
+            Salvar
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -905,11 +1286,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
   middleware: 'auth',
@@ -917,21 +1300,74 @@ export default {
     return { title: this.titlePage }
   },
   data: () => ({
-    panels: [0],
-    modalAddress: false,
+    modalClient: {
+      show: false,
+      search: '',
+      client: {
+        id: null,
+        quantity: 1,
+        value: 0,
+      }
+    },
+    modalAddress: {
+      show: false,
+    },
+    modalService: {
+      show: false,
+      editedIndex: false,
+      editedItem: {
+        id: null,
+        quantity: 1,
+        value: 0,
+        total_value: 0
+      }
+    },
+    modalProduct: {
+      show: false,
+      editedIndex: false,
+      editedItem: {
+        id: null,
+        quantity: 1,
+        value: 0,
+        total_value: 0
+      }
+    },
+    modalInstallment: {
+      show: false,
+      editedIndex: false,
+      editedItem: {
+          value: 0,
+          payment_method: '',
+          pay_day: '',
+          due_date: '',
+          status: '',
+      }
+    },
+    modalComplaint: {
+      show: false
+    },
+    modalComments: {
+      show: false
+    },
+    modalWorkFound: {
+      show: false
+    },
+    modalWorkDone: {
+      show: false
+    },
+
+    tab: 2,
+
     modalStatus: false,
     loading: false,
     loadingClients: false,
     loadingProducts: false,
     loadingServices: false,
     loadingAddresses: false,
-    loadingEmployees: false,
-    addNotes: false,
     menu_technical_visit_date: false,
     menu_time: false,
-    menu_date_payments: [],
-    menu_date_installments_pay_day: [],
-    menu_date_installments_due_date: [],
+    menu_date_installments_pay_day: false,
+    menu_date_installments_due_date: false,
     errors: {
       client_id: false,
     },
@@ -941,7 +1377,7 @@ export default {
     order: {
       id: null,
       description : null,
-      comments: null,
+      comments: '',
       amount : null,
       amount_paid: null,
       technical_visit_date: null,
@@ -956,10 +1392,11 @@ export default {
       products: [],
       services: [],
       client_id: null,
-      status: 'AGUARDANDO APROVAÇÃO',
+      status: '',
       address_id: null,
       technician_id: null,
-      accepted_payment_methods: '',
+      accepted_payment_methods: 'PIX,DINHEIRO,CARTÃO DÉBITO,CARTÃO CRÉDITO',
+      complaint: '',
       address: {
         number: null,
         district: null,
@@ -982,7 +1419,21 @@ export default {
     services: [],
     addresses: [],
     accepted_payment_methods: [],
-    employees: [],
+    headersTablesItems: [
+      { text: 'Descrição', value: 'name' },
+      { text: 'Quantidade', value: 'quantity' },
+      { text: 'Valor unit.', value: 'value' },
+      { text: 'Valor total', value: 'total_value' },
+      { text: 'Actions', value: 'actions', sortable: false }
+    ],
+    headersTablePayments: [
+      { text: 'Valor', value: 'value' },
+      { text: 'Forma de pagamento', value: 'payment_method' },
+      { text: 'Data de pagamento', value: 'pay_day' },
+      { text: 'Date de vencimento', value: 'due_date' },
+      { text: 'status', value: 'status' },
+      { text: 'Actions', value: 'actions', sortable: false }
+    ],
     statuses: [
       'AGUARDANDO APROVAÇÃO',
       'EM ANDAMENTO',
@@ -1005,7 +1456,7 @@ export default {
       return this.$route.params.id ? `Editar Pedido | nº ${this.$route.params.id}` : 'Adicionar Pedido';
     },
     canSave(){
-      return this.$can('order_add') && !this.idByRoute || this.$can('order_update') && this.idByRoute;
+      return this.$can('order_add') && !this.idByRoute || this.$can('order_update') && Boolean(this.idByRoute);
     },
     idByRoute(){
       return this.$route.params.id;
@@ -1028,6 +1479,12 @@ export default {
         this.order.accepted_payment_methods = value.join(',');
       }
     },
+    clientsSearch() {
+      return this.modalClient.search ? this.clients.filter(client => client.name.includes(this.modalClient.search.toUpperCase())) : [];
+    },
+    showFinanceTab() {
+      return this.order.status.includes('EM ANDAMENTO') || this.order.status.includes('CONCLUÍDO');
+    }
   },
   filters: {
     addressStringParteOne(address) {
@@ -1057,6 +1514,34 @@ export default {
       return address.complement;
     },
   },
+  watch: {
+    'modalInstallment.editedItem': {
+      deep: true,
+      handler() {
+        this.setStatusPayment();
+      }
+    },
+    'order.installments': {
+      deep: true,
+      handler() {
+        this.calculeAmoutPaid();
+
+        let filterUnpaid = this.order.installments.filter(installment => installment.status === 'INADIMPLENTE');
+
+        if(filterUnpaid.length > 0) {
+          return this.order.payment_status = 'INADIMPLENTE';
+        }
+
+        let filterOpen = this.order.installments.filter(installment => installment.status === 'EM ABERTO');
+
+        if(filterOpen.length > 0) {
+          return this.order.payment_status = 'EM ABERTO';
+        }
+
+        return this.order.payment_status = 'PAGO TOTAL';
+      }
+    }
+  },
   mounted(){
     this._start();
   },
@@ -1065,28 +1550,6 @@ export default {
       if(this.idByRoute){
         await this._load();
       }
-
-      await this._loadClients();
-      await this._loadEmployees();
-      await this._loadProducts();
-      await this._loadServices();
-    },
-    calcDiscontAmount() {
-      console.log(this.order.discount_percentage);
-      if(this.order.discount_percentage > 100) {
-        this.order.discount_percentage = 100;
-      }
-
-      let value = this.valueTotal * (this.order.discount_percentage / 100);
-      this.order.discount_amount = value.toFixed(2);
-    },
-    calcPercentageAmount() {
-      if(parseFloat(this.order.discount_amount) > this.valueTotal) {
-        this.order.discount_amount = this.valueTotal;
-      }
-
-      let value = (this.order.discount_amount * 100) / this.valueTotal;
-      this.order.discount_percentage = value.toFixed(2);
     },
     async _loadClients(){
       this.loadingClients = true;
@@ -1108,6 +1571,10 @@ export default {
               });
     },
     async _loadAddresses(){
+      if(!this.order.client_id) {
+        return this.addresses = [];
+      }
+
       this.loadingAddresses = true;
 
       let params = { client_id: this.order.client_id };
@@ -1126,6 +1593,25 @@ export default {
               })
               .finally(() => {
                 this.loadingAddresses = false;
+              });
+    },
+    async _loadServices(){
+      this.loadingServices = true;
+
+      await axios
+              .get(`/api/service`)
+              .then(response => {
+                  if(response.data.success){
+                    this.services = response.data.data;
+                  } else {
+                    this.$refs.fireDialog.error({ title: 'Error ao carregar serviços' })
+                  }
+              })
+              .catch(error => {
+                this.$refs.fireDialog.error({ title: 'Error ao carregar serviços' })
+              })
+              .finally(() => {
+                this.loadingServices = false;
               });
     },
     async _loadProducts(){
@@ -1147,46 +1633,6 @@ export default {
                 this.loadingProducts = false;
               });
 
-    },
-    async _loadServices(){
-      this.loadingServices = true;
-
-      await axios
-              .get(`/api/service`)
-              .then(response => {
-                  if(response.data.success){
-                    this.services = response.data.data;
-                  } else {
-                    this.$refs.fireDialog.error({ title: 'Error ao carregar serviços' })
-                  }
-              })
-              .catch(error => {
-                this.$refs.fireDialog.error({ title: 'Error ao carregar serviços' })
-              })
-              .finally(() => {
-                this.loadingServices = false;
-              });
-    },
-    async _loadEmployees(){
-      this.loadingEmployees = true;
-
-      let params = { relations: ['position'] };
-
-      await axios
-              .get(`/api/employee`, { params })
-              .then(response => {
-                if(response.data.success){
-                  this.employees = response.data.data;
-                } else {
-                  this.$refs.fireDialog.error({ title: 'Error ao carregar técnicos' })
-                }
-              })
-              .catch(error => {
-                this.$refs.fireDialog.error({ title: 'Error ao carregar técnicos' })
-              })
-              .finally(() => {
-                this.loadingEmployees = false;
-              });
     },
     async _load(){
       this.loading = true;
@@ -1213,36 +1659,25 @@ export default {
                 this.loading = false;
               });
     },
-    _addDefaultValueProduct(index){
-      let filterProduct = this.products.filter(prod => prod.id === this.order.products[index].id);
-      if(filterProduct[0] && filterProduct[0].default_value){
-        this.order.products[index].default_value = filterProduct[0].default_value.toFixed(2);
-        this.order.products[index].value = filterProduct[0].default_value.toFixed(2);
-      } else {
-        this.order.products[index].default_value = 0
-        this.order.products[index].value = 0
+    setStatusPayment() {
+      if(this.modalInstallment.editedItem.pay_day) {
+        return this.modalInstallment.editedItem.status = 'PAGO';
       }
 
-      this._sumTotalValueProduct(index)
-    },
-    _sumTotalValueProduct(index){
-      this.order.products[index].total_value = this.order.products[index].value * this.order.products[index].quantity;
-    },
-    _addDefaultValueService(index){
-      let filterService = this.services.filter(prod => prod.id === this.order.services[index].id);
-      if(filterService[0] && filterService[0].default_value){
-        this.order.services[index].default_value = filterService[0].default_value.toFixed(2);
-        this.order.services[index].value = filterService[0].default_value.toFixed(2);
-      } else {
-        this.order.services[index].default_value = 0
-        this.order.services[index].value = 0
+      let dueDate = moment(this.modalInstallment.editedItem.due_date);
+
+      if(dueDate.diff(moment(), 'days') < 0) {
+        return this.modalInstallment.editedItem.status = 'INADIMPLENTE';
       }
 
-      this._sumTotalValueService(index)
+      return this.modalInstallment.editedItem.status = 'EM ABERTO';
     },
-    _sumTotalValueService(index){
-      this.order.services[index].total_value = this.order.services[index].value * this.order.services[index].quantity;
+    calculeAmoutPaid() {
+      let amountPaid = 0;
+      this.order.installments.forEach(installment => amountPaid += installment.status === 'PAGO' ? parseFloat(installment.value) : 0);
+      this.order.amount_paid = isNaN(amountPaid) ? (0).toFixed(2) : amountPaid.toFixed(2);
     },
+
     showModalStatus() {
       /* Validations */
       for (const field in this.errors) {
@@ -1303,9 +1738,166 @@ export default {
         this.$refs.fireDialog.error({ title: 'Error ao carregar endereço' })
       })
     },
+    calcDiscontAmount() {
+      if(this.order.discount_percentage > 100) {
+        this.order.discount_percentage = 100;
+      }
+
+      let value = this.valueTotal * (this.order.discount_percentage / 100);
+      this.order.discount_amount = value.toFixed(2);
+    },
+    calcPercentageAmount() {
+      if(parseFloat(this.order.discount_amount) > this.valueTotal) {
+        this.order.discount_amount = this.valueTotal;
+      }
+
+      let value = (this.order.discount_amount * 100) / this.valueTotal;
+      this.order.discount_percentage = value.toFixed(2);
+    },
+
+    // Modal Client
+    showModalClient(client = null) {
+      this._loadClients();
+      if(client) {
+        this.modalClient.client = client;
+      }
+      this.modalClient.show = true;
+    },
+    chooseClient(client) {
+      this.order.client_id = client.id;
+      this.order.client = client;
+      this.modalClient.show = false;
+      this.modalClient.search = '';
+    },
+
+    // Modal Address
+    showModalAddress() {
+      this._loadAddresses();
+      this.modalAddress.show = true;
+    },
     chooseAddress(address) {
       this.order.address = { ...address };
-    }
+    },
+
+    // Modal Service
+    showModalService(service = {quantity: 1, value: 0, id: null}) {
+      this._loadServices();
+      this.modalService.editedIndex = this.order.services.indexOf(service);
+      this.modalService.editedItem = Object.assign({}, service);
+      this.modalService.show = true;
+    },
+    handleService() {
+      if (this.modalService.editedIndex > -1) {
+        Object.assign(this.order.services[this.modalService.editedIndex], this.modalService.editedItem)
+      } else {
+        let filterService = this.services.filter(service => service.id === this.modalService.editedItem.id);
+
+        this.order.services.push({
+          name: filterService[0].name,
+          ...this.modalService.editedItem
+        });
+      }
+      this.modalService.show = false;
+    },
+    async deleteService(service) {
+      let deleteIndex = this.order.services.indexOf(service);
+
+      const ok = await this.$refs.fireDialog.confirm({
+          title: `Deletar serviço`,
+          message: `Se aceitar, você irá retirar ${service.name} do pedido. Deseja continuar?`,
+          textConfirmButton: 'Confirmar',
+          colorConfirButton: 'btn-delete',
+          colorCancelButton: 'btn-primary'
+      })
+
+      if (ok) {
+        this.order.services.splice(deleteIndex, 1);
+      }
+    },
+    addDefaultValueService(){
+      let filterService = this.services.filter(service => service.id === this.modalService.editedItem.id);
+
+      if(filterService[0] && filterService[0].default_value){
+        this.modalService.editedItem.value = filterService[0].default_value.toFixed(2);
+      } else {
+        this.modalService.editedItem.value = 0;
+      }
+    },
+
+    // Modal Product
+    showModalProduct(product = {quantity: 1, value: 0, id: null}) {
+      this._loadProducts();
+      this.modalProduct.editedIndex = this.order.products.indexOf(product);
+      this.modalProduct.editedItem = Object.assign({}, product);
+      this.modalProduct.show = true;
+    },
+    handleProduct() {
+      if (this.modalProduct.editedIndex > -1) {
+        Object.assign(this.order.products[this.modalProduct.editedIndex], this.modalProduct.editedItem)
+      } else {
+        let filterProduct = this.products.filter(product => product.id === this.modalProduct.editedItem.id);
+
+        this.order.products.push({
+          name: filterProduct[0].name,
+          ...this.modalProduct.editedItem
+        });
+      }
+      this.modalProduct.show = false;
+    },
+    async deleteProduct(product) {
+      let deleteIndex = this.order.products.indexOf(product);
+
+      const ok = await this.$refs.fireDialog.confirm({
+          title: `Deletar produto`,
+          message: `Se aceitar, você irá retirar ${product.name} do pedido. Deseja continuar?`,
+          textConfirmButton: 'Confirmar',
+          colorConfirButton: 'btn-delete',
+          colorCancelButton: 'btn-primary'
+      })
+
+      if (ok) {
+        this.order.products.splice(deleteIndex, 1);
+      }
+    },
+    addDefaultValueProduct(){
+      let filterProduct = this.products.filter(product => product.id === this.modalProduct.editedItem.id);
+
+      if(filterProduct[0] && filterProduct[0].default_value){
+        this.modalProduct.editedItem.value = filterProduct[0].default_value.toFixed(2);
+      } else {
+        this.modalProduct.editedItem.value = 0;
+      }
+    },
+
+    // Modal Payments/Installments
+    showModalInstallment(installment = {value: 0, id: null}) {
+      this.modalInstallment.editedIndex = this.order.installments.indexOf(installment);
+      this.modalInstallment.editedItem = Object.assign({}, installment);
+      this.modalInstallment.show = true;
+    },
+    handleInstallment() {
+      if (this.modalInstallment.editedIndex > -1) {
+        Object.assign(this.order.installments[this.modalInstallment.editedIndex], this.modalInstallment.editedItem)
+      } else {
+        this.order.installments.push(this.modalInstallment.editedItem);
+      }
+      this.modalInstallment.show = false;
+    },
+    async deleteInstallment(installment) {
+      let deleteIndex = this.order.installments.indexOf(installment);
+
+      const ok = await this.$refs.fireDialog.confirm({
+          title: `Deletar pagamento`,
+          message: `Se aceitar, você irá retirar este pagamento do pedido. Deseja continuar?`,
+          textConfirmButton: 'Confirmar',
+          colorConfirButton: 'btn-delete',
+          colorCancelButton: 'btn-primary'
+      })
+
+      if (ok) {
+        this.order.installments.splice(deleteIndex, 1);
+      }
+    },
   }
 
 }

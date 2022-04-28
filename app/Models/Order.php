@@ -213,6 +213,10 @@ class Order extends TenantModel
 
     public function getPaymentStatusAttribute()
     {
+        if($this->installments->count() == 0) {
+            return 'EM ABERTO';
+        }
+
         $year = now()->format('Y');
         $month = now()->format('m');
 

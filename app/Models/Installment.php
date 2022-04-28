@@ -43,12 +43,16 @@ class Installment extends Model
 {
     use HasFactory; //, SoftDeletes;
 
+    const PAGO = 'PAGO';
+    const INADIMPLENTE = 'INADIMPLENTE';
+    const EM_ABERTO = 'EM ABERTO';
+
     protected $fillable = [
         'number',
         'order_id',
         'expense_id',
         'payment_method',
-        'status',
+        // 'status',
         'due_date',
         'pay_day',
         'value'
@@ -83,6 +87,22 @@ class Installment extends Model
     }
 
     /**
+     * Attributes
+     */
+    public function getStatusAttribute()
+    {
+        if($this->pay_day) {
+            return self::PAGO;
+        }
+
+        if($this->due_date < now()->format('Y-m-d')) {
+            return self::INADIMPLENTE;
+        }
+
+        return self::EM_ABERTO;
+    }
+
+    /**
      * Scopes
      */
     public function scopeTypeOrder(Builder $builder)
@@ -105,13 +125,18 @@ class Installment extends Model
         );
     }
 
+    public function scopePaid(Builder $builder, $year)
+    {
+        return $builder->whereNotNull('pay_day');
+    }
+
     public function scopePaidAnnually(Builder $builder, $year)
     {
         return $builder->when(
             $year,
             function (Builder $builder, $year) {
                 return $builder->whereNotNull('pay_day')
-                    ->where('status', 'PAGO')
+                    // ->where('status', 'PAGO')
                     ->whereBetween('pay_day', [
                         Carbon::create($year)->startOfYear(),
                         Carbon::create($year)->endOfYear()
@@ -126,7 +151,7 @@ class Installment extends Model
             $year && $month,
             function (Builder $builder) use ($year, $month){
                 return $builder->whereNotNull('pay_day')
-                    ->where('status', 'PAGO')
+                    // ->where('status', 'PAGO')
                     ->whereBetween('pay_day', [
                         Carbon::create($year, $month)->startOfMonth(),
                         Carbon::create($year, $month)->endOfMonth()
@@ -141,7 +166,7 @@ class Installment extends Model
             $year,
             function (Builder $builder, $year) {
                 return $builder->whereNull('pay_day')
-                    ->where('status', '!=', 'PAGO')
+                    // ->where('status', '!=', 'PAGO')
                     ->where('due_date', '<', now()->format('Y-m-d'))
                     ->whereBetween('due_date', [
                         Carbon::create($year)->startOfYear(),
@@ -157,7 +182,7 @@ class Installment extends Model
             $year && $month,
             function (Builder $builder) use ($year, $month){
                 return $builder->whereNull('pay_day')
-                ->where('status', '!=', 'PAGO')
+                // ->where('status', '!=', 'PAGO')
                 ->where('due_date', '<', now()->format('Y-m-d'))
                 ->whereBetween('due_date', [
                     Carbon::create($year, $month)->startOfMonth(),
@@ -173,7 +198,7 @@ class Installment extends Model
             $year,
             function (Builder $builder, $year) {
                 return $builder->whereNull('pay_day')
-                    ->where('status', '!=', 'PAGO')
+                    // ->where('status', '!=', 'PAGO')
                     ->where('due_date', '>=', now()->format('Y-m-d'))
                     ->whereBetween('due_date', [
                         Carbon::create($year)->startOfYear(),
@@ -189,7 +214,7 @@ class Installment extends Model
             $year && $month,
             function (Builder $builder) use ($year, $month){
                 return $builder->whereNull('pay_day')
-                    ->where('status', '!=', 'PAGO')
+                    // ->where('status', '!=', 'PAGO')
                     ->where('due_date', '>=', now()->format('Y-m-d'))
                     ->whereBetween('due_date', [
                         Carbon::create($year, $month)->startOfMonth(),
