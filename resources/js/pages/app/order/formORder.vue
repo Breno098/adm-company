@@ -1411,7 +1411,7 @@ export default {
       });
       this.loadingServices = false;
     },
-     async _loadEmployees(){
+    async _loadEmployees(){
       let params = { relations: ['position'] };
 
       this.loadingEmployees = true;
