@@ -61,6 +61,33 @@
     <v-tabs-items v-model="tab" class="pt-5 px-1" style="background-color: transparent !important;">
       <v-tab-item>
         <v-row class="mb-2">
+          <v-col cols="12">
+            <v-card>
+              <v-card-text>
+                <!-- <div class="d-flex align-center"> -->
+                  <v-icon color="btn-delete">mdi-comment-alert-outline</v-icon>
+                  <strong class="text-h6 font-weight-black ml-2 primary--text">
+                    Problema reclamado
+                  </strong>
+                <!-- </div> -->
+              </v-card-text>
+
+              <v-card-actions class="pb-4 px-3">
+                {{ order.complaint | textLimitChar(50) }}
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="btn-primary"
+                  class="rounded-lg mr-2"
+                  small
+                  dark
+                  @click="modalComplaint.show = true"
+                >
+                  <v-icon small>mdi-comment-processing</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
           <v-col cols="12" md="8">
             <v-card>
               <v-card-text class="py-7">
@@ -136,34 +163,6 @@
                   </v-col>
                 </v-row>
               </v-card-text>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card>
-              <v-card-text class="py-7">
-                <div class="mb-3 d-flex align-center">
-                  <v-icon color="btn-delete">mdi-comment-alert-outline</v-icon>
-                  <strong class="text-h6 font-weight-black ml-2 primary--text">
-                    Problema reclamado
-                  </strong>
-                </div>
-
-                {{ order.complaint | textLimitChar(50) }}
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="btn-primary"
-                  class="rounded-lg mr-2"
-                  small
-                  dark
-                  @click="modalComplaint.show = true"
-                >
-                  <v-icon small>mdi-comment-processing</v-icon>
-                </v-btn>
-              </v-card-actions>
             </v-card>
           </v-col>
 
