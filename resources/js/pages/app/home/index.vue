@@ -216,7 +216,7 @@ export default {
               appointment: appointment,
               name: appointment.title,
               description: appointment.description,
-              client_name: appointment.client_id ? appointment.client.name : '',
+              client_name: appointment.client_id && appointment.client && appointment.client.name ? appointment.client.name : '',
               start: date_start,
               end: date_end,
               color: appointment.concluded === 'N' ? 'primary' : 'orange',
