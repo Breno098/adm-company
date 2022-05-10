@@ -52,10 +52,22 @@
     <v-card class="mx-1">
       <v-tabs v-model="tab">
         <v-tabs-slider color="primary"></v-tabs-slider>
-        <v-tab href="#order-tab">Pedido <v-icon small class="ml-2">mdi-file-document</v-icon> </v-tab>
-        <v-tab href="#reports-tab">Relatórios e garantias <v-icon small class="ml-2">mdi-format-align-center</v-icon></v-tab>
-        <v-tab>Agendamentos <v-icon small class="ml-2">mdi-calendar-today</v-icon></v-tab>
-        <v-tab href="#finance-tab" v-if="showFinanceTab">Financeiro <v-icon small class="ml-2">mdi-cash</v-icon></v-tab>
+        <v-tab href="#order-tab">
+          Pedido
+          <v-icon small class="ml-2">mdi-file-document</v-icon>
+        </v-tab>
+        <v-tab href="#reports-tab">
+          Relatórios e garantias
+          <v-icon small class="ml-2">mdi-format-align-center</v-icon>
+        </v-tab>
+        <v-tab href="#appointment-tab">
+          Agendamentos
+          <v-icon small class="ml-2">mdi-calendar-today</v-icon>
+        </v-tab>
+        <v-tab href="#finance-tab" v-if="showFinanceTab">
+          Financeiro
+          <v-icon small class="ml-2">mdi-cash</v-icon>
+        </v-tab>
       </v-tabs>
     </v-card>
 
@@ -93,16 +105,31 @@
             </v-card>
           </v-col>
 
-          <v-col cols="12" md="8">
+          <v-col cols="12" :md="order.id ? 8 : 12">
             <v-card>
               <v-card-text class="py-7">
                 <v-row>
                   <v-col cols="12">
                     <div class="mb-3 d-flex align-center">
-                      <v-icon color="primary">mdi-account</v-icon>
-                      <strong class="text-h6 font-weight-black ml-2 primary--text">Cliente</strong>
+                      <v-icon :color="errors.client_id && !order.client_id ? 'red' : 'primary'">mdi-account</v-icon>
+
+                      <strong
+                        class="text-h6 font-weight-black mx-2"
+                        :class="errors.client_id && !order.client_id ? 'red--text' : 'primary--text'"
+                      >
+                        Cliente
+                      </strong>
+
+                      <v-scroll-x-transition>
+                        <div
+                          v-show="errors.client_id && !order.client_id"
+                          class="font-weight-black red--text"
+                        >
+                          Selecione o cliente.
+                        </div>
+                      </v-scroll-x-transition>
                     </div>
-                    {{ order.client ? order.client.name : '' }}
+                    {{ order.client_id ? order.client.name : '' }}
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -125,7 +152,7 @@
             </v-card>
           </v-col>
 
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="4" v-if="order.id">
             <v-card class="fill-height d-flex flex-column align-center justify-center">
               <v-card-text class="py-4">
                 <v-row>
@@ -260,7 +287,6 @@
                   class="rounded-lg mr-2"
                   small
                   dark
-                  :loading="loading"
                   @click="showModalAddress"
                 >
                   <v-icon small>
@@ -299,7 +325,6 @@
                   class="rounded-lg"
                   small
                   dark
-                  :loading="loading"
                   @click="showModalService()"
                 >
                   <v-icon small>mdi-plus</v-icon>
@@ -345,7 +370,6 @@
                   class="rounded-lg"
                   small
                   dark
-                  :loading="loading"
                   @click="showModalProduct()"
                 >
                   <v-icon small>mdi-plus</v-icon>
@@ -521,6 +545,28 @@
             </v-card>
           </v-col>
         </v-row>
+      </v-tab-item>
+
+      <v-tab-item value="appointment-tab">
+         <v-card class="mb-4">
+          <v-card-text class="py-7">
+            <div class="mb-3 d-flex align-center">
+              <v-icon color="primary">mdi-calendar-today</v-icon>
+              <strong class="text-h6 font-weight-black ml-2 primary--text">Compromissos</strong>
+
+              <v-spacer></v-spacer>
+              <v-btn
+                color="btn-primary"
+                class="rounded-lg"
+                small
+                dark
+                @click="showModalService()"
+              >
+                <v-icon small>mdi-plus</v-icon>
+              </v-btn>
+            </div>
+          </v-card-text>
+        </v-card>
       </v-tab-item>
 
       <v-tab-item value="finance-tab">
@@ -728,7 +774,6 @@
                 type="number"
                 dense
                 v-model="modalService.editedItem.quantity"
-                :loading="loading"
               ></v-text-field>
             </v-col>
 
@@ -742,7 +787,6 @@
                     filled
                     dense
                     v-model="modalService.editedItem.value"
-                    :loading="loading"
                     v-bind="attrs"
                     v-on="on"
                   ></v-text-field>
@@ -803,7 +847,6 @@
                 type="number"
                 dense
                 v-model="modalProduct.editedItem.quantity"
-                :loading="loading"
               ></v-text-field>
             </v-col>
 
@@ -817,7 +860,6 @@
                     filled
                     dense
                     v-model="modalProduct.editedItem.value"
-                    :loading="loading"
                     v-bind="attrs"
                     v-on="on"
                   ></v-text-field>
@@ -983,7 +1025,6 @@
                 filled
                 dense
                 v-model="order.address.cep"
-                :loading="loading"
                 v-on:keyup.enter="searchCep()"
                 v-on:keyup="searchCep()"
                 clearable
@@ -996,7 +1037,6 @@
                 filled
                 dense
                 v-model="order.address.street"
-                :loading="loading"
                 @input="order.address.street = order.address.street.toUpperCase()"
                 clearable
               ></v-text-field>
@@ -1008,7 +1048,6 @@
                 filled
                 dense
                 v-model="order.address.number"
-                :loading="loading"
                 clearable
               ></v-text-field>
             </v-col>
@@ -1019,7 +1058,6 @@
                 filled
                 dense
                 v-model="order.address.district"
-                :loading="loading"
                 @input="order.address.district = order.address.district.toUpperCase()"
                 clearable
               ></v-text-field>
@@ -1031,7 +1069,6 @@
                 filled
                 dense
                 v-model="order.address.city"
-                :loading="loading"
                 @input="order.address.city = order.address.city.toUpperCase()"
                 clearable
               ></v-text-field>
@@ -1043,7 +1080,6 @@
                 filled
                 dense
                 v-model="order.address.state"
-                :loading="loading"
                 @input="order.address.state = order.address.state.toUpperCase()"
                 clearable
               ></v-text-field>
@@ -1055,7 +1091,6 @@
                 filled
                 dense
                 v-model="order.address.apartment"
-                :loading="loading"
                 @input="order.address.apartment = order.address.apartment.toUpperCase()"
                 clearable
               ></v-text-field>
@@ -1067,7 +1102,6 @@
                 filled
                 dense
                 v-model="order.address.block"
-                :loading="loading"
                 @input="order.address.block = order.address.block.toUpperCase()"
                 clearable
               ></v-text-field>
@@ -1079,7 +1113,6 @@
                 filled
                 dense
                 v-model="order.address.floor"
-                :loading="loading"
                 @input="order.address.floor = order.address.floor.toUpperCase()"
                 clearable
               ></v-text-field>
@@ -1091,7 +1124,6 @@
                 filled
                 dense
                 v-model="order.address.tower"
-                :loading="loading"
                 @input="order.address.tower = order.address.tower.toUpperCase()"
                 clearable
               ></v-text-field>
@@ -1103,7 +1135,6 @@
                 filled
                 dense
                 v-model="order.address.house"
-                :loading="loading"
                 @input="order.address.house = order.address.house.toUpperCase()"
                 clearable
               ></v-text-field>
@@ -1115,7 +1146,6 @@
                 filled
                 dense
                 v-model="order.address.complement"
-                :loading="loading"
                 @input="order.address.complement = order.address.complement.toUpperCase()"
                 clearable
               ></v-text-field>
@@ -1349,7 +1379,7 @@
     </v-dialog>
 
     <!--Modal Status -->
-    <v-dialog v-model="modalStatus" max-width="800px" transition="slide-x-transition">
+    <v-dialog v-model="modalStatus.show" max-width="800px" transition="slide-x-transition">
       <v-card>
         <v-card-title>
           <v-icon color="primary" small>mdi-map-marker-radius</v-icon>
@@ -1374,7 +1404,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="btn-primary" class="rounded-lg" small text @click="modalStatus = false">
+          <v-btn color="btn-primary" class="rounded-lg" small text @click="modalStatus.show = false">
             Cancelar
           </v-btn>
           <v-btn color="btn-primary" class="rounded-lg" small dark @click="_store">
@@ -1383,7 +1413,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </div>
 </template>
 
@@ -1453,10 +1482,10 @@ export default {
     modalWorkDone: {
       show: false
     },
-
-    tab: null,
-
-    modalStatus: false,
+    modalStatus: {
+      show: false
+    },
+    tab: "appointment-tab",
     loading: false,
     loadingClients: false,
     loadingProducts: false,
@@ -1589,7 +1618,7 @@ export default {
       return this.modalTechnician.search ? this.technicians.filter(technician => technician.name.toUpperCase().includes(this.modalTechnician.search.toUpperCase())) : this.technicians;
     },
     showFinanceTab() {
-      return this.order.status.includes('EM ANDAMENTO') || this.order.status.includes('CONCLUÍDO');
+      return (this.order.status.includes('EM ANDAMENTO') || this.order.status.includes('CONCLUÍDO'));
     }
   },
   filters: {
@@ -1808,23 +1837,25 @@ export default {
       this.order.installments.forEach(installment => amountPaid += installment.status === 'PAGO' ? parseFloat(installment.value) : 0);
       this.order.amount_paid = isNaN(amountPaid) ? (0).toFixed(2) : amountPaid.toFixed(2);
     },
+    goFinanceTab(){
+      this.tab = 'finance-tab';
+    },
     showModalStatus() {
       /* Validations */
       for (const field in this.errors) {
+        this.errors[field] = false;
+
         if(!this.order[field]){
           this.errors[field] = true;
-          window.scrollTo(0, 0);
+          // window.scrollTo(0, 0);
           return false;
         }
       }
 
-      this.modalStatus = true;
-    },
-    goFinanceTab(){
-      this.tab = 'finance-tab';
+      this.modalStatus.show = true;
     },
     async _store(){
-      this.modalStatus = false;
+      this.modalStatus.show = false;
 
       this.loading = true;
 
@@ -1836,6 +1867,8 @@ export default {
 
       try {
         const response = !id ? await axios.post('/api/order', this.order) : await axios.put(`/api/order/${id}`, this.order);
+
+        this.order = response.data.data;
 
         this.$refs.fireDialog.success({ title: 'Salvo com sucesso', timer: 1500 });
       } catch (error) {
