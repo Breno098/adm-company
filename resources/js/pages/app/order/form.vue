@@ -60,10 +60,10 @@
           Relatórios e garantias
           <v-icon small class="ml-2">mdi-format-align-center</v-icon>
         </v-tab>
-        <v-tab href="#appointment-tab">
+        <!-- <v-tab href="#appointment-tab">
           Agendamentos
           <v-icon small class="ml-2">mdi-calendar-today</v-icon>
-        </v-tab>
+        </v-tab> -->
         <v-tab href="#finance-tab" v-if="showFinanceTab">
           Financeiro
           <v-icon small class="ml-2">mdi-cash</v-icon>
@@ -1703,7 +1703,7 @@ export default {
                 }
               })
               .catch(error => {
-                this.$refs.fireDialog.error({ title: 'Error ao carregar clientes' })
+                this.$refs.fireDialog.error({ title: 'Error ao carregar clientes' });
               })
               .finally(() => {
                 this.loadingClients = false;
@@ -1809,11 +1809,11 @@ export default {
                     this.order.address = {};
                   }
                 } else {
-                  this.$refs.fireDialog.error({ title: 'Error ao carregar dados da ordem', time: 1500 })
+                  this.$refs.fireDialog.error({ title: 'Error ao carregar dados da ordem', timer: 1500 })
                 }
               })
               .catch(error => {
-                this.$refs.fireDialog.error({ title: 'Error ao carregar dados da ordem', time: 1500 })
+                // this.$refs.fireDialog.error({ title: 'Error ao carregar dados da ordem', timer: 1500 })
               })
               .finally(() => {
                 this.loading = false;

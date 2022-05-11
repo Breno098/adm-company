@@ -99,7 +99,7 @@
       <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
           <v-card color="grey lighten-4" min-width="350px" flat>
             <v-toolbar :color="selectedEvent.color" dark>
-              <!-- <v-btn icon v-on:click="_edit(selectedEvent.appointment)">
+              <!-- <v-btn icon v-on:click="showAppointment(selectedEvent.appointment)">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn> -->
               <v-toolbar-title>
@@ -125,8 +125,16 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn text color="secondary" @click="_edit(selectedEvent.appointment)" small>
-                Editar
+              <v-btn color="primary" @click="showAppointment(selectedEvent.appointment)" small>
+                Ir para compromisso
+              </v-btn>
+              <v-btn
+                v-if="$can('order_show')"
+                color="primary"
+                @click="showOrder(selectedEvent.order_id)"
+                small
+              >
+                Ir para pedido
               </v-btn>
               <v-btn text color="secondary" @click="selectedOpen = false" small>
                 Fechar
@@ -220,6 +228,7 @@ export default {
               start: date_start,
               end: date_end,
               color: appointment.concluded === 'N' ? 'primary' : 'orange',
+              order_id: appointment.order_id
             })
           })
         }
@@ -246,8 +255,15 @@ export default {
     getEventColor (event) {
       return event.color
     },
-    async _edit(appointment){
+    showAppointment(appointment){
       this.$router.push({ name: 'appointment.show', params: { id: appointment.id } })
+    },
+    showOrder(id){
+      this.$can('order_show')
+        ? this.$router.push({
+            name: 'order.show',
+            params: { id }
+        }) : null
     },
     async _loadCountClients(){
       this.loading = true;
