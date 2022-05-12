@@ -96,52 +96,52 @@
     </v-row>
 
 
-      <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
-          <v-card color="grey lighten-4" min-width="350px" flat>
-            <v-toolbar :color="selectedEvent.color" dark>
-              <!-- <v-btn icon v-on:click="showAppointment(selectedEvent.appointment)">
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn> -->
-              <v-toolbar-title>
-                {{ selectedEvent.name }}
-              </v-toolbar-title>
-            </v-toolbar>
-            <v-card-text>
-              <div v-if="selectedEvent.client_name">
-                <v-icon size="15">mdi-account-circle</v-icon> {{ selectedEvent.client_name }}
-              </div>
+    <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
+        <v-card color="grey lighten-4" min-width="350px" flat>
+          <v-toolbar :color="selectedEvent.color" dark>
+            <v-toolbar-title>
+              {{ selectedEvent.name }}
+            </v-toolbar-title>
 
-              <div v-if="selectedEvent.start">
-                <v-icon size="15">mdi-calendar-clock</v-icon> {{ selectedEvent.start | formatDate }}
-              </div>
+            <v-spacer/>
 
-              <div v-if="selectedEvent.end">
-                <v-icon size="15">mdi-calendar-clock</v-icon> {{ selectedEvent.end | formatDate }}
-              </div>
+            <v-btn @click="selectedOpen = false" x-small icon class="mr-3">
+              <v-icon small>mdi-close</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-card-text>
+            <div v-if="selectedEvent.client_name">
+              <v-icon size="15">mdi-account-circle</v-icon> {{ selectedEvent.client_name }}
+            </div>
 
-              <div v-if="selectedEvent.description">
-                {{ selectedEvent.description  }}
-              </div>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" @click="showAppointment(selectedEvent.appointment)" small>
-                Ir para compromisso
-              </v-btn>
-              <v-btn
-                v-if="$can('order_show')"
-                color="primary"
-                @click="showOrder(selectedEvent.order_id)"
-                small
-              >
-                Ir para pedido
-              </v-btn>
-              <v-btn text color="secondary" @click="selectedOpen = false" small>
-                Fechar
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
+            <div>
+              <v-icon size="15">mdi-calendar-clock</v-icon>
+              {{ selectedEvent.start | formatDate }} ás  {{ selectedEvent.end | formatDate }}
+            </div>
+
+            <div v-if="selectedEvent.description">
+              <v-icon color="primary" size="15">mdi-comment-text-outline</v-icon> {{ selectedEvent.description  }}
+            </div>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" @click="showAppointment(selectedEvent.appointment)" small>
+              Ver compromisso
+              <v-icon small class="ml-2">mdi-calendar-today</v-icon>
+            </v-btn>
+            <v-btn
+              v-if="$can('order_show') && selectedEvent.order_id"
+              color="primary"
+              @click="showOrder(selectedEvent.order_id)"
+              small
+            >
+              Ver pedido
+              <v-icon small class="ml-2">mdi-file-document</v-icon>
+            </v-btn>
+
+          </v-card-actions>
+        </v-card>
+      </v-menu>
 </div>
 </template>
 

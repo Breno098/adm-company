@@ -157,7 +157,7 @@ export default {
         {
           title: 'Pedidos' ,
           route: 'order.index',
-          icon: 'mdi-format-list-checks',
+          icon: 'mdi-file-document',
           can: this.$can('order_index')
         },
         {

@@ -155,11 +155,10 @@
       <v-col cols="12" v-for="appointment in table.appointments" :key="appointment.id" v-else>
         <v-hover v-slot="{ hover }">
           <v-card
-            v-on:click="_edit(appointment.id)"
             :class="{ 'on-hover': hover }"
             :elevation="hover ? 12 : 2"
           >
-            <v-card-text>
+            <v-card-text v-on:click="_edit(appointment.id)">
               <v-row class="mb-3">
                   <v-col cols="12" md="9">
                     <div class="font-weight-bold text-h6">
@@ -205,7 +204,23 @@
             </v-card-text>
 
             <v-card-actions>
+               <v-tooltip right v-if="$can('order_show') && appointment.order_id">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                      v-bind="attrs"
+                      v-on="on"
+                      color="primary"
+                      @click="showOrder(appointment.order_id)"
+                      small
+                    >
+                      <v-icon small>mdi-file-document</v-icon>
+                    </v-btn>
+                </template>
+                <span>Ver pedido</span>
+              </v-tooltip>
+
               <v-spacer/>
+
               <v-btn text color="primary" v-on:click="_edit(appointment.id)" small>
                 Ver informações
               </v-btn>
@@ -330,6 +345,13 @@ export default {
         }
         this.$refs.fireDialog.error({ title: 'Error ao carregar técnicos' })
       });
+    },
+    showOrder(id){
+      this.$can('order_show')
+        ? this.$router.push({
+            name: 'order.show',
+            params: { id }
+        }) : null
     },
   }
 }
